@@ -20,6 +20,13 @@
     <x:Double x:Key="Size.EmptyStateIcon">32</x:Double>
     <x:Double x:Key="Size.SettingsLabel">200</x:Double>
     <x:Double x:Key="Size.BadgeHeight">18</x:Double>
+    <!-- Shell (UI-0 step 6) -->
+    <!-- Room kept free on the right of the title bar for the window's min/max/close buttons
+         (Avalonia draws them on top of our content: 3 × 45px + gaps). -->
+    <x:Double x:Key="Size.CaptionButtonsReserve">142</x:Double>
+    <!-- Fluent key (not a DevHub token): height of those caption buttons. Kept equal to
+         Size.ToolbarHeight so they fill the title bar; overridden in Compact too. -->
+    <x:Double x:Key="CaptionButtonHeight">40</x:Double>
 
     <!-- Gaps between children (StackPanel.Spacing, Grid.RowSpacing): a single number,
          so x:Double, not Thickness. -->
@@ -45,6 +52,8 @@
     <Thickness x:Key="Margin.InnerLeft">8,0,0,0</Thickness>
     <Thickness x:Key="Margin.InnerRight">0,0,6,0</Thickness>
     <Thickness x:Key="Margin.ToolbarSeparator">4,0</Thickness>
+    <Thickness x:Key="Padding.StatusBar">8,0</Thickness>
+    <Thickness x:Key="Padding.StatusWidget">6,0</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

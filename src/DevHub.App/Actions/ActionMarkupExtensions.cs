@@ -50,3 +50,22 @@ public sealed class ActionListExtension : MarkupExtension
     public override object ProvideValue(IServiceProvider serviceProvider) =>
         (object?)ActionExtension.Registry?.All ?? Array.Empty<AppAction>();
 }
+
+/// <summary>
+/// Just an action's command, for plain Buttons that show their own content (e.g. the
+/// status bar's "Dark" widget): <c>Command="{a:ActionCommand View.ToggleTheme}"</c>.
+/// </summary>
+public sealed class ActionCommandExtension(string id) : MarkupExtension
+{
+    public string Id { get; set; } = id;
+
+    public override object ProvideValue(IServiceProvider serviceProvider) =>
+        (object?)ActionExtension.Registry?.Get(Id).Command ?? AvaloniaProperty.UnsetValue;
+}
+
+/// <summary>The main menu's top-level items (see <see cref="MainMenu"/>): <c>ItemsSource="{a:MainMenu}"</c>.</summary>
+public sealed class MainMenuExtension : MarkupExtension
+{
+    public override object ProvideValue(IServiceProvider serviceProvider) =>
+        ActionExtension.Registry is { } registry ? MainMenu.Build(registry) : Array.Empty<object>();
+}

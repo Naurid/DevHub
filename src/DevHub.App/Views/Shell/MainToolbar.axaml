@@ -1,0 +1,65 @@
+<!--
+  The merged title bar + main toolbar (Rider "New UI" style). The window's client area is
+  extended into the title bar (MainWindow.axaml), so this row sits where the OS title bar
+  used to be, and Avalonia draws min/max/close on top of its right edge.
+
+  Dragging: the root Border has ElementRole="TitleBar", so empty space moves the window
+  (double-click maximizes). Avalonia finds the role by walking up from the element under
+  the mouse, so interactive parts need ElementRole="User" or they'd be swallowed by the
+  title bar too. Gaps between buttons fall through to the Border and stay draggable.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:a="clr-namespace:DevHub.Actions"
+             x:Class="DevHub.Views.Shell.MainToolbar"
+             x:DataType="vm:MainWindowViewModel">
+
+    <Border Height="{DynamicResource Size.ToolbarHeight}"
+            Background="{DynamicResource Brush.Bg.Panel}"
+            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1"
+            Padding="{DynamicResource Padding.Toolbar}"
+            WindowDecorationProperties.ElementRole="TitleBar">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
+              ColumnSpacing="{DynamicResource Spacing}">
+
+            <!-- Logo + main menu (☰). -->
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+                        VerticalAlignment="Center">
+                <c:DevHubLogo Width="{DynamicResource Size.StripeIcon}"
+                              Height="{DynamicResource Size.StripeIcon}"
+                              LineThickness="4" />
+                <c:ActionButton IconKind="menu" ToolTip.Tip="Main Menu"
+                                WindowDecorationProperties.ElementRole="User">
+                    <c:ActionButton.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft" ItemsSource="{a:MainMenu}" />
+                    </c:ActionButton.Flyout>
+                </c:ActionButton>
+            </StackPanel>
+
+            <!-- "Where am I": app name › current page. Not interactive, so it stays draggable. -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
+                        VerticalAlignment="Center">
+                <TextBlock Text="DevHub" FontWeight="SemiBold" />
+                <c:Icon Kind="chevronRight" />
+                <TextBlock Classes="secondary" Text="{Binding SelectedPage.Title}" />
+            </StackPanel>
+
+            <!-- Column 2 (*) is empty: the big draggable area. -->
+
+            <!-- Main toolbar actions. -->
+            <c:Toolbar Grid.Column="3" WindowDecorationProperties.ElementRole="User">
+                <c:ActionButton Action="{a:Action Repositories.AddFolder}" />
+                <c:ActionButton Action="{a:Action Repositories.Rescan}" />
+                <c:ToolbarSeparator />
+                <c:ActionButton Action="{a:Action View.ToggleTheme}" />
+                <c:ActionButton Action="{a:Action Navigate.Settings}" />
+            </c:Toolbar>
+
+            <!-- Keeps our buttons out from under the window's min/max/close buttons, which
+                 Avalonia draws on top of this corner. -->
+            <Border Grid.Column="4" Width="{DynamicResource Size.CaptionButtonsReserve}" />
+        </Grid>
+    </Border>
+</UserControl>

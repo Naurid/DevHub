@@ -27,7 +27,7 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 3. `Icon` control + first ~20 vendored icons (+ Apache-2.0 NOTICE)
 - [x] 4. Components: ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge
 - [x] 5. Action system (registry, providers, keymap, MenuBuilder) + Core `FuzzyMatcher` (tested)
-- [ ] 6. Merged title bar + main toolbar + status bar
+- [x] 6. Merged title bar + main toolbar + status bar
 - [ ] 7. Tool-window framework (fixed slots, stripes, persisted layout); Repositories → tree tool window
 - [ ] 8. Editor area (document tabs) + Welcome view; Generate/Import as documents; drop sidebar
 - [ ] 9. Dialog framework + Settings dialog (Ctrl+Alt+S): Open With + Appearance pages, persisted

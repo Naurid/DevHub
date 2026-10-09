@@ -5,13 +5,18 @@
         xmlns:vm="clr-namespace:DevHub.ViewModels"
         xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
         xmlns:c="clr-namespace:DevHub.Controls"
+        xmlns:shell="clr-namespace:DevHub.Views.Shell"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="640"
         x:Class="DevHub.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="DevHub"
         Width="1000" Height="640"
         MinWidth="720" MinHeight="480"
-        Background="{StaticResource WindowBackgroundBrush}">
+        Background="{StaticResource WindowBackgroundBrush}"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="{DynamicResource Size.ToolbarHeight}">
+    <!-- ExtendClientArea…: our MainToolbar replaces the OS title bar (merged title bar).
+         Avalonia still draws min/max/close on top of its right edge. -->
 
     <Window.Styles>
         <!-- Sidebar nav rows: flat, rounded, accent highlight when selected. -->
@@ -42,46 +47,38 @@
         </Style>
     </Window.Styles>
 
-    <Grid ColumnDefinitions="220,*">
+    <DockPanel>
+        <shell:MainToolbar DockPanel.Dock="Top" />
+        <!-- StatusBarViewModel → StatusBarView via the ViewLocator. -->
+        <ContentControl DockPanel.Dock="Bottom" Content="{Binding StatusBar}" />
 
-        <!-- Sidebar -->
-        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
-            <DockPanel LastChildFill="True">
-                <!-- Brand -->
-                <Grid DockPanel.Dock="Top" Margin="20,22,20,16"
-                      ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                    <!-- Accent-colored; recolors live with the accent. -->
-                    <c:DevHubLogo Width="36" Height="36" LineThickness="3" VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                        <TextBlock Text="DevHub" FontSize="20" FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimaryBrush}" />
-                        <TextBlock Text="Project &amp; template workbench" FontSize="12"
-                                   TextWrapping="Wrap"
-                                   Foreground="{StaticResource TextSecondaryBrush}" />
-                    </StackPanel>
-                </Grid>
-
-                <!-- Nav -->
-                <ListBox Classes="nav"
-                         ItemsSource="{Binding Pages}"
-                         SelectedItem="{Binding SelectedPage, Mode=TwoWay}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate x:DataType="pages:PageViewModelBase">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
-                                <TextBlock Text="{Binding Title}" FontSize="14"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </DockPanel>
-        </Border>
-
-        <!-- Content -->
-        <Border Grid.Column="1" Padding="28">
-            <ContentControl Content="{Binding SelectedPage}" />
-        </Border>
-    </Grid>
+        <Grid ColumnDefinitions="220,*">
+    
+            <!-- Sidebar -->
+            <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                <DockPanel LastChildFill="True">
+                    <!-- Nav -->
+                    <ListBox Classes="nav" Margin="0,8,0,0"
+                             ItemsSource="{Binding Pages}"
+                             SelectedItem="{Binding SelectedPage, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="pages:PageViewModelBase">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding Title}" FontSize="14"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+    
+            <!-- Content -->
+            <Border Grid.Column="1" Padding="28">
+                <ContentControl Content="{Binding SelectedPage}" />
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>

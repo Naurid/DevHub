@@ -1,0 +1,35 @@
+<!--
+  Status bar: the latest message (IStatusService) on the left, widgets on the right.
+  Widgets are flat text buttons (Button.statusWidget, Themes/Controls.axaml) that run
+  actions, so clicking "Dark" does exactly what Ctrl+Alt+D does.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Shell"
+             xmlns:a="clr-namespace:DevHub.Actions"
+             x:Class="DevHub.Views.Shell.StatusBarView"
+             x:DataType="vm:StatusBarViewModel">
+
+    <Border Height="{DynamicResource Size.StatusBarHeight}"
+            Background="{DynamicResource Brush.Bg.Panel}"
+            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
+            Padding="{DynamicResource Padding.StatusBar}">
+        <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Classes="small secondary"
+                       Text="{Binding Message}"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Classes="statusWidget"
+                        Content="{Binding DensityLabel}"
+                        ToolTip.Tip="Toggle Compact Mode"
+                        Command="{a:ActionCommand View.ToggleCompact}" />
+                <Button Classes="statusWidget"
+                        Content="{Binding ThemeLabel}"
+                        ToolTip.Tip="Toggle Dark Theme (Ctrl+Alt+D)"
+                        Command="{a:ActionCommand View.ToggleTheme}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

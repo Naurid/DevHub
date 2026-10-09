@@ -32,6 +32,14 @@
     <SolidColorBrush x:Key="SystemRegionBrush" Color="{DynamicResource Color.Bg.Panel}" />
     <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="{DynamicResource Color.Text.Primary}" />
 
+    <!-- ===== Window caption buttons (min/max/close, drawn by Avalonia when the client
+         area extends into the title bar; Fluent: Controls/WindowDrawnDecorations.xaml) ===== -->
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="CaptionButtonForeground" Color="{DynamicResource Color.Text.Primary}" />
+    <!-- Fluent uses Background for hover and BorderBrush for pressed (close stays red). -->
+    <SolidColorBrush x:Key="CaptionButtonBackground" Color="{DynamicResource Color.Bg.Hover}" />
+    <SolidColorBrush x:Key="CaptionButtonBorderBrush" Color="{DynamicResource Color.Bg.SelectionInactive}" />
+
     <!-- ===== Button (default) ===== -->
     <SolidColorBrush x:Key="ButtonBackground" Color="{DynamicResource Color.Bg.Panel}" />
     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{DynamicResource Color.Bg.Hover}" />

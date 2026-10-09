@@ -10,6 +10,7 @@ using DevHub.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Pages;
+using DevHub.ViewModels.Shell;
 using DevHub.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -69,6 +70,10 @@ public partial class App : Application
         services.AddSingleton<IDialogService>(sp => sp.GetRequiredService<DialogService>());
         services.AddSingleton<ThemeService>();
         services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());
+
+        // The status bar ViewModel is also the status service (same instance for both).
+        services.AddSingleton<StatusBarViewModel>();
+        services.AddSingleton<IStatusService>(sp => sp.GetRequiredService<StatusBarViewModel>());
 
         // Core services.
         services.AddSingleton<ISettingsStore>(_ => new JsonSettingsStore());

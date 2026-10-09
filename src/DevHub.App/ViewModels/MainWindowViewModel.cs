@@ -1,12 +1,13 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DevHub.ViewModels.Pages;
+using DevHub.ViewModels.Shell;
 
 namespace DevHub.ViewModels;
 
 /// <summary>
-/// The shell's DataContext: the list of navigable pages shown in the sidebar and the
-/// one currently displayed in the content area.
+/// The shell's DataContext: the list of navigable pages shown in the sidebar, the
+/// one currently displayed in the content area, and the status bar.
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
@@ -20,14 +21,20 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private PageViewModelBase _selectedPage;
 
+    /// <summary>The status bar at the bottom of the window.</summary>
+    public StatusBarViewModel StatusBar { get; }
+
     public MainWindowViewModel(
         RepositoriesViewModel repositories,
         TemplatesViewModel templates,
         GenerateViewModel generate,
         ImportViewModel import,
         SettingsViewModel settings,
-        UiGalleryViewModel gallery)
+        UiGalleryViewModel gallery,
+        StatusBarViewModel statusBar)
     {
+        StatusBar = statusBar;
+
         Pages =
         [
             repositories,

@@ -24,6 +24,7 @@ public static class IconKind
     // Navigation
     public const string ChevronDown = "chevronDown";
     public const string ChevronRight = "chevronRight";
+    public const string Menu = "menu";
 
     // Nodes / tool windows
     public const string Folder = "folder";
@@ -52,7 +53,7 @@ public static class IconKind
     public static IReadOnlyList<string> All { get; } =
     [
         Add, Close, Copy, Delete, Edit, ExternalTools, Import, MoreVertical, Refresh, Search, Settings,
-        ChevronDown, ChevronRight,
+        ChevronDown, ChevronRight, Menu,
         Folder, Template, Palette, Vcs,
         Commit, Fetch, Merge, Push, Update,
         Run, Stop,

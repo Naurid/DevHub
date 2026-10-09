@@ -75,6 +75,43 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <!-- ===== Shell ===== -->
+    <!-- With the client area extended into the title bar, Avalonia draws the window title
+         text on top of our content (top-left). Our main toolbar shows the name itself, so
+         fade the drawn one out. (IsVisible on the panel is set by a TemplateBinding, which
+         outranks styles, so Opacity on the TextBlock is the lever we have.) -->
+    <Style Selector="WindowDrawnDecorations /template/ Panel#PART_TitleTextPanel > TextBlock">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+    <!-- Avalonia 12 also draws a 4th caption button, "full screen", left of minimize. Native
+         Windows and JetBrains IDEs don't have one, and it would sit on top of our toolbar.
+         Collapsed to zero width rather than IsVisible=False: hiding it left its slot empty
+         at the right edge (min/max/close shifted one place left; measured via UI Automation).
+         The -2 right margin cancels the caption StackPanel's Spacing="2" after it.
+         A Style outranks the button's ControlTheme, so these setters win. -->
+    <Style Selector="WindowDrawnDecorations /template/ Button#PART_FullScreenButton">
+        <Setter Property="Width" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Margin" Value="0,0,-2,0" />
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <!-- Flat, text-only buttons in the status bar ("Dark", "Compact"…). -->
+    <Style Selector="Button.statusWidget">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.StatusWidget}" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
+    </Style>
+    <Style Selector="Button.statusWidget:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}" />
+    </Style>
+
     <!-- ===== Text variants: <TextBlock Classes="header" /> etc. ===== -->
     <Style Selector="TextBlock.header">
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Header}" />

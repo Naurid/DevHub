@@ -18,6 +18,7 @@ public partial class RepositoriesViewModel : PageViewModelBase
     private readonly IRepositoryScanner _scanner;
     private readonly IDialogService _dialogs;
     private readonly IProjectLauncher _launcher;
+    private readonly IStatusService _status;
 
     public override string Title => "Repositories";
     public override string Icon => IconKind.Folder;
@@ -38,11 +39,16 @@ public partial class RepositoriesViewModel : PageViewModelBase
     [ObservableProperty]
     private string? _statusMessage;
 
-    public RepositoriesViewModel(IRepositoryScanner scanner, IDialogService dialogs, IProjectLauncher launcher)
+    // Mirror the page's status line into the window's status bar.
+    partial void OnStatusMessageChanged(string? value) => _status.Show(value);
+
+    public RepositoriesViewModel(IRepositoryScanner scanner, IDialogService dialogs, IProjectLauncher launcher,
+        IStatusService status)
     {
         _scanner = scanner;
         _dialogs = dialogs;
         _launcher = launcher;
+        _status = status;
 
         // Adding/removing a folder changes whether Scan can run and the empty-state hint.
         ScanFolders.CollectionChanged += (_, _) =>

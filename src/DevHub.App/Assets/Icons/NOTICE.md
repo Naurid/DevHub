@@ -34,6 +34,7 @@ cover their compiled IDE builds; the icon source files themselves are Apache 2.0
 | general/settings | settings |
 | general/chevronDown | chevronDown |
 | general/chevronRight | chevronRight |
+| general/menu | menu |
 | nodes/folder | folder |
 | nodes/template | template |
 | toolwindows/palette | palette |
