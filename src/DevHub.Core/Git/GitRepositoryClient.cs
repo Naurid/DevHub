@@ -63,6 +63,53 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
     }
 
     /// <summary>
+    /// The diff of one changed file: the staged side (index vs HEAD) when <paramref name="staged"/>,
+    /// else the unstaged side (working tree vs index). Untracked files are shown as all-new;
+    /// conflicted files as git's combined diff. Never null: a file with nothing to show gives a
+    /// <see cref="FileDiff"/> without hunks.
+    /// </summary>
+    public async Task<FileDiff> GetDiffAsync(FileChange change, bool staged, CancellationToken ct = default,
+        int maxLines = DiffParser.DefaultMaxLines)
+    {
+        if (change.Kind == FileChangeKind.Untracked)
+        {
+            if (change.Path.EndsWith('/'))
+                return new FileDiff { NewPath = change.Path, IsNewFile = true, IsDirectory = true };
+
+            // --no-index compares two paths outside git's index; /dev/null means "empty file"
+            // (git handles that name itself, on Windows too). Exit code 1 = "there are differences".
+            string[] noIndex = ["diff", "--no-index", .. CommonDiffArgs, "--", "/dev/null", change.Path];
+            var untracked = await runner.RunAsync(RepositoryPath, noIndex,
+                new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+            if (untracked.ExitCode > 1)
+                throw new GitException(noIndex, untracked.ExitCode, untracked.StandardError);
+            return First(untracked.StandardOutput, change.Path, isNew: true);
+        }
+
+        List<string> args = ["diff", .. CommonDiffArgs];
+        if (staged)
+            args.AddRange(["--cached", "-M"]);
+        args.Add("--");
+        args.Add(change.Path);
+        if (staged && change.OriginalPath is { } from)
+            args.Add(from); // a rename needs both paths, or git shows an add and a delete
+
+        var result = await runner.RunAsync(RepositoryPath, args, new GitRunOptions { ReadOnly = true }, ct);
+        return First(result.StandardOutput, change.Path, isNew: false);
+
+        FileDiff First(string output, string path, bool isNew) =>
+            DiffParser.Parse(output, maxLines).FirstOrDefault()
+            ?? new FileDiff { OldPath = isNew ? null : path, NewPath = path, IsNewFile = isNew };
+    }
+
+    /// <summary>
+    /// Flags that pin the diff format, whatever the user's git config says: no color, no external
+    /// diff tool, a/ b/ prefixes (diff.noprefix / mnemonicPrefix would change them).
+    /// </summary>
+    private static readonly string[] CommonDiffArgs =
+        ["--no-color", "--no-ext-diff", "--src-prefix=a/", "--dst-prefix=b/"];
+
+    /// <summary>
     /// The checked-out branch ("main"), or for a detached HEAD the short commit id ("1a2b3c4").
     /// Null for a new repository with no commits on a detached HEAD.
     /// </summary>

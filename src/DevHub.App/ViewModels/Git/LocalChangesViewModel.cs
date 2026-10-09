@@ -6,17 +6,33 @@ namespace DevHub.ViewModels.Git;
 
 /// <summary>
 /// Fork's Local Changes view for one repository tab: what changed, split into Unstaged (incl.
-/// untracked and conflicts) and Staged. G1 is read-only; the diff pane arrives in G2, staging
-/// and the commit box in G3.
+/// untracked and conflicts) and Staged, with the selected file's diff on the right (G2).
+/// Read-only so far; staging and the commit box arrive in G3.
 /// </summary>
 public partial class LocalChangesViewModel : ViewModelBase
 {
+    /// <summary>True while <see cref="Update"/> refills the lists (selection changes then are temporary).</summary>
+    private bool _updating;
+
+    /// <param name="layout">Panel widths, shared by all repository tabs.</param>
+    /// <param name="client">Git access for the diff pane (null when git isn't installed).</param>
+    /// <param name="openInEditor">Opens a file in the external editor for the repository's language, at a line.</param>
+    /// <param name="openInTab">Opens a file's diff as its own tab.</param>
+    public LocalChangesViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
+        Action<FileChangeViewModel, int?>? openInEditor, Action<FileChangeViewModel>? openInTab)
+    {
+        Layout = layout;
+        Diff = new DiffViewModel(client, openInEditor, openInTab);
+    }
+
     public ObservableCollection<FileChangeViewModel> Unstaged { get; } = new();
     public ObservableCollection<FileChangeViewModel> Staged { get; } = new();
 
     public int UnstagedCount => Unstaged.Count;
     public int StagedCount => Staged.Count;
-    public LocalChangesViewModel(RepositoryTabLayout layout) => Layout = layout;
+
+    /// <summary>The diff of the selected file (right-hand pane).</summary>
+    public DiffViewModel Diff { get; }
 
     public bool HasChanges => Unstaged.Count + Staged.Count > 0;
 
@@ -27,11 +43,32 @@ public partial class LocalChangesViewModel : ViewModelBase
     [ObservableProperty] private FileChangeViewModel? _selectedUnstaged;
     [ObservableProperty] private FileChangeViewModel? _selectedStaged;
 
-    /// <summary>The selected file in either list (G2 shows its diff).</summary>
+    /// <summary>The selected file in either list; the diff pane shows it.</summary>
     public FileChangeViewModel? Selected => SelectedUnstaged ?? SelectedStaged;
 
-    /// <summary>Replaces the lists with a new status, keeping the selection when the file is still there.</summary>
+    /// <summary>
+    /// Replaces the lists with a new status, keeping the selection when the file is still there,
+    /// and reloads its diff (the file may have changed even if its status didn't).
+    /// </summary>
     public void Update(RepoStatus status)
+    {
+        _updating = true;
+        try
+        {
+            Refill(status);
+        }
+        finally
+        {
+            _updating = false;
+        }
+
+        // The rows are new objects, so this reloads the diff; the old lines stay on screen
+        // until the new ones arrive (no flicker).
+        if (Selected != Diff.File)
+            _ = Diff.LoadAsync(Selected);
+    }
+
+    private void Refill(RepoStatus status)
     {
         var keepUnstaged = SelectedUnstaged?.Change.Path;
         var keepStaged = SelectedStaged?.Change.Path;
@@ -59,14 +96,24 @@ public partial class LocalChangesViewModel : ViewModelBase
     {
         if (value is not null)
             SelectedStaged = null;
-        OnPropertyChanged(nameof(Selected));
+        SelectionChanged();
     }
 
     partial void OnSelectedStagedChanged(FileChangeViewModel? value)
     {
         if (value is not null)
             SelectedUnstaged = null;
+        SelectionChanged();
+    }
+
+    private void SelectionChanged()
+    {
         OnPropertyChanged(nameof(Selected));
+        // Picking a file in one list clears the other, which passes through here with the same
+        // Selected: only load when it actually differs from what the pane shows. During Update
+        // the lists are cleared and refilled; Update loads once at the end.
+        if (!_updating && Selected != Diff.File)
+            _ = Diff.LoadAsync(Selected);
     }
 
     private static void Fill(ObservableCollection<FileChangeViewModel> target, IEnumerable<FileChangeViewModel> items)

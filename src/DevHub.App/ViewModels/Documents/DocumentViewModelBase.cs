@@ -48,6 +48,13 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// <summary>Closes this tab (the × on the tab). Assigned by <see cref="DocumentManager"/>.</summary>
     public ICommand? CloseCommand { get; internal set; }
 
+    /// <summary>
+    /// Opens another document by id, e.g. a diff tab from a repository tab (same as
+    /// <see cref="DocumentManager.OpenById"/>; documents can't take the manager itself, it's
+    /// built from them). Assigned by <see cref="DocumentManager"/>.
+    /// </summary>
+    public Func<string, bool>? OpenDocument { get; internal set; }
+
     /// <summary>Accessible name of the tab (screen readers announce ToString otherwise).</summary>
     public override string ToString() => Title;
 }

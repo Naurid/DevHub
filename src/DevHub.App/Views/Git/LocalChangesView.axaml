@@ -1,5 +1,5 @@
 <!--
-  Local Changes (G1, read-only): Fork's layout. Left: Unstaged (conflicts first, untracked
+  Local Changes (read-only until G3): Fork's layout. Left: Unstaged (conflicts first, untracked
   included) above Staged, each with a count. Right: the diff of the selected file (G2).
   Rows use JetBrains' change colors: modified = accent, added = success, deleted = secondary,
   untracked = warning, conflict = error. The letter is git's status letter (M, A, D, R, ?, U).
@@ -10,6 +10,11 @@
              xmlns:c="clr-namespace:DevHub.Controls"
              x:Class="DevHub.Views.Git.LocalChangesView"
              x:DataType="vm:LocalChangesViewModel">
+
+    <!-- F4 = JetBrains' Jump to Source: the selected file in the external editor. -->
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="F4" Command="{Binding Diff.OpenInEditorCommand}" />
+    </UserControl.KeyBindings>
 
     <UserControl.Styles>
         <!-- Status colors: on the letter and the file name (the folder stays secondary). -->
@@ -97,9 +102,8 @@
             </Border>
             <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding Layout.ChangesListWidth}" Minimum="200" MaximumFraction="0.7" />
 
-            <!-- Diff pane (G2). -->
-            <c:EmptyState IconKind="edit" Title="Diff"
-                          Description="Select a file to see its changes. The diff view arrives in G2." />
+            <!-- Diff of the selected file: DiffViewModel → DiffView (ViewLocator). -->
+            <ContentControl Content="{Binding Diff}" />
         </DockPanel>
     </Panel>
 </UserControl>

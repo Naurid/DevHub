@@ -98,4 +98,10 @@
     <SolidColorBrush x:Key="Brush.Status.Warning.Subtle" Color="{DynamicResource Color.Status.Warning}" Opacity="0.25" />
     <SolidColorBrush x:Key="Brush.Status.Success.Subtle" Color="{DynamicResource Color.Status.Success}" Opacity="0.2" />
 
+    <!-- Diff lines (G2): added green, removed red, hunk headers a faint accent, like JetBrains'
+         unified diff. Fainter than the badge tints: whole screens of them must stay readable. -->
+    <SolidColorBrush x:Key="Brush.Diff.Added" Color="{DynamicResource Color.Status.Success}" Opacity="0.16" />
+    <SolidColorBrush x:Key="Brush.Diff.Removed" Color="{DynamicResource Color.Status.Error}" Opacity="0.16" />
+    <SolidColorBrush x:Key="Brush.Diff.Hunk" Color="{DynamicResource Color.Accent}" Opacity="0.1" />
+
 </ResourceDictionary>

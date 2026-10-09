@@ -14,6 +14,15 @@ public interface IProjectLauncher
     /// </summary>
     void Open(GitRepository repo);
 
+    /// <summary>
+    /// Opens one file of the repo in the editor chosen for the repo's language (Settings →
+    /// Open With), at <paramref name="line"/> when the tool supports it. Throws if the file
+    /// doesn't exist or the tool can't be launched.
+    /// </summary>
+    /// <param name="filePath">Absolute path of the file.</param>
+    /// <param name="line">1-based line to jump to, or null.</param>
+    void OpenFile(GitRepository repo, string filePath, int? line = null);
+
     /// <summary>Reveals the repo folder in the OS file manager (always available).</summary>
     void RevealInFileManager(GitRepository repo);
 }

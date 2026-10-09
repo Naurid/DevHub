@@ -204,7 +204,10 @@ code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
    if the item is gone). Register: `services.AddSingleton<IDocumentFactory, FooFactory>();`.
 3. Open it with `documentManager.OpenById(FooFactory.IdFor(item))`: activates the existing tab
    for that item, or creates one. Restoring at startup works automatically; ids that can't
-   be recreated are skipped with a status-bar note.
+   be recreated are skipped with a status-bar note. From inside another document, call
+   `OpenDocument?.Invoke(id)` instead (documents can't inject the `DocumentManager`, it's built
+   from them). Example: a repository tab opening a diff tab (`DiffDocumentFactory`, ids like
+   `Diff:unstaged|<repo>|<file>`).
 
 ### Add a tool window (a docked panel)
 1. `ViewModels/ToolWindows/FooViewModel.cs`: subclass `ToolWindowViewModelBase` with

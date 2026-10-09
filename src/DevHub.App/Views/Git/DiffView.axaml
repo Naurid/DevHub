@@ -1,0 +1,108 @@
+<!--
+  A file's diff, unified (JetBrains-style): header with the file name, side and +/− counts,
+  then hunk headers and lines with old / new line numbers. Added lines on green, removed on
+  red. Rows are virtualized (VirtualizingStackPanel inside the ScrollViewer), so long diffs
+  only create controls for what's on screen. Used in Local Changes and in diff tabs.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Git.DiffView"
+             x:DataType="vm:DiffViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.paneHeader">
+            <Setter Property="Padding" Value="{DynamicResource Padding.PaneHeader}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style Selector="Border.diffRow.added">
+            <Setter Property="Background" Value="{DynamicResource Brush.Diff.Added}" />
+        </Style>
+        <Style Selector="Border.diffRow.removed">
+            <Setter Property="Background" Value="{DynamicResource Brush.Diff.Removed}" />
+        </Style>
+        <Style Selector="Border.diffRow.hunk">
+            <Setter Property="Background" Value="{DynamicResource Brush.Diff.Hunk}" />
+        </Style>
+        <Style Selector="TextBlock.lineNumber">
+            <Setter Property="Width" Value="{DynamicResource Size.DiffLineNumber}" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
+        </Style>
+        <Style Selector="TextBlock.added">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Success}" />
+        </Style>
+        <Style Selector="TextBlock.removed">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Error}" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+        <!-- Header: file, side, counts, Open in Editor (external, F4), Open in New Tab. -->
+        <Border DockPanel.Dock="Top" Classes="paneHeader" IsVisible="{Binding HasFile}">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                <TextBlock Text="{Binding File.FileName, FallbackValue=''}" VerticalAlignment="Center"
+                           ToolTip.Tip="{Binding File.ToolTip, FallbackValue=''}" />
+                <TextBlock Grid.Column="1" Classes="small secondary" Text="{Binding Subtitle}"
+                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Classes="code added" Text="{Binding AddedText}" VerticalAlignment="Center"
+                           ToolTip.Tip="Lines added" />
+                <TextBlock Grid.Column="3" Classes="code removed" Text="{Binding RemovedText}" VerticalAlignment="Center"
+                           ToolTip.Tip="Lines removed" />
+                <c:Toolbar Grid.Column="4">
+                    <c:ActionButton IconKind="edit" ToolTip.Tip="Open in Editor (F4): the file in the editor set for this language in Settings → Open With"
+                                    AutomationProperties.Name="Open in Editor"
+                                    Command="{Binding OpenInEditorCommand}" IsVisible="{Binding CanOpenInEditor}" />
+                    <c:ActionButton IconKind="copy" ToolTip.Tip="Open diff in a new tab"
+                                    AutomationProperties.Name="Open in New Tab"
+                                    Command="{Binding OpenInTabCommand}" IsVisible="{Binding CanOpenInTab}" />
+                </c:Toolbar>
+            </Grid>
+        </Border>
+
+        <!-- "Showing the first 20,000 lines" -->
+        <Border DockPanel.Dock="Top" Padding="{DynamicResource Padding.Banner}"
+                Background="{DynamicResource Brush.Status.Warning.Subtle}"
+                IsVisible="{Binding BannerText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding BannerText}" TextWrapping="Wrap" />
+        </Border>
+
+        <Panel>
+            <!-- No lines: nothing selected, binary file, pure rename, error… -->
+            <c:EmptyState IconKind="edit" Title="Diff" Description="{Binding PlaceholderText}"
+                          IsVisible="{Binding PlaceholderText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                          IsVisible="{Binding HasRows}">
+                <ItemsControl ItemsSource="{Binding Rows}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DiffRowViewModel">
+                            <Border Classes="diffRow" Classes.added="{Binding IsAdded}"
+                                    Classes.removed="{Binding IsRemoved}" Classes.hunk="{Binding IsHunk}">
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+                                            Margin="{DynamicResource Margin.RowEnd}">
+                                    <TextBlock Classes="code lineNumber" Text="{Binding OldNumber}" />
+                                    <TextBlock Classes="code lineNumber" Text="{Binding NewNumber}" />
+                                    <TextBlock Classes="code" Classes.added="{Binding IsAdded}" Classes.removed="{Binding IsRemoved}"
+                                               Width="{DynamicResource Size.DiffSign}" TextAlignment="Center"
+                                               Text="{Binding Sign}" />
+                                    <!-- Hunk headers and notes are muted; notes in the UI font, not code. -->
+                                    <TextBlock Classes.code="{Binding !IsNote}" Classes.secondary="{Binding IsMuted}"
+                                               Classes.small="{Binding IsNote}" Text="{Binding Text}"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Panel>
+    </DockPanel>
+</UserControl>

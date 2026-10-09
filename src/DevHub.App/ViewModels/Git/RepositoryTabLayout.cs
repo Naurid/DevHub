@@ -13,5 +13,5 @@ public sealed partial class RepositoryTabLayout : ObservableObject
     [ObservableProperty] private double _sidebarWidth = 240;
 
     /// <summary>The file lists in Local Changes (the diff pane takes the rest).</summary>
-    [ObservableProperty] private double _changesListWidth = 360;
+    [ObservableProperty] private double _changesListWidth = 300;
 }

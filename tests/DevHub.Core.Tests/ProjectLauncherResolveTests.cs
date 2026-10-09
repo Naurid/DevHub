@@ -114,6 +114,112 @@ public class ProjectLauncherResolveTests
         Assert.True(spec.UseShellExecute);
     }
 
+    // ---- Opening one file (diff pane "Open in Editor") ------------------------------------
+
+    [Fact]
+    public void File_in_rider_jumps_to_the_line()
+    {
+        using var repo = new RepoDir(KnownLanguages.DotNet);
+        var file = repo.Touch("App.cs");
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, 12, Choice(ToolIds.Rider), Context(riderPath: @"C:\rider64.exe"));
+
+        Assert.Equal(@"C:\rider64.exe", spec.FileName);
+        Assert.Equal(["--line", "12", file], spec.Arguments);
+    }
+
+    [Fact]
+    public void File_in_rider_without_a_line()
+    {
+        using var repo = new RepoDir(KnownLanguages.DotNet);
+        var file = repo.Touch("App.cs");
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, null, Choice(ToolIds.Rider), Context(riderPath: @"C:\rider64.exe"));
+
+        Assert.Equal([file], spec.Arguments);
+    }
+
+    [Fact]
+    public void File_in_vscode_opens_the_repo_window_at_the_line()
+    {
+        using var repo = new RepoDir(KnownLanguages.Python);
+        var file = repo.Touch("main.py");
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, 3, Choice(ToolIds.VsCode), Context(vsCodePath: @"C:\Code.exe"));
+
+        Assert.Equal(@"C:\Code.exe", spec.FileName);
+        Assert.Equal([repo.Path, "-g", file + ":3"], spec.Arguments);
+    }
+
+    [Fact]
+    public void File_in_visual_studio_uses_edit()
+    {
+        using var repo = new RepoDir(KnownLanguages.DotNet);
+        var file = repo.Touch("App.cs");
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, 5, Choice(ToolIds.VisualStudio), Context(devenvPath: @"C:\devenv.exe"));
+
+        Assert.Equal(["/Edit", file], spec.Arguments);
+    }
+
+    [Fact]
+    public void File_in_a_unity_repo_goes_to_a_code_editor_not_unity()
+    {
+        using var repo = new RepoDir(KnownLanguages.Unity);
+        var file = repo.Touch("Player.cs");
+
+        var withRider = ProjectLauncher.ResolveFile(repo.Repo, file, 7, Choice(ToolIds.UnityHub),
+            Context(riderPath: @"C:\rider64.exe", vsCodePath: @"C:\Code.exe", unityHubPath: @"C:\Hub.exe"));
+        var withCodeOnly = ProjectLauncher.ResolveFile(repo.Repo, file, 7, Choice(ToolIds.UnityHub),
+            Context(vsCodePath: @"C:\Code.exe", unityHubPath: @"C:\Hub.exe"));
+        var withNeither = ProjectLauncher.ResolveFile(repo.Repo, file, 7, Choice(ToolIds.UnityHub),
+            Context(unityHubPath: @"C:\Hub.exe"));
+
+        Assert.Equal(@"C:\rider64.exe", withRider.FileName);
+        Assert.Equal(@"C:\Code.exe", withCodeOnly.FileName);
+        Assert.Equal(file, withNeither.FileName); // the file's default app
+        Assert.True(withNeither.UseShellExecute);
+    }
+
+    [Fact]
+    public void File_with_os_default_or_a_missing_tool_opens_with_its_default_app()
+    {
+        using var repo = new RepoDir(KnownLanguages.Go);
+        var file = repo.Touch("main.go");
+
+        var osDefault = ProjectLauncher.ResolveFile(repo.Repo, file, 1, Choice(ToolIds.OsDefault), Context());
+        var missingRider = ProjectLauncher.ResolveFile(repo.Repo, file, 1, Choice(ToolIds.Rider), Context());
+
+        Assert.Equal(file, osDefault.FileName);
+        Assert.Empty(osDefault.Arguments);
+        Assert.Equal(file, missingRider.FileName);
+    }
+
+    [Fact]
+    public void File_in_explorer_is_selected()
+    {
+        using var repo = new RepoDir(KnownLanguages.Go);
+        var file = repo.Touch("main.go");
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, null, Choice(ToolIds.Explorer), Context());
+
+        Assert.Equal("explorer.exe", spec.FileName);
+        Assert.Equal(["/select,", file], spec.Arguments);
+    }
+
+    [Fact]
+    public void File_with_a_custom_tool_passes_the_file()
+    {
+        using var repo = new RepoDir(KnownLanguages.Rust);
+        var file = repo.Touch("main.rs");
+        var choice = new LanguageToolChoice { ToolId = ToolIds.Custom, CustomExe = @"C:\tools\editor.exe" };
+
+        var spec = ProjectLauncher.ResolveFile(repo.Repo, file, 9, choice, Context());
+
+        Assert.Equal(@"C:\tools\editor.exe", spec.FileName);
+        Assert.Equal([file], spec.Arguments);
+    }
+
     private static LanguageToolChoice Choice(string toolId) => new() { ToolId = toolId };
 
     private static ToolContext Context(

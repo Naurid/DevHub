@@ -43,6 +43,15 @@ public sealed class ProjectLauncher : IProjectLauncher
         Start(spec);
     }
 
+    public void OpenFile(GitRepository repo, string filePath, int? line = null)
+    {
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException("The file doesn't exist (deleted?).", filePath);
+
+        var choice = EffectiveChoice(repo.Language.Id);
+        Start(ResolveFile(repo, filePath, line, choice, BuildContext()));
+    }
+
     public void RevealInFileManager(GitRepository repo) =>
         Start(new LaunchSpec("explorer.exe", new[] { repo.Path }, UseShellExecute: true));
 
@@ -101,6 +110,56 @@ public sealed class ProjectLauncher : IProjectLauncher
                 return ResolveOsDefault(folder);
         }
     }
+
+    /// <summary>
+    /// Pure resolution of how to open one file of <paramref name="repo"/> with the chosen tool,
+    /// at <paramref name="line"/> where the tool's command line supports it (Rider, VS Code).
+    /// Unity isn't a code editor, so Unity repos use Rider, then VS Code, then the file's OS
+    /// default app. A chosen tool that isn't installed also falls back to the OS default.
+    /// </summary>
+    public static LaunchSpec ResolveFile(GitRepository repo, string filePath, int? line,
+        LanguageToolChoice choice, ToolContext ctx)
+    {
+        switch (choice.ToolId)
+        {
+            case ToolIds.Explorer:
+                // explorer.exe /select, "<path>": the folder with the file selected.
+                return new LaunchSpec("explorer.exe", ["/select,", filePath], UseShellExecute: false);
+
+            case ToolIds.Rider when ctx.RiderPath is not null:
+                return RiderFile(ctx.RiderPath, filePath, line);
+
+            case ToolIds.VsCode when ctx.VsCodePath is not null:
+                return VsCodeFile(ctx.VsCodePath, repo.Path, filePath, line);
+
+            case ToolIds.VisualStudio when ctx.DevenvPath is not null:
+                // /Edit opens the file in a running Visual Studio (or starts one); no line option.
+                return new LaunchSpec(ctx.DevenvPath, ["/Edit", filePath], UseShellExecute: true);
+
+            case ToolIds.UnityHub when ctx.RiderPath is not null:
+                return RiderFile(ctx.RiderPath, filePath, line);
+
+            case ToolIds.UnityHub when ctx.VsCodePath is not null:
+                return VsCodeFile(ctx.VsCodePath, repo.Path, filePath, line);
+
+            case ToolIds.Custom when !string.IsNullOrWhiteSpace(choice.CustomExe):
+                return Exe(choice.CustomExe!, filePath);
+
+            default:
+                // OS default, or the chosen tool isn't installed: the file's default app.
+                return new LaunchSpec(filePath, [], UseShellExecute: true);
+        }
+    }
+
+    // rider64.exe --line 12 <file>: opens the file (in the open solution if it belongs to one).
+    private static LaunchSpec RiderFile(string rider, string filePath, int? line) =>
+        line is { } n
+            ? new LaunchSpec(rider, ["--line", n.ToString(System.Globalization.CultureInfo.InvariantCulture), filePath], UseShellExecute: true)
+            : Exe(rider, filePath);
+
+    // code <repo> -g <file>:12: reuses the repository's window (or opens it) and jumps to the line.
+    private static LaunchSpec VsCodeFile(string code, string folder, string filePath, int? line) =>
+        new(code, [folder, "-g", line is { } n ? $"{filePath}:{n}" : filePath], UseShellExecute: true);
 
     private static LaunchSpec ResolveOsDefault(string folder)
     {

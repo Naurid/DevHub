@@ -61,7 +61,7 @@ public partial class DocumentManager : ViewModelBase
         Available = documents.ToList();
 
         foreach (var document in Available)
-            AttachCloseCommand(document);
+            AttachCommands(document);
 
         Open.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDocuments));
         Restore(_store.Load().Editor);
@@ -187,12 +187,15 @@ public partial class DocumentManager : ViewModelBase
         if (factory?.Create(id) is not { } created)
             return null;
 
-        AttachCloseCommand(created);
+        AttachCommands(created);
         return created;
     }
 
-    private void AttachCloseCommand(DocumentViewModelBase document) =>
+    private void AttachCommands(DocumentViewModelBase document)
+    {
         document.CloseCommand = new RelayCommand(() => Close(document));
+        document.OpenDocument = OpenById;
+    }
 
     // Keep each document's IsActive flag (tab highlight, close-button visibility) in sync.
     partial void OnActiveChanged(DocumentViewModelBase? oldValue, DocumentViewModelBase? newValue)

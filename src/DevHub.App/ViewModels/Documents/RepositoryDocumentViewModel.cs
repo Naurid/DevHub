@@ -2,6 +2,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DevHub.Controls;
 using DevHub.Core.Git;
+using DevHub.Services;
 using DevHub.ViewModels.Git;
 
 namespace DevHub.ViewModels.Documents;
@@ -31,12 +32,15 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <param name="path">Repository root folder.</param>
     /// <param name="client">Git access for this repository, or null when git isn't installed.</param>
     /// <param name="layout">Panel widths, shared with the other repository tabs.</param>
-    public RepositoryDocumentViewModel(string path, GitRepositoryClient? client, RepositoryTabLayout layout)
+    /// <param name="editor">Opens files in the external editor for the repository's language.</param>
+    public RepositoryDocumentViewModel(string path, GitRepositoryClient? client, RepositoryTabLayout layout,
+        ExternalEditor editor)
     {
         Path = path;
         _client = client;
         Layout = layout;
-        LocalChanges = new LocalChangesViewModel(layout);
+        LocalChanges = new LocalChangesViewModel(layout, client,
+            (file, line) => editor.Open(path, file.Change.Path, line), OpenDiffInTab);
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
         LocalChangesSection = Sections[0];
         _selectedSection = LocalChangesSection;
@@ -180,6 +184,10 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         if (isActive && _refreshTask.IsCompleted)
             _ = RefreshAsync();
     }
+
+    /// <summary>"Open in New Tab" in the diff pane: the file's diff as its own tab, for more room.</summary>
+    private void OpenDiffInTab(FileChangeViewModel file) =>
+        OpenDocument?.Invoke(DiffDocumentFactory.IdFor(Path, file.Change.Path, file.IsStagedSide));
 
     // Raised on a background thread; ViewModel properties must change on the UI thread.
     private void OnRepositoryChanged(object? sender, EventArgs e) =>

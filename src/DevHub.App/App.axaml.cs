@@ -94,6 +94,7 @@ public partial class App : Application
         services.AddSingleton<IToolLocator, ToolLocator>();
         services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
+        services.AddSingleton<ExternalEditor>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 
         // Git: one shared command log and runner. The runner is only registered when git is
@@ -124,6 +125,7 @@ public partial class App : Application
 #endif
         // Instance documents: one tab per repository, created on demand / restored by id.
         services.AddSingleton<IDocumentFactory, RepositoryDocumentFactory>();
+        services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
         services.AddSingleton<DocumentManager>();
 
         // Dialogs: transient = a fresh instance every time one is requested, so each opening
