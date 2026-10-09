@@ -101,6 +101,24 @@ public class JsonSettingsStoreTests
         Assert.Equal([@"C:\Projects", @"D:\Work"], new JsonSettingsStore(dir.Path).Load().RepositoryFolders);
     }
 
+    [Fact]
+    public void Editor_layout_round_trips_tab_order_and_active_tab()
+    {
+        using var dir = new TempDir();
+        var store = new JsonSettingsStore(dir.Path);
+
+        store.Update(s => s.Editor = new EditorLayout
+        {
+            OpenDocuments = ["Templates", "Generate", "Settings"],
+            ActiveDocument = "Generate"
+        });
+
+        var editor = new JsonSettingsStore(dir.Path).Load().Editor;
+        Assert.NotNull(editor);
+        Assert.Equal(["Templates", "Generate", "Settings"], editor.OpenDocuments);
+        Assert.Equal("Generate", editor.ActiveDocument);
+    }
+
     // ----- Update (load → change → save) -----
 
     [Fact]

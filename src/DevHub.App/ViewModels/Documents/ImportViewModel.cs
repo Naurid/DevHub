@@ -1,8 +1,8 @@
 using DevHub.Controls;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
-public class ImportViewModel : PageViewModelBase
+public class ImportViewModel : DocumentViewModelBase
 {
     public override string Title => "Import";
     public override string Icon => IconKind.Import;

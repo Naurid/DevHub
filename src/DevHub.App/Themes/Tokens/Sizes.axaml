@@ -26,6 +26,11 @@
     <x:Double x:Key="Size.CaptionButtonsReserve">142</x:Double>
     <!-- Tool-window stripe buttons (inside the Size.StripeWidth strip). -->
     <x:Double x:Key="Size.StripeButton">30</x:Double>
+    <!-- Editor area (UI-0 step 8) -->
+    <x:Double x:Key="Size.TabHeight">36</x:Double>
+    <x:Double x:Key="Size.TabCloseButton">18</x:Double>
+    <x:Double x:Key="Size.WelcomeWidth">440</x:Double>
+    <x:Double x:Key="Size.WelcomeLogo">56</x:Double>
     <!-- Fluent key (not a DevHub token): height of those caption buttons. Kept equal to
          Size.ToolbarHeight so they fill the title bar; overridden in Compact too. -->
     <x:Double x:Key="CaptionButtonHeight">40</x:Double>
@@ -56,6 +61,9 @@
     <Thickness x:Key="Margin.ToolbarSeparator">4,0</Thickness>
     <Thickness x:Key="Padding.StatusBar">8,0</Thickness>
     <Thickness x:Key="Padding.StatusWidget">6,0</Thickness>
+    <Thickness x:Key="Padding.Tab">12,0,6,0</Thickness>
+    <!-- Around a document's content in the editor area. -->
+    <Thickness x:Key="Padding.Document">28,24</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

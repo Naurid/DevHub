@@ -38,12 +38,12 @@
                 </c:ActionButton>
             </StackPanel>
 
-            <!-- "Where am I": app name › current page. Not interactive, so it stays draggable. -->
+            <!-- "Where am I": app name › active tab (or Welcome). Not interactive, so it stays draggable. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
                         VerticalAlignment="Center">
                 <TextBlock Text="DevHub" FontWeight="SemiBold" />
                 <c:Icon Kind="chevronRight" />
-                <TextBlock Classes="secondary" Text="{Binding SelectedPage.Title}" />
+                <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" />
             </StackPanel>
 
             <!-- Column 2 (*) is empty: the big draggable area. -->

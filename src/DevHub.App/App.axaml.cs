@@ -9,7 +9,7 @@ using DevHub.Core.Repositories;
 using DevHub.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
-using DevHub.ViewModels.Pages;
+using DevHub.ViewModels.Documents;
 using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
@@ -57,8 +57,12 @@ public partial class App : Application
             // Window-wide keyboard shortcuts for every action that has one.
             Keymap.Apply(Services.GetRequiredService<ActionRegistry>(), mainWindow);
 
-            // Remember which tool windows were open, and their sizes, for next launch.
-            mainWindow.Closing += (_, _) => Services.GetRequiredService<ToolWindowManager>().Save();
+            // Remember the open tabs and tool windows (and their sizes) for next launch.
+            mainWindow.Closing += (_, _) =>
+            {
+                Services.GetRequiredService<DocumentManager>().Save();
+                Services.GetRequiredService<ToolWindowManager>().Save();
+            };
 
             desktop.MainWindow = mainWindow;
         }
@@ -96,12 +100,17 @@ public partial class App : Application
         services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<RepositoriesViewModel>());
         services.AddSingleton<ToolWindowManager>();
 
-        // Page view-models.
-        services.AddSingleton<TemplatesViewModel>();
-        services.AddSingleton<GenerateViewModel>();
-        services.AddSingleton<ImportViewModel>();
-        services.AddSingleton<SettingsViewModel>();
-        services.AddSingleton<UiGalleryViewModel>();
+        // Documents (editor tabs): each registered as the base type so the DocumentManager
+        // receives them all as IEnumerable<DocumentViewModelBase>; the order is the menu order.
+        services.AddSingleton<DocumentViewModelBase, TemplatesViewModel>();
+        services.AddSingleton<DocumentViewModelBase, GenerateViewModel>();
+        services.AddSingleton<DocumentViewModelBase, ImportViewModel>();
+        services.AddSingleton<DocumentViewModelBase, SettingsViewModel>();
+#if DEBUG
+        // Design-system playground; not shipped in Release builds.
+        services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();
+#endif
+        services.AddSingleton<DocumentManager>();
 
         // Shell.
         services.AddSingleton<MainWindowViewModel>();
@@ -111,6 +120,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, ViewActionProvider>();
         services.AddSingleton<IActionProvider, RepositoryActionProvider>();
         services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
+        services.AddSingleton<IActionProvider, DocumentActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

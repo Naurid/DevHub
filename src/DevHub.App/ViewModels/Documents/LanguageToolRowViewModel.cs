@@ -4,7 +4,7 @@ using DevHub.Core.Projects;
 using DevHub.Core.Settings;
 using DevHub.Services;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// One row in the Settings "Open Tools" tab: a language and the tool chosen to open it. Raises

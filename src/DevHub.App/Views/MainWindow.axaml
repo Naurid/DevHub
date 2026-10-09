@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:DevHub.ViewModels"
-        xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+        xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
         xmlns:c="clr-namespace:DevHub.Controls"
         xmlns:shell="clr-namespace:DevHub.Views.Shell"
         xmlns:tw="clr-namespace:DevHub.ViewModels.ToolWindows"
@@ -14,40 +14,11 @@
         Title="DevHub"
         Width="1000" Height="640"
         MinWidth="720" MinHeight="480"
-        Background="{StaticResource WindowBackgroundBrush}"
+        Background="{DynamicResource Brush.Bg.Editor}"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="{DynamicResource Size.ToolbarHeight}">
     <!-- ExtendClientArea…: our MainToolbar replaces the OS title bar (merged title bar).
          Avalonia still draws min/max/close on top of its right edge. -->
-
-    <Window.Styles>
-        <!-- Sidebar nav rows: flat, rounded, accent highlight when selected. -->
-        <Style Selector="ListBox.nav">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Padding" Value="8" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="ListBox.nav ListBoxItem">
-            <Setter Property="Padding" Value="12,10" />
-            <Setter Property="Margin" Value="0,1" />
-            <Setter Property="CornerRadius" Value="0" />
-            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
-        </Style>
-        <Style Selector="ListBox.nav ListBoxItem:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource CardHoverBrush}" />
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-        <!-- Selected: green left-edge bar + subtle tinted fill, sharp corners. -->
-        <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource CardHoverBrush}" />
-            <Setter Property="CornerRadius" Value="0" />
-            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
-            <Setter Property="BorderThickness" Value="3,0,0,0" />
-        </Style>
-        <Style Selector="ListBox.nav ListBoxItem:selected">
-            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
-        </Style>
-    </Window.Styles>
 
     <Window.Resources>
         <conv:FractionConverter x:Key="Fraction" />
@@ -122,35 +93,38 @@
                          Orientation="Horizontal" Invert="True" Minimum="80" MaximumFraction="0.6"
                          IsVisible="{Binding ToolWindows.Bottom, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
-        <!-- ===== Center: sidebar + page (replaced by the editor area in step 8) ===== -->
+        <!-- ===== Center: the editor area (UI-0 step 8) =====
+             Tabs on top, the active document below (its ViewModel → View via the ViewLocator),
+             or the Welcome view when nothing is open. -->
+        <DockPanel Background="{DynamicResource Brush.Bg.Editor}">
+            <Border DockPanel.Dock="Top"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1"
+                    IsVisible="{Binding Documents.HasDocuments}">
+                <ListBox Classes="tabs"
+                         ItemsSource="{Binding Documents.Open}"
+                         SelectedItem="{Binding Documents.Active, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="docs:DocumentViewModelBase">
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
+                                <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                <c:ActionButton Classes="tabClose" IconKind="close"
+                                                ToolTip.Tip="Close (Ctrl+F4)"
+                                                Command="{Binding CloseCommand}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
 
-        <Grid ColumnDefinitions="220,*">
-    
-            <!-- Sidebar -->
-            <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}"
-                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
-                <DockPanel LastChildFill="True">
-                    <!-- Nav -->
-                    <ListBox Classes="nav" Margin="0,8,0,0"
-                             ItemsSource="{Binding Pages}"
-                             SelectedItem="{Binding SelectedPage, Mode=TwoWay}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="pages:PageViewModelBase">
-                                <StackPanel Orientation="Horizontal" Spacing="12">
-                                    <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding Title}" FontSize="14"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </DockPanel>
-            </Border>
-    
-            <!-- Content -->
-            <Border Grid.Column="1" Padding="28">
-                <ContentControl Content="{Binding SelectedPage}" />
-            </Border>
-        </Grid>
+            <Panel>
+                <Border Padding="{DynamicResource Padding.Document}"
+                        IsVisible="{Binding Documents.HasDocuments}">
+                    <ContentControl Content="{Binding Documents.Active}" />
+                </Border>
+                <shell:WelcomeView IsVisible="{Binding !Documents.HasDocuments}" />
+            </Panel>
+        </DockPanel>
     </DockPanel>
 </Window>

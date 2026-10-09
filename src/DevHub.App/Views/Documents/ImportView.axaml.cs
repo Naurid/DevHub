@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace DevHub.Views.Pages;
+namespace DevHub.Views.Documents;
 
 public partial class ImportView : UserControl
 {

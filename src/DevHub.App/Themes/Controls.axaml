@@ -112,6 +112,58 @@
         <Setter Property="Background" Value="{DynamicResource Brush.Bg.SelectionInactive}" />
     </Style>
 
+    <!-- ===== Editor tabs: <ListBox Classes="tabs"> =====
+         A ListBox laid out horizontally: selection = active tab (two-way bound), and it brings
+         keyboard and accessibility support for free. JetBrains look: flat tabs, the active one
+         underlined in the accent; the × shows on the active and hovered tab only.
+         These Styles override the Fluent ListBoxItem ControlTheme (styles always win). -->
+    <Style Selector="ListBox.tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem">
+        <Setter Property="Height" Value="{DynamicResource Size.TabHeight}" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.Tab}" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem:selected">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem:selected:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+    </Style>
+    <!-- Close button: small, and only visible on the active or hovered tab (keeps its space). -->
+    <Style Selector="c|ActionButton.tabClose">
+        <Setter Property="Width" Value="{DynamicResource Size.TabCloseButton}" />
+        <Setter Property="Height" Value="{DynamicResource Size.TabCloseButton}" />
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+    <Style Selector="ListBox.tabs > ListBoxItem:selected c|ActionButton.tabClose, ListBox.tabs > ListBoxItem:pointerover c|ActionButton.tabClose">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
     <!-- Flat, text-only buttons in the status bar ("Dark", "Compact"…). -->
     <Style Selector="Button.statusWidget">
         <Setter Property="Background" Value="Transparent" />

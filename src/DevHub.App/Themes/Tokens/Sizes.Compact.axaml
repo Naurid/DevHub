@@ -16,6 +16,7 @@
     <x:Double x:Key="Size.BadgeHeight">16</x:Double>
     <x:Double x:Key="CaptionButtonHeight">32</x:Double>
     <x:Double x:Key="Size.StripeButton">26</x:Double>
+    <x:Double x:Key="Size.TabHeight">30</x:Double>
 
     <Thickness x:Key="Padding.Button">10,2</Thickness>
     <Thickness x:Key="Padding.TextBox">6,2</Thickness>
@@ -26,6 +27,8 @@
     <Thickness x:Key="Padding.Toolbar">4,0</Thickness>
     <Thickness x:Key="Padding.SettingsRow">0,3</Thickness>
     <Thickness x:Key="Padding.Badge">5,0</Thickness>
+    <Thickness x:Key="Padding.Tab">10,0,4,0</Thickness>
+    <Thickness x:Key="Padding.Document">20,16</Thickness>
 
     <!-- Not overridden (same in both densities): icon sizes, Spacing.*, radii, Padding.Dialog. -->
 

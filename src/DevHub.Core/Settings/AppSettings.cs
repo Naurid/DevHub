@@ -17,6 +17,9 @@ public sealed class AppSettings
     /// </summary>
     public ToolWindowLayout? ToolWindows { get; set; }
 
+    /// <summary>Open editor tabs from the last session; null until the first save.</summary>
+    public EditorLayout? Editor { get; set; }
+
     /// <summary>Folders the Repositories tool window scans for git repositories.</summary>
     public List<string> RepositoryFolders { get; set; } = new();
 }

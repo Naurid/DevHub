@@ -1,8 +1,8 @@
 using DevHub.Controls;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
-public class TemplatesViewModel : PageViewModelBase
+public class TemplatesViewModel : DocumentViewModelBase
 {
     public override string Title => "Templates";
     public override string Icon => IconKind.Template;

@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using DevHub.Actions;
 
@@ -45,6 +46,8 @@ public class ActionButton : Button
             Command = action.Command;
             IconKind = action.IconKind;
             ToolTip.SetTip(this, action.ToolTip);
+            // Icon-only button: give screen readers (and UI Automation) a name to announce.
+            AutomationProperties.SetName(this, action.Text);
         }
     }
 }

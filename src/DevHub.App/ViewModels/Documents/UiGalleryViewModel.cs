@@ -3,13 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Services;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// Debug-only page showing every token and stock control in the current theme, with
 /// switches for Dark/Light, Compact and accent. Use it to check design-system changes.
 /// </summary>
-public partial class UiGalleryViewModel : PageViewModelBase, IDisposable
+public partial class UiGalleryViewModel : DocumentViewModelBase, IDisposable
 {
     private readonly IThemeService _theme;
 

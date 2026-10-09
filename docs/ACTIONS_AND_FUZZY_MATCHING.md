@@ -126,12 +126,13 @@ Current providers:
 
 | Provider | Actions |
 |---|---|
-| `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact`, and one `Navigate.<Page>` per sidebar page (no shortcuts) |
+| `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact` |
+| `DocumentActionProvider` | one `Navigate.<DocumentId>` per document ("New Project…" Ctrl+N, "Settings…" Ctrl+Alt+S, …) and the tab actions `Editor.CloseTab` (Ctrl+F4), `Editor.NextTab` (Alt+Right), `Editor.PreviousTab` (Alt+Left). Added in UI-0 step 8, when pages became editor tabs. |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
 | `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 
-The navigation ids come from the page's ViewModel type name minus "ViewModel":
-`TemplatesViewModel` → `Navigate.Templates`, `UiGalleryViewModel` → `Navigate.UiGallery`.
+The `Navigate.*` ids come from the document's `Id` (its ViewModel type name minus "ViewModel"):
+`TemplatesViewModel` → `Navigate.Templates`, `GenerateViewModel` → `Navigate.Generate`.
 
 ### `ActionRegistry`: collecting them
 
@@ -141,6 +142,7 @@ Registration in `App.axaml.cs`:
 services.AddSingleton<IActionProvider, ViewActionProvider>();
 services.AddSingleton<IActionProvider, RepositoryActionProvider>();
 services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
+services.AddSingleton<IActionProvider, DocumentActionProvider>();
 services.AddSingleton<ActionRegistry>();
 ```
 
@@ -238,7 +240,7 @@ an empty list instead of crashing.
 
 **Why markup extensions and not ViewModel properties?** The obvious alternative, a
 ViewModel exposing `ActionRegistry`, creates a dependency loop: the registry needs the
-providers, `ViewActionProvider` needs `MainWindowViewModel`, which needs every page
+providers, `DocumentActionProvider` needs the `DocumentManager`, which needs every document
 ViewModel, including the one that would want the registry. Reading the registry from XAML
 sidesteps that.
 

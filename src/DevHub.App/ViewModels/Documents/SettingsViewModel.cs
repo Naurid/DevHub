@@ -4,13 +4,13 @@ using DevHub.Core.Settings;
 using DevHub.Services;
 using DevHub.Controls;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// Settings page. For now it hosts the "Open Tools" map: which tool opens each language. It
 /// persists only *overrides* — a row left at its policy default is removed from the saved file.
 /// </summary>
-public class SettingsViewModel : PageViewModelBase
+public class SettingsViewModel : DocumentViewModelBase
 {
     private readonly ISettingsStore _store;
     private readonly IReadOnlyList<DevTool> _tools;

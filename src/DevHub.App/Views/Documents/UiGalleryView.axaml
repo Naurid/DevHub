@@ -4,11 +4,11 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
              xmlns:c="clr-namespace:DevHub.Controls"
              xmlns:a="clr-namespace:DevHub.Actions"
-             x:Class="DevHub.Views.Pages.UiGalleryView"
-             x:DataType="pages:UiGalleryViewModel">
+             x:Class="DevHub.Views.Documents.UiGalleryView"
+             x:DataType="docs:UiGalleryViewModel">
 
     <UserControl.Styles>
         <!-- One color sample. -->

@@ -7,7 +7,7 @@ namespace DevHub;
 
 /// <summary>
 /// Resolves a View for a given ViewModel by naming convention:
-/// <c>DevHub.ViewModels.Pages.TemplatesViewModel</c> → <c>DevHub.Views.Pages.TemplatesView</c>.
+/// <c>DevHub.ViewModels.Documents.TemplatesViewModel</c> → <c>DevHub.Views.Documents.TemplatesView</c>.
 /// Avalonia asks this template to build the control whenever a ViewModel is set as content.
 /// </summary>
 public class ViewLocator : IDataTemplate

@@ -69,3 +69,22 @@ public sealed class MainMenuExtension : MarkupExtension
     public override object ProvideValue(IServiceProvider serviceProvider) =>
         ActionExtension.Registry is { } registry ? MainMenu.Build(registry) : Array.Empty<object>();
 }
+
+/// <summary>
+/// Several actions by id (comma-separated), for lists of links/buttons such as the Welcome
+/// view: <c>ItemsSource="{a:Actions 'Navigate.Generate,Navigate.Import'}"</c>.
+/// </summary>
+public sealed class ActionsExtension(string ids) : MarkupExtension
+{
+    public string Ids { get; set; } = ids;
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+        if (ActionExtension.Registry is not { } registry)
+            return Array.Empty<AppAction>();
+
+        return Ids.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Select(registry.Get)
+            .ToList();
+    }
+}

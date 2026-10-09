@@ -10,8 +10,13 @@ public static class ActionIds
     public const string ToggleTheme = "View.ToggleTheme";
     public const string ToggleCompact = "View.ToggleCompact";
 
-    /// <summary>Prefix for "go to page" actions; the page title follows, e.g. "Navigate.Repositories".</summary>
+    /// <summary>Prefix for "open document" actions; the document Id follows, e.g. "Navigate.Templates".</summary>
     public const string NavigatePrefix = "Navigate.";
+
+    // Editor tabs
+    public const string CloseTab = "Editor.CloseTab";
+    public const string NextTab = "Editor.NextTab";
+    public const string PreviousTab = "Editor.PreviousTab";
 
     // Repositories
     public const string AddScanFolder = "Repositories.AddFolder";

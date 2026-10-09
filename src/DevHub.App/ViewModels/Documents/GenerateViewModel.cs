@@ -1,10 +1,10 @@
 using DevHub.Controls;
 
-namespace DevHub.ViewModels.Pages;
+namespace DevHub.ViewModels.Documents;
 
-public class GenerateViewModel : PageViewModelBase
+public class GenerateViewModel : DocumentViewModelBase
 {
-    public override string Title => "Generate";
+    public override string Title => "New Project";
     public override string Icon => IconKind.Add;
 
     public string Description =>

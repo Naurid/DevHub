@@ -1,0 +1,54 @@
+<!--
+  Shown in the editor area when no tab is open (first launch, or after closing every tab),
+  like Rider's empty editor: the logo and a short list of things to do, each an action with
+  its shortcut, so the shortcuts get learned.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:a="clr-namespace:DevHub.Actions"
+             x:Class="DevHub.Views.Shell.WelcomeView">
+
+    <UserControl.Styles>
+        <!-- A full-width, flat row: icon, label, shortcut on the right. -->
+        <Style Selector="Button.welcomeLink">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="{DynamicResource Padding.ListItem}" />
+            <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="{DynamicResource Size.WelcomeWidth}" Spacing="{DynamicResource Spacing.Large}">
+
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Large}" HorizontalAlignment="Center">
+            <c:DevHubLogo Width="{DynamicResource Size.WelcomeLogo}" Height="{DynamicResource Size.WelcomeLogo}"
+                          LineThickness="3" />
+            <StackPanel VerticalAlignment="Center" Spacing="{DynamicResource Spacing.Small}">
+                <TextBlock Classes="header" Text="Welcome to DevHub" />
+                <TextBlock Classes="secondary" Text="Projects, templates and repositories in one place." />
+            </StackPanel>
+        </StackPanel>
+
+        <ItemsControl ItemsSource="{a:Actions 'Navigate.Generate,Navigate.Import,Navigate.Templates,Repositories.AddFolder,ToolWindow.Repositories,Navigate.Settings'}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="a:AppAction">
+                    <!-- AutomationProperties.Name: what screen readers (and UI tests) call the button;
+                         otherwise it would be named after its content's type, "Grid". -->
+                    <Button Classes="welcomeLink" Command="{Binding Command}"
+                            AutomationProperties.Name="{Binding Text}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                            <c:Icon Kind="{Binding IconKind}" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="{Binding Text}" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Classes="code secondary" Text="{Binding Gesture}"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

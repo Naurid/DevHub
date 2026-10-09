@@ -11,22 +11,32 @@ public static class MainMenu
 {
     public static IReadOnlyList<Control> Build(ActionRegistry registry)
     {
-        // Navigation and tool-window actions are generated per page / tool window, so collect
-        // them by id prefix.
-        var navigate = registry.All
-            .Where(a => a.Id.StartsWith(ActionIds.NavigatePrefix, StringComparison.Ordinal))
-            .Select(a => a.Id);
+        // Tool-window actions are generated per tool window, so collect them by id prefix.
         var toolWindows = registry.All
             .Where(a => a.Id.StartsWith(ActionIds.ToolWindowPrefix, StringComparison.Ordinal)
                         && a.Id != ActionIds.HideAllToolWindows)
             .Select(a => a.Id);
 
+        // The UI Gallery document only exists in Debug builds.
+        var gallery = registry.TryGet(ActionIds.NavigatePrefix + "UiGallery", out _)
+            ? [MenuBuilder.Separator, ActionIds.NavigatePrefix + "UiGallery"]
+            : Array.Empty<string>();
+
         return
         [
+            Group(registry, "File",
+            [
+                ActionIds.NavigatePrefix + "Generate", ActionIds.NavigatePrefix + "Import",
+                MenuBuilder.Separator, ActionIds.NavigatePrefix + "Templates",
+                MenuBuilder.Separator, ActionIds.NavigatePrefix + "Settings",
+            ]),
             Group(registry, "View",
-                [.. toolWindows, MenuBuilder.Separator, ActionIds.HideAllToolWindows,
-                 MenuBuilder.Separator, ActionIds.ToggleTheme, ActionIds.ToggleCompact]),
-            Group(registry, "Navigate", navigate),
+            [
+                .. toolWindows, MenuBuilder.Separator, ActionIds.HideAllToolWindows,
+                MenuBuilder.Separator, ActionIds.NextTab, ActionIds.PreviousTab, ActionIds.CloseTab,
+                MenuBuilder.Separator, ActionIds.ToggleTheme, ActionIds.ToggleCompact,
+                .. gallery,
+            ]),
             Group(registry, "Repositories", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
         ];
     }
