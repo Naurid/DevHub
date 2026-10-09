@@ -41,4 +41,7 @@ public abstract partial class ToolWindowViewModelBase : ViewModelBase
 
     /// <summary>Keyboard shortcut that toggles it, if any (display only).</summary>
     public string? Shortcut { get; internal set; }
+
+    /// <summary>Accessible name (screen readers announce ToString for items without one).</summary>
+    public override string ToString() => Title;
 }

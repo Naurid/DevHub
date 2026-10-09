@@ -7,6 +7,12 @@ namespace DevHub.Services;
 /// </summary>
 public interface IDialogService
 {
+    /// <summary>
+    /// Shows a modal dialog (OK / Cancel frame around the dialog's View) and waits for it to
+    /// close. Returns true for OK, false for Cancel / closed with the window's X.
+    /// </summary>
+    Task<bool> ShowDialogAsync(ViewModels.Dialogs.DialogViewModelBase dialog);
+
     /// <summary>Opens a folder picker and returns the chosen path, or null if cancelled.</summary>
     Task<string?> PickFolderAsync(string title);
 

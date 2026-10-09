@@ -119,6 +119,26 @@ public class JsonSettingsStoreTests
         Assert.Equal("Generate", editor.ActiveDocument);
     }
 
+    [Fact]
+    public void Appearance_round_trips()
+    {
+        using var dir = new TempDir();
+        var store = new JsonSettingsStore(dir.Path);
+
+        store.Update(s => s.Appearance = new AppearanceSettings
+        {
+            Theme = AppearanceSettings.ThemeSystem,
+            Accent = "#8C5CDB",
+            Compact = true
+        });
+
+        var appearance = new JsonSettingsStore(dir.Path).Load().Appearance;
+        Assert.NotNull(appearance);
+        Assert.Equal(AppearanceSettings.ThemeSystem, appearance.Theme);
+        Assert.Equal("#8C5CDB", appearance.Accent);
+        Assert.True(appearance.Compact);
+    }
+
     // ----- Update (load → change → save) -----
 
     [Fact]

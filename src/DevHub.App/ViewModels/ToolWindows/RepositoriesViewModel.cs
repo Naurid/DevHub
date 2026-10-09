@@ -189,6 +189,8 @@ public sealed partial class ScanFolderNode : ObservableObject
     public RelayCommand RemoveCommand { get; }
 
     [ObservableProperty] private bool _isExpanded = true;
+
+    public override string ToString() => Name;
 }
 
 /// <summary>A repository leaf in the tree. Carries its own commands so the context menu can bind directly.</summary>
@@ -208,4 +210,6 @@ public sealed class RepositoryNode
     public string IconKind => Controls.IconKind.Folder;
     public RelayCommand OpenCommand { get; }
     public RelayCommand RevealCommand { get; }
+
+    public override string ToString() => Name;
 }

@@ -54,7 +54,7 @@
                 <c:ActionButton Action="{a:Action Repositories.Rescan}" />
                 <c:ToolbarSeparator />
                 <c:ActionButton Action="{a:Action View.ToggleTheme}" />
-                <c:ActionButton Action="{a:Action Navigate.Settings}" />
+                <c:ActionButton Action="{a:Action App.Settings}" />
             </c:Toolbar>
 
             <!-- Keeps our buttons out from under the window's min/max/close buttons, which

@@ -1,0 +1,50 @@
+<!--
+  Settings dialog body (the OK / Cancel / Apply footer comes from DialogWindow).
+  Left: search + page list. Right: page title + the page's View (ViewLocator).
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs.Settings"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Dialogs.Settings.SettingsDialogView"
+             x:DataType="vm:SettingsDialogViewModel">
+
+    <Grid ColumnDefinitions="220,*">
+        <!-- Page list -->
+        <Border Grid.Column="0" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <c:SearchField DockPanel.Dock="Top" Margin="8" Text="{Binding Filter}" />
+                <ListBox ItemsSource="{Binding VisiblePages}"
+                         SelectedItem="{Binding SelectedPage, Mode=TwoWay}"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SettingsPageViewModelBase">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                <!-- Unsaved edits on this page. -->
+                                <Ellipse Grid.Column="1" Width="6" Height="6"
+                                         Fill="{DynamicResource Brush.Accent}"
+                                         IsVisible="{Binding IsModified}"
+                                         ToolTip.Tip="Modified" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Selected page -->
+        <DockPanel Grid.Column="1">
+            <TextBlock DockPanel.Dock="Top" Classes="header"
+                       Text="{Binding SelectedPage.Title, FallbackValue=''}"
+                       Margin="{DynamicResource Padding.Dialog}" />
+            <Panel>
+                <ScrollViewer Padding="20,0,20,16">
+                    <ContentControl Content="{Binding SelectedPage}" />
+                </ScrollViewer>
+                <c:EmptyState Title="Nothing found" Description="No settings page matches the search."
+                              IsVisible="{Binding SelectedPage, Converter={x:Static ObjectConverters.IsNull}}" />
+            </Panel>
+        </DockPanel>
+    </Grid>
+</UserControl>

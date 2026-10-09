@@ -4,7 +4,7 @@ using DevHub.ViewModels.Documents;
 namespace DevHub.Actions.Providers;
 
 /// <summary>
-/// "Open X" for every document (New Project = Ctrl+N, Settings = Ctrl+Alt+S, like Rider), plus
+/// "Open X" for every document (New Project = Ctrl+N, like Rider), plus
 /// tab handling: Close Tab (Ctrl+F4), Next/Previous Tab (Alt+Right / Alt+Left).
 /// </summary>
 public sealed class DocumentActionProvider(DocumentManager documents) : IActionProvider
@@ -14,7 +14,6 @@ public sealed class DocumentActionProvider(DocumentManager documents) : IActionP
     {
         ["Generate"] = ("New Project…", "Ctrl+N"),
         ["Import"] = ("Import Folder…", null),
-        ["Settings"] = ("Settings…", "Ctrl+Alt+S"),
     };
 
     public IEnumerable<AppAction> GetActions()

@@ -127,7 +127,8 @@ Current providers:
 | Provider | Actions |
 |---|---|
 | `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact` |
-| `DocumentActionProvider` | one `Navigate.<DocumentId>` per document ("New Project…" Ctrl+N, "Settings…" Ctrl+Alt+S, …) and the tab actions `Editor.CloseTab` (Ctrl+F4), `Editor.NextTab` (Alt+Right), `Editor.PreviousTab` (Alt+Left). Added in UI-0 step 8, when pages became editor tabs. |
+| `DocumentActionProvider` | one `Navigate.<DocumentId>` per document ("New Project…" Ctrl+N, …) and the tab actions `Editor.CloseTab` (Ctrl+F4), `Editor.NextTab` (Alt+Right), `Editor.PreviousTab` (Alt+Left). Added in UI-0 step 8, when pages became editor tabs. |
+| `SettingsActionProvider` | `App.Settings` "Settings…" (Ctrl+Alt+S) opens the Settings dialog. Takes a `Func<SettingsDialogViewModel>` factory so each opening gets a fresh dialog. Added in UI-0 step 9. |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
 | `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 
@@ -143,6 +144,7 @@ services.AddSingleton<IActionProvider, ViewActionProvider>();
 services.AddSingleton<IActionProvider, RepositoryActionProvider>();
 services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
 services.AddSingleton<IActionProvider, DocumentActionProvider>();
+services.AddSingleton<IActionProvider, SettingsActionProvider>();
 services.AddSingleton<ActionRegistry>();
 ```
 

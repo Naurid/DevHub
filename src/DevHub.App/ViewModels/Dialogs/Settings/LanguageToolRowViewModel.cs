@@ -4,12 +4,12 @@ using DevHub.Core.Projects;
 using DevHub.Core.Settings;
 using DevHub.Services;
 
-namespace DevHub.ViewModels.Documents;
+namespace DevHub.ViewModels.Dialogs.Settings;
 
 /// <summary>
-/// One row in the Settings "Open Tools" tab: a language and the tool chosen to open it. Raises
+/// One row on the Settings → Open With page: a language and the tool chosen to open it. Raises
 /// <see cref="_onChanged"/> whenever the user changes the selection or picks a custom executable,
-/// so the parent can persist. A custom tool is launched on the repo folder (no arguments).
+/// so the page can mark itself modified. A custom tool is launched on the repo folder (no arguments).
 /// </summary>
 public partial class LanguageToolRowViewModel : ObservableObject
 {
@@ -61,7 +61,7 @@ public partial class LanguageToolRowViewModel : ObservableObject
     {
         var exe = await _dialogs.PickFileAsync("Choose an executable", "Programs", new[] { "*.exe" });
         if (!string.IsNullOrEmpty(exe))
-            CustomExe = exe; // triggers OnCustomExeChanged → save
+            CustomExe = exe; // triggers OnCustomExeChanged → page modified
     }
 
     partial void OnSelectedToolChanged(DevTool value)

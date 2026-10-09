@@ -20,7 +20,7 @@
                                       Name="PART_ContentPresenter"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      HorizontalAlignment="Left"
+                                      HorizontalAlignment="Stretch"
                                       VerticalAlignment="Center" />
                 </Grid>
             </ControlTemplate>

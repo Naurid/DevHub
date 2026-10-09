@@ -47,6 +47,9 @@
         <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
         <Setter Property="Padding" Value="{DynamicResource Padding.Button}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <!-- Fluent leaves this at the default (Stretch), so a button wider than its text
+             (e.g. MinWidth="80" for OK) shows the label at the left. -->
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
 
     <!-- One selector per type below: a comma list is typed as the types' common base

@@ -17,6 +17,9 @@ public sealed class AppSettings
     /// </summary>
     public ToolWindowLayout? ToolWindows { get; set; }
 
+    /// <summary>Theme, accent and density; null until first changed (the app keeps its built-in look).</summary>
+    public AppearanceSettings? Appearance { get; set; }
+
     /// <summary>Open editor tabs from the last session; null until the first save.</summary>
     public EditorLayout? Editor { get; set; }
 

@@ -33,7 +33,7 @@
             </StackPanel>
         </StackPanel>
 
-        <ItemsControl ItemsSource="{a:Actions 'Navigate.Generate,Navigate.Import,Navigate.Templates,Repositories.AddFolder,ToolWindow.Repositories,Navigate.Settings'}">
+        <ItemsControl ItemsSource="{a:Actions 'Navigate.Generate,Navigate.Import,Navigate.Templates,Repositories.AddFolder,ToolWindow.Repositories,App.Settings'}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="a:AppAction">
                     <!-- AutomationProperties.Name: what screen readers (and UI tests) call the button;

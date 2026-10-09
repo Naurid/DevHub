@@ -9,6 +9,7 @@ using DevHub.Core.Repositories;
 using DevHub.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
+using DevHub.ViewModels.Dialogs.Settings;
 using DevHub.ViewModels.Documents;
 using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
@@ -105,12 +106,18 @@ public partial class App : Application
         services.AddSingleton<DocumentViewModelBase, TemplatesViewModel>();
         services.AddSingleton<DocumentViewModelBase, GenerateViewModel>();
         services.AddSingleton<DocumentViewModelBase, ImportViewModel>();
-        services.AddSingleton<DocumentViewModelBase, SettingsViewModel>();
 #if DEBUG
         // Design-system playground; not shipped in Release builds.
         services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();
 #endif
         services.AddSingleton<DocumentManager>();
+
+        // Dialogs: transient = a fresh instance every time one is requested, so each opening
+        // of Settings starts from the saved values. The Func is a tiny factory for the action.
+        services.AddTransient<AppearanceSettingsPageViewModel>();
+        services.AddTransient<OpenWithSettingsPageViewModel>();
+        services.AddTransient<SettingsDialogViewModel>();
+        services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
 
         // Shell.
         services.AddSingleton<MainWindowViewModel>();
@@ -121,6 +128,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, RepositoryActionProvider>();
         services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
         services.AddSingleton<IActionProvider, DocumentActionProvider>();
+        services.AddSingleton<IActionProvider, SettingsActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

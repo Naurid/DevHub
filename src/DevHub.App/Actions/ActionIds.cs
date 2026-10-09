@@ -18,6 +18,9 @@ public static class ActionIds
     public const string NextTab = "Editor.NextTab";
     public const string PreviousTab = "Editor.PreviousTab";
 
+    // App
+    public const string OpenSettings = "App.Settings";
+
     // Repositories
     public const string AddScanFolder = "Repositories.AddFolder";
     public const string RescanRepositories = "Repositories.Rescan";

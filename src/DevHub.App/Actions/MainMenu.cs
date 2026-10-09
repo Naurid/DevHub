@@ -28,7 +28,7 @@ public static class MainMenu
             [
                 ActionIds.NavigatePrefix + "Generate", ActionIds.NavigatePrefix + "Import",
                 MenuBuilder.Separator, ActionIds.NavigatePrefix + "Templates",
-                MenuBuilder.Separator, ActionIds.NavigatePrefix + "Settings",
+                MenuBuilder.Separator, ActionIds.OpenSettings,
             ]),
             Group(registry, "View",
             [

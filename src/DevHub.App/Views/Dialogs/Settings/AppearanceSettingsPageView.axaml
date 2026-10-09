@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs.Settings"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:conv="clr-namespace:DevHub.Converters"
+             x:Class="DevHub.Views.Dialogs.Settings.AppearanceSettingsPageView"
+             x:DataType="vm:AppearanceSettingsPageViewModel">
+
+    <UserControl.Resources>
+        <conv:HexToBrushConverter x:Key="HexToBrush" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- Accent swatches: a row of color dots; the selected one gets a ring. -->
+        <Style Selector="ListBox.swatches">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}" />
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBox.swatches > ListBoxItem">
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="CornerRadius" Value="14" />
+        </Style>
+        <Style Selector="ListBox.swatches > ListBoxItem /template/ ContentPresenter">
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.swatches > ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Text.Primary}" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel>
+        <c:SettingsRow Label="Theme" Description="Sync with Windows follows the Windows light/dark setting.">
+            <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ThemeOption">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </c:SettingsRow>
+
+        <c:SettingsRow Label="Accent color" Description="Buttons, selection, focus and the logo.">
+            <StackPanel Spacing="{DynamicResource Spacing}">
+                <ListBox Classes="swatches" ItemsSource="{Binding AccentPresets}"
+                         SelectedItem="{Binding SelectedPreset}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AccentOption">
+                            <Ellipse Width="20" Height="20" ToolTip.Tip="{Binding Name}"
+                                     Fill="{Binding Hex, Converter={StaticResource HexToBrush}}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                    <TextBox Classes="code" Width="120" Text="{Binding Accent}" PlaceholderText="#RRGGBB" />
+                    <Border Width="24" Height="24" CornerRadius="{DynamicResource Radius.Control}"
+                            BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
+                            Background="{Binding Accent, Converter={StaticResource HexToBrush}}" />
+                    <TextBlock Classes="small" Foreground="{DynamicResource Brush.Status.Error}"
+                               Text="Use the form #RRGGBB" VerticalAlignment="Center"
+                               IsVisible="{Binding !IsAccentValid}" />
+                </StackPanel>
+            </StackPanel>
+        </c:SettingsRow>
+
+        <c:SettingsRow Label="Compact mode" Description="Smaller rows, toolbars and paddings.">
+            <ToggleSwitch IsChecked="{Binding IsCompact}" OnContent="" OffContent="" />
+        </c:SettingsRow>
+    </StackPanel>
+</UserControl>

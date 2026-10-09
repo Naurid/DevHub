@@ -1,0 +1,37 @@
+<!--
+  The frame every modal dialog shares: title, the dialog's own View in the middle (its
+  ViewModel → View via the ViewLocator), and a footer with OK / Cancel / (Apply).
+  Opened only by DialogService.ShowDialogAsync; dialogs never create windows themselves.
+-->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs"
+        x:Class="DevHub.Views.Dialogs.DialogWindow"
+        x:DataType="vm:DialogViewModelBase"
+        Title="{Binding Title}"
+        Width="{Binding Width}" Height="{Binding Height}"
+        MinWidth="480" MinHeight="320"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{DynamicResource Brush.Bg.Panel}">
+
+    <DockPanel>
+        <!-- Footer. IsDefault = Enter presses OK; IsCancel = Esc presses Cancel. -->
+        <Border DockPanel.Dock="Bottom"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
+                Padding="{DynamicResource Padding.Dialog}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{DynamicResource Spacing}">
+                <Button Classes="accent" Content="OK" MinWidth="80" IsDefault="True"
+                        Command="{Binding OkCommand}" />
+                <Button Content="Cancel" MinWidth="80" IsCancel="True"
+                        Command="{Binding CancelCommand}" />
+                <Button Content="Apply" MinWidth="80"
+                        Command="{Binding ApplyCommand}"
+                        IsVisible="{Binding ShowApply}" />
+            </StackPanel>
+        </Border>
+
+        <!-- The dialog itself. -->
+        <ContentControl Content="{Binding}" />
+    </DockPanel>
+</Window>

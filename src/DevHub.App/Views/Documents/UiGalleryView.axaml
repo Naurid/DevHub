@@ -253,7 +253,7 @@
                                 CornerRadius="{DynamicResource Radius.Control}"
                                 Padding="{DynamicResource Padding.Button}">
                             <Border.ContextMenu>
-                                <ContextMenu ItemsSource="{a:ActionMenu '-,ToolWindow.Repositories,Navigate.Settings,-,-,View.ToggleTheme,-'}" />
+                                <ContextMenu ItemsSource="{a:ActionMenu '-,ToolWindow.Repositories,App.Settings,-,-,View.ToggleTheme,-'}" />
                             </Border.ContextMenu>
                             <TextBlock Classes="secondary" Text="Right-click me" />
                         </Border>
