@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             xmlns:proj="clr-namespace:DevHub.Core.Projects;assembly=DevHub.Core"
+             x:Class="DevHub.Views.Pages.SettingsView"
+             x:DataType="pages:SettingsViewModel">
+    <Grid RowDefinitions="Auto,*" RowSpacing="16">
+
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="24" FontWeight="SemiBold"
+                   Foreground="{StaticResource TextPrimaryBrush}" />
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Open Tools">
+                <ScrollViewer Margin="0,12,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Choose which tool opens each language. Unset languages use a sensible default."
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"
+                                   TextWrapping="Wrap" />
+
+                        <ItemsControl ItemsSource="{Binding LanguageTools}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="pages:LanguageToolRowViewModel">
+                                    <Border Background="{StaticResource CardBackgroundBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="0" Padding="14" Margin="0,0,0,8">
+                                        <StackPanel Spacing="10">
+                                            <Grid ColumnDefinitions="160,*">
+                                                <TextBlock Grid.Column="0" Text="{Binding LanguageDisplay}"
+                                                           FontWeight="SemiBold" VerticalAlignment="Center"
+                                                           Foreground="{StaticResource TextPrimaryBrush}" />
+                                                <ComboBox Grid.Column="1" MinWidth="220"
+                                                          HorizontalAlignment="Left"
+                                                          ItemsSource="{Binding AvailableTools}"
+                                                          SelectedItem="{Binding SelectedTool, Mode=TwoWay}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="proj:DevTool">
+                                                            <TextBlock Text="{Binding DisplayName}" />
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </Grid>
+
+                                            <!-- Custom executable (opened on the repo folder), shown only for Custom. -->
+                                            <DockPanel IsVisible="{Binding IsCustom}">
+                                                <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0"
+                                                        Command="{Binding BrowseExeCommand}" />
+                                                <TextBox Text="{Binding CustomExe}" IsReadOnly="True"
+                                                         PlaceholderText="No executable chosen — click Browse…" />
+                                            </DockPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
