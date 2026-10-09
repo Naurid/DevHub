@@ -1,0 +1,105 @@
+<!--
+  Local Changes (G1, read-only): Fork's layout. Left: Unstaged (conflicts first, untracked
+  included) above Staged, each with a count. Right: the diff of the selected file (G2).
+  Rows use JetBrains' change colors: modified = accent, added = success, deleted = secondary,
+  untracked = warning, conflict = error. The letter is git's status letter (M, A, D, R, ?, U).
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Git.LocalChangesView"
+             x:DataType="vm:LocalChangesViewModel">
+
+    <UserControl.Styles>
+        <!-- Status colors: on the letter and the file name (the folder stays secondary). -->
+        <Style Selector="TextBlock.change.modified">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+        </Style>
+        <Style Selector="TextBlock.change.renamed">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+        </Style>
+        <Style Selector="TextBlock.change.added">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Success}" />
+        </Style>
+        <Style Selector="TextBlock.change.deleted">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
+        </Style>
+        <Style Selector="TextBlock.change.untracked">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Warning}" />
+        </Style>
+        <Style Selector="TextBlock.change.conflicted">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Error}" />
+        </Style>
+        <Style Selector="Border.listGroupHeader">
+            <Setter Property="Padding" Value="{DynamicResource Padding.ListGroupHeader}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style Selector="TextBlock.deleted.name">
+            <Setter Property="TextDecorations" Value="Strikethrough" />
+        </Style>
+    </UserControl.Styles>
+
+    <UserControl.Resources>
+        <!-- One file row, used by both lists. -->
+        <DataTemplate x:Key="FileRow" x:DataType="vm:FileChangeViewModel">
+            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="{DynamicResource Spacing}"
+                  Margin="{DynamicResource Margin.RowEnd}" ToolTip.Tip="{Binding ToolTip}">
+                <TextBlock Classes="code change" Width="{DynamicResource Size.StatusLetter}"
+                           Classes.modified="{Binding IsModified}" Classes.renamed="{Binding IsRenamed}"
+                           Classes.added="{Binding IsAdded}" Classes.deleted="{Binding IsDeleted}"
+                           Classes.untracked="{Binding IsUntracked}" Classes.conflicted="{Binding IsConflicted}"
+                           Text="{Binding StatusLetter}" TextAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Classes="change name"
+                           Classes.modified="{Binding IsModified}" Classes.renamed="{Binding IsRenamed}"
+                           Classes.added="{Binding IsAdded}" Classes.deleted="{Binding IsDeleted}"
+                           Classes.untracked="{Binding IsUntracked}" Classes.conflicted="{Binding IsConflicted}"
+                           Text="{Binding FileName}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Classes="small secondary" Text="{Binding Directory}"
+                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Panel>
+        <c:EmptyState IconKind="success" Title="No local changes"
+                      Description="The working tree matches the last commit. Edits made anywhere show up here automatically."
+                      IsVisible="{Binding !HasChanges}" />
+
+        <DockPanel IsVisible="{Binding HasChanges}">
+            <!-- File lists, resizable. -->
+            <Border DockPanel.Dock="Left" Width="{Binding Layout.ChangesListWidth}"
+                    Background="{DynamicResource Brush.Bg.Panel}">
+                <Grid RowDefinitions="Auto,*,Auto,*">
+                    <!-- Group headers: a line below separates them from the file rows. -->
+                    <Border Classes="listGroupHeader">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="secondary" Text="Unstaged" VerticalAlignment="Center" />
+                            <c:Badge Grid.Column="1" Content="{Binding UnstagedCount}" />
+                        </Grid>
+                    </Border>
+                    <ListBox Grid.Row="1" Background="Transparent" AutomationProperties.Name="Unstaged changes"
+                             ItemsSource="{Binding Unstaged}" SelectedItem="{Binding SelectedUnstaged}"
+                             ItemTemplate="{StaticResource FileRow}" />
+
+                    <!-- Line above too: separates Staged from the Unstaged rows. -->
+                    <Border Grid.Row="2" Classes="listGroupHeader" BorderThickness="0,1,0,1">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="secondary" Text="Staged" VerticalAlignment="Center" />
+                            <c:Badge Grid.Column="1" Content="{Binding StagedCount}" />
+                        </Grid>
+                    </Border>
+                    <ListBox Grid.Row="3" Background="Transparent" AutomationProperties.Name="Staged changes"
+                             ItemsSource="{Binding Staged}" SelectedItem="{Binding SelectedStaged}"
+                             ItemTemplate="{StaticResource FileRow}" />
+                </Grid>
+            </Border>
+            <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding Layout.ChangesListWidth}" Minimum="200" MaximumFraction="0.7" />
+
+            <!-- Diff pane (G2). -->
+            <c:EmptyState IconKind="edit" Title="Diff"
+                          Description="Select a file to see its changes. The diff view arrives in G2." />
+        </DockPanel>
+    </Panel>
+</UserControl>

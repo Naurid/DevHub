@@ -30,6 +30,9 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// </summary>
     public virtual bool FillsEditorArea => false;
 
+    /// <summary>Has unsaved / uncommitted changes: the tab shows a dot (e.g. a repository with local changes).</summary>
+    [ObservableProperty] private bool _isDirty;
+
     /// <summary>True for the selected tab. Set by <see cref="DocumentManager"/> only.</summary>
     [ObservableProperty] private bool _isActive;
 

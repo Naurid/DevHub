@@ -20,9 +20,8 @@
 
         <DockPanel IsVisible="{Binding IsGitAvailable}">
             <!-- Sidebar -->
-            <Border DockPanel.Dock="Left" Width="{DynamicResource Size.RepositorySidebar}"
-                    Background="{DynamicResource Brush.Bg.Panel}"
-                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0">
+            <Border DockPanel.Dock="Left" Width="{Binding Layout.SidebarWidth}"
+                    Background="{DynamicResource Brush.Bg.Panel}">
                 <DockPanel>
                     <!-- Repository header: name, path, branch. -->
                     <StackPanel DockPanel.Dock="Top" Margin="{DynamicResource Padding.SidebarHeader}"
@@ -35,40 +34,72 @@
                         </Grid>
                         <TextBlock Classes="small secondary" Text="{Binding Path}"
                                    TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" />
-                        <c:Badge Classes="accent" Content="{Binding Branch}"
-                                 IsVisible="{Binding Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                 ToolTip.Tip="Current branch" />
+                        <!-- A Grid, not a horizontal StackPanel: the "*" column limits the badge to the
+                             sidebar width, so a long branch name ends in "…" (full name in the tooltip)
+                             instead of running past the edge. -->
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                            <c:Badge Classes="accent"
+                                     IsVisible="{Binding Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                     ToolTip.Tip="{Binding Branch, StringFormat='Current branch: {0}'}">
+                                <TextBlock Text="{Binding Branch}" TextTrimming="CharacterEllipsis" />
+                            </c:Badge>
+                            <!-- Ahead / behind the upstream. -->
+                            <TextBlock Grid.Column="1" Classes="small secondary" Text="{Binding SyncText}" VerticalAlignment="Center"
+                                       ToolTip.Tip="{Binding Upstream, StringFormat='Commits ahead (↑) / behind (↓) {0}'}"
+                                       IsVisible="{Binding SyncText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </Grid>
                     </StackPanel>
 
-                    <!-- Sections -->
+                    <!-- Sections, with a count badge (Local Changes: changed files). -->
                     <ListBox ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
                              Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="docs:RepositorySection">
-                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
                                     <c:Icon Kind="{Binding IconKind}" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
-                                </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="{Binding Title}" VerticalAlignment="Center" />
+                                    <c:Badge Grid.Column="2" Content="{Binding Count}" IsVisible="{Binding HasCount}" />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </DockPanel>
             </Border>
+            <!-- Drag to resize the sidebar (the thumb also draws its edge line). The width is
+                 shared by all repository tabs. -->
+            <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding Layout.SidebarWidth}"
+                             Minimum="160" MaximumFraction="0.4" />
 
             <!-- Selected section, on the editor color. -->
-            <DockPanel Margin="{DynamicResource Padding.Document}">
+            <DockPanel>
                 <!-- Refresh failed (e.g. the folder is no longer a git repository). -->
-                <Border DockPanel.Dock="Top" Margin="{DynamicResource Margin.BlockBelow}"
-                        Padding="{DynamicResource Padding.Button}"
+                <Border DockPanel.Dock="Top" Padding="{DynamicResource Padding.Banner}"
                         Background="{DynamicResource Brush.Status.Error.Subtle}"
-                        CornerRadius="{DynamicResource Radius.Control}"
                         IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                     <TextBlock Text="{Binding Error}" TextWrapping="Wrap" />
                 </Border>
 
-                <c:EmptyState IconKind="{Binding SelectedSection.IconKind}"
-                              Title="{Binding SelectedSection.Title}"
-                              Description="{Binding SelectedSection.Placeholder}" />
+                <!-- Merge / rebase / … in progress (continue and abort arrive in G7). -->
+                <Border DockPanel.Dock="Top" Padding="{DynamicResource Padding.Banner}"
+                        Background="{DynamicResource Brush.Status.Warning.Subtle}"
+                        IsVisible="{Binding OperationText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                        <c:Icon Kind="warning" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding OperationText}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- LocalChangesViewModel → LocalChangesView (ViewLocator); a section that isn't
+                     built yet → the placeholder below. -->
+                <ContentControl Content="{Binding CurrentContent}">
+                    <ContentControl.DataTemplates>
+                        <DataTemplate x:DataType="docs:RepositorySection">
+                            <c:EmptyState Margin="{DynamicResource Padding.Document}"
+                                          IconKind="{Binding IconKind}" Title="{Binding Title}"
+                                          Description="{Binding Placeholder}" />
+                        </DataTemplate>
+                    </ContentControl.DataTemplates>
+                </ContentControl>
             </DockPanel>
         </DockPanel>
     </Panel>

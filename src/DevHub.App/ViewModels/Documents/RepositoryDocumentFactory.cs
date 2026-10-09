@@ -1,4 +1,5 @@
 using DevHub.Core.Git;
+using DevHub.ViewModels.Git;
 
 namespace DevHub.ViewModels.Documents;
 
@@ -12,6 +13,9 @@ namespace DevHub.ViewModels.Documents;
 /// </param>
 public sealed class RepositoryDocumentFactory(GitRunner? runner = null) : IDocumentFactory
 {
+    /// <summary>Panel widths shared by every repository tab this factory creates.</summary>
+    private readonly RepositoryTabLayout _layout = new();
+
     public string IdPrefix => RepositoryDocumentViewModel.IdPrefix;
 
     /// <summary>The document id for a repository folder (normalised, so one tab per repository).</summary>
@@ -29,6 +33,6 @@ public sealed class RepositoryDocumentFactory(GitRunner? runner = null) : IDocum
             return null;
 
         var client = runner is null ? null : new GitRepositoryClient(runner, path);
-        return new RepositoryDocumentViewModel(path, client);
+        return new RepositoryDocumentViewModel(path, client, _layout);
     }
 }

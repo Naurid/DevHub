@@ -29,6 +29,40 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
     }
 
     /// <summary>
+    /// Branch, upstream, ahead/behind and every changed file (staged, unstaged, untracked,
+    /// conflicted). Untracked folders are listed as one entry ending in "/" (git's "normal"
+    /// mode), so huge untracked trees (e.g. a Unity Library folder) stay cheap.
+    /// </summary>
+    public async Task<RepoStatus> GetStatusAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath,
+            ["status", "--porcelain=v2", "--branch", "-z", "--untracked-files=normal"],
+            new GitRunOptions { ReadOnly = true }, ct);
+        return StatusParser.Parse(result.StandardOutput);
+    }
+
+    /// <summary>
+    /// Merge / rebase / cherry-pick / revert in progress, detected from the marker files git
+    /// leaves in the .git folder (status --porcelain doesn't report it).
+    /// </summary>
+    public async Task<RepositoryOperation> GetOperationAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["rev-parse", "--absolute-git-dir"],
+            new GitRunOptions { ReadOnly = true }, ct);
+        var gitDir = result.StandardOutput.Trim();
+
+        if (Directory.Exists(Path.Combine(gitDir, "rebase-merge")) || Directory.Exists(Path.Combine(gitDir, "rebase-apply")))
+            return RepositoryOperation.Rebasing;
+        if (File.Exists(Path.Combine(gitDir, "MERGE_HEAD")))
+            return RepositoryOperation.Merging;
+        if (File.Exists(Path.Combine(gitDir, "CHERRY_PICK_HEAD")))
+            return RepositoryOperation.CherryPicking;
+        if (File.Exists(Path.Combine(gitDir, "REVERT_HEAD")))
+            return RepositoryOperation.Reverting;
+        return RepositoryOperation.None;
+    }
+
+    /// <summary>
     /// The checked-out branch ("main"), or for a detached HEAD the short commit id ("1a2b3c4").
     /// Null for a new repository with no commits on a detached HEAD.
     /// </summary>

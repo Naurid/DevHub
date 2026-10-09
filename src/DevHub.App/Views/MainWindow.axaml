@@ -112,6 +112,10 @@
                             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
                                 <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                <!-- Uncommitted / unsaved changes. -->
+                                <Ellipse Width="{DynamicResource Size.DirtyDot}" Height="{DynamicResource Size.DirtyDot}"
+                                         Fill="{DynamicResource Brush.Accent}" VerticalAlignment="Center"
+                                         IsVisible="{Binding IsDirty}" ToolTip.Tip="Has local changes" />
                                 <c:ActionButton Classes="tabClose" IconKind="close"
                                                 ToolTip.Tip="Close (Ctrl+F4)"
                                                 Command="{Binding CloseCommand}"

@@ -75,6 +75,11 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
             var folders = ScanFolders.ToList();
             _store.Update(s => s.RepositoryFolders = folders);
         };
+
+        // Show the repositories of the saved folders straight away (the scan runs on a background
+        // thread; the tree fills in when it finishes). F5 / Rescan picks up later changes.
+        if (ScanFolders.Count > 0)
+            ScanCommand.Execute(null);
     }
 
     partial void OnFilterChanged(string value) => RebuildTree();
@@ -87,6 +92,10 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
             !ScanFolders.Contains(folder, StringComparer.OrdinalIgnoreCase))
         {
             ScanFolders.Add(folder);
+
+            // A new folder is only useful once its repositories are found.
+            if (ScanCommand.CanExecute(null))
+                await ScanCommand.ExecuteAsync(null);
         }
     }
 

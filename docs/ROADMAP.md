@@ -43,8 +43,9 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       (Core, tested with real git in temp repos); multi-instance documents (id factory,
       restore); repository tab with empty sidebar + header; open from Repositories; title-bar
       branch widget (read-only); Git Console tool window
-- [ ] G1. Status: porcelain v2 parser (tested); watcher refresh; Local Changes view
-      (read-only), change count in the sidebar, dirty dot on the tab
+- [x] G1. Status: porcelain v2 parser (tested); watcher refresh; Local Changes view
+      (read-only), change count in the sidebar, dirty dot on the tab; Repositories tool window
+      scans saved folders automatically (at startup and after adding a folder)
 - [ ] G2. Diff: unified-diff parser (tested); diff pane in Local Changes; "Open in Editor" tab
 - [ ] G3. Stage / unstage / discard (confirmed) / commit / amend; later per-hunk staging
 - [ ] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,

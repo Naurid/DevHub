@@ -194,8 +194,12 @@ code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
 1. ViewModel: subclass `DocumentViewModelBase`; override `Id` with a prefix + the item's key
    (`"Repository:" + path`), which is how tabs are found, saved and restored. Implement
    `IDisposable` if it holds anything to release; the manager disposes it when its tab closes.
-   Do work on activation by overriding `OnActivationChanged(bool isActive)`, not in the
-   constructor, so tabs restored in the background stay idle.
+   Heavy work goes in `OnActivationChanged(bool isActive)`, not the constructor, so tabs
+   restored in the background stay idle. (Repository tabs are the exception: one cheap
+   `git status` at creation gives every tab its dirty dot.) Set `IsDirty` to show the
+   "modified" dot on the tab. A section with its own ViewModel (e.g. `LocalChangesViewModel`)
+   is shown through a `ContentControl` (ViewLocator), with a local `DataTemplate` for plain
+   placeholder records.
 2. Factory: implement `IDocumentFactory` (`IdPrefix`, `Create(id)` → the document, or null
    if the item is gone). Register: `services.AddSingleton<IDocumentFactory, FooFactory>();`.
 3. Open it with `documentManager.OpenById(FooFactory.IdFor(item))`: activates the existing tab

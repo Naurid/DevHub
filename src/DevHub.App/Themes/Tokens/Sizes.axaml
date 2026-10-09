@@ -31,8 +31,11 @@
     <x:Double x:Key="Size.TabCloseButton">18</x:Double>
     <x:Double x:Key="Size.WelcomeWidth">440</x:Double>
     <x:Double x:Key="Size.WelcomeLogo">56</x:Double>
-    <!-- Git: the sidebar inside a repository tab. -->
-    <x:Double x:Key="Size.RepositorySidebar">240</x:Double>
+    <!-- Git (G1): the "modified" dot on a tab, and the status-letter column in Local Changes. -->
+    <x:Double x:Key="Size.DirtyDot">6</x:Double>
+    <x:Double x:Key="Size.StatusLetter">14</x:Double>
+    <!-- Longest branch name shown in the title bar before it ends in "…". -->
+    <x:Double x:Key="Size.BranchWidgetText">280</x:Double>
     <!-- Find Action popup (UI-0 step 10) -->
     <x:Double x:Key="Size.FindActionWidth">580</x:Double>
     <x:Double x:Key="Size.FindActionMaxHeight">460</x:Double>
@@ -83,6 +86,10 @@
     <Thickness x:Key="Margin.RowEnd">0,0,8,0</Thickness>
     <!-- Header block at the top of a sidebar (repository name, path, branch). -->
     <Thickness x:Key="Padding.SidebarHeader">12,12,12,8</Thickness>
+    <!-- Git (G1): group header above a file list ("Unstaged 3"), and a banner across the top
+         of a repository tab ("Merge in progress"). -->
+    <Thickness x:Key="Padding.ListGroupHeader">12,6,8,6</Thickness>
+    <Thickness x:Key="Padding.Banner">12,6</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>
