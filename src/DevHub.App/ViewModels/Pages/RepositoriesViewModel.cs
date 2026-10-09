@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using DevHub.Core.Projects;
 using DevHub.Core.Repositories;
 using DevHub.Services;
+using DevHub.Controls;
 
 namespace DevHub.ViewModels.Pages;
 
@@ -19,7 +20,7 @@ public partial class RepositoriesViewModel : PageViewModelBase
     private readonly IProjectLauncher _launcher;
 
     public override string Title => "Repositories";
-    public override string Icon => ((char)0xE8B7).ToString(); // Segoe MDL2: folder
+    public override string Icon => IconKind.Folder;
 
     /// <summary>Folders the user has chosen to scan (in-memory for now).</summary>
     public ObservableCollection<string> ScanFolders { get; } = new();

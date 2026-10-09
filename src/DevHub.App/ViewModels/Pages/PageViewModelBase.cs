@@ -9,6 +9,6 @@ public abstract class PageViewModelBase : ViewModelBase
     /// <summary>Label shown in the sidebar.</summary>
     public abstract string Title { get; }
 
-    /// <summary>Segoe Fluent Icons / MDL2 glyph shown next to the title.</summary>
+    /// <summary>Icon name shown next to the title; one of <see cref="DevHub.Controls.IconKind"/>.</summary>
     public abstract string Icon { get; }
 }

@@ -5,6 +5,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             xmlns:c="clr-namespace:DevHub.Controls"
              x:Class="DevHub.Views.Pages.UiGalleryView"
              x:DataType="pages:UiGalleryViewModel">
 
@@ -110,6 +111,44 @@
                         <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Status.Warning}" /><TextBlock Classes="small secondary" Text="Status.Warning" /></StackPanel>
                         <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Status.Success}" /><TextBlock Classes="small secondary" Text="Status.Success" /></StackPanel>
                     </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Icons ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Icons" />
+                    <TextBlock Classes="small secondary"
+                               Text="JetBrains expui set, Apache 2.0 (Assets/Icons/NOTICE.md). Light/dark files swap with the theme." />
+                    <ItemsControl ItemsSource="{Binding IconKinds}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <StackPanel Width="104" Margin="0,0,0,12" Spacing="{DynamicResource Spacing.Small}"
+                                            ToolTip.Tip="{Binding}">
+                                    <c:Icon Kind="{Binding}" HorizontalAlignment="Center" />
+                                    <TextBlock Classes="small secondary" Text="{Binding}"
+                                               HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                        <TextBlock Classes="secondary" Text="20px (stripe size):" VerticalAlignment="Center" />
+                        <c:Icon Kind="folder" Width="{DynamicResource Size.StripeIcon}" Height="{DynamicResource Size.StripeIcon}" />
+                        <c:Icon Kind="vcs" Width="{DynamicResource Size.StripeIcon}" Height="{DynamicResource Size.StripeIcon}" />
+                        <TextBlock Classes="secondary" Text="In a button:" Margin="16,0,0,0" VerticalAlignment="Center" />
+                        <Button>
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
+                                <c:Icon Kind="refresh" />
+                                <TextBlock Text="Refresh" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 

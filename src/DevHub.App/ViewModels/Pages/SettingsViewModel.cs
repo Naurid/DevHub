@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using DevHub.Core.Projects;
 using DevHub.Core.Settings;
 using DevHub.Services;
+using DevHub.Controls;
 
 namespace DevHub.ViewModels.Pages;
 
@@ -18,7 +19,7 @@ public class SettingsViewModel : PageViewModelBase
     private readonly bool _loaded;
 
     public override string Title => "Settings";
-    public override string Icon => ((char)0xE713).ToString(); // Segoe MDL2: settings gear
+    public override string Icon => IconKind.Settings;
 
     public ObservableCollection<LanguageToolRowViewModel> LanguageTools { get; } = new();
 

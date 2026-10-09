@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Services;
+using DevHub.Controls;
 
 namespace DevHub.ViewModels.Pages;
 
@@ -13,11 +14,14 @@ public partial class UiGalleryViewModel : PageViewModelBase
     private readonly IThemeService _theme;
 
     public override string Title => "UI Gallery";
-    public override string Icon => ((char)0xE790).ToString(); // Segoe MDL2: color
+    public override string Icon => IconKind.Palette;
 
     [ObservableProperty] private bool _isDark;
     [ObservableProperty] private bool _isCompact;
     [ObservableProperty] private string _accent;
+
+    /// <summary>Every vendored icon name.</summary>
+    public IReadOnlyList<string> IconKinds => IconKind.All;
 
     /// <summary>Sample rows for the list/combo demos.</summary>
     public IReadOnlyList<string> SampleItems { get; } =

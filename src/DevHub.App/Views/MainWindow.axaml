@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:DevHub.ViewModels"
         xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+        xmlns:c="clr-namespace:DevHub.Controls"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="640"
         x:Class="DevHub.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -62,10 +63,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="pages:PageViewModelBase">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <TextBlock Text="{Binding Icon}"
-                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
-                                           FontSize="16" Width="20"
-                                           VerticalAlignment="Center" />
+                                <c:Icon Kind="{Binding Icon}" VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Title}" FontSize="14"
                                            VerticalAlignment="Center" />
                             </StackPanel>

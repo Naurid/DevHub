@@ -9,7 +9,15 @@
   Colors are NOT set here: they come from FluentMapping.axaml.
 -->
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:DevHub.Controls">
+
+    <!-- ===== DevHub controls ===== -->
+    <!-- Icons default to the 16px token; set Width/Height locally for e.g. 20px stripe icons. -->
+    <Style Selector="c|Icon">
+        <Setter Property="Width" Value="{DynamicResource Size.Icon}" />
+        <Setter Property="Height" Value="{DynamicResource Size.Icon}" />
+    </Style>
 
     <!-- ===== Sizing of stock controls ===== -->
     <Style Selector="Button, ToggleButton, RepeatButton">
