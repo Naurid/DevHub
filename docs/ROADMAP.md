@@ -50,7 +50,7 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
 - [x] G3. Stage / unstage (double-click, Space, Stage All / Unstage All) / discard (confirmed) /
       commit (Ctrl+K, Ctrl+Enter) / amend; failing hooks shown in the commit box
 - [ ] G3.1 Multi-select in the file lists; per-hunk / per-line staging (`git apply --cached`)
-- [ ] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,
+- [x] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,
       delete; title-bar branch popup
 - [ ] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs
 - [ ] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained

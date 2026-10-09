@@ -94,6 +94,11 @@ public sealed class GitRunner
 
         // Never wait for a password/username prompt nobody can see.
         psi.Environment["GIT_TERMINAL_PROMPT"] = "0";
+        // English output, whatever the system language: some machine formats are translated
+        // (for-each-ref's "ahead 2"/"gone"), and DevHub recognises a few error messages
+        // ("would be overwritten by checkout"). LC_ALL wins over LANG for git's gettext.
+        psi.Environment["LC_ALL"] = "C";
+        psi.Environment["LANGUAGE"] = "C";
         if (options.ReadOnly)
             psi.Environment["GIT_OPTIONAL_LOCKS"] = "0";
         foreach (var (name, value) in _environment)

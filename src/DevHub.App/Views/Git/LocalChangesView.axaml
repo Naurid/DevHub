@@ -88,14 +88,13 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <!-- Space stages the selected file, Ctrl+Alt+Z (JetBrains' Rollback) discards it;
+                <!-- Space stages the selected file (Ctrl+Alt+Z, discard, is a window-wide Git action);
                      right-click for the menu. -->
                 <ListBox Grid.Row="1" Background="Transparent" AutomationProperties.Name="Unstaged changes"
                          ItemsSource="{Binding Unstaged}" SelectedItem="{Binding SelectedUnstaged}"
                          ItemTemplate="{StaticResource FileRow}">
                     <ListBox.KeyBindings>
                         <KeyBinding Gesture="Space" Command="{Binding StageSelectedCommand}" />
-                        <KeyBinding Gesture="Ctrl+Alt+Z" Command="{Binding DiscardSelectedCommand}" />
                     </ListBox.KeyBindings>
                     <ListBox.ContextMenu>
                         <ContextMenu>

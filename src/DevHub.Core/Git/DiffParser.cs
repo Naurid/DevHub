@@ -255,8 +255,15 @@ public static class DiffParser
 
     private sealed class HunkBuilder(int oldStart, int oldCount, int newStart, int newCount, string section, int prefixWidth)
     {
-        private int _old = oldStart;
-        private int _new = newStart;
+        // The starts are copied into fields and the parameters aren't used again: a primary-
+        // constructor parameter that's both copied and read later is two variables that drift
+        // apart (warning CS9124).
+        private readonly int _oldStart = oldStart;
+        private readonly int _newStart = newStart;
+
+        // Running line numbers of the next old / new line.
+        private int _nextOld = oldStart;
+        private int _nextNew = newStart;
 
         public List<DiffLine> Lines { get; } = [];
 
@@ -285,14 +292,14 @@ public static class DiffParser
 
             var text = line[prefixWidth..];
             if (prefix.Contains('+'))
-                Lines.Add(new DiffLine(DiffLineKind.Added, text, null, _new++));
+                Lines.Add(new DiffLine(DiffLineKind.Added, text, null, _nextNew++));
             else if (prefix.Contains('-'))
-                Lines.Add(new DiffLine(DiffLineKind.Removed, text, prefixWidth == 1 ? _old++ : null, null));
+                Lines.Add(new DiffLine(DiffLineKind.Removed, text, prefixWidth == 1 ? _nextOld++ : null, null));
             else
-                Lines.Add(new DiffLine(DiffLineKind.Context, text, prefixWidth == 1 ? _old++ : null, _new++));
+                Lines.Add(new DiffLine(DiffLineKind.Context, text, prefixWidth == 1 ? _nextOld++ : null, _nextNew++));
             return true;
         }
 
-        public DiffHunk Build() => new(oldStart, oldCount, newStart, newCount, section, Lines);
+        public DiffHunk Build() => new(_oldStart, oldCount, _newStart, newCount, section, Lines);
     }
 }

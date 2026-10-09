@@ -30,7 +30,12 @@ public class DialogService : IDialogService
         if (Owner is not { } owner)
             return false;
 
-        var window = new DialogWindow { DataContext = dialog };
+        var window = new DialogWindow { DataContext = dialog, Width = dialog.Width };
+        // Short dialogs (confirmations) are as tall as their content; the rest get a fixed size.
+        if (dialog.FitsContent)
+            window.SizeToContent = SizeToContent.Height;
+        else
+            window.Height = dialog.Height;
 
         // The ViewModel asks to close via an event; unsubscribed when the window is gone.
         void OnCloseRequested(object? sender, bool result) => window.Close(result);

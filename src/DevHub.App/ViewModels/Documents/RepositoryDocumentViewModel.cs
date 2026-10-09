@@ -25,6 +25,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
 
     private readonly GitRepositoryClient? _client;
     private readonly RepositoryWatcher? _watcher;
+    private readonly BranchOperations _branchOperations;
     private CancellationTokenSource? _refreshCts;
     private Task _refreshTask = Task.CompletedTask;
     private bool _disposed;
@@ -43,7 +44,15 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
             (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab);
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
         LocalChangesSection = Sections[0];
+        BranchesSection = Sections[2];
+        RemotesSection = Sections[3];
         _selectedSection = LocalChangesSection;
+
+        var branchOperations = new BranchOperations(client, services.Dialogs, services.Status, RefreshAsync);
+        _branchOperations = branchOperations;
+        LocalBranches = new BranchListViewModel(branchOperations, remote: false);
+        RemoteBranches = new BranchListViewModel(branchOperations, remote: true);
+        BranchPopup = new BranchPopupViewModel(branchOperations);
 
         if (_client is null)
             return;
@@ -104,23 +113,41 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     [
         new("Local Changes", IconKind.Edit, "Changed files, staging and the commit box arrive in G1–G3."),
         new("All Commits", IconKind.Commit, "The commit graph arrives in G5."),
-        new("Branches", IconKind.Vcs, "Local branches, checkout and branch management arrive in G4."),
-        new("Remotes", IconKind.Fetch, "Remotes and their branches arrive in G4, fetch / pull / push in G6."),
+        new("Branches", IconKind.Vcs, ""),
+        new("Remotes", IconKind.Fetch, ""),
         new("Tags", IconKind.Template, "Tags arrive in G8."),
         new("Stashes", IconKind.Copy, "Stashes arrive in G8."),
     ];
 
     private RepositorySection LocalChangesSection { get; }
+    private RepositorySection BranchesSection { get; }
+    private RepositorySection RemotesSection { get; }
+
+    /// <summary>Local branches (the Branches section).</summary>
+    public BranchListViewModel LocalBranches { get; }
+
+    /// <summary>Remote-tracking branches (the Remotes section).</summary>
+    public BranchListViewModel RemoteBranches { get; }
+
+    /// <summary>The title-bar branch popup (click the branch, or Ctrl+Shift+`).</summary>
+    public BranchPopupViewModel BranchPopup { get; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CurrentContent))]
     private RepositorySection _selectedSection;
 
     /// <summary>
-    /// What the content area shows: a section's ViewModel once it exists (Local Changes), else
-    /// the section itself (the view has a placeholder template for <see cref="RepositorySection"/>).
+    /// What the content area shows: a section's ViewModel once it exists, else the section
+    /// itself (the view has a placeholder template for <see cref="RepositorySection"/>).
     /// </summary>
-    public object CurrentContent => SelectedSection == LocalChangesSection ? LocalChanges : SelectedSection;
+    public object CurrentContent =>
+        SelectedSection == LocalChangesSection ? LocalChanges
+        : SelectedSection == BranchesSection ? LocalBranches
+        : SelectedSection == RemotesSection ? RemoteBranches
+        : SelectedSection;
+
+    /// <summary>Git → New Branch…: from the current commit.</summary>
+    public Task NewBranchAsync() => _branchOperations.NewBranchAsync();
 
     /// <summary>Re-reads the repository status. Called on open, activation, file changes and Git → Refresh.</summary>
     public Task RefreshAsync()
@@ -160,6 +187,14 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
                 _ => null,
             };
 
+            var branches = await client.GetBranchesAsync(ct);
+            _branchOperations.Branches = branches;
+            LocalBranches.Update(branches);
+            RemoteBranches.Update(branches);
+            BranchPopup.Update(branches);
+            BranchesSection.Count = LocalBranches.Count;
+            RemotesSection.Count = RemoteBranches.Count;
+
             LocalChanges.Update(status);
             LocalChangesSection.Count = status.Changes.Count;
             IsDirty = status.Changes.Count > 0;
@@ -190,6 +225,13 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     {
         SelectedSection = LocalChangesSection;
         LocalChanges.Commit.RequestFocus();
+    }
+
+    /// <summary>Ctrl+Alt+Z (JetBrains' Rollback): discard the selected unstaged file, after asking.</summary>
+    public Task DiscardSelectionAsync()
+    {
+        SelectedSection = LocalChangesSection;
+        return LocalChanges.DiscardSelectionAsync();
     }
 
     /// <summary>"Open in New Tab" in the diff pane: the file's diff as its own tab, for more room.</summary>

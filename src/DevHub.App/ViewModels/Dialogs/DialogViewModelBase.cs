@@ -21,6 +21,12 @@ public abstract partial class DialogViewModelBase : ViewModelBase
     public virtual double Width => 760;
     public virtual double Height => 520;
 
+    /// <summary>
+    /// True: the window is as tall as its content (<see cref="Height"/> is ignored), for short
+    /// dialogs like confirmations. False: the fixed <see cref="Width"/> × <see cref="Height"/>.
+    /// </summary>
+    public virtual bool FitsContent => false;
+
     /// <summary>Smallest size the user can resize to.</summary>
     public virtual double MinWidth => 480;
     public virtual double MinHeight => 320;

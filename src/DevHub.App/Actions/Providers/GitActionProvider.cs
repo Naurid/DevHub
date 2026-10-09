@@ -15,6 +15,9 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly DocumentManager _documents;
     private readonly AsyncRelayCommand _refresh;
     private readonly RelayCommand _commit;
+    private readonly AsyncRelayCommand _discard;
+    private readonly RelayCommand _branches;
+    private readonly AsyncRelayCommand _newBranch;
 
     public GitActionProvider(DocumentManager documents)
     {
@@ -24,6 +27,17 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             () => _documents.ActiveRepository is not null);
         _commit = new RelayCommand(
             () => _documents.ActiveRepository!.FocusCommit(),
+            () => _documents.ActiveRepository is not null);
+        // Enabled whenever a repository tab is active (not only with a selection), so the key
+        // always answers: it discards, or the status bar says what to select.
+        _discard = new AsyncRelayCommand(
+            () => _documents.ActiveRepository!.DiscardSelectionAsync(),
+            () => _documents.ActiveRepository is not null);
+        _branches = new RelayCommand(
+            () => _documents.ActiveRepository!.BranchPopup.Open(),
+            () => _documents.ActiveRepository is not null);
+        _newBranch = new AsyncRelayCommand(
+            () => _documents.ActiveRepository!.NewBranchAsync(),
             () => _documents.ActiveRepository is not null);
 
         // Re-check "is a repository tab active?" when the active tab changes. Unsubscribed in Dispose.
@@ -39,6 +53,31 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             IconKind = IconKind.Commit,
             Gesture = "Ctrl+K",
             Description = "Show Local Changes of the active repository with the cursor in the commit message.",
+        };
+
+        // Ctrl+Alt+Z = JetBrains' Rollback. Window-wide, so it works wherever the focus is.
+        yield return new AppAction(ActionIds.GitDiscard, "Discard Changes…", _discard)
+        {
+            Category = "Git",
+            IconKind = IconKind.Delete,
+            Gesture = "Ctrl+Alt+Z",
+            Description = "Throw away the unstaged changes of the file selected in Local Changes (asks first).",
+        };
+
+        // Ctrl+Shift+` = JetBrains' Branches popup (the key left of 1 on US keyboards).
+        yield return new AppAction(ActionIds.GitBranches, "Branches…", _branches)
+        {
+            Category = "Git",
+            IconKind = IconKind.Vcs,
+            Gesture = "Ctrl+Shift+OemTilde",
+            Description = "Search the active repository's branches and check one out.",
+        };
+
+        yield return new AppAction(ActionIds.GitNewBranch, "New Branch…", _newBranch)
+        {
+            Category = "Git",
+            IconKind = IconKind.Add,
+            Description = "Create a branch from the current commit in the active repository.",
         };
 
         // Ctrl+Alt+Y = JetBrains' "Synchronize" (F5 is already Rescan Repositories).
@@ -57,6 +96,9 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         {
             _refresh.NotifyCanExecuteChanged();
             _commit.NotifyCanExecuteChanged();
+            _discard.NotifyCanExecuteChanged();
+            _branches.NotifyCanExecuteChanged();
+            _newBranch.NotifyCanExecuteChanged();
         }
     }
 

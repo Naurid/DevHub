@@ -13,6 +13,7 @@
              xmlns:vm="clr-namespace:DevHub.ViewModels"
              xmlns:c="clr-namespace:DevHub.Controls"
              xmlns:a="clr-namespace:DevHub.Actions"
+             xmlns:gitv="clr-namespace:DevHub.Views.Git"
              x:Class="DevHub.Views.Shell.MainToolbar"
              x:DataType="vm:MainWindowViewModel">
 
@@ -41,23 +42,37 @@
             <!-- "Where am I": app name › active tab (or Welcome). Not interactive, so it stays draggable. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
                         VerticalAlignment="Center">
-                <TextBlock Text="DevHub" FontWeight="SemiBold" />
-                <c:Icon Kind="chevronRight" />
-                <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" />
-                <!-- Branch of the active repository tab (JetBrains' VCS widget; read-only in G0,
-                     the branch popup arrives in G4). Hidden when the active tab isn't a repository. -->
-                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
-                            Margin="{DynamicResource Margin.BranchWidget}"
-                            IsVisible="{Binding Documents.ActiveRepository.Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
-                            ToolTip.Tip="{Binding Documents.ActiveRepository.Branch, StringFormat='Current branch: {0}', FallbackValue=''}">
-                    <c:Icon Kind="vcs" VerticalAlignment="Center" />
-                    <!-- Capped so a long branch name ends in "…" instead of running into the toolbar. -->
-                    <TextBlock Text="{Binding Documents.ActiveRepository.Branch}" VerticalAlignment="Center"
-                               MaxWidth="{DynamicResource Size.BranchWidgetText}" TextTrimming="CharacterEllipsis" />
-                    <!-- ↑ahead ↓behind the upstream (G1). -->
-                    <TextBlock Classes="small secondary" Text="{Binding Documents.ActiveRepository.SyncText}"
-                               VerticalAlignment="Center" />
-                </StackPanel>
+                <TextBlock Text="DevHub" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <c:Icon Kind="chevronRight" VerticalAlignment="Center" />
+                <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" VerticalAlignment="Center" />
+                <!-- Branch of the active repository tab (JetBrains' VCS widget). Click → branch
+                     popup (G4). Hidden when the active tab isn't a repository. ElementRole="User":
+                     clickable, not part of the draggable title bar. -->
+                <Button x:Name="BranchWidget" Classes="branchWidget"
+                        Margin="{DynamicResource Margin.BranchWidget}"
+                        WindowDecorationProperties.ElementRole="User"
+                        Command="{Binding Documents.ActiveRepository.BranchPopup.OpenCommand, FallbackValue={x:Null}}"
+                        IsVisible="{Binding Documents.ActiveRepository.Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                        ToolTip.Tip="{Binding Documents.ActiveRepository.Branch, StringFormat='Branch {0}: click for branches (Ctrl+Shift+`)', FallbackValue=''}"
+                        AutomationProperties.Name="Branches">
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
+                        <c:Icon Kind="vcs" VerticalAlignment="Center" />
+                        <!-- Capped so a long branch name ends in "…" instead of running into the toolbar. -->
+                        <TextBlock Text="{Binding Documents.ActiveRepository.Branch}" VerticalAlignment="Center"
+                                   MaxWidth="{DynamicResource Size.BranchWidgetText}" TextTrimming="CharacterEllipsis" />
+                        <!-- ↑ahead ↓behind the upstream (G1). -->
+                        <TextBlock Classes="small secondary" Text="{Binding Documents.ActiveRepository.SyncText}"
+                                   VerticalAlignment="Center" />
+                        <c:Icon Kind="chevronDown" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <!-- The branch popup, under the widget. Light-dismiss: a click outside closes it. -->
+                <Popup PlacementTarget="{Binding #BranchWidget}" Placement="BottomEdgeAlignedLeft"
+                       IsLightDismissEnabled="True"
+                       IsOpen="{Binding Documents.ActiveRepository.BranchPopup.IsOpen, Mode=TwoWay, FallbackValue=False}">
+                    <gitv:BranchPopupView DataContext="{Binding Documents.ActiveRepository.BranchPopup}" />
+                </Popup>
             </StackPanel>
 
             <!-- Column 2 (*) is empty: the big draggable area. -->

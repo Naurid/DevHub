@@ -1,0 +1,86 @@
+<!--
+  Branches / Remotes section of a repository tab: filter + actions on top, then one row per
+  branch: name (bold + "current" badge for the checked-out one), ↑ahead ↓behind, last commit
+  and when. Double-click or Enter checks out; right-click for the menu.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Git.BranchListView"
+             x:DataType="vm:BranchListViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.paneHeader">
+            <Setter Property="Padding" Value="{DynamicResource Padding.PaneHeader}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style Selector="TextBlock.current">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Classes="paneHeader">
+            <!-- The filter takes what the buttons leave (up to its token width), so the buttons
+                 never get cut off in a narrow pane. -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                <c:SearchField Text="{Binding Filter}" PlaceholderText="Filter branches"
+                               MaxWidth="{DynamicResource Size.BranchFilter}" HorizontalAlignment="Stretch" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Classes="flat" Content="Checkout" Command="{Binding CheckoutCommand}"
+                            ToolTip.Tip="Switch to the selected branch (Enter / double-click)" />
+                    <Button Classes="flat" Content="New Branch…" Command="{Binding NewBranchCommand}"
+                            ToolTip.Tip="New branch from the current commit (from another branch: right-click it)"
+                            IsVisible="{Binding !IsRemote}" />
+                    <Button Classes="flat" Content="New Branch from…" Command="{Binding NewBranchFromCommand}"
+                            ToolTip.Tip="New local branch starting at the selected remote branch" IsVisible="{Binding IsRemote}" />
+                    <Button Classes="flat" Content="Rename…" Command="{Binding RenameCommand}" IsVisible="{Binding !IsRemote}" />
+                    <Button Classes="flat" Content="Delete…" Command="{Binding DeleteCommand}" IsVisible="{Binding !IsRemote}"
+                            ToolTip.Tip="Delete the selected branch (asks first; not the current one)" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Panel>
+            <c:EmptyState IconKind="vcs" Title="{Binding Title}" Description="{Binding EmptyText}"
+                          IsVisible="{Binding !HasItems}" />
+
+            <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" Background="Transparent"
+                     AutomationProperties.Name="{Binding Title}" IsVisible="{Binding HasItems}">
+                <ListBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding CheckoutCommand}" />
+                </ListBox.KeyBindings>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Checkout" InputGesture="Enter" Command="{Binding CheckoutCommand}" />
+                        <MenuItem Header="New Branch from Here…" Command="{Binding NewBranchFromCommand}" />
+                        <Separator IsVisible="{Binding !IsRemote}" />
+                        <MenuItem Header="Rename…" Command="{Binding RenameCommand}" IsVisible="{Binding !IsRemote}" />
+                        <MenuItem Header="Delete…" Command="{Binding DeleteCommand}" IsVisible="{Binding !IsRemote}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:BranchItemViewModel">
+                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}"
+                              Margin="{DynamicResource Margin.RowEnd}" Background="Transparent"
+                              ToolTip.Tip="{Binding ToolTip}" c:DoubleTap.Command="{Binding CheckoutCommand}">
+                            <c:Icon Kind="vcs" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" Classes.current="{Binding IsCurrent}"
+                                       VerticalAlignment="Center" />
+                            <c:Badge Grid.Column="2" Classes="accent" Content="current" IsVisible="{Binding IsCurrent}" />
+                            <TextBlock Grid.Column="3" Classes="small secondary" Text="{Binding SyncText}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding SyncText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            <TextBlock Grid.Column="4" Classes="secondary" Text="{Binding Subject}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="5" Classes="small secondary" Text="{Binding When}"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Panel>
+    </DockPanel>
+</UserControl>

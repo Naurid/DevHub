@@ -214,6 +214,19 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Disabled}" />
     </Style>
 
+    <!-- The title-bar branch widget: looks like text until hovered (JetBrains' VCS widget). -->
+    <Style Selector="Button.branchWidget">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="MinHeight" Value="{DynamicResource Size.ActionButton}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.StatusWidget}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Radius.Control}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.branchWidget:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+    </Style>
+
     <!-- Destructive primary button (a dialog's "Discard"): the error color instead of accent. -->
     <Style Selector="Button.accent.danger /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource Brush.Status.Error}" />

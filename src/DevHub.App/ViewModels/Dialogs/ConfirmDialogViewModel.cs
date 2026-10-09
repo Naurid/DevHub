@@ -27,10 +27,11 @@ public sealed class ConfirmDialogViewModel : DialogViewModelBase
     public override string OkText { get; }
     public override bool IsDestructive { get; }
 
-    public override double Width => 520;
-    public override double Height => 300;
-    public override double MinWidth => 400;
-    public override double MinHeight => 220;
+    // Narrow, and only as tall as the message and list need.
+    public override bool FitsContent => true;
+    public override double Width => 440;
+    public override double MinWidth => 360;
+    public override double MinHeight => 0;
 
     public string Message { get; }
     public IReadOnlyList<string> Items { get; }

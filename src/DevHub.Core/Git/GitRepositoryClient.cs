@@ -179,6 +179,143 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
         return result.Succeeded ? result.StandardOutput.TrimEnd() : null;
     }
 
+    // ---- Branches (G4) -------------------------------------------------------------------------
+
+    /// <summary>Local and remote-tracking branches (not "origin/HEAD"), sorted by git by ref name.</summary>
+    public async Task<IReadOnlyList<GitBranch>> GetBranchesAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath,
+            ["for-each-ref", "--format=" + BranchParser.Format, "refs/heads", "refs/remotes"],
+            new GitRunOptions { ReadOnly = true }, ct);
+        return BranchParser.Parse(result.StandardOutput);
+    }
+
+    /// <summary>
+    /// Switches to <paramref name="branch"/>. A remote branch ("origin/feature") gets a local
+    /// tracking branch of the same name, or switches to that local branch if it exists. Local
+    /// changes that don't clash come along (git's normal behaviour); if they would be
+    /// overwritten nothing happens and <see cref="CheckoutResult.LocalChangesInTheWay"/> is returned.
+    /// </summary>
+    public async Task<CheckoutResult> CheckoutAsync(GitBranch branch, CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, await SwitchArgsAsync(branch, ct),
+            new GitRunOptions { AllowFailure = true }, ct);
+        if (result.Succeeded)
+            return CheckoutResult.Done;
+        if (IsLocalChangesInTheWay(result.StandardError))
+            return CheckoutResult.LocalChangesInTheWay;
+        throw new GitException(["switch", branch.ShortName], result.ExitCode, result.StandardError);
+    }
+
+    /// <summary>
+    /// JetBrains' Smart Checkout: stash the local changes (untracked files too), switch, and
+    /// re-apply them. If re-applying conflicts, git keeps the stash and leaves the conflicts in
+    /// the working tree, so nothing is lost.
+    /// </summary>
+    public async Task<SmartCheckoutResult> SmartCheckoutAsync(GitBranch branch, CancellationToken ct = default)
+    {
+        var stashBefore = await StashTopAsync(ct);
+        await runner.RunAsync(RepositoryPath,
+            ["stash", "push", "--include-untracked", "-m", $"DevHub: local changes before checkout of {branch.ShortName}"], ct: ct);
+
+        // "Nothing to stash" also exits 0. Popping then would apply an older, unrelated stash,
+        // so only pop when this call actually made one.
+        if (await StashTopAsync(ct) == stashBefore)
+        {
+            await runner.RunAsync(RepositoryPath, await SwitchArgsAsync(branch, ct), ct: ct);
+            return SmartCheckoutResult.Done;
+        }
+
+        try
+        {
+            await runner.RunAsync(RepositoryPath, await SwitchArgsAsync(branch, ct), ct: ct);
+        }
+        catch
+        {
+            // Switching failed after all: put the changes back where they were.
+            await runner.RunAsync(RepositoryPath, ["stash", "pop"], new GitRunOptions { AllowFailure = true }, CancellationToken.None);
+            throw;
+        }
+
+        var pop = await runner.RunAsync(RepositoryPath, ["stash", "pop"], new GitRunOptions { AllowFailure = true }, ct);
+        return pop.Succeeded ? SmartCheckoutResult.Done : SmartCheckoutResult.ReapplyConflicted;
+    }
+
+    /// <summary>The newest stash's commit id, or null when there are no stashes.</summary>
+    private async Task<string?> StashTopAsync(CancellationToken ct)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["rev-parse", "--verify", "--quiet", "refs/stash"],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded ? result.StandardOutput.Trim() : null;
+    }
+
+    private async Task<IReadOnlyList<string>> SwitchArgsAsync(GitBranch branch, CancellationToken ct)
+    {
+        if (!branch.IsRemote)
+            return ["switch", branch.Name];
+
+        // Remote branch: use the local branch of that name if there is one, else create it tracking the remote.
+        var local = await runner.RunAsync(RepositoryPath, ["rev-parse", "--verify", "--quiet", "refs/heads/" + branch.Name],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return local.Succeeded
+            ? ["switch", branch.Name]
+            : ["switch", "-c", branch.Name, "--track", branch.ShortName];
+    }
+
+    private static bool IsLocalChangesInTheWay(string stderr) =>
+        stderr.Contains("would be overwritten by checkout", StringComparison.Ordinal)
+        || stderr.Contains("would be overwritten by switch", StringComparison.Ordinal)
+        || stderr.Contains("untracked working tree files would be", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Creates a branch at <paramref name="startPoint"/> (a branch, commit…; null = HEAD) and,
+    /// with <paramref name="checkout"/>, switches to it (local changes come along).
+    /// </summary>
+    public async Task CreateBranchAsync(string name, string? startPoint = null, bool checkout = true, CancellationToken ct = default)
+    {
+        List<string> args = checkout ? ["switch", "-c", name] : ["branch", name];
+        if (startPoint is not null)
+        {
+            args.Add(startPoint);
+            // Starting from a remote branch: don't make the new branch track it (it's a new branch).
+            args.Add("--no-track");
+        }
+        await runner.RunAsync(RepositoryPath, args, ct: ct);
+    }
+
+    /// <summary>Renames a local branch (<c>git branch -m</c>); works for the current branch too.</summary>
+    public async Task RenameBranchAsync(string oldName, string newName, CancellationToken ct = default) =>
+        await runner.RunAsync(RepositoryPath, ["branch", "-m", "--", oldName, newName], ct: ct);
+
+    /// <summary>
+    /// Deletes a local branch. Without <paramref name="force"/> git refuses a branch whose
+    /// commits aren't merged anywhere: then false is returned and nothing is deleted, so the
+    /// caller can ask ("those commits will be lost") and call again with force.
+    /// </summary>
+    public async Task<bool> DeleteBranchAsync(string name, bool force = false, CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["branch", force ? "-D" : "-d", "--", name],
+            new GitRunOptions { AllowFailure = true }, ct);
+        if (result.Succeeded)
+            return true;
+        if (!force && result.StandardError.Contains("not fully merged", StringComparison.Ordinal))
+            return false;
+        throw new GitException(["branch", force ? "-D" : "-d", name], result.ExitCode, result.StandardError);
+    }
+
+    /// <summary>
+    /// Whether <paramref name="name"/> is a valid new branch name (git's own rules:
+    /// <c>check-ref-format --branch</c>). Doesn't check whether it already exists.
+    /// </summary>
+    public async Task<bool> IsValidBranchNameAsync(string name, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(name) || name.StartsWith('-'))
+            return false;
+        var result = await runner.RunAsync(RepositoryPath, ["check-ref-format", "--branch", name],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded;
+    }
+
     /// <summary>
     /// Runs a command on a list of paths given NUL-separated on stdin
     /// (<c>--pathspec-from-file=- --pathspec-file-nul</c>): no command-line length limit and no

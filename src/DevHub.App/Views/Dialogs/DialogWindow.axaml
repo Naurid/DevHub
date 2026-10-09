@@ -9,7 +9,7 @@
         x:Class="DevHub.Views.Dialogs.DialogWindow"
         x:DataType="vm:DialogViewModelBase"
         Title="{Binding Title}"
-        Width="{Binding Width}" Height="{Binding Height}"
+        SizeToContent="Manual"
         MinWidth="{Binding MinWidth}" MinHeight="{Binding MinHeight}"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"

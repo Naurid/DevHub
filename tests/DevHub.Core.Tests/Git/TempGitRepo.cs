@@ -13,6 +13,16 @@ public sealed class GitFactAttribute : FactAttribute
     }
 }
 
+/// <summary>[Theory] that is skipped (not failed) when git isn't installed.</summary>
+public sealed class GitTheoryAttribute : TheoryAttribute
+{
+    public GitTheoryAttribute()
+    {
+        if (TempGitRepo.Git is null)
+            Skip = "git is not installed (or older than " + GitExecutable.MinimumVersion + ").";
+    }
+}
+
 /// <summary>
 /// A throw-away git repository in %TEMP%, isolated from the user's own git setup: an empty
 /// global config, no system config, fixed author/committer and dates, so output is the same on

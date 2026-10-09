@@ -166,6 +166,29 @@ public partial class LocalChangesViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanDiscardSelected))]
     private Task DiscardSelectedAsync() => DiscardAsync([SelectedUnstaged!]);
 
+    /// <summary>
+    /// Git → Discard Changes… (Ctrl+Alt+Z, window-wide): discards the selected unstaged file,
+    /// or says in the status bar why it can't, instead of silently doing nothing.
+    /// </summary>
+    public Task DiscardSelectionAsync()
+    {
+        if (IsBusy)
+            return Task.CompletedTask;
+        if (SelectedUnstaged is null)
+        {
+            _status.Show(SelectedStaged is not null
+                ? "Discard works on unstaged changes. Unstage the file first (Space), then discard it."
+                : "Select a file in Unstaged to discard its changes.");
+            return Task.CompletedTask;
+        }
+        if (SelectedUnstaged.IsConflicted)
+        {
+            _status.Show("Conflicted files can't be discarded here (conflict resolution arrives in G7).");
+            return Task.CompletedTask;
+        }
+        return DiscardAsync([SelectedUnstaged]);
+    }
+
     private bool CanDiscardAll() => !IsBusy && _client is not null && Unstaged.Any(f => !f.IsConflicted);
 
     /// <summary>Throws away all unstaged changes (staged ones are kept), after asking.</summary>
@@ -195,8 +218,11 @@ public partial class LocalChangesViewModel : ViewModelBase
         if (files.Count == 0)
             return;
 
-        var confirm = new ConfirmDialogViewModel("Discard Changes", DiscardMessage(files), "Discard",
-            files.Select(f => f.IsUntracked ? f.Change.Path + "  (deleted)" : f.Change.Path).ToList());
+        // One file: the message already names it. Several: list them, marking the ones deleted.
+        var items = files.Count == 1
+            ? null
+            : files.Select(f => f.IsUntracked ? f.Change.Path + "  (deleted)" : f.Change.Path).ToList();
+        var confirm = new ConfirmDialogViewModel("Discard Changes", DiscardMessage(files), "Discard", items);
         if (!await _dialogs.ShowDialogAsync(confirm))
             return;
 
