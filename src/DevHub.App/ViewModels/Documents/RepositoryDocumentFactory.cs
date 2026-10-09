@@ -12,7 +12,7 @@ namespace DevHub.ViewModels.Documents;
 /// Shared git runner; null when git isn't installed (tabs then explain that). The default value
 /// is what lets DI construct this without a registered GitRunner.
 /// </param>
-public sealed class RepositoryDocumentFactory(ExternalEditor editor, GitRunner? runner = null) : IDocumentFactory
+public sealed class RepositoryDocumentFactory(RepositoryTabServices services, GitRunner? runner = null) : IDocumentFactory
 {
     /// <summary>Panel widths shared by every repository tab this factory creates.</summary>
     private readonly RepositoryTabLayout _layout = new();
@@ -34,6 +34,6 @@ public sealed class RepositoryDocumentFactory(ExternalEditor editor, GitRunner? 
             return null;
 
         var client = runner is null ? null : new GitRepositoryClient(runner, path);
-        return new RepositoryDocumentViewModel(path, client, _layout, editor);
+        return new RepositoryDocumentViewModel(path, client, _layout, services);
     }
 }

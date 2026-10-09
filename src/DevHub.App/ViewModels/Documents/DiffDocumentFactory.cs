@@ -8,7 +8,7 @@ namespace DevHub.ViewModels.Documents;
 /// in the diff pane, and restoring tabs at startup). "|" can't appear in a Windows path, so it
 /// separates the parts.
 /// </summary>
-public sealed class DiffDocumentFactory(ExternalEditor editor, GitRunner? runner = null) : IDocumentFactory
+public sealed class DiffDocumentFactory(RepositoryTabServices services, GitRunner? runner = null) : IDocumentFactory
 {
     private const string Staged = "staged";
     private const string Unstaged = "unstaged";
@@ -33,6 +33,6 @@ public sealed class DiffDocumentFactory(ExternalEditor editor, GitRunner? runner
             return null;
 
         var client = runner is null ? null : new GitRepositoryClient(runner, repositoryPath);
-        return new DiffDocumentViewModel(repositoryPath, parts[2], parts[0] == Staged, client, editor);
+        return new DiffDocumentViewModel(repositoryPath, parts[2], parts[0] == Staged, client, services.Editor);
     }
 }

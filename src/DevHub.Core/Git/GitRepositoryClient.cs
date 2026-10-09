@@ -102,6 +102,100 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
             ?? new FileDiff { OldPath = isNew ? null : path, NewPath = path, IsNewFile = isNew };
     }
 
+    // ---- Changing the repository (G3). Only ever called from a user action. -------------------
+
+    /// <summary>
+    /// Stages files (<c>git add -A</c>: new, modified and deleted alike). For a rename, pass
+    /// both paths. Paths go through stdin, so any number of files fits.
+    /// </summary>
+    public Task StageAsync(IEnumerable<string> paths, CancellationToken ct = default) =>
+        RunWithPathsAsync(["add", "-A"], paths, ct);
+
+    /// <summary>
+    /// Unstages files: the index goes back to HEAD for them, the working tree is untouched
+    /// (<c>git reset</c>, which also works before the first commit). For a rename, pass both paths.
+    /// </summary>
+    public Task UnstageAsync(IEnumerable<string> paths, CancellationToken ct = default) =>
+        RunWithPathsAsync(["reset", "-q"], paths, ct);
+
+    /// <summary>Stages every change (<c>git add -A</c>).</summary>
+    public async Task StageAllAsync(CancellationToken ct = default) =>
+        await runner.RunAsync(RepositoryPath, ["add", "-A"], ct: ct);
+
+    /// <summary>Unstages everything; working tree untouched (<c>git reset -q</c>).</summary>
+    public async Task UnstageAllAsync(CancellationToken ct = default) =>
+        await runner.RunAsync(RepositoryPath, ["reset", "-q"], ct: ct);
+
+    /// <summary>
+    /// Throws away unstaged changes: tracked files go back to their staged (or committed)
+    /// content, untracked files and folders are deleted. Staged changes are kept. Destructive:
+    /// the caller must have asked the user. Conflicted files are refused (G7 resolves those).
+    /// </summary>
+    public async Task DiscardAsync(IReadOnlyCollection<FileChange> changes, CancellationToken ct = default)
+    {
+        if (changes.Any(c => c.IsConflicted))
+            throw new InvalidOperationException("Conflicted files can't be discarded here; resolve the conflict first.");
+
+        var tracked = changes.Where(c => c.Kind != FileChangeKind.Untracked).Select(c => c.Path).ToList();
+        var untracked = changes.Where(c => c.Kind == FileChangeKind.Untracked).Select(c => c.Path).ToList();
+
+        if (tracked.Count > 0)
+            await RunWithPathsAsync(["restore", "--worktree"], tracked, ct);
+        if (untracked.Count > 0)
+        {
+            // clean has no --pathspec-from-file; "--" stops a file named like an option being read as one.
+            // -d: also whole untracked folders ("newdir/"); without -x ignored files stay.
+            await runner.RunAsync(RepositoryPath, ["clean", "-f", "-d", "-q", "--", .. untracked], ct: ct);
+        }
+    }
+
+    /// <summary>
+    /// Commits what's staged with <paramref name="message"/> (sent on stdin, so any length and
+    /// any characters are safe). <paramref name="amend"/> replaces the last commit instead.
+    /// Hooks run as usual; a failing hook throws <see cref="GitException"/> with its output.
+    /// Returns the new commit id.
+    /// </summary>
+    public async Task<string> CommitAsync(string message, bool amend = false, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            throw new ArgumentException("A commit needs a message.", nameof(message));
+
+        List<string> args = ["commit", "-F", "-"];
+        if (amend)
+            args.Add("--amend");
+        // A Windows text box may give "\r\n"; git messages use "\n".
+        var normalized = message.Replace("\r\n", "\n", StringComparison.Ordinal);
+        await runner.RunAsync(RepositoryPath, args, new GitRunOptions { StandardInput = normalized }, ct);
+
+        var head = await runner.RunAsync(RepositoryPath, ["rev-parse", "HEAD"], new GitRunOptions { ReadOnly = true }, ct);
+        return head.StandardOutput.Trim();
+    }
+
+    /// <summary>The last commit's full message (to edit when amending), or null before the first commit.</summary>
+    public async Task<string?> GetLastCommitMessageAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["log", "-1", "--format=%B"],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded ? result.StandardOutput.TrimEnd() : null;
+    }
+
+    /// <summary>
+    /// Runs a command on a list of paths given NUL-separated on stdin
+    /// (<c>--pathspec-from-file=- --pathspec-file-nul</c>): no command-line length limit and no
+    /// quoting problems. <c>--literal-pathspecs</c> makes git take each path as-is, so a file
+    /// named "*.txt" or ":x" means exactly that file, not a pattern.
+    /// </summary>
+    private async Task RunWithPathsAsync(IReadOnlyList<string> command, IEnumerable<string> paths, CancellationToken ct)
+    {
+        var list = paths.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList();
+        if (list.Count == 0)
+            return;
+
+        await runner.RunAsync(RepositoryPath,
+            ["--literal-pathspecs", .. command, "--pathspec-from-file=-", "--pathspec-file-nul"],
+            new GitRunOptions { StandardInput = string.Join('\0', list) }, ct);
+    }
+
     /// <summary>
     /// Flags that pin the diff format, whatever the user's git config says: no color, no external
     /// diff tool, a/ b/ prefixes (diff.noprefix / mnemonicPrefix would change them).

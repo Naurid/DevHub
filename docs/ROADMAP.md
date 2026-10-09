@@ -47,7 +47,9 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       (read-only), change count in the sidebar, dirty dot on the tab; Repositories tool window
       scans saved folders automatically (at startup and after adding a folder)
 - [x] G2. Diff: unified-diff parser (tested); diff pane in Local Changes; "Open in Editor" (F4) in the language's external editor; diff in its own tab
-- [ ] G3. Stage / unstage / discard (confirmed) / commit / amend; later per-hunk staging
+- [x] G3. Stage / unstage (double-click, Space, Stage All / Unstage All) / discard (confirmed) /
+      commit (Ctrl+K, Ctrl+Enter) / amend; failing hooks shown in the commit box
+- [ ] G3.1 Multi-select in the file lists; per-hunk / per-line staging (`git apply --cached`)
 - [ ] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,
       delete; title-bar branch popup
 - [ ] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs

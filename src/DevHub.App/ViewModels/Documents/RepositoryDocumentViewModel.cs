@@ -32,15 +32,15 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <param name="path">Repository root folder.</param>
     /// <param name="client">Git access for this repository, or null when git isn't installed.</param>
     /// <param name="layout">Panel widths, shared with the other repository tabs.</param>
-    /// <param name="editor">Opens files in the external editor for the repository's language.</param>
+    /// <param name="services">External editor, dialogs, status bar.</param>
     public RepositoryDocumentViewModel(string path, GitRepositoryClient? client, RepositoryTabLayout layout,
-        ExternalEditor editor)
+        RepositoryTabServices services)
     {
         Path = path;
         _client = client;
         Layout = layout;
-        LocalChanges = new LocalChangesViewModel(layout, client,
-            (file, line) => editor.Open(path, file.Change.Path, line), OpenDiffInTab);
+        LocalChanges = new LocalChangesViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
+            (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab);
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
         LocalChangesSection = Sections[0];
         _selectedSection = LocalChangesSection;
@@ -183,6 +183,13 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         // starting another would only cancel it and run git twice.
         if (isActive && _refreshTask.IsCompleted)
             _ = RefreshAsync();
+    }
+
+    /// <summary>Ctrl+K (JetBrains' Commit): shows Local Changes with the cursor in the commit message.</summary>
+    public void FocusCommit()
+    {
+        SelectedSection = LocalChangesSection;
+        LocalChanges.Commit.RequestFocus();
     }
 
     /// <summary>"Open in New Tab" in the diff pane: the file's diff as its own tab, for more room.</summary>

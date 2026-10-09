@@ -21,6 +21,16 @@ public abstract partial class DialogViewModelBase : ViewModelBase
     public virtual double Width => 760;
     public virtual double Height => 520;
 
+    /// <summary>Smallest size the user can resize to.</summary>
+    public virtual double MinWidth => 480;
+    public virtual double MinHeight => 320;
+
+    /// <summary>Label of the OK button: say what it does ("Discard"), JetBrains-style.</summary>
+    public virtual string OkText => "OK";
+
+    /// <summary>The OK button is destructive (red, not accent): discard, delete…</summary>
+    public virtual bool IsDestructive => false;
+
     /// <summary>Show an Apply button (settings-style dialogs) next to OK/Cancel.</summary>
     public virtual bool ShowApply => false;
 

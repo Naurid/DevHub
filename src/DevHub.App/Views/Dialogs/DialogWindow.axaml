@@ -10,7 +10,7 @@
         x:DataType="vm:DialogViewModelBase"
         Title="{Binding Title}"
         Width="{Binding Width}" Height="{Binding Height}"
-        MinWidth="480" MinHeight="320"
+        MinWidth="{Binding MinWidth}" MinHeight="{Binding MinHeight}"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
         Background="{DynamicResource Brush.Bg.Panel}">
@@ -21,7 +21,8 @@
                 BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
                 Padding="{DynamicResource Padding.Dialog}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{DynamicResource Spacing}">
-                <Button Classes="accent" Content="OK" MinWidth="80" IsDefault="True"
+                <Button Classes="accent" Classes.danger="{Binding IsDestructive}"
+                        Content="{Binding OkText}" MinWidth="80" IsDefault="True"
                         Command="{Binding OkCommand}" />
                 <Button Content="Cancel" MinWidth="80" IsCancel="True"
                         Command="{Binding CancelCommand}" />

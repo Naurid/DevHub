@@ -1,0 +1,25 @@
+<!-- Confirmation for destructive operations: warning icon, what will happen, which items. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Dialogs.ConfirmDialogView"
+             x:DataType="vm:ConfirmDialogViewModel">
+    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing.Large}"
+          Margin="{DynamicResource Padding.Dialog}">
+        <c:Icon Kind="warning" Width="{DynamicResource Size.StripeIcon}" Height="{DynamicResource Size.StripeIcon}"
+                VerticalAlignment="Top" />
+        <StackPanel Grid.Column="1" Spacing="{DynamicResource Spacing}">
+            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+            <ItemsControl ItemsSource="{Binding Items}" IsVisible="{Binding HasItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <TextBlock Classes="code" Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Classes="secondary" Text="{Binding MoreText}"
+                       IsVisible="{Binding MoreText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

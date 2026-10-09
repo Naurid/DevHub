@@ -39,6 +39,10 @@
     <!-- Diff view (G2): the old / new line-number columns (5 digits) and the +/- column. -->
     <x:Double x:Key="Size.DiffLineNumber">44</x:Double>
     <x:Double x:Key="Size.DiffSign">16</x:Double>
+    <!-- Commit box (G3): message height (grows up to the max as you type) and the error area. -->
+    <x:Double x:Key="Size.CommitMessage">72</x:Double>
+    <x:Double x:Key="Size.CommitMessageMax">200</x:Double>
+    <x:Double x:Key="Size.CommitErrorMax">120</x:Double>
     <!-- Find Action popup (UI-0 step 10) -->
     <x:Double x:Key="Size.FindActionWidth">580</x:Double>
     <x:Double x:Key="Size.FindActionMaxHeight">460</x:Double>
@@ -95,6 +99,8 @@
     <Thickness x:Key="Padding.Banner">12,6</Thickness>
     <!-- Header bar above a pane (the diff's file name); same height as the list group headers. -->
     <Thickness x:Key="Padding.PaneHeader">12,6,8,6</Thickness>
+    <!-- Around the commit box under the file lists. -->
+    <Thickness x:Key="Padding.CommitBox">12,8</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

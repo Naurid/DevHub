@@ -28,6 +28,7 @@ public static class ActionIds
 
     // Git (act on the active repository tab)
     public const string GitRefresh = "Git.Refresh";
+    public const string GitCommit = "Git.Commit";
 
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>

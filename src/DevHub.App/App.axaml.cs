@@ -95,6 +95,7 @@ public partial class App : Application
         services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<ExternalEditor>();
+        services.AddSingleton<RepositoryTabServices>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 
         // Git: one shared command log and runner. The runner is only registered when git is

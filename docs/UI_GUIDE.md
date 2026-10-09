@@ -147,6 +147,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `DevHubLogo` | the logo, accent-colored | `<c:DevHubLogo Width="32" Height="32" />` |
 | `FocusOnLoad` | attached property: focus this element when it appears | `<TextBox c:FocusOnLoad.IsEnabled="True" />` |
 | `DoubleTap` | attached property: run a command on double-click (rows in trees/lists) | `<Grid Background="Transparent" c:DoubleTap.Command="{Binding OpenCommand}" />` |
+| `FocusRequest` | attached property: focus this element whenever a bound number goes up (ViewModel asks for focus) | `<TextBox c:FocusRequest.Token="{Binding Commit.FocusRequest}" />` |
 
 Stock Fluent controls (Button, TextBox, ComboBox, CheckBox, ListBox, TreeView, …) are
 already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use them.
@@ -235,6 +236,16 @@ code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
    services.AddSingleton<Func<FooDialogViewModel>>(sp => () => sp.GetRequiredService<FooDialogViewModel>());
    ```
 4. Open it: `await dialogs.ShowDialogAsync(createDialog())` (returns true for OK).
+
+**Confirming a destructive operation** needs no new dialog: use `ConfirmDialogViewModel`
+(message, the OK label as a verb, the affected items). `IsDestructive` turns OK red (`Button.accent.danger`).
+Say exactly what will be lost, and only the sentences that apply:
+```csharp
+var ok = await dialogs.ShowDialogAsync(new ConfirmDialogViewModel(
+    "Discard Changes", "Delete src/New.cs? It isn't tracked by git, so it is deleted permanently.",
+    "Discard", ["src/New.cs"]));
+```
+For text actions inside a pane header ("Stage All"), use `<Button Classes="flat" />`.
 
 ### Add a Settings page
 1. `ViewModels/Dialogs/Settings/FooSettingsPageViewModel.cs`: subclass

@@ -191,6 +191,38 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}" />
     </Style>
 
+    <!-- Flat text buttons in pane headers ("Stage All", "Discard…"): accent text, no frame,
+         a tint on hover. For actions that need a word, not just an icon. -->
+    <Style Selector="Button.flat">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="MinHeight" Value="{DynamicResource Size.ActionButton}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.StatusWidget}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Radius.Control}" />
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+    </Style>
+    <Style Selector="Button.flat:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+    </Style>
+    <Style Selector="Button.flat:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Selection}" />
+    </Style>
+    <Style Selector="Button.flat:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Disabled}" />
+    </Style>
+
+    <!-- Destructive primary button (a dialog's "Discard"): the error color instead of accent. -->
+    <Style Selector="Button.accent.danger /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Status.Error}" />
+    </Style>
+    <Style Selector="Button.accent.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Brush.Status.Error}" />
+        <Setter Property="Opacity" Value="0.9" />
+    </Style>
+
     <!-- ===== Text variants: <TextBlock Classes="header" /> etc. ===== -->
     <Style Selector="TextBlock.header">
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Header}" />
