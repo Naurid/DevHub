@@ -1,0 +1,75 @@
+<!--
+  A repository tab (fills the editor area: FillsEditorArea = true).
+  Left: Fork-style sidebar on the panel color, full height, with the repository header on top.
+  Right: the selected section on the editor color. The two colors (plus the border) make the
+  sidebar's edge visible in Dark and Light; a border alone matched the editor color in Dark.
+  Sections are placeholders in G0 and fill in milestone by milestone.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Documents.RepositoryDocumentView"
+             x:DataType="docs:RepositoryDocumentViewModel">
+
+    <Panel>
+        <!-- Git not installed: nothing else can work. -->
+        <c:EmptyState IconKind="warning" Title="Git is not installed"
+                      Description="DevHub runs the git command-line tool. Install Git for Windows (git-scm.com), then restart DevHub."
+                      IsVisible="{Binding !IsGitAvailable}" />
+
+        <DockPanel IsVisible="{Binding IsGitAvailable}">
+            <!-- Sidebar -->
+            <Border DockPanel.Dock="Left" Width="{DynamicResource Size.RepositorySidebar}"
+                    Background="{DynamicResource Brush.Bg.Panel}"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <!-- Repository header: name, path, branch. -->
+                    <StackPanel DockPanel.Dock="Top" Margin="{DynamicResource Padding.SidebarHeader}"
+                                Spacing="{DynamicResource Spacing.Small}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing}">
+                            <c:Icon Kind="vcs" Width="{DynamicResource Size.StripeIcon}"
+                                    Height="{DynamicResource Size.StripeIcon}" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Classes="header" Text="{Binding Name}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                        </Grid>
+                        <TextBlock Classes="small secondary" Text="{Binding Path}"
+                                   TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" />
+                        <c:Badge Classes="accent" Content="{Binding Branch}"
+                                 IsVisible="{Binding Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                 ToolTip.Tip="Current branch" />
+                    </StackPanel>
+
+                    <!-- Sections -->
+                    <ListBox ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
+                             Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="docs:RepositorySection">
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                                    <c:Icon Kind="{Binding IconKind}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <!-- Selected section, on the editor color. -->
+            <DockPanel Margin="{DynamicResource Padding.Document}">
+                <!-- Refresh failed (e.g. the folder is no longer a git repository). -->
+                <Border DockPanel.Dock="Top" Margin="{DynamicResource Margin.BlockBelow}"
+                        Padding="{DynamicResource Padding.Button}"
+                        Background="{DynamicResource Brush.Status.Error.Subtle}"
+                        CornerRadius="{DynamicResource Radius.Control}"
+                        IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                    <TextBlock Text="{Binding Error}" TextWrapping="Wrap" />
+                </Border>
+
+                <c:EmptyState IconKind="{Binding SelectedSection.IconKind}"
+                              Title="{Binding SelectedSection.Title}"
+                              Description="{Binding SelectedSection.Placeholder}" />
+            </DockPanel>
+        </DockPanel>
+    </Panel>
+</UserControl>

@@ -26,6 +26,9 @@ public static class ActionIds
     public const string AddScanFolder = "Repositories.AddFolder";
     public const string RescanRepositories = "Repositories.Rescan";
 
+    // Git (act on the active repository tab)
+    public const string GitRefresh = "Git.Refresh";
+
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>
     public const string ToolWindowPrefix = "ToolWindow.";

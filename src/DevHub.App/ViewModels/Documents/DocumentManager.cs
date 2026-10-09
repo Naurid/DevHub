@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Core.Settings;
+using DevHub.Services;
 
 namespace DevHub.ViewModels.Documents;
 
@@ -10,15 +11,24 @@ namespace DevHub.ViewModels.Documents;
 /// cycling them, and saving the tab list. With no tabs, the Welcome view shows instead.
 /// </summary>
 /// <remarks>
-/// Documents are registered in DI as <see cref="DocumentViewModelBase"/> (one registration
-/// each, received here as an IEnumerable, like tool windows and action providers). Opening a
-/// document that's already open just activates its tab.
+/// Two kinds of documents:
+/// <list type="bullet">
+/// <item>Single documents (Templates, New Project…): DI singletons registered as
+/// <see cref="DocumentViewModelBase"/>, received here as <see cref="Available"/>. One tab each;
+/// closing keeps the instance (and its state) for next time.</item>
+/// <item>Instance documents (one tab per repository): created on demand by an
+/// <see cref="IDocumentFactory"/> from an id like "Repository:C:\P\DevHub", and disposed when
+/// their tab closes.</item>
+/// </list>
+/// Opening a document that's already open (same Id) just activates its tab.
 /// </remarks>
 public partial class DocumentManager : ViewModelBase
 {
     private readonly ISettingsStore _store;
+    private readonly IReadOnlyList<IDocumentFactory> _factories;
+    private readonly IStatusService _status;
 
-    /// <summary>Every document that can be opened, in registration order.</summary>
+    /// <summary>Every single document that can be opened, in registration order.</summary>
     public IReadOnlyList<DocumentViewModelBase> Available { get; }
 
     /// <summary>Open tabs, left to right.</summary>
@@ -27,7 +37,14 @@ public partial class DocumentManager : ViewModelBase
     /// <summary>The selected tab (two-way bound to the tab strip), or null when none is open.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ActiveTitle))]
+    [NotifyPropertyChangedFor(nameof(ActiveRepository))]
     private DocumentViewModelBase? _active;
+
+    /// <summary>
+    /// The active tab when it's a repository, else null. Git actions, the title-bar branch
+    /// widget and (later) the status bar act on this repository.
+    /// </summary>
+    public RepositoryDocumentViewModel? ActiveRepository => Active as RepositoryDocumentViewModel;
 
     /// <summary>True while at least one tab is open (false shows the Welcome view).</summary>
     public bool HasDocuments => Open.Count > 0;
@@ -35,16 +52,16 @@ public partial class DocumentManager : ViewModelBase
     /// <summary>For the title bar breadcrumb: the active tab's title, or "Welcome".</summary>
     public string ActiveTitle => Active?.Title ?? "Welcome";
 
-    public DocumentManager(IEnumerable<DocumentViewModelBase> documents, ISettingsStore store)
+    public DocumentManager(IEnumerable<DocumentViewModelBase> documents, IEnumerable<IDocumentFactory> factories,
+        ISettingsStore store, IStatusService status)
     {
         _store = store;
+        _status = status;
+        _factories = factories.ToList();
         Available = documents.ToList();
 
         foreach (var document in Available)
-        {
-            var captured = document;
-            document.CloseCommand = new RelayCommand(() => Close(captured));
-        }
+            AttachCloseCommand(document);
 
         Open.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDocuments));
         Restore(_store.Load().Editor);
@@ -60,6 +77,20 @@ public partial class DocumentManager : ViewModelBase
             Open.Insert(index, document);
         }
         Active = document;
+    }
+
+    /// <summary>
+    /// Opens the document with this id: activates its tab if it's open, otherwise opens the
+    /// single document with that id or creates an instance document through its factory.
+    /// Returns false when no document can be made for the id.
+    /// </summary>
+    public bool OpenById(string id)
+    {
+        if (Find(id) is not { } document)
+            return false;
+
+        Show(document);
+        return true;
     }
 
     /// <summary>Opens the first available document of type <typeparamref name="T"/>.</summary>
@@ -80,6 +111,10 @@ public partial class DocumentManager : ViewModelBase
         Open.RemoveAt(index);
         if (wasActive || Active is null)
             Active = Open.Count == 0 ? null : Open[Math.Max(0, index - 1)];
+
+        // Instance documents (repository tabs) end with their tab: cancel work, stop watchers.
+        if (!Available.Contains(document) && document is IDisposable disposable)
+            disposable.Dispose();
     }
 
     [RelayCommand]
@@ -116,14 +151,48 @@ public partial class DocumentManager : ViewModelBase
         if (layout is null)
             return;
 
+        var skipped = 0;
         foreach (var id in layout.OpenDocuments)
         {
-            if (Available.FirstOrDefault(d => d.Id == id) is { } document && !Open.Contains(document))
-                Open.Add(document);
+            if (Find(id) is { } document)
+            {
+                if (!Open.Contains(document))
+                    Open.Add(document);
+            }
+            else if (_factories.Any(f => id.StartsWith(f.IdPrefix, StringComparison.Ordinal)))
+            {
+                skipped++; // e.g. a repository that was moved or deleted since last time
+            }
+        }
+
+        if (skipped > 0)
+        {
+            _status.Show(skipped == 1
+                ? "1 tab from last time couldn't be reopened (moved or deleted?)."
+                : $"{skipped} tabs from last time couldn't be reopened (moved or deleted?).");
         }
 
         Active = Open.FirstOrDefault(d => d.Id == layout.ActiveDocument) ?? Open.FirstOrDefault();
     }
+
+    /// <summary>An open tab with this id, else a single document, else a new instance from a factory.</summary>
+    private DocumentViewModelBase? Find(string id)
+    {
+        if (Open.FirstOrDefault(d => d.Id == id) is { } open)
+            return open;
+        if (Available.FirstOrDefault(d => d.Id == id) is { } single)
+            return single;
+
+        var factory = _factories.FirstOrDefault(f => id.StartsWith(f.IdPrefix, StringComparison.Ordinal));
+        if (factory?.Create(id) is not { } created)
+            return null;
+
+        AttachCloseCommand(created);
+        return created;
+    }
+
+    private void AttachCloseCommand(DocumentViewModelBase document) =>
+        document.CloseCommand = new RelayCommand(() => Close(document));
 
     // Keep each document's IsActive flag (tab highlight, close-button visibility) in sync.
     partial void OnActiveChanged(DocumentViewModelBase? oldValue, DocumentViewModelBase? newValue)

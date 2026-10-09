@@ -130,6 +130,7 @@ Current providers:
 | `DocumentActionProvider` | one `Navigate.<DocumentId>` per document ("New Project…" Ctrl+N, …) and the tab actions `Editor.CloseTab` (Ctrl+F4), `Editor.NextTab` (Alt+Right), `Editor.PreviousTab` (Alt+Left). Added in UI-0 step 8, when pages became editor tabs. |
 | `SettingsActionProvider` | `App.Settings` "Settings…" (Ctrl+Alt+S) opens the Settings dialog. Takes a `Func<SettingsDialogViewModel>` factory so each opening gets a fresh dialog. Added in UI-0 step 9. |
 | `FindActionProvider` | `App.FindAction` "Find Action…" (Ctrl+Shift+A) opens the Find Action overlay. Uses a `Func<FindActionViewModel>` factory because the popup needs the registry that this provider is part of. Added in UI-0 step 10. |
+| `GitActionProvider` | Git actions on the active repository tab (`DocumentManager.ActiveRepository`); disabled when no repository tab is active. G0: `Git.Refresh` (Ctrl+Alt+Y). |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
 | `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 

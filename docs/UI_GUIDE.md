@@ -146,6 +146,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `SplitterThumb` | drag handle resizing a bound size | used by the tool-window slots |
 | `DevHubLogo` | the logo, accent-colored | `<c:DevHubLogo Width="32" Height="32" />` |
 | `FocusOnLoad` | attached property: focus this element when it appears | `<TextBox c:FocusOnLoad.IsEnabled="True" />` |
+| `DoubleTap` | attached property: run a command on double-click (rows in trees/lists) | `<Grid Background="Transparent" c:DoubleTap.Command="{Binding OpenCommand}" />` |
 
 Stock Fluent controls (Button, TextBox, ComboBox, CheckBox, ListBox, TreeView, …) are
 already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use them.
@@ -186,6 +187,20 @@ Short version (full recipe in `ACTIONS_AND_FUZZY_MATCHING.md`):
 
 Documents are singletons: closing and reopening a tab keeps its state. The content area
 already has `Padding.Document` around it.
+
+### Add a multi-instance document (one tab per *thing*, e.g. per repository)
+For documents that can be open several times, each for a different item. Example in the
+code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
+1. ViewModel: subclass `DocumentViewModelBase`; override `Id` with a prefix + the item's key
+   (`"Repository:" + path`), which is how tabs are found, saved and restored. Implement
+   `IDisposable` if it holds anything to release; the manager disposes it when its tab closes.
+   Do work on activation by overriding `OnActivationChanged(bool isActive)`, not in the
+   constructor, so tabs restored in the background stay idle.
+2. Factory: implement `IDocumentFactory` (`IdPrefix`, `Create(id)` → the document, or null
+   if the item is gone). Register: `services.AddSingleton<IDocumentFactory, FooFactory>();`.
+3. Open it with `documentManager.OpenById(FooFactory.IdFor(item))`: activates the existing tab
+   for that item, or creates one. Restoring at startup works automatically; ids that can't
+   be recreated are skipped with a status-bar note.
 
 ### Add a tool window (a docked panel)
 1. `ViewModels/ToolWindows/FooViewModel.cs`: subclass `ToolWindowViewModelBase` with

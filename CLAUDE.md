@@ -107,6 +107,18 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
 - Accessible names: list-item ViewModels override `ToString()`; icon-only/composite
   buttons get `AutomationProperties.Name`.
 
+## Git client rules (details in `docs/GIT_CLIENT_PLAN.md`)
+- Run git **only through `Core/Git/GitRunner`**: `ArgumentList`, no shell string,
+  `GIT_TERMINAL_PROMPT=0`; read-only commands pass `ReadOnly = true` (no optional locks).
+- Parse **only machine-readable output** (`--porcelain=v2`, `-z`, explicit `--format`).
+- **One repository per tab, one `GitRepositoryClient` per repository**; commands always
+  name their repository. Git actions act on `DocumentManager.ActiveRepository`.
+- Anything that **changes** a repository happens only on a user action; destructive ones
+  (discard, reset, delete unmerged branch, force push) need a confirmation saying what is lost.
+- Every command shows up in the Git Console (the runner logs it automatically).
+- Core git tests use real git in temp repos (`TempGitRepo`, `[GitFact]`); UI checks use
+  scratch repositories, never the user's own.
+
 ## Natural-language commands (roadmap M10 — design rules from day one)
 A local, user-trained model turns text into a structured tool call; it's a
 learning project, so simplicity and inspectability beat capability.

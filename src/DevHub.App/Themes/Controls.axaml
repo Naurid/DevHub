@@ -117,8 +117,9 @@
 
     <!-- ===== Editor tabs: <ListBox Classes="tabs"> =====
          A ListBox laid out horizontally: selection = active tab (two-way bound), and it brings
-         keyboard and accessibility support for free. JetBrains look: flat tabs, the active one
-         underlined in the accent; the × shows on the active and hovered tab only.
+         keyboard and accessibility support for free. JetBrains look: the strip sits on the panel
+         color (set by its host in MainWindow), the active tab has the editor color so it joins the
+         content below, plus an accent underline; the × shows on the active and hovered tab only.
          These Styles override the Fluent ListBoxItem ControlTheme (styles always win). -->
     <Style Selector="ListBox.tabs">
         <Setter Property="Background" Value="Transparent" />
@@ -151,11 +152,11 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}" />
     </Style>
     <Style Selector="ListBox.tabs > ListBoxItem:selected /template/ ContentPresenter">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Editor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}" />
     </Style>
     <Style Selector="ListBox.tabs > ListBoxItem:selected:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Editor}" />
     </Style>
     <!-- Close button: small, and only visible on the active or hovered tab (keeps its space). -->
     <Style Selector="c|ActionButton.tabClose">
@@ -165,6 +166,14 @@
     </Style>
     <Style Selector="ListBox.tabs > ListBoxItem:selected c|ActionButton.tabClose, ListBox.tabs > ListBoxItem:pointerover c|ActionButton.tabClose">
         <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Editor area around the active document: padded, unless the document fills it itself. -->
+    <Style Selector="Border.documentHost">
+        <Setter Property="Padding" Value="{DynamicResource Padding.Document}" />
+    </Style>
+    <Style Selector="Border.documentHost.fill">
+        <Setter Property="Padding" Value="0" />
     </Style>
 
     <!-- Flat, text-only buttons in the status bar ("Dark", "Compact"…). -->

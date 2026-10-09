@@ -44,6 +44,15 @@
                 <TextBlock Text="DevHub" FontWeight="SemiBold" />
                 <c:Icon Kind="chevronRight" />
                 <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" />
+                <!-- Branch of the active repository tab (JetBrains' VCS widget; read-only in G0,
+                     the branch popup arrives in G4). Hidden when the active tab isn't a repository. -->
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
+                            Margin="{DynamicResource Margin.BranchWidget}"
+                            IsVisible="{Binding Documents.ActiveRepository.Branch, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                            ToolTip.Tip="Current branch">
+                    <c:Icon Kind="vcs" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Documents.ActiveRepository.Branch}" VerticalAlignment="Center" />
+                </StackPanel>
             </StackPanel>
 
             <!-- Column 2 (*) is empty: the big draggable area. -->

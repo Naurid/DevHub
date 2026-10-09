@@ -99,7 +99,9 @@
              Tabs on top, the active document below (its ViewModel → View via the ViewLocator),
              or the Welcome view when nothing is open. -->
         <DockPanel Background="{DynamicResource Brush.Bg.Editor}">
+            <!-- Tab strip on the panel color; the active tab takes the editor color (Controls.axaml). -->
             <Border DockPanel.Dock="Top"
+                    Background="{DynamicResource Brush.Bg.Panel}"
                     BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1"
                     IsVisible="{Binding Documents.HasDocuments}">
                 <ListBox Classes="tabs"
@@ -121,7 +123,10 @@
             </Border>
 
             <Panel>
-                <Border Padding="{DynamicResource Padding.Document}"
+                <!-- Padding around documents, unless the document fills the area itself
+                     (DocumentViewModelBase.FillsEditorArea, e.g. repository tabs). -->
+                <Border Classes="documentHost"
+                        Classes.fill="{Binding Documents.Active.FillsEditorArea, FallbackValue=False}"
                         IsVisible="{Binding Documents.HasDocuments}">
                     <ContentControl Content="{Binding Documents.Active}" />
                 </Border>

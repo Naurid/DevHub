@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using DevHub.Actions;
 using DevHub.Actions.Providers;
 using DevHub.Controls;
+using DevHub.Core.Git;
 using DevHub.Core.Projects;
 using DevHub.Core.Repositories;
 using DevHub.Core.Settings;
@@ -95,10 +96,21 @@ public partial class App : Application
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 
+        // Git: one shared command log and runner. The runner is only registered when git is
+        // installed (and new enough); without it, repository tabs show how to install Git.
+        services.AddSingleton<IGitCommandLog, GitCommandLog>();
+        if (GitExecutable.TryLocate() is { } git)
+        {
+            services.AddSingleton(git);
+            services.AddSingleton<GitRunner>(sp => new GitRunner(git, sp.GetRequiredService<IGitCommandLog>()));
+        }
+
         // Tool windows: registered as themselves (for providers) and as the base type, so the
         // ToolWindowManager receives all of them as IEnumerable<ToolWindowViewModelBase>.
         services.AddSingleton<RepositoriesViewModel>();
         services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<RepositoriesViewModel>());
+        services.AddSingleton<GitConsoleViewModel>();
+        services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<GitConsoleViewModel>());
         services.AddSingleton<ToolWindowManager>();
 
         // Documents (editor tabs): each registered as the base type so the DocumentManager
@@ -110,6 +122,8 @@ public partial class App : Application
         // Design-system playground; not shipped in Release builds.
         services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();
 #endif
+        // Instance documents: one tab per repository, created on demand / restored by id.
+        services.AddSingleton<IDocumentFactory, RepositoryDocumentFactory>();
         services.AddSingleton<DocumentManager>();
 
         // Dialogs: transient = a fresh instance every time one is requested, so each opening
@@ -132,6 +146,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, DocumentActionProvider>();
         services.AddSingleton<IActionProvider, SettingsActionProvider>();
         services.AddSingleton<IActionProvider, FindActionProvider>();
+        services.AddSingleton<IActionProvider, GitActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

@@ -23,8 +23,24 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// <summary>Tab icon; one of <see cref="DevHub.Controls.IconKind"/>.</summary>
     public abstract string Icon { get; }
 
+    /// <summary>
+    /// False (default): the editor area puts <c>Padding.Document</c> around the view (forms, pages).
+    /// True: the view fills the whole area and lays out its own spacing, e.g. a repository tab
+    /// whose sidebar runs edge to edge.
+    /// </summary>
+    public virtual bool FillsEditorArea => false;
+
     /// <summary>True for the selected tab. Set by <see cref="DocumentManager"/> only.</summary>
     [ObservableProperty] private bool _isActive;
+
+    // The generated "changed" hook can only be implemented in this class (partial methods
+    // live where the property is declared), so pass it on to subclasses as a virtual method.
+    partial void OnIsActiveChanged(bool value) => OnActivationChanged(value);
+
+    /// <summary>Called when the tab becomes active (true) or inactive (false), e.g. to refresh.</summary>
+    protected virtual void OnActivationChanged(bool isActive)
+    {
+    }
 
     /// <summary>Closes this tab (the × on the tab). Assigned by <see cref="DocumentManager"/>.</summary>
     public ICommand? CloseCommand { get; internal set; }

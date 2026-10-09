@@ -7,6 +7,7 @@ using DevHub.Core.Repositories;
 using DevHub.Core.Search;
 using DevHub.Core.Settings;
 using DevHub.Services;
+using DevHub.ViewModels.Documents;
 
 namespace DevHub.ViewModels.ToolWindows;
 
@@ -22,6 +23,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     private readonly IProjectLauncher _launcher;
     private readonly IStatusService _status;
     private readonly ISettingsStore _store;
+    private readonly DocumentManager _documents;
 
     /// <summary>Results of the last scan (flat). The tree is built from this + the folders.</summary>
     private IReadOnlyList<GitRepository> _repositories = [];
@@ -44,17 +46,21 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     [NotifyCanExecuteChangedFor(nameof(ScanCommand))]
     private bool _isScanning;
 
+    /// <summary>Selected tree row (a <see cref="ScanFolderNode"/> or a <see cref="RepositoryNode"/>), two-way bound.</summary>
+    [ObservableProperty] private object? _selectedNode;
+
     /// <summary>Search box text; filters repositories by fuzzy name match.</summary>
     [ObservableProperty] private string _filter = "";
 
     public RepositoriesViewModel(IRepositoryScanner scanner, IDialogService dialogs, IProjectLauncher launcher,
-        IStatusService status, ISettingsStore store)
+        IStatusService status, ISettingsStore store, DocumentManager documents)
     {
         _scanner = scanner;
         _dialogs = dialogs;
         _launcher = launcher;
         _status = status;
         _store = store;
+        _documents = documents;
 
         foreach (var folder in _store.Load().RepositoryFolders)
             ScanFolders.Add(folder);
@@ -111,6 +117,21 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
 
     private void RemoveFolder(string folder) => ScanFolders.Remove(folder);
 
+    /// <summary>Opens the repository as an editor tab (or switches to its tab if it's already open).</summary>
+    private void OpenInDevHub(GitRepository repo) =>
+        _documents.OpenById(RepositoryDocumentFactory.IdFor(repo.Path));
+
+    /// <summary>
+    /// Enter in the tree: open the selected repository as a tab. (A key binding on the TreeView,
+    /// because key events start at the focused row and bubble up, never into the row's content.)
+    /// </summary>
+    [RelayCommand]
+    private void OpenSelected()
+    {
+        if (SelectedNode is RepositoryNode node)
+            OpenInDevHub(node.Repository);
+    }
+
     private void Open(GitRepository repo)
     {
         try
@@ -154,7 +175,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
                 .Where(x => !filtering || x.Match is not null)
                 .OrderByDescending(x => x.Match?.Score ?? 0)
                 .ThenBy(x => x.Repo.Name, StringComparer.OrdinalIgnoreCase)
-                .Select(x => new RepositoryNode(x.Repo, Open, Reveal))
+                .Select(x => new RepositoryNode(x.Repo, OpenInDevHub, Open, Reveal))
                 .ToList();
 
             if (filtering && repos.Count == 0)
@@ -196,9 +217,11 @@ public sealed partial class ScanFolderNode : ObservableObject
 /// <summary>A repository leaf in the tree. Carries its own commands so the context menu can bind directly.</summary>
 public sealed class RepositoryNode
 {
-    public RepositoryNode(GitRepository repository, Action<GitRepository> open, Action<GitRepository> reveal)
+    public RepositoryNode(GitRepository repository, Action<GitRepository> openInDevHub,
+        Action<GitRepository> open, Action<GitRepository> reveal)
     {
         Repository = repository;
+        OpenInDevHubCommand = new RelayCommand(() => openInDevHub(repository));
         OpenCommand = new RelayCommand(() => open(repository));
         RevealCommand = new RelayCommand(() => reveal(repository));
     }
@@ -208,6 +231,10 @@ public sealed class RepositoryNode
     public string Path => Repository.Path;
     public string Language => Repository.Language.DisplayName;
     public string IconKind => Controls.IconKind.Folder;
+    /// <summary>Open as a repository tab (double-click, default menu item).</summary>
+    public RelayCommand OpenInDevHubCommand { get; }
+
+    /// <summary>Open in the external tool chosen for its language (Settings → Open With).</summary>
     public RelayCommand OpenCommand { get; }
     public RelayCommand RevealCommand { get; }
 
