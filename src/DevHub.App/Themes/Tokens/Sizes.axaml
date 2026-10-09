@@ -1,0 +1,39 @@
+<!--
+  Size tokens (Normal density). Sizes.Compact.axaml overrides some of these keys;
+  it gets merged *after* this file when Compact mode is on, and later keys win.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Heights / widths: x:Double -->
+    <x:Double x:Key="Size.RowHeight">24</x:Double>
+    <x:Double x:Key="Size.ButtonHeight">28</x:Double>
+    <x:Double x:Key="Size.ToolbarHeight">40</x:Double>
+    <x:Double x:Key="Size.ToolWindowHeaderHeight">40</x:Double>
+    <x:Double x:Key="Size.StatusBarHeight">30</x:Double>
+    <x:Double x:Key="Size.StripeWidth">40</x:Double>
+    <x:Double x:Key="Size.Icon">16</x:Double>
+    <x:Double x:Key="Size.StripeIcon">20</x:Double>
+
+    <!-- Gaps between children (StackPanel.Spacing, Grid.RowSpacing): a single number,
+         so x:Double, not Thickness. -->
+    <x:Double x:Key="Spacing.Small">4</x:Double>
+    <x:Double x:Key="Spacing">8</x:Double>
+    <x:Double x:Key="Spacing.Large">16</x:Double>
+
+    <!-- Padding / margins: Thickness ("left,top,right,bottom", or "horizontal,vertical") -->
+    <Thickness x:Key="Padding.Button">12,4</Thickness>
+    <Thickness x:Key="Padding.TextBox">8,4</Thickness>
+    <!-- Vertical 0: the height tokens above already set how tall these are. -->
+    <Thickness x:Key="Padding.ToolWindowHeader">12,0,8,0</Thickness>
+    <Thickness x:Key="Padding.ListItem">8,0</Thickness>
+    <Thickness x:Key="Padding.Toolbar">8,0</Thickness>
+    <Thickness x:Key="Padding.Dialog">20,16</Thickness>
+
+    <!-- Rounded corners: CornerRadius -->
+    <CornerRadius x:Key="Radius.Control">4</CornerRadius>
+    <CornerRadius x:Key="Radius.Popup">8</CornerRadius>
+    <!-- Large value = pill shape; it's clamped to half the badge height. -->
+    <CornerRadius x:Key="Radius.Badge">10</CornerRadius>
+
+</ResourceDictionary>

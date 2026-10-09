@@ -25,7 +25,8 @@ public partial class MainWindowViewModel : ViewModelBase
         TemplatesViewModel templates,
         GenerateViewModel generate,
         ImportViewModel import,
-        SettingsViewModel settings)
+        SettingsViewModel settings,
+        UiGalleryViewModel gallery)
     {
         Pages =
         [
@@ -35,6 +36,11 @@ public partial class MainWindowViewModel : ViewModelBase
             import,
             settings
         ];
+
+#if DEBUG
+        // Design-system playground; not shipped in Release builds.
+        Pages.Add(gallery);
+#endif
 
         _selectedPage = repositories;
     }

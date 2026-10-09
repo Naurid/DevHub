@@ -30,6 +30,9 @@ public partial class App : Application
             ConfigureServices(collection);
             Services = collection.BuildServiceProvider();
 
+            // Push the accent into Fluent's keys before any window is created.
+            Services.GetRequiredService<ThemeService>().Initialize();
+
             var mainWindow = new MainWindow
             {
                 DataContext = Services.GetRequiredService<MainWindowViewModel>()
@@ -51,6 +54,8 @@ public partial class App : Application
         // and as the interface (what ViewModels depend on).
         services.AddSingleton<DialogService>();
         services.AddSingleton<IDialogService>(sp => sp.GetRequiredService<DialogService>());
+        services.AddSingleton<ThemeService>();
+        services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());
 
         // Core services.
         services.AddSingleton<ISettingsStore>(_ => new JsonSettingsStore());
@@ -65,6 +70,7 @@ public partial class App : Application
         services.AddSingleton<GenerateViewModel>();
         services.AddSingleton<ImportViewModel>();
         services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<UiGalleryViewModel>();
 
         // Shell.
         services.AddSingleton<MainWindowViewModel>();

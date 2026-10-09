@@ -1,0 +1,111 @@
+<!--
+  Fluent key mapping: re-points Fluent's own resource keys at DevHub tokens, so the
+  stock Fluent controls (Button, TextBox, ComboBox, ListBox, CheckBox…) pick up our
+  colors without us re-templating them.
+
+  Why this works: Fluent's control templates look their brushes up by key with
+  DynamicResource (e.g. Button uses {DynamicResource ButtonBackground}). Application
+  resources are searched before the FluentTheme's own, so defining the same key here wins.
+  Key names come from the Avalonia 12.1.3 source: src/Avalonia.Themes.Fluent/Accents/
+  FluentControlResources.xaml (per control) and BaseResources.xaml (shared).
+
+  Accent-colored parts (checked CheckBox, ToggleSwitch, Slider, ProgressBar, focus
+  borders, tab pipe…) all go through Fluent's SystemAccentColor, which ThemeService
+  sets from Color.Accent in code (a Color can't hold a DynamicResource).
+
+  Only keys we actually want to differ from Fluent are listed. Add more as needed.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===== Shape & type ===== -->
+    <!-- Same values as Radius.Control / Radius.Popup / Font.UI / FontSize.Body. Fluent reads
+         these as plain values, so they're repeated here rather than referenced. -->
+    <CornerRadius x:Key="ControlCornerRadius">4</CornerRadius>
+    <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
+    <FontFamily x:Key="ContentControlThemeFontFamily">fonts:Inter#Inter, $Default</FontFamily>
+    <x:Double x:Key="ControlContentThemeFontSize">13</x:Double>
+    <!-- Fluent's tab headers are 24px "pivot" style; JetBrains tabs are body-sized. -->
+    <x:Double x:Key="TabItemHeaderFontSize">13</x:Double>
+
+    <!-- ===== Window ===== -->
+    <SolidColorBrush x:Key="SystemRegionBrush" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="{DynamicResource Color.Text.Primary}" />
+
+    <!-- ===== Button (default) ===== -->
+    <SolidColorBrush x:Key="ButtonBackground" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{DynamicResource Color.Bg.Hover}" />
+    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{DynamicResource Color.Bg.SelectionInactive}" />
+    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="ButtonForeground" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{DynamicResource Color.Text.Disabled}" />
+    <SolidColorBrush x:Key="ButtonBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="{DynamicResource Color.Border}" />
+
+    <!-- ===== Button.accent (primary action, e.g. OK / Generate) ===== -->
+    <SolidColorBrush x:Key="AccentButtonBackground" Color="{DynamicResource Color.Accent}" />
+    <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="{DynamicResource Color.Accent.Hover}" />
+    <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="{DynamicResource Color.Accent.Pressed}" />
+    <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="AccentButtonForeground" Color="{DynamicResource Color.Text.OnAccent}" />
+    <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="{DynamicResource Color.Text.OnAccent}" />
+    <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="{DynamicResource Color.Text.OnAccent}" />
+    <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="{DynamicResource Color.Text.Disabled}" />
+    <SolidColorBrush x:Key="AccentButtonBorderBrush" Color="{DynamicResource Color.Accent}" />
+    <SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="{DynamicResource Color.Accent.Hover}" />
+    <SolidColorBrush x:Key="AccentButtonBorderBrushPressed" Color="{DynamicResource Color.Accent.Pressed}" />
+    <SolidColorBrush x:Key="AccentButtonBorderBrushDisabled" Color="{DynamicResource Color.Border}" />
+
+    <!-- ===== TextBox (and other "TextControl"s: NumericUpDown, AutoCompleteBox…) ===== -->
+    <SolidColorBrush x:Key="TextControlBackground" Color="{DynamicResource Color.Bg.Editor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{DynamicResource Color.Bg.Editor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{DynamicResource Color.Bg.Editor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="TextControlForeground" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{DynamicResource Color.Text.Disabled}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{DynamicResource Color.Text.Secondary}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="{DynamicResource Color.Text.Secondary}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="{DynamicResource Color.Text.Secondary}" />
+    <SolidColorBrush x:Key="TextControlBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{DynamicResource Color.Accent}" />
+    <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="{DynamicResource Color.Bg.Selection}" />
+
+    <!-- ===== ComboBox ===== -->
+    <SolidColorBrush x:Key="ComboBoxBackground" Color="{DynamicResource Color.Bg.Panel}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{DynamicResource Color.Bg.Hover}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="{DynamicResource Color.Bg.SelectionInactive}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ComboBoxForeground" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="{DynamicResource Color.Bg.Popup}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver" Color="{DynamicResource Color.Bg.Hover}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundSelected" Color="{DynamicResource Color.Bg.Selection}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver" Color="{DynamicResource Color.Bg.Selection}" />
+
+    <!-- ===== ListBoxItem (uses shared SystemControl* keys, not ListBoxItem* ones) ===== -->
+    <SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="{DynamicResource Color.Bg.Hover}" />
+    <SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="{DynamicResource Color.Bg.SelectionInactive}" />
+    <SolidColorBrush x:Key="SystemControlHighlightListAccentLowBrush" Color="{DynamicResource Color.Bg.Selection}" />
+    <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{DynamicResource Color.Bg.Selection}" />
+    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="{DynamicResource Color.Bg.Selection}" />
+    <SolidColorBrush x:Key="SystemControlHighlightAltBaseHighBrush" Color="{DynamicResource Color.Text.Primary}" />
+
+    <!-- ===== Popups: menus, flyouts, tooltips ===== -->
+    <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{DynamicResource Color.Bg.Popup}" />
+    <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver" Color="{DynamicResource Color.Bg.Selection}" />
+    <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="{DynamicResource Color.Bg.Popup}" />
+    <SolidColorBrush x:Key="FlyoutBorderThemeBrush" Color="{DynamicResource Color.Border.Control}" />
+    <SolidColorBrush x:Key="ToolTipBackground" Color="{DynamicResource Color.Bg.Popup}" />
+    <SolidColorBrush x:Key="ToolTipForeground" Color="{DynamicResource Color.Text.Primary}" />
+    <SolidColorBrush x:Key="ToolTipBorderBrush" Color="{DynamicResource Color.Border.Control}" />
+
+</ResourceDictionary>

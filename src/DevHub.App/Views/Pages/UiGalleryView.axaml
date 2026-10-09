@@ -1,0 +1,212 @@
+<!--
+  Debug UI Gallery: every color token and stock control, in the current theme.
+  Only tokens here (no hex/sizes/fonts) except the accent presets, which are data.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             x:Class="DevHub.Views.Pages.UiGalleryView"
+             x:DataType="pages:UiGalleryViewModel">
+
+    <UserControl.Styles>
+        <!-- One color sample. -->
+        <Style Selector="Border.swatch">
+            <Setter Property="Width" Value="120" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="CornerRadius" Value="{DynamicResource Radius.Control}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Control}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="WrapPanel.swatches > StackPanel">
+            <Setter Property="Spacing" Value="{DynamicResource Spacing.Small}" />
+            <Setter Property="Margin" Value="0,0,12,12" />
+        </Style>
+        <!-- A titled block of the gallery. -->
+        <Style Selector="Border.section">
+            <Setter Property="Background" Value="{DynamicResource Brush.Bg.Panel}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource Radius.Popup}" />
+            <Setter Property="Padding" Value="{DynamicResource Padding.Dialog}" />
+        </Style>
+        <!-- Accent preset dots. -->
+        <Style Selector="Button.accentPreset">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        <Style Selector="Button.accentPreset > Border">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Spacing="{DynamicResource Spacing.Large}" MaxWidth="900" HorizontalAlignment="Left">
+
+            <StackPanel Spacing="{DynamicResource Spacing.Small}">
+                <TextBlock Classes="header" Text="UI Gallery" />
+                <TextBlock Classes="secondary"
+                           Text="Debug only. Every token and stock control in the current theme." />
+            </StackPanel>
+
+            <!-- ===== Appearance switches ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Appearance" />
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Large}">
+                        <ToggleSwitch IsChecked="{Binding IsDark}" OnContent="Dark" OffContent="Light" />
+                        <CheckBox IsChecked="{Binding IsCompact}" Content="Compact" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
+                        <TextBlock Classes="secondary" Text="Accent" VerticalAlignment="Center" />
+                        <Button Classes="accentPreset" Command="{Binding SetAccentCommand}" CommandParameter="#3574F0"
+                                ToolTip.Tip="JetBrains blue (default)">
+                            <Border Background="#3574F0" />
+                        </Button>
+                        <Button Classes="accentPreset" Command="{Binding SetAccentCommand}" CommandParameter="#25A146"
+                                ToolTip.Tip="Green (old DevHub)">
+                            <Border Background="#25A146" />
+                        </Button>
+                        <Button Classes="accentPreset" Command="{Binding SetAccentCommand}" CommandParameter="#8C5CDB"
+                                ToolTip.Tip="Purple">
+                            <Border Background="#8C5CDB" />
+                        </Button>
+                        <Button Classes="accentPreset" Command="{Binding SetAccentCommand}" CommandParameter="#E0802B"
+                                ToolTip.Tip="Orange">
+                            <Border Background="#E0802B" />
+                        </Button>
+                        <TextBlock Classes="code secondary" Text="{Binding Accent}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Color tokens ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Colors" />
+                    <WrapPanel Classes="swatches">
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Accent}" /><TextBlock Classes="small secondary" Text="Accent" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Accent.Hover}" /><TextBlock Classes="small secondary" Text="Accent.Hover" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Accent.Pressed}" /><TextBlock Classes="small secondary" Text="Accent.Pressed" /></StackPanel>
+                    </WrapPanel>
+                    <WrapPanel Classes="swatches">
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.Editor}" /><TextBlock Classes="small secondary" Text="Bg.Editor" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.Panel}" /><TextBlock Classes="small secondary" Text="Bg.Panel" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.Popup}" /><TextBlock Classes="small secondary" Text="Bg.Popup" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.Hover}" /><TextBlock Classes="small secondary" Text="Bg.Hover" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.Selection}" /><TextBlock Classes="small secondary" Text="Bg.Selection" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Bg.SelectionInactive}" /><TextBlock Classes="small secondary" Text="Bg.SelectionInactive" /></StackPanel>
+                    </WrapPanel>
+                    <WrapPanel Classes="swatches">
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Border}" /><TextBlock Classes="small secondary" Text="Border" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Border.Control}" /><TextBlock Classes="small secondary" Text="Border.Control" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Text.Primary}" /><TextBlock Classes="small secondary" Text="Text.Primary" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Text.Secondary}" /><TextBlock Classes="small secondary" Text="Text.Secondary" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Text.Disabled}" /><TextBlock Classes="small secondary" Text="Text.Disabled" /></StackPanel>
+                    </WrapPanel>
+                    <WrapPanel Classes="swatches">
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Status.Error}" /><TextBlock Classes="small secondary" Text="Status.Error" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Status.Warning}" /><TextBlock Classes="small secondary" Text="Status.Warning" /></StackPanel>
+                        <StackPanel><Border Classes="swatch" Background="{DynamicResource Brush.Status.Success}" /><TextBlock Classes="small secondary" Text="Status.Success" /></StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Typography ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Typography" />
+                    <TextBlock Text="Body: Inter 13. The quick brown fox jumps over the lazy dog." />
+                    <TextBlock Classes="secondary" Text="Secondary: hints, captions, inactive labels." />
+                    <TextBlock Classes="small secondary" Text="Small: status bar, badges, metadata." />
+                    <TextBlock Classes="code" Text="Code: JetBrains Mono → git commit -m &quot;fix: 0O 1lI&quot;" />
+                    <TextBlock Foreground="{DynamicResource Brush.Status.Error}" Text="Error text" />
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Buttons ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Buttons" />
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                        <Button Classes="accent" Content="Primary (accent)" />
+                        <Button Content="Default" ToolTip.Tip="A tooltip on Bg.Popup" />
+                        <Button Content="Disabled" IsEnabled="False" />
+                        <ToggleButton Content="Toggle" />
+                        <Button Content="Menu ▾">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuItem Header="Open in Rider" InputGesture="Ctrl+O" />
+                                    <MenuItem Header="Open in Explorer" />
+                                    <Separator />
+                                    <MenuItem Header="Remove" />
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Inputs ===== -->
+            <Border Classes="section">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource Spacing.Large}"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="{DynamicResource Spacing}">
+                    <TextBlock Grid.ColumnSpan="2" Classes="header" Text="Inputs" />
+
+                    <TextBox Grid.Row="1" Grid.Column="0" PlaceholderText="Placeholder text" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SampleItems}"
+                              SelectedIndex="0" HorizontalAlignment="Stretch" />
+
+                    <TextBox Grid.Row="2" Grid.Column="0" Text="Disabled" IsEnabled="False" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Classes="code" Text="dotnet build -c Release" />
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Spacing="{DynamicResource Spacing.Small}">
+                        <CheckBox Content="Checked" IsChecked="True" />
+                        <CheckBox Content="Unchecked" />
+                        <CheckBox Content="Indeterminate" IsThreeState="True" IsChecked="{x:Null}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Spacing="{DynamicResource Spacing.Small}">
+                        <RadioButton GroupName="g" Content="Option A" IsChecked="True" />
+                        <RadioButton GroupName="g" Content="Option B" />
+                        <ToggleSwitch IsChecked="True" OnContent="On" OffContent="Off" />
+                    </StackPanel>
+
+                    <Slider Grid.Row="4" Grid.Column="0" Value="40" />
+                    <ProgressBar Grid.Row="4" Grid.Column="1" Value="40" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- ===== Lists & tabs ===== -->
+            <Border Classes="section">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource Spacing.Large}"
+                      RowDefinitions="Auto,Auto" RowSpacing="{DynamicResource Spacing}">
+                    <TextBlock Grid.ColumnSpan="2" Classes="header" Text="Lists &amp; tabs" />
+
+                    <Border Grid.Row="1" Grid.Column="0"
+                            Background="{DynamicResource Brush.Bg.Editor}"
+                            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                            CornerRadius="{DynamicResource Radius.Control}">
+                        <ListBox ItemsSource="{Binding SampleItems}" SelectedIndex="1" Background="Transparent">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+
+                    <TabControl Grid.Row="1" Grid.Column="1">
+                        <TabItem Header="Changes">
+                            <TextBlock Classes="secondary" Margin="0,8" Text="Tab content" />
+                        </TabItem>
+                        <TabItem Header="Log">
+                            <TextBlock Classes="secondary" Margin="0,8" Text="Second tab" />
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

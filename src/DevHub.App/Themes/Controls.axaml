@@ -1,0 +1,68 @@
+<!--
+  Control styles on top of Fluent's ControlThemes.
+
+  Fluent's ControlTheme (its "template + defaults" for each control) stays in charge of
+  how a control is built; these Styles only change sizes and add variants. A Style setter
+  beats a ControlTheme setter, so these win without re-templating anything.
+
+  Sizes use DynamicResource so swapping in Sizes.Compact.axaml resizes everything live.
+  Colors are NOT set here: they come from FluentMapping.axaml.
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===== Sizing of stock controls ===== -->
+    <Style Selector="Button, ToggleButton, RepeatButton">
+        <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.Button}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- One selector per type below: a comma list is typed as the types' common base
+         class (Button works above because ToggleButton/RepeatButton derive from it), and
+         e.g. TextBox + ComboBox only share TemplatedControl, which has no
+         VerticalContentAlignment. -->
+    <Style Selector="TextBox">
+        <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.TextBox}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ComboBox">
+        <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.TextBox}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ListBoxItem">
+        <Setter Property="MinHeight" Value="{DynamicResource Size.RowHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.ListItem}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ComboBoxItem">
+        <Setter Property="MinHeight" Value="{DynamicResource Size.RowHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.ListItem}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- ===== Text variants: <TextBlock Classes="header" /> etc. ===== -->
+    <Style Selector="TextBlock.header">
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Header}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}" />
+    </Style>
+    <Style Selector="TextBlock.secondary">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
+    </Style>
+    <Style Selector="TextBlock.small">
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}" />
+    </Style>
+    <Style Selector="TextBlock.code">
+        <Setter Property="FontFamily" Value="{DynamicResource Font.Code}" />
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Code}" />
+    </Style>
+    <Style Selector="TextBox.code">
+        <Setter Property="FontFamily" Value="{DynamicResource Font.Code}" />
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Code}" />
+    </Style>
+
+</Styles>

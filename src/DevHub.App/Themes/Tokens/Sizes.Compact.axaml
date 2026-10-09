@@ -1,0 +1,24 @@
+<!--
+  Compact overrides. Only keys that shrink go here, with the *same key* as in
+  Sizes.axaml. NOT merged in DevHubTheme.axaml: Settings adds/removes it at
+  runtime (UI-0 step 9). To try it now, temporarily merge it after Sizes.axaml.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <x:Double x:Key="Size.RowHeight">20</x:Double>
+    <x:Double x:Key="Size.ButtonHeight">24</x:Double>
+    <x:Double x:Key="Size.ToolbarHeight">32</x:Double>
+    <x:Double x:Key="Size.ToolWindowHeaderHeight">32</x:Double>
+    <x:Double x:Key="Size.StatusBarHeight">24</x:Double>
+    <x:Double x:Key="Size.StripeWidth">32</x:Double>
+
+    <Thickness x:Key="Padding.Button">10,2</Thickness>
+    <Thickness x:Key="Padding.TextBox">6,2</Thickness>
+    <Thickness x:Key="Padding.ToolWindowHeader">8,0,4,0</Thickness>
+    <Thickness x:Key="Padding.ListItem">6,0</Thickness>
+    <Thickness x:Key="Padding.Toolbar">4,0</Thickness>
+
+    <!-- Not overridden (same in both densities): icon sizes, Spacing.*, radii, Padding.Dialog. -->
+
+</ResourceDictionary>

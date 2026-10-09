@@ -9,9 +9,30 @@ milestones below).
 - [x] Repositories page: designate folders, scan for git repos, list them
 - [x] Per-repo language detection (marker files; incl. Unity and Tauri)
 - [x] "Open with the right tool" + per-language tool map persisted to `%APPDATA%/DevHub/settings.json`
-- [ ] **NEXT — Integrated Git client (in-app, "Fork"-like).** Large; a full git UI
+- [ ] **NEXT — UI-0: JetBrains-style front end** (see below) — design system + IDE shell,
+      built before the Git client so the Git UI is mostly composition.
+- [ ] **Integrated Git client (in-app, "Fork"-like).** Large; a full git UI
       (status/stage/commit/diff/branches/history/remotes) built inside the app.
       Plan it as its own milestone before building.
+
+## UI-0 — JetBrains-style front end (Rider New UI look)
+Dark + Light, configurable accent (default #3574F0), Compact mode, Inter UI + JetBrains
+Mono code. Layers: Theme → Components → Actions → Shell → Features. The user writes,
+Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
+- [x] 0. Spikes: `Svg.Controls.Skia.Avalonia` 12.0.0.17 targets Avalonia 12; icons at
+      intellij-community `platform/icons/src/expui/` (`x.svg` / `x_dark.svg`, stripe icons
+      `x@20x20.svg`); JetBrains Mono v2.304 (OFL)
+- [x] 1. Tokens: `Themes/Tokens/` Colors (Dark+Light), Sizes (+Compact), Fonts; `DevHubTheme.axaml`
+- [x] 2. Fluent key mapping + ControlThemes + debug UI Gallery
+- [ ] 3. `Icon` control + first ~20 vendored icons (+ Apache-2.0 NOTICE)
+- [ ] 4. Components: ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge
+- [ ] 5. Action system (registry, providers, keymap, MenuBuilder) + Core `FuzzyMatcher` (tested)
+- [ ] 6. Merged title bar + main toolbar + status bar
+- [ ] 7. Tool-window framework (fixed slots, stripes, persisted layout); Repositories → tree tool window
+- [ ] 8. Editor area (document tabs) + Welcome view; Generate/Import as documents; drop sidebar
+- [ ] 9. Dialog framework + Settings dialog (Ctrl+Alt+S): Open With + Appearance pages, persisted
+- [ ] 10. Find Action popup (Ctrl+Shift+A)
+- [ ] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`
