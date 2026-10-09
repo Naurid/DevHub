@@ -48,6 +48,7 @@ docs/
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
   ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
+  GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G8)
 ```
 
 **Dependency direction: `App → Core`, `Tests → Core`. Nothing references `App`.**

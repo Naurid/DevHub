@@ -35,6 +35,20 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 10. Find Action popup (Ctrl+Shift+A)
 - [x] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
 
+## G — Integrated Git client (Fork / JetBrains-style)
+Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Runs the git CLI (parsing its
+machine-readable output) rather than a library — **confirm before G0**. First release = G0–G4.
+- [ ] G0. Foundation: `GitExecutable`, `GitRunner`, `GitCommandLog` (Core, tested with real
+      git in temp repos); `IRepositoryContext` + read-only repo/branch widget in the title bar
+- [ ] G1. Status: porcelain v2 parser (tested); watcher refresh; Commit tool window (read-only)
+- [ ] G2. Diff: unified-diff parser (tested); Diff document (unified, then side-by-side)
+- [ ] G3. Stage / unstage / discard (confirmed) / commit / amend; later per-hunk staging
+- [ ] G4. Branches: list, checkout (dirty-tree handling), create, rename, delete; branch popup
+- [ ] G5. History: log parser + graph layout (tested), Git tool window Log tab, commit details
+- [ ] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained
+- [ ] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool
+- [ ] G8. Stash, tags, cherry-pick, revert, blame
+
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`
 - [x] `src/DevHub.Core` (net10.0 class library)
