@@ -32,6 +32,8 @@
         </DataTemplate>
     </Window.Resources>
 
+    <!-- Root Panel: the whole window (WorkArea), with the Find Action overlay on top of it. -->
+    <Panel>
     <!-- Named so the tool-window slots can limit themselves to a share of its size. -->
     <DockPanel x:Name="WorkArea">
         <shell:MainToolbar DockPanel.Dock="Top" />
@@ -127,4 +129,11 @@
             </Panel>
         </DockPanel>
     </DockPanel>
+
+    <!-- Find Action (Ctrl+Shift+A): FindActionViewModel → FindActionView (ViewLocator) while
+         MainWindowViewModel.FindAction is set; null = closed. Covers the whole window so a
+         click outside the popup closes it. -->
+    <ContentControl Content="{Binding FindAction}"
+                    IsVisible="{Binding FindAction, Converter={x:Static ObjectConverters.IsNotNull}}" />
+    </Panel>
 </Window>

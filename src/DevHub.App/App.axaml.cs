@@ -118,6 +118,8 @@ public partial class App : Application
         services.AddTransient<OpenWithSettingsPageViewModel>();
         services.AddTransient<SettingsDialogViewModel>();
         services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
+        services.AddTransient<FindActionViewModel>();
+        services.AddSingleton<Func<FindActionViewModel>>(sp => () => sp.GetRequiredService<FindActionViewModel>());
 
         // Shell.
         services.AddSingleton<MainWindowViewModel>();
@@ -129,6 +131,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
         services.AddSingleton<IActionProvider, DocumentActionProvider>();
         services.AddSingleton<IActionProvider, SettingsActionProvider>();
+        services.AddSingleton<IActionProvider, FindActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

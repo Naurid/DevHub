@@ -1,0 +1,123 @@
+<!--
+  Find Action overlay (Ctrl+Shift+A). Covers the whole window: a transparent "dismiss" layer
+  (click outside = close) and the popup itself near the top, like JetBrains.
+  Keys (KeyBindings below): ↑/↓ move the selection, Enter runs it, Esc closes. KeyBindings are
+  checked before the focused TextBox handles a key, so ↑/↓ work while typing.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:DevHub.ViewModels.Shell"
+             xmlns:c="clr-namespace:DevHub.Controls"
+             x:Class="DevHub.Views.Shell.FindActionView"
+             x:DataType="vm:FindActionViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Down" Command="{Binding MoveDownCommand}" />
+        <KeyBinding Gesture="Up" Command="{Binding MoveUpCommand}" />
+        <KeyBinding Gesture="Enter" Command="{Binding ExecuteCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding CloseCommand}" />
+    </UserControl.KeyBindings>
+
+    <UserControl.Styles>
+        <!-- Invisible full-window button: clicking outside the popup closes it. -->
+        <Style Selector="Button.dismiss">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Background="Transparent" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <!-- Result rows: the whole row is a flat button (click = run). -->
+        <Style Selector="Button.result">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="ListBox.results > ListBoxItem" x:DataType="vm:FindActionItem">
+            <Setter Property="Padding" Value="{DynamicResource Padding.ListItem}" />
+            <!-- The row's content is a Button, so screen readers would announce "Grid";
+                 name each result after its action instead. -->
+            <Setter Property="AutomationProperties.Name" Value="{Binding Action.DisplayName}" />
+        </Style>
+        <!-- Matched letters: bold + accent. -->
+        <Style Selector="TextBlock.match">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+        </Style>
+        <Style Selector="Grid.disabledRow">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+    </UserControl.Styles>
+
+    <Panel>
+        <Button Classes="dismiss" Command="{Binding CloseCommand}" />
+
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="{DynamicResource Margin.FindAction}"
+                Width="{DynamicResource Size.FindActionWidth}"
+                MaxHeight="{DynamicResource Size.FindActionMaxHeight}"
+                Background="{DynamicResource Brush.Bg.Popup}"
+                BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
+                CornerRadius="{DynamicResource Radius.Popup}"
+                BoxShadow="0 8 24 0 #40000000"
+                Padding="{DynamicResource Padding.Popup}">
+            <DockPanel>
+                <c:SearchField DockPanel.Dock="Top" Text="{Binding Query}"
+                               PlaceholderText="Type an action name…"
+                               c:FocusOnLoad.IsEnabled="True" />
+
+                <TextBlock DockPanel.Dock="Bottom" Classes="small secondary" Margin="8,6"
+                           Text="↑↓ select · Enter run · Esc close" />
+
+                <Panel>
+                    <ListBox Classes="results" Margin="0,4,0,0"
+                             ItemsSource="{Binding Results}"
+                             SelectedItem="{Binding Selected, Mode=TwoWay}"
+                             Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:FindActionItem">
+                                <Button Classes="result"
+                                        Command="{Binding $parent[UserControl].((vm:FindActionViewModel)DataContext).ExecuteCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                          ColumnSpacing="{DynamicResource Spacing}"
+                                          Classes.disabledRow="{Binding !IsEnabled}">
+                                        <c:Icon Kind="{Binding Action.IconKind}" VerticalAlignment="Center" />
+                                        <!-- Name, split into runs so matched letters can be highlighted. -->
+                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Segments}"
+                                                      VerticalAlignment="Center">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:TextSegment">
+                                                    <TextBlock Text="{Binding Text}" Classes.match="{Binding IsMatch}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <TextBlock Grid.Column="2" Classes="small secondary"
+                                                   Text="{Binding Action.Category}" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Classes="code secondary"
+                                                   Text="{Binding Action.Gesture}" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Classes="secondary" Margin="8,12" Text="Nothing found"
+                               IsVisible="{Binding !HasResults}" />
+                </Panel>
+            </DockPanel>
+        </Border>
+    </Panel>
+</UserControl>

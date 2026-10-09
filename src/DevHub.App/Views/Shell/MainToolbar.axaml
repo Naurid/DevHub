@@ -50,6 +50,8 @@
 
             <!-- Main toolbar actions. -->
             <c:Toolbar Grid.Column="3" WindowDecorationProperties.ElementRole="User">
+                <c:ActionButton Action="{a:Action App.FindAction}" />
+                <c:ToolbarSeparator />
                 <c:ActionButton Action="{a:Action Repositories.AddFolder}" />
                 <c:ActionButton Action="{a:Action Repositories.Rescan}" />
                 <c:ToolbarSeparator />

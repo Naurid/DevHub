@@ -129,6 +129,7 @@ Current providers:
 | `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact` |
 | `DocumentActionProvider` | one `Navigate.<DocumentId>` per document ("New Project…" Ctrl+N, …) and the tab actions `Editor.CloseTab` (Ctrl+F4), `Editor.NextTab` (Alt+Right), `Editor.PreviousTab` (Alt+Left). Added in UI-0 step 8, when pages became editor tabs. |
 | `SettingsActionProvider` | `App.Settings` "Settings…" (Ctrl+Alt+S) opens the Settings dialog. Takes a `Func<SettingsDialogViewModel>` factory so each opening gets a fresh dialog. Added in UI-0 step 9. |
+| `FindActionProvider` | `App.FindAction` "Find Action…" (Ctrl+Shift+A) opens the Find Action overlay. Uses a `Func<FindActionViewModel>` factory because the popup needs the registry that this provider is part of. Added in UI-0 step 10. |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
 | `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 
@@ -145,6 +146,7 @@ services.AddSingleton<IActionProvider, RepositoryActionProvider>();
 services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
 services.AddSingleton<IActionProvider, DocumentActionProvider>();
 services.AddSingleton<IActionProvider, SettingsActionProvider>();
+services.AddSingleton<IActionProvider, FindActionProvider>();
 services.AddSingleton<ActionRegistry>();
 ```
 
@@ -418,8 +420,12 @@ than just a word start (+6). That one-point difference is the reason start-of-te
 
 Initials and an in-word run come out almost equal, and the run wins by one point.
 JetBrains tends to favour initials here. Both are defensible, so no test locks either
-behaviour in. A comment in `FuzzyMatcher.cs` flags it for revisiting in step 10, once real
-action names exist to tune against.
+behaviour in.
+
+**Decision (step 10):** left as is. With the real action names the case doesn't come up:
+no two actions compete as "initials vs. in-word run", and the queries tried in the running
+app ranked sensibly ("tdt" → Toggle Dark Theme, "tab" → Next / Close / Previous Tab,
+"repo" → Repositories first). Revisit only if a real search ranks badly; add it as a test first.
 
 ### How it finds the best alignment (dynamic programming)
 
@@ -476,18 +482,20 @@ The failure message prints both scores, e.g.
 `'theme': 'Toggle Theme' scored 31, 'The Merge' scored 33`, so you can see by how much it
 lost.
 
-### How step 10 will use it
+### How Find Action uses it (step 10)
 
-Roughly:
+`ViewModels/Shell/FindActionViewModel.cs`, opened with Ctrl+Shift+A:
 
-```csharp
-var results = registry.All
-    .Select(a => (Action: a, Match: FuzzyMatcher.Match(query, a.DisplayName)))
-    .Where(r => r.Match is not null)
-    .OrderByDescending(r => r.Match!.Score)
-    .ThenBy(r => r.Action.DisplayName.Length);   // shorter name wins a tie
-```
+1. **Match the name first:** `FuzzyMatcher.Match(query, action.Text)`.
+2. **Then the category:** if the name alone doesn't match, try `"Category: Text"` (the
+   `DisplayName`), so "repo rescan" still finds Rescan. Such matches score 10 points lower,
+   and only the positions inside the name are kept for highlighting.
+3. **Sort:** score (best first), then enabled before disabled, then shorter names, then
+   A–Z. At most 50 rows; an empty query lists everything.
+4. **Highlight:** `FindActionItem` splits the name into runs of matched / unmatched
+   characters (`TextSegment`), shown as a row of TextBlocks with the matched ones bold
+   and accent-coloured.
+5. **Run:** Enter (or a click) closes the popup, then runs `Action.Command`. A disabled
+   action is listed, greyed out, and does nothing when chosen, the way JetBrains does it.
 
-`Match.Positions` then drives bold or highlighted characters in each row, and pressing
-Enter runs `Action.Command`. Disabled actions can still be listed (greyed out), the way
-JetBrains does it.
+The popup leaves out its own action ("Find Action…").

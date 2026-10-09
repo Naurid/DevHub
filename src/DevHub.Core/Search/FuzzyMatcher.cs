@@ -24,8 +24,8 @@ public static class FuzzyMatcher
     // two word starts) above "Toggle Theme" (the whole word). Start-of-text is one more
     // than a word start so "Push" beats "Git: Push" for "push".
     // Trade-off: initials ("scan" → Show Changes And Notes) and a run inside a word
-    // ("scan" → Rescan) now score about the same; the run wins narrowly. Revisit in the
-    // Find Action popup (UI-0 step 10) with real action names before tuning further.
+    // ("scan" → Rescan) score about the same; the run wins narrowly. Checked with the real
+    // action names in Find Action (UI-0 step 10): no conflict, so left as is.
     internal const int MatchScore = 1;
     internal const int StartOfTextBonus = 7;
     internal const int WordStartBonus = 6;

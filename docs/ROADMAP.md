@@ -31,7 +31,7 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 7. Tool-window framework (fixed slots, stripes, persisted layout); Repositories → tree tool window
 - [x] 8. Editor area (document tabs) + Welcome view; Generate/Import as documents; drop sidebar
 - [x] 9. Dialog framework + Settings dialog (Ctrl+Alt+S): Open With + Appearance pages, persisted
-- [ ] 10. Find Action popup (Ctrl+Shift+A)
+- [x] 10. Find Action popup (Ctrl+Shift+A)
 - [ ] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
 
 ## M0 — Skeleton

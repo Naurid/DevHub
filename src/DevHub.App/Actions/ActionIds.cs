@@ -20,6 +20,7 @@ public static class ActionIds
 
     // App
     public const string OpenSettings = "App.Settings";
+    public const string FindAction = "App.FindAction";
 
     // Repositories
     public const string AddScanFolder = "Repositories.AddFolder";

@@ -38,6 +38,7 @@ public static class MainMenu
                 .. gallery,
             ]),
             Group(registry, "Repositories", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
+            Group(registry, "Help", [ActionIds.FindAction]),
         ];
     }
 
