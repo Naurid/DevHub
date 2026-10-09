@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             xmlns:repo="clr-namespace:DevHub.Core.Repositories;assembly=DevHub.Core"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             x:Class="DevHub.Views.Pages.RepositoriesView"
+             x:DataType="pages:RepositoriesViewModel"
+             x:Name="PageRoot">
+
+    <UserControl.Styles>
+        <!-- Primary (accent) button that keeps its colour across hover/pressed. -->
+        <Style Selector="Button.primary /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Foreground" Value="#0B0F0C" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="16">
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="24" FontWeight="SemiBold"
+                   Foreground="{StaticResource TextPrimaryBrush}" />
+
+        <!-- Folders to scan -->
+        <Border Grid.Row="1" Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                CornerRadius="0" Padding="16">
+            <StackPanel Spacing="10">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Add folder…"
+                            Command="{Binding AddFolderCommand}" />
+                    <TextBlock Text="FOLDERS TO SCAN" FontWeight="SemiBold" FontSize="12"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
+                </DockPanel>
+
+                <TextBlock Text="No folders added yet — add one to scan."
+                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"
+                           IsVisible="{Binding !HasFolders}" />
+
+                <ItemsControl ItemsSource="{Binding ScanFolders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="sys:String">
+                            <DockPanel Margin="0,2">
+                                <Button DockPanel.Dock="Right" Content="Remove"
+                                        Command="{Binding #PageRoot.((pages:RepositoriesViewModel)DataContext).RemoveFolderCommand}"
+                                        CommandParameter="{Binding}" />
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis" FontSize="13"
+                                           Foreground="{StaticResource TextPrimaryBrush}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Scan bar -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+            <Button Content="Scan" Classes="primary" Command="{Binding ScanCommand}" />
+            <ProgressBar IsIndeterminate="True" Width="120" CornerRadius="0"
+                         Foreground="{StaticResource AccentBrush}"
+                         IsVisible="{Binding IsScanning}" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center"
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" />
+        </StackPanel>
+
+        <!-- Results: one card per repository (room to grow: branch, status, actions). -->
+        <ScrollViewer Grid.Row="3">
+            <ItemsControl ItemsSource="{Binding Repositories}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="repo:GitRepository">
+                        <Border Background="{StaticResource CardBackgroundBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="0" Padding="14" Margin="0,0,0,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <!-- Left: name + language badge, then path. -->
+                                <StackPanel Grid.Column="0" Spacing="6" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                                        <Border BorderBrush="{StaticResource AccentBrush}" BorderThickness="1"
+                                                CornerRadius="0" Padding="6,1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Language.DisplayName}" FontSize="11"
+                                                       Foreground="{StaticResource AccentBrush}" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Path}" FontSize="12"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{StaticResource TextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <!-- Right: actions. -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8"
+                                            VerticalAlignment="Center">
+                                    <Button Content="Open" Classes="primary"
+                                            Command="{Binding #PageRoot.((pages:RepositoriesViewModel)DataContext).OpenCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="Open in Explorer"
+                                            Command="{Binding #PageRoot.((pages:RepositoriesViewModel)DataContext).RevealCommand}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
