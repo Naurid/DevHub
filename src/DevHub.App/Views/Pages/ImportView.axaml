@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
+             x:Class="DevHub.Views.Pages.ImportView"
+             x:DataType="pages:ImportViewModel">
+    <StackPanel Spacing="16">
+        <TextBlock Text="{Binding Title}" FontSize="26" FontWeight="SemiBold"
+                   Foreground="{StaticResource TextPrimaryBrush}" />
+        <Border Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                CornerRadius="0" Padding="20">
+            <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" />
+        </Border>
+    </StackPanel>
+</UserControl>

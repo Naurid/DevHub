@@ -1,0 +1,50 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DevHub"
+             x:Class="DevHub.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <!-- Maps a *ViewModel to its *View by naming convention. -->
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <!-- Monospace stack: prefer JetBrains Mono if installed, else Cascadia Mono / Consolas. -->
+        <FontFamily x:Key="AppFontFamily">JetBrains Mono, Cascadia Mono, Cascadia Code, Consolas, monospace</FontFamily>
+
+        <!-- Sharp everything: override Fluent's default rounded corners globally. -->
+        <CornerRadius x:Key="ControlCornerRadius">0</CornerRadius>
+        <CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius>
+
+        <!-- Dark-grey palette with a green hue. -->
+        <Color x:Key="AccentColor">#25A146</Color>
+        <Color x:Key="AccentColorHover">#2DBE55</Color>
+
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#121513" />
+        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#171A18" />
+        <SolidColorBrush x:Key="CardBackgroundBrush" Color="#1B1F1C" />
+        <SolidColorBrush x:Key="CardHoverBrush" Color="#20251F" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#2A302B" />
+        <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}" />
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="{DynamicResource AccentColorHover}" />
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E6EAE6" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8B938C" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <!-- Green accent + dark-grey base for Fluent's own control states. -->
+                <ColorPaletteResources x:Key="Dark"
+                                       Accent="#25A146"
+                                       RegionColor="#121513" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
+
+        <!-- Monospace font app-wide (FontFamily inherits down from the window). -->
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}" />
+        </Style>
+    </Application.Styles>
+</Application>

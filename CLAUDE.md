@@ -1,0 +1,133 @@
+# DevHub — Project Guide
+
+Desktop app for setting up **templates for new projects** (any language/framework:
+a folder hierarchy plus starter files) and **file/script templates** (e.g. a C# class,
+a Unity MonoBehaviour, a Python module) stamped into existing folders. You pick a
+template, fill in variables, and DevHub generates the files and optionally runs
+post-create commands (`git init`, `dotnet restore`, `npm install`, ...).
+
+Completely standalone — unrelated to any other project on this machine.
+
+## Stack
+- .NET 10 target (`net10.0`) — the current LTS (installed SDK: 10.0.401). Avalonia 12's
+  source generators need Roslyn ≥ 4.14, which the .NET 10 SDK provides. Symptom on an
+  older SDK: warning CS9057 ("analyzer references version 4.14.0.0 of the compiler")
+  followed by `CS0103: The name 'InitializeComponent' does not exist`. Fix = update the
+  SDK, not the code.
+- Avalonia **12.x** (12.1.3 was latest stable on 2026-09-25) + Fluent theme + Inter font
+- CommunityToolkit.Mvvm 8.4.x (`[ObservableProperty]`, `[RelayCommand]` source generators)
+- Microsoft.Extensions.DependencyInjection for composition
+- System.Text.Json for manifests and settings
+- xUnit for `DevHub.Core.Tests`
+
+**Avalonia 12 caution:** most Avalonia examples online (and in model training data)
+target 11.x, and 12 has breaking changes. When you're unsure an API still exists
+or a build error looks like an API change, check docs.avaloniaui.net or the 12.x
+migration notes before guessing. Don't downgrade packages to make old snippets
+compile.
+
+## Solution layout (target — see docs/ROADMAP.md for what exists yet)
+
+```
+DevHub.sln
+src/
+  DevHub.Core/          class library — NO Avalonia reference, ever
+    Templates/          manifest model, loading/saving, validation
+    Rendering/          placeholder engine (names + contents)
+    Generation/         project generator, file-template stamper
+    Import/             folder → template importer, ignore globs
+    Commands/           post-create command runner
+    Storage/            template library location, settings
+  DevHub.App/           Avalonia UI (MVVM) — references Core only
+    Views/  ViewModels/  Services/ (dialogs, folder pickers, clipboard)
+tests/
+  DevHub.Core.Tests/    xUnit, tests Core only
+docs/
+  TEMPLATE_FORMAT.md    the template spec — single source of truth
+  ROADMAP.md            milestones + checkboxes; the "where are we" file
+```
+
+**Dependency direction: `App → Core`, `Tests → Core`. Nothing references `App`.**
+All logic that can be tested without a window lives in Core. If you catch yourself
+writing file I/O, path math, or string templating in a ViewModel, move it to a
+Core service and inject it.
+
+## Build / run / verify
+```
+dotnet build
+dotnet test
+dotnet run --project src/DevHub.App
+```
+- Core changes: verify with `dotnet test` — add or extend tests for every engine
+  behavior change (renderer, generator, importer, ignore rules). This is the one
+  part of the app where regressions silently corrupt user files.
+- UI changes: Claude can build but cannot see the window. Finish UI work with a
+  short **manual check list** for the user (what to click, what should appear).
+
+## Core rules (engine correctness — non-negotiable)
+Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
+- **Unknown `{{...}}` tokens pass through untouched.** Templates contain Vue,
+  Handlebars, Jinja, Go templates, GitHub Actions `${{ }}` etc. Only exact
+  declared/built-in variable names are substituted.
+- **Never write outside the target root.** Resolve every rendered path and reject
+  anything that escapes it (`..`, absolute paths, drive letters from variables).
+- **Generate into a staging folder, then move.** A failure mid-generation must not
+  leave a half-written project in the user's chosen folder.
+- **Binary files are copied byte-for-byte**, never rendered.
+- **Never overwrite existing files silently** — detect conflicts first and let the
+  UI ask.
+- **Post-create commands never run without the user seeing them first** (templates
+  can be shared; they're arbitrary code execution). Run via `ProcessStartInfo`
+  with `ArgumentList`, `UseShellExecute = false` — never concatenate a shell string.
+
+## App rules (MVVM) — details in the `avalonia-mvvm` skill
+- ViewModels never reference `Views`, `Window`, `TopLevel` or Avalonia controls;
+  dialogs/pickers go through an interface in `App/Services`.
+- Compiled bindings everywhere (`x:DataType` on every view).
+- All disk/process work is `async`; never `.Result`/`.Wait()` on the UI thread.
+- Every `event`/`+=` subscription has a matching `-=` on the paired lifecycle
+  hook; use `event` rather than public delegate fields.
+
+## Natural-language commands (roadmap M10 — design rules from day one)
+A local, user-trained model turns text into a structured tool call; it's a
+learning project, so simplicity and inspectability beat capability.
+- **The model only proposes, it never acts.** Output is a `DevHubCommand`
+  (tool name + arguments) that goes through `CommandValidator` and a confirmation
+  screen, then the *same* Core services the UI uses. No AI-only code paths.
+- **One seam:** `ICommandInterpreter` in Core. Rule-based, ML.NET and fine-tuned
+  LLM interpreters are interchangeable implementations, all scored by the same
+  evaluation harness and test set.
+- **Keep Core free of ML dependencies.** ML.NET/ONNX packages go in their own
+  project(s) (e.g. `DevHub.Nlp`, `DevHub.Training`); Python training code lives in
+  `training/`, never referenced by the app. Model files are build artifacts —
+  don't commit large binaries.
+- **Everything local.** No cloud APIs, no telemetry; the usage log is opt-in and
+  stays on disk.
+- **Design the rest of the app so this slots in cleanly:** keep generation,
+  stamping and import as Core services with plain argument objects that a
+  `DevHubCommand` can map to — don't bury that logic in ViewModels.
+- When helping with this milestone, **teach**: explain dataset design,
+  train/test splits, metrics, overfitting, and (Stage 2) tokenization, LoRA and
+  quantization as they come up.
+
+## Working with the user
+The user is learning as they build this app. They're experienced in C# (Unity
+background) but may be new to Avalonia/XAML/MVVM and desktop app architecture.
+- Explain **why** a design choice is made, briefly, the first time a concept
+  appears (DataContext, bindings, DI, source generators, staging dirs, ...). Unity
+  analogies help (e.g. ViewModel ≈ a plain C# model a MonoBehaviour would read).
+- Keep steps small and runnable — each step ends with something that builds.
+- Ask whether they want to **write it themselves** (you review + hint) or **have
+  you write it** (you explain afterwards) when starting a new roadmap task,
+  unless they already said.
+- Keep `docs/ROADMAP.md` checkboxes current when a task is completed.
+- Use `/next-step` to pick up where the last session left off.
+
+## Scope decisions (don't change without asking)
+- Templates are **folder + `template.json` manifest** on disk (not a single-file
+  bundle). Sharing/zip export is a later roadmap item.
+- Template library lives in `%APPDATA%/DevHub/` (resolved via
+  `Environment.SpecialFolder.ApplicationData`); a settings option may override it.
+- No conditional/loop logic in templates for v1 — plain substitution only.
+  Conditionals are a listed future item; don't add a full template language.
+- Windows first, but keep Core path-agnostic (`Path.Combine`, no hard-coded `\`).
