@@ -16,4 +16,9 @@ public static class ActionIds
     // Repositories
     public const string AddScanFolder = "Repositories.AddFolder";
     public const string RescanRepositories = "Repositories.Rescan";
+
+    // Tool windows
+    /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>
+    public const string ToolWindowPrefix = "ToolWindow.";
+    public const string HideAllToolWindows = "ToolWindow.HideAll";
 }

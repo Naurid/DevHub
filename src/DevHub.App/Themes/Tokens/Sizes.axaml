@@ -24,6 +24,8 @@
     <!-- Room kept free on the right of the title bar for the window's min/max/close buttons
          (Avalonia draws them on top of our content: 3 × 45px + gaps). -->
     <x:Double x:Key="Size.CaptionButtonsReserve">142</x:Double>
+    <!-- Tool-window stripe buttons (inside the Size.StripeWidth strip). -->
+    <x:Double x:Key="Size.StripeButton">30</x:Double>
     <!-- Fluent key (not a DevHub token): height of those caption buttons. Kept equal to
          Size.ToolbarHeight so they fill the title bar; overridden in Compact too. -->
     <x:Double x:Key="CaptionButtonHeight">40</x:Double>

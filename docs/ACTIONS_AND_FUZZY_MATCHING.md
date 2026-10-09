@@ -126,11 +126,12 @@ Current providers:
 
 | Provider | Actions |
 |---|---|
-| `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact`, and one `Navigate.<Page>` per sidebar page (Alt+1 … Alt+6) |
+| `ViewActionProvider` | `View.ToggleTheme` (Ctrl+Alt+D), `View.ToggleCompact`, and one `Navigate.<Page>` per sidebar page (no shortcuts) |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
+| `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 
 The navigation ids come from the page's ViewModel type name minus "ViewModel":
-`RepositoriesViewModel` → `Navigate.Repositories`, `UiGalleryViewModel` → `Navigate.UiGallery`.
+`TemplatesViewModel` → `Navigate.Templates`, `UiGalleryViewModel` → `Navigate.UiGallery`.
 
 ### `ActionRegistry`: collecting them
 
@@ -139,6 +140,7 @@ Registration in `App.axaml.cs`:
 ```csharp
 services.AddSingleton<IActionProvider, ViewActionProvider>();
 services.AddSingleton<IActionProvider, RepositoryActionProvider>();
+services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
 services.AddSingleton<ActionRegistry>();
 ```
 
@@ -183,8 +185,7 @@ Avalonia, so action definitions can keep the readable form. **Always use
 `Gestures.Parse`, never `KeyGesture.Parse` directly.**
 
 Display is fine: menus format `Key.D1` back to "1" (Avalonia's `KeyGestureFormatInfo` maps
-`D0`…`D9` to digits), so the main menu's Navigate group shows "Alt+1" … "Alt+6". Verified
-in step 6.
+`D0`…`D9` to digits), so menus show "Alt+1", not "Alt+D1". Verified in step 6.
 
 ### `MenuBuilder`: menus from ids
 

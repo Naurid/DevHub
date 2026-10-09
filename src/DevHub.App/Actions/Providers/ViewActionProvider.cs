@@ -24,8 +24,8 @@ public sealed class ViewActionProvider(IThemeService theme, MainWindowViewModel 
             Category = "View",
         };
 
-        // One action per sidebar page, Alt+1..9 like JetBrains' tool window shortcuts.
-        var number = 1;
+        // One action per sidebar page. No shortcuts: Alt+1… belong to tool windows now
+        // (JetBrains convention), and the sidebar itself goes away in UI-0 step 8.
         foreach (var page in shell.Pages)
         {
             yield return new AppAction(ActionIds.NavigatePrefix + page.GetType().Name.Replace("ViewModel", ""),
@@ -34,9 +34,7 @@ public sealed class ViewActionProvider(IThemeService theme, MainWindowViewModel 
             {
                 Category = "Navigate",
                 IconKind = page.Icon,
-                Gesture = number <= 9 ? $"Alt+{number}" : null,
             };
-            number++;
         }
     }
 }

@@ -11,14 +11,21 @@ public static class MainMenu
 {
     public static IReadOnlyList<Control> Build(ActionRegistry registry)
     {
-        // Navigation actions are generated per page, so collect them by prefix.
+        // Navigation and tool-window actions are generated per page / tool window, so collect
+        // them by id prefix.
         var navigate = registry.All
             .Where(a => a.Id.StartsWith(ActionIds.NavigatePrefix, StringComparison.Ordinal))
+            .Select(a => a.Id);
+        var toolWindows = registry.All
+            .Where(a => a.Id.StartsWith(ActionIds.ToolWindowPrefix, StringComparison.Ordinal)
+                        && a.Id != ActionIds.HideAllToolWindows)
             .Select(a => a.Id);
 
         return
         [
-            Group(registry, "View", [ActionIds.ToggleTheme, ActionIds.ToggleCompact]),
+            Group(registry, "View",
+                [.. toolWindows, MenuBuilder.Separator, ActionIds.HideAllToolWindows,
+                 MenuBuilder.Separator, ActionIds.ToggleTheme, ActionIds.ToggleCompact]),
             Group(registry, "Navigate", navigate),
             Group(registry, "Repositories", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
         ];

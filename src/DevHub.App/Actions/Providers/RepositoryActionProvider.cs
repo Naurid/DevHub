@@ -1,11 +1,11 @@
 using DevHub.Controls;
-using DevHub.ViewModels.Pages;
+using DevHub.ViewModels.ToolWindows;
 
 namespace DevHub.Actions.Providers;
 
 /// <summary>
-/// Repository actions. They wrap the page's existing commands, so CanExecute (e.g. "Rescan"
-/// is disabled while scanning or with no folders) is shared with the page's own buttons.
+/// Repository actions. They wrap the tool window's existing commands, so CanExecute (e.g. "Rescan"
+/// is disabled while scanning or with no folders) is shared with the tool window's own buttons.
 /// </summary>
 public sealed class RepositoryActionProvider(RepositoriesViewModel repositories) : IActionProvider
 {

@@ -1,0 +1,41 @@
+<!--
+  A 1px line with a wider invisible grab area. The thumb is 5px wide/tall so it's easy to hit;
+  only the centered 1px Border is drawn.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:DevHub.Controls">
+
+    <ControlTheme x:Key="{x:Type c:SplitterThumb}" TargetType="c:SplitterThumb">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="5" />
+        <Setter Property="Cursor" Value="SizeWestEast" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="PART_Line"
+                            Background="{DynamicResource Brush.Border}"
+                            Width="1" HorizontalAlignment="Center" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[Orientation=Horizontal]">
+            <Setter Property="Width" Value="NaN" />
+            <Setter Property="Height" Value="5" />
+            <Setter Property="Cursor" Value="SizeNorthSouth" />
+        </Style>
+        <Style Selector="^[Orientation=Horizontal] /template/ Border#PART_Line">
+            <Setter Property="Width" Value="NaN" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!-- Highlight while hovering/dragging so the grab area is discoverable. -->
+        <Style Selector="^:pointerover /template/ Border#PART_Line">
+            <Setter Property="Background" Value="{DynamicResource Brush.Accent}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

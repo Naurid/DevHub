@@ -97,6 +97,21 @@
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
+    <!-- Tool-window stripe buttons: an ActionButton with the "stripe" class; "active" while its
+         tool window is open (Classes.active="{Binding IsOpen}"). -->
+    <Style Selector="c|ActionButton.stripe">
+        <Setter Property="Width" Value="{DynamicResource Size.StripeButton}" />
+        <Setter Property="Height" Value="{DynamicResource Size.StripeButton}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="c|ActionButton.stripe /template/ c|Icon">
+        <Setter Property="Width" Value="{DynamicResource Size.StripeIcon}" />
+        <Setter Property="Height" Value="{DynamicResource Size.StripeIcon}" />
+    </Style>
+    <Style Selector="c|ActionButton.stripe.active">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.SelectionInactive}" />
+    </Style>
+
     <!-- Flat, text-only buttons in the status bar ("Dark", "Compact"…). -->
     <Style Selector="Button.statusWidget">
         <Setter Property="Background" Value="Transparent" />

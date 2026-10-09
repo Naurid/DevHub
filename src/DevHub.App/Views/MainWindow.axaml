@@ -6,6 +6,8 @@
         xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
         xmlns:c="clr-namespace:DevHub.Controls"
         xmlns:shell="clr-namespace:DevHub.Views.Shell"
+        xmlns:tw="clr-namespace:DevHub.ViewModels.ToolWindows"
+        xmlns:conv="clr-namespace:DevHub.Converters"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="640"
         x:Class="DevHub.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -47,10 +49,80 @@
         </Style>
     </Window.Styles>
 
-    <DockPanel>
+    <Window.Resources>
+        <conv:FractionConverter x:Key="Fraction" />
+        <!-- One icon button per tool window in a stripe; highlighted while its window is open. -->
+        <DataTemplate x:Key="StripeButtonTemplate" x:DataType="tw:ToolWindowViewModelBase">
+            <c:ActionButton Classes="stripe" Classes.active="{Binding IsOpen}"
+                            IconKind="{Binding IconKind}"
+                            ToolTip.Tip="{Binding ToolTip}"
+                            Command="{Binding ToggleCommand}"
+                            Margin="0,2" />
+        </DataTemplate>
+    </Window.Resources>
+
+    <!-- Named so the tool-window slots can limit themselves to a share of its size. -->
+    <DockPanel x:Name="WorkArea">
         <shell:MainToolbar DockPanel.Dock="Top" />
         <!-- StatusBarViewModel → StatusBarView via the ViewLocator. -->
         <ContentControl DockPanel.Dock="Bottom" Content="{Binding StatusBar}" />
+
+        <!-- ===== Tool windows (UI-0 step 7) =====
+             DockPanel docks children in order, so: stripes at the outer edges, then each slot
+             with its splitter, then the center fills what's left. Bottom is docked after
+             left/right, so it spans only the center (like Rider). -->
+
+        <!-- Left stripe: left-slot tool windows at the top, bottom-slot ones at the bottom. -->
+        <Border DockPanel.Dock="Left" Width="{DynamicResource Size.StripeWidth}"
+                Background="{DynamicResource Brush.Bg.Panel}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0"
+                Padding="0,4">
+            <DockPanel>
+                <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding ToolWindows.BottomStripe}"
+                              ItemTemplate="{StaticResource StripeButtonTemplate}" />
+                <ItemsControl ItemsSource="{Binding ToolWindows.LeftStripe}"
+                              ItemTemplate="{StaticResource StripeButtonTemplate}" />
+            </DockPanel>
+        </Border>
+
+        <!-- Right stripe (hidden while no tool window lives on the right). -->
+        <Border DockPanel.Dock="Right" Width="{DynamicResource Size.StripeWidth}"
+                Background="{DynamicResource Brush.Bg.Panel}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1,0,0,0"
+                Padding="0,4"
+                IsVisible="{Binding ToolWindows.HasRightStripe}">
+            <ItemsControl ItemsSource="{Binding ToolWindows.RightStripe}"
+                          ItemTemplate="{StaticResource StripeButtonTemplate}" />
+        </Border>
+
+        <!-- Slots: the open tool window's ViewModel → its View (ViewLocator); hidden when empty.
+             SplitterThumbs resize them by changing the bound width/height (saved on close).
+             Max sizes: a slot never takes more than 45% of the width (60% of the height for the
+             bottom), both while dragging (SplitterThumb.MaximumFraction) and when the window
+             shrinks or a saved size is too big (MaxWidth/MaxHeight here). -->
+        <ContentControl DockPanel.Dock="Left" Width="{Binding ToolWindows.LeftWidth}"
+                        MaxWidth="{Binding #WorkArea.Bounds.Width, Converter={StaticResource Fraction}, ConverterParameter=0.45}"
+                        Content="{Binding ToolWindows.Left}"
+                        IsVisible="{Binding ToolWindows.Left, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding ToolWindows.LeftWidth}"
+                         IsVisible="{Binding ToolWindows.Left, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <ContentControl DockPanel.Dock="Right" Width="{Binding ToolWindows.RightWidth}"
+                        MaxWidth="{Binding #WorkArea.Bounds.Width, Converter={StaticResource Fraction}, ConverterParameter=0.45}"
+                        Content="{Binding ToolWindows.Right}"
+                        IsVisible="{Binding ToolWindows.Right, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <c:SplitterThumb DockPanel.Dock="Right" Value="{Binding ToolWindows.RightWidth}" Invert="True"
+                         IsVisible="{Binding ToolWindows.Right, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <ContentControl DockPanel.Dock="Bottom" Height="{Binding ToolWindows.BottomHeight}"
+                        MaxHeight="{Binding #WorkArea.Bounds.Height, Converter={StaticResource Fraction}, ConverterParameter=0.6}"
+                        Content="{Binding ToolWindows.Bottom}"
+                        IsVisible="{Binding ToolWindows.Bottom, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <c:SplitterThumb DockPanel.Dock="Bottom" Value="{Binding ToolWindows.BottomHeight}"
+                         Orientation="Horizontal" Invert="True" Minimum="80" MaximumFraction="0.6"
+                         IsVisible="{Binding ToolWindows.Bottom, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <!-- ===== Center: sidebar + page (replaced by the editor area in step 8) ===== -->
 
         <Grid ColumnDefinitions="220,*">
     

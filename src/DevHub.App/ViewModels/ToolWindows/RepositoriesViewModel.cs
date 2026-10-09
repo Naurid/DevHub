@@ -1,0 +1,211 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using DevHub.Controls;
+using DevHub.Core.Projects;
+using DevHub.Core.Repositories;
+using DevHub.Core.Search;
+using DevHub.Core.Settings;
+using DevHub.Services;
+
+namespace DevHub.ViewModels.ToolWindows;
+
+/// <summary>
+/// The Repositories tool window (left side, Alt+1): the folders you chose to scan, each with
+/// the git repositories found under it, as a tree. All file-system work lives in
+/// <see cref="IRepositoryScanner"/> (Core); this drives it and shapes the results for the tree.
+/// </summary>
+public partial class RepositoriesViewModel : ToolWindowViewModelBase
+{
+    private readonly IRepositoryScanner _scanner;
+    private readonly IDialogService _dialogs;
+    private readonly IProjectLauncher _launcher;
+    private readonly IStatusService _status;
+    private readonly ISettingsStore _store;
+
+    /// <summary>Results of the last scan (flat). The tree is built from this + the folders.</summary>
+    private IReadOnlyList<GitRepository> _repositories = [];
+
+    public override string Id => "repositories";
+    public override string Title => "Repositories";
+    public override string IconKind => Controls.IconKind.Folder;
+    public override ToolWindowSlot Slot => ToolWindowSlot.Left;
+
+    /// <summary>Folders the user has chosen to scan; saved in settings.</summary>
+    public ObservableCollection<string> ScanFolders { get; } = new();
+
+    /// <summary>Tree roots: one node per scan folder, repositories as children.</summary>
+    public ObservableCollection<ScanFolderNode> Roots { get; } = new();
+
+    /// <summary>True when at least one folder is designated (drives the empty state).</summary>
+    public bool HasFolders => ScanFolders.Count > 0;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ScanCommand))]
+    private bool _isScanning;
+
+    /// <summary>Search box text; filters repositories by fuzzy name match.</summary>
+    [ObservableProperty] private string _filter = "";
+
+    public RepositoriesViewModel(IRepositoryScanner scanner, IDialogService dialogs, IProjectLauncher launcher,
+        IStatusService status, ISettingsStore store)
+    {
+        _scanner = scanner;
+        _dialogs = dialogs;
+        _launcher = launcher;
+        _status = status;
+        _store = store;
+
+        foreach (var folder in _store.Load().RepositoryFolders)
+            ScanFolders.Add(folder);
+        RebuildTree();
+
+        // Adding/removing a folder: Scan's CanExecute, the empty state, the tree and settings change.
+        ScanFolders.CollectionChanged += (_, _) =>
+        {
+            ScanCommand.NotifyCanExecuteChanged();
+            OnPropertyChanged(nameof(HasFolders));
+            RebuildTree();
+            var folders = ScanFolders.ToList();
+            _store.Update(s => s.RepositoryFolders = folders);
+        };
+    }
+
+    partial void OnFilterChanged(string value) => RebuildTree();
+
+    [RelayCommand]
+    private async Task AddFolderAsync()
+    {
+        var folder = await _dialogs.PickFolderAsync("Choose a folder to scan");
+        if (!string.IsNullOrEmpty(folder) &&
+            !ScanFolders.Contains(folder, StringComparer.OrdinalIgnoreCase))
+        {
+            ScanFolders.Add(folder);
+        }
+    }
+
+    private bool CanScan() => !IsScanning && ScanFolders.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanScan))]
+    private async Task ScanAsync()
+    {
+        IsScanning = true;
+        _status.Show("Scanning…");
+        try
+        {
+            _repositories = await _scanner.ScanAsync(ScanFolders.ToList());
+            RebuildTree();
+
+            _status.Show(_repositories.Count switch
+            {
+                0 => "No git repositories found.",
+                1 => "Found 1 repository.",
+                _ => $"Found {_repositories.Count} repositories."
+            });
+        }
+        finally
+        {
+            IsScanning = false;
+        }
+    }
+
+    private void RemoveFolder(string folder) => ScanFolders.Remove(folder);
+
+    private void Open(GitRepository repo)
+    {
+        try
+        {
+            _launcher.Open(repo);
+            _status.Show($"Opened {repo.Name}.");
+        }
+        catch (Exception ex)
+        {
+            _status.Show($"Couldn't open {repo.Name}: {ex.Message}");
+        }
+    }
+
+    private void Reveal(GitRepository repo)
+    {
+        try
+        {
+            _launcher.RevealInFileManager(repo);
+        }
+        catch (Exception ex)
+        {
+            _status.Show($"Couldn't reveal {repo.Name}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds the tree from the folders, the last scan and the filter. Each repository goes
+    /// under the (longest) scan folder that contains it. With a filter, only fuzzy matches are
+    /// shown, best first, and folders without matches are hidden.
+    /// </summary>
+    private void RebuildTree()
+    {
+        Roots.Clear();
+        var filtering = !string.IsNullOrWhiteSpace(Filter);
+
+        foreach (var folder in ScanFolders)
+        {
+            var repos = _repositories
+                .Where(r => OwningFolder(r.Path) == folder)
+                .Select(r => (Repo: r, Match: filtering ? FuzzyMatcher.Match(Filter, r.Name) : null))
+                .Where(x => !filtering || x.Match is not null)
+                .OrderByDescending(x => x.Match?.Score ?? 0)
+                .ThenBy(x => x.Repo.Name, StringComparer.OrdinalIgnoreCase)
+                .Select(x => new RepositoryNode(x.Repo, Open, Reveal))
+                .ToList();
+
+            if (filtering && repos.Count == 0)
+                continue;
+
+            Roots.Add(new ScanFolderNode(folder, repos, RemoveFolder));
+        }
+    }
+
+    private string? OwningFolder(string repoPath) =>
+        ScanFolders
+            .Where(f => repoPath.StartsWith(f.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(f => f.Length)
+            .FirstOrDefault();
+}
+
+/// <summary>A scan folder in the tree (expanded by default).</summary>
+public sealed partial class ScanFolderNode : ObservableObject
+{
+    public ScanFolderNode(string path, IReadOnlyList<RepositoryNode> repositories, Action<string> remove)
+    {
+        Path = path;
+        Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
+        Repositories = repositories;
+        RemoveCommand = new RelayCommand(() => remove(Path));
+    }
+
+    public string Path { get; }
+    public string Name { get; }
+    public IReadOnlyList<RepositoryNode> Repositories { get; }
+    public string CountText => Repositories.Count.ToString();
+    public RelayCommand RemoveCommand { get; }
+
+    [ObservableProperty] private bool _isExpanded = true;
+}
+
+/// <summary>A repository leaf in the tree. Carries its own commands so the context menu can bind directly.</summary>
+public sealed class RepositoryNode
+{
+    public RepositoryNode(GitRepository repository, Action<GitRepository> open, Action<GitRepository> reveal)
+    {
+        Repository = repository;
+        OpenCommand = new RelayCommand(() => open(repository));
+        RevealCommand = new RelayCommand(() => reveal(repository));
+    }
+
+    public GitRepository Repository { get; }
+    public string Name => Repository.Name;
+    public string Path => Repository.Path;
+    public string Language => Repository.Language.DisplayName;
+    public string IconKind => Controls.IconKind.Folder;
+    public RelayCommand OpenCommand { get; }
+    public RelayCommand RevealCommand { get; }
+}

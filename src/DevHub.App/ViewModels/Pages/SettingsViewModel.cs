@@ -58,6 +58,9 @@ public class SettingsViewModel : PageViewModelBase
                 _settings.LanguageTools[row.LanguageId] = choice;
         }
 
-        _store.Save(_settings);
+        // Update = load fresh, replace only our section, save. Saving _settings itself would
+        // overwrite sections other features saved since startup (e.g. the tool-window layout).
+        var languageTools = new Dictionary<string, LanguageToolChoice>(_settings.LanguageTools);
+        _store.Update(s => s.LanguageTools = languageTools);
     }
 }

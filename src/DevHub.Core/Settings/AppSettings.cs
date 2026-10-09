@@ -10,4 +10,13 @@ public sealed class AppSettings
 {
     /// <summary>Language id → chosen tool. Missing keys mean "use the default policy".</summary>
     public Dictionary<string, LanguageToolChoice> LanguageTools { get; set; } = new();
+
+    /// <summary>
+    /// Tool-window layout from the last session. Null until the first save, so the app can
+    /// tell "never saved" (use its own defaults) from "user closed everything".
+    /// </summary>
+    public ToolWindowLayout? ToolWindows { get; set; }
+
+    /// <summary>Folders the Repositories tool window scans for git repositories.</summary>
+    public List<string> RepositoryFolders { get; set; } = new();
 }

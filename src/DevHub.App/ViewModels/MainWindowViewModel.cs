@@ -2,12 +2,13 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DevHub.ViewModels.Pages;
 using DevHub.ViewModels.Shell;
+using DevHub.ViewModels.ToolWindows;
 
 namespace DevHub.ViewModels;
 
 /// <summary>
 /// The shell's DataContext: the list of navigable pages shown in the sidebar, the
-/// one currently displayed in the content area, and the status bar.
+/// one currently displayed in the content area, the status bar and the tool windows.
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
@@ -24,20 +25,23 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <summary>The status bar at the bottom of the window.</summary>
     public StatusBarViewModel StatusBar { get; }
 
+    /// <summary>Tool windows docked around the content area (stripes + slots).</summary>
+    public ToolWindowManager ToolWindows { get; }
+
     public MainWindowViewModel(
-        RepositoriesViewModel repositories,
         TemplatesViewModel templates,
         GenerateViewModel generate,
         ImportViewModel import,
         SettingsViewModel settings,
         UiGalleryViewModel gallery,
-        StatusBarViewModel statusBar)
+        StatusBarViewModel statusBar,
+        ToolWindowManager toolWindows)
     {
         StatusBar = statusBar;
+        ToolWindows = toolWindows;
 
         Pages =
         [
-            repositories,
             templates,
             generate,
             import,
@@ -49,6 +53,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Pages.Add(gallery);
 #endif
 
-        _selectedPage = repositories;
+        // Repositories moved to a tool window (UI-0 step 7); pages go away in step 8.
+        _selectedPage = templates;
     }
 }

@@ -11,6 +11,7 @@ using DevHub.Services;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Pages;
 using DevHub.ViewModels.Shell;
+using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -55,6 +56,10 @@ public partial class App : Application
 
             // Window-wide keyboard shortcuts for every action that has one.
             Keymap.Apply(Services.GetRequiredService<ActionRegistry>(), mainWindow);
+
+            // Remember which tool windows were open, and their sizes, for next launch.
+            mainWindow.Closing += (_, _) => Services.GetRequiredService<ToolWindowManager>().Save();
+
             desktop.MainWindow = mainWindow;
         }
 
@@ -76,14 +81,22 @@ public partial class App : Application
         services.AddSingleton<IStatusService>(sp => sp.GetRequiredService<StatusBarViewModel>());
 
         // Core services.
-        services.AddSingleton<ISettingsStore>(_ => new JsonSettingsStore());
+        // DEVHUB_DATA_DIR (optional) points settings at another folder, e.g. to try things or
+        // run a test copy without touching your real %APPDATA%\DevHub\settings.json.
+        services.AddSingleton<ISettingsStore>(_ =>
+            new JsonSettingsStore(Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } dir ? dir : null));
         services.AddSingleton<IToolLocator, ToolLocator>();
         services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 
-        // Page view-models.
+        // Tool windows: registered as themselves (for providers) and as the base type, so the
+        // ToolWindowManager receives all of them as IEnumerable<ToolWindowViewModelBase>.
         services.AddSingleton<RepositoriesViewModel>();
+        services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<RepositoriesViewModel>());
+        services.AddSingleton<ToolWindowManager>();
+
+        // Page view-models.
         services.AddSingleton<TemplatesViewModel>();
         services.AddSingleton<GenerateViewModel>();
         services.AddSingleton<ImportViewModel>();
@@ -97,6 +110,7 @@ public partial class App : Application
         // (DI passes every registered IActionProvider as IEnumerable<IActionProvider>).
         services.AddSingleton<IActionProvider, ViewActionProvider>();
         services.AddSingleton<IActionProvider, RepositoryActionProvider>();
+        services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

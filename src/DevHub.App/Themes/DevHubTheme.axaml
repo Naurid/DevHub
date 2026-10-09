@@ -17,5 +17,6 @@
         <ResourceInclude Source="avares://DevHub.App/Themes/Components/EmptyState.axaml" />
         <ResourceInclude Source="avares://DevHub.App/Themes/Components/SettingsRow.axaml" />
         <ResourceInclude Source="avares://DevHub.App/Themes/Components/Badge.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/SplitterThumb.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
