@@ -1,0 +1,28 @@
+<!--
+  DevHub logo as a vector control: <c:DevHubLogo Width="32" Height="32" />
+  Color:   follows the accent (Brush.Accent) by default, so it recolors live when the
+           accent changes. Set Foreground to override.
+  Weight:  LineThickness (default 2; use ~3.5 at 24 px and below).
+  Size:    Width/Height; the drawing scales to fit and keeps its proportions.
+  The shape lives in DevHubLogo.axaml.cs (LinesGeometry), shared with the window icon.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:DevHub.Controls"
+             x:Class="DevHub.Controls.DevHubLogo"
+             x:DataType="local:DevHubLogo"
+             Foreground="{DynamicResource Brush.Accent}"
+             Width="64" Height="64">
+  <Viewbox Stretch="Uniform">
+    <Canvas Width="64" Height="64">
+      <Path Data="{x:Static local:DevHubLogo.LinesGeometry}"
+            Stroke="{Binding $parent[local:DevHubLogo].Foreground}"
+            StrokeThickness="{Binding $parent[local:DevHubLogo].LineThickness}"
+            StrokeLineCap="Round"
+            StrokeJoin="Round" />
+      <Ellipse Canvas.Left="27.5" Canvas.Top="27.5" Width="9" Height="9"
+               Stroke="{Binding $parent[local:DevHubLogo].Foreground}"
+               StrokeThickness="{Binding $parent[local:DevHubLogo].LineThickness}" />
+    </Canvas>
+  </Viewbox>
+</UserControl>

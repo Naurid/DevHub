@@ -14,12 +14,20 @@
     <x:Double x:Key="Size.StripeWidth">40</x:Double>
     <x:Double x:Key="Size.Icon">16</x:Double>
     <x:Double x:Key="Size.StripeIcon">20</x:Double>
+    <!-- Components (UI-0 step 4) -->
+    <x:Double x:Key="Size.ActionButton">26</x:Double>
+    <x:Double x:Key="Size.ToolbarSeparator">16</x:Double>
+    <x:Double x:Key="Size.EmptyStateIcon">32</x:Double>
+    <x:Double x:Key="Size.SettingsLabel">200</x:Double>
+    <x:Double x:Key="Size.BadgeHeight">18</x:Double>
 
     <!-- Gaps between children (StackPanel.Spacing, Grid.RowSpacing): a single number,
          so x:Double, not Thickness. -->
     <x:Double x:Key="Spacing.Small">4</x:Double>
     <x:Double x:Key="Spacing">8</x:Double>
     <x:Double x:Key="Spacing.Large">16</x:Double>
+    <!-- Between icon buttons in a toolbar. -->
+    <x:Double x:Key="Spacing.Toolbar">2</x:Double>
 
     <!-- Padding / margins: Thickness ("left,top,right,bottom", or "horizontal,vertical") -->
     <Thickness x:Key="Padding.Button">12,4</Thickness>
@@ -29,6 +37,14 @@
     <Thickness x:Key="Padding.ListItem">8,0</Thickness>
     <Thickness x:Key="Padding.Toolbar">8,0</Thickness>
     <Thickness x:Key="Padding.Dialog">20,16</Thickness>
+    <Thickness x:Key="Padding.SettingsRow">0,6</Thickness>
+    <Thickness x:Key="Padding.Badge">6,0</Thickness>
+    <!-- Gap between a TextBox's inner icon/button and the field's border. Fluent puts
+         InnerLeft/RightContent outside the Padding (Padding only wraps the text column),
+         so the gap to the text already comes from Padding.TextBox; these add the outer gap. -->
+    <Thickness x:Key="Margin.InnerLeft">8,0,0,0</Thickness>
+    <Thickness x:Key="Margin.InnerRight">0,0,6,0</Thickness>
+    <Thickness x:Key="Margin.ToolbarSeparator">4,0</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

@@ -91,7 +91,14 @@ public sealed class ThemeService : IThemeService
         resources["SystemAccentColorLight3"] = Shade(accent, 0.18);
 
         Accent = $"#{accent.R:X2}{accent.G:X2}{accent.B:X2}";
+        AccentColor = accent;
+        AccentChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    /// <summary>The current accent as a Color, for things that can't use resources (window icon).</summary>
+    public Color AccentColor { get; private set; }
+
+    public event EventHandler? AccentChanged;
 
     /// <summary>Lightens (positive) or darkens (negative) a color by changing HSL lightness.</summary>
     private static Color Shade(Color color, double amount)

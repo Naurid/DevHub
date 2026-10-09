@@ -152,6 +152,79 @@
                 </StackPanel>
             </Border>
 
+            <!-- ===== DevHub components ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing.Large}">
+                    <TextBlock Classes="header" Text="Components" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource Spacing.Large}">
+                        <!-- ToolWindowFrame + Toolbar + ActionButton + SearchField + Badge -->
+                        <c:ToolWindowFrame Header="Repositories" Height="260"
+                                           BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                                           CornerRadius="{DynamicResource Radius.Control}">
+                            <c:ToolWindowFrame.HeaderActions>
+                                <c:Toolbar>
+                                    <c:ActionButton IconKind="add" ToolTip.Tip="Add folder" />
+                                    <c:ActionButton IconKind="refresh" ToolTip.Tip="Rescan" />
+                                    <c:ToolbarSeparator />
+                                    <c:ActionButton IconKind="delete" ToolTip.Tip="Remove (disabled)" IsEnabled="False" />
+                                    <c:ActionButton IconKind="moreVertical" ToolTip.Tip="More" />
+                                </c:Toolbar>
+                            </c:ToolWindowFrame.HeaderActions>
+                            <DockPanel>
+                                <c:SearchField DockPanel.Dock="Top" Margin="8,0,8,4" />
+                                <ListBox ItemsSource="{Binding SampleItems}" Background="Transparent">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <!-- Grid, not a horizontal StackPanel: a StackPanel gives its
+                                                 children unlimited width, so the text could never trim. -->
+                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing.Small}">
+                                                <c:Icon Kind="folder" />
+                                                <TextBlock Grid.Column="1" Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                                                <c:Badge Grid.Column="2" Classes="success" Content="clean" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </c:ToolWindowFrame>
+
+                        <!-- EmptyState inside a frame -->
+                        <c:ToolWindowFrame Grid.Column="1" Header="Commit" Height="260"
+                                           BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                                           CornerRadius="{DynamicResource Radius.Control}">
+                            <c:EmptyState IconKind="commit" Title="No changes"
+                                          Description="Edit files in a repository and they'll show up here.">
+                                <Button Content="Refresh" />
+                            </c:EmptyState>
+                        </c:ToolWindowFrame>
+                    </Grid>
+
+                    <!-- Badges -->
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                        <TextBlock Classes="secondary" Text="Badges:" VerticalAlignment="Center" />
+                        <c:Badge Content="3" />
+                        <c:Badge Classes="accent" Content="main" />
+                        <c:Badge Classes="success" Content="clean" />
+                        <c:Badge Classes="warning" Content="2 modified" />
+                        <c:Badge Classes="error" Content="conflict" />
+                    </StackPanel>
+
+                    <!-- SettingsRow -->
+                    <StackPanel>
+                        <c:SettingsRow Label="Theme" Description="Applies immediately.">
+                            <ToggleSwitch IsChecked="{Binding IsDark}" OnContent="Dark" OffContent="Light" />
+                        </c:SettingsRow>
+                        <c:SettingsRow Label="Compact mode">
+                            <CheckBox IsChecked="{Binding IsCompact}" />
+                        </c:SettingsRow>
+                        <c:SettingsRow Label="Default clone folder" Description="Where new repositories are cloned.">
+                            <TextBox Width="280" PlaceholderText="C:\Projects" />
+                        </c:SettingsRow>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
             <!-- ===== Typography ===== -->
             <Border Classes="section">
                 <StackPanel Spacing="{DynamicResource Spacing}">

@@ -10,5 +10,12 @@
         <ResourceInclude Source="avares://DevHub.App/Themes/Tokens/Sizes.axaml" />
         <!-- Points Fluent's keys at the tokens above. -->
         <ResourceInclude Source="avares://DevHub.App/Themes/FluentMapping.axaml" />
+        <!-- ControlThemes for DevHub's own controls (Controls/*.cs). -->
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/ActionButton.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/Toolbar.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/ToolWindowFrame.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/EmptyState.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/SettingsRow.axaml" />
+        <ResourceInclude Source="avares://DevHub.App/Themes/Components/Badge.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

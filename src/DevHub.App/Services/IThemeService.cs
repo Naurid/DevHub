@@ -18,4 +18,10 @@ public interface IThemeService
 
     /// <summary>Changes the accent color; <paramref name="hex"/> is "#RRGGBB".</summary>
     void SetAccent(string hex);
+
+    /// <summary>
+    /// Raised after the accent changes. Most UI follows automatically via DynamicResource;
+    /// this is for things that can't, like the window icon bitmap.
+    /// </summary>
+    event EventHandler? AccentChanged;
 }

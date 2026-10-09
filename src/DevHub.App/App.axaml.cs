@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using DevHub.Controls;
 using DevHub.Core.Projects;
 using DevHub.Core.Repositories;
 using DevHub.Core.Settings;
@@ -31,12 +32,20 @@ public partial class App : Application
             Services = collection.BuildServiceProvider();
 
             // Push the accent into Fluent's keys before any window is created.
-            Services.GetRequiredService<ThemeService>().Initialize();
+            var theme = Services.GetRequiredService<ThemeService>();
+            theme.Initialize();
 
             var mainWindow = new MainWindow
             {
-                DataContext = Services.GetRequiredService<MainWindowViewModel>()
+                DataContext = Services.GetRequiredService<MainWindowViewModel>(),
+                Icon = DevHubLogo.CreateWindowIcon(theme.AccentColor)
             };
+
+            // Title bar / taskbar icon is a bitmap, so re-render it when the accent changes.
+            void UpdateWindowIcon(object? sender, EventArgs e) =>
+                mainWindow.Icon = DevHubLogo.CreateWindowIcon(theme.AccentColor);
+            theme.AccentChanged += UpdateWindowIcon;
+            mainWindow.Closed += (_, _) => theme.AccentChanged -= UpdateWindowIcon;
 
             // The dialog service needs a TopLevel to drive pickers; hand it the window.
             Services.GetRequiredService<DialogService>().Attach(mainWindow);

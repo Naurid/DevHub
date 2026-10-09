@@ -49,12 +49,18 @@
                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
             <DockPanel LastChildFill="True">
                 <!-- Brand -->
-                <StackPanel DockPanel.Dock="Top" Margin="20,22,20,16" Spacing="2">
-                    <TextBlock Text="DevHub" FontSize="20" FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimaryBrush}" />
-                    <TextBlock Text="Project &amp; template workbench" FontSize="12"
-                               Foreground="{StaticResource TextSecondaryBrush}" />
-                </StackPanel>
+                <Grid DockPanel.Dock="Top" Margin="20,22,20,16"
+                      ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <!-- Accent-colored; recolors live with the accent. -->
+                    <c:DevHubLogo Width="36" Height="36" LineThickness="3" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="DevHub" FontSize="20" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="Project &amp; template workbench" FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                    </StackPanel>
+                </Grid>
 
                 <!-- Nav -->
                 <ListBox Classes="nav"

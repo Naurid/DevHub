@@ -25,7 +25,7 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 1. Tokens: `Themes/Tokens/` Colors (Dark+Light), Sizes (+Compact), Fonts; `DevHubTheme.axaml`
 - [x] 2. Fluent key mapping + ControlThemes + debug UI Gallery
 - [x] 3. `Icon` control + first ~20 vendored icons (+ Apache-2.0 NOTICE)
-- [ ] 4. Components: ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge
+- [x] 4. Components: ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge
 - [ ] 5. Action system (registry, providers, keymap, MenuBuilder) + Core `FuzzyMatcher` (tested)
 - [ ] 6. Merged title bar + main toolbar + status bar
 - [ ] 7. Tool-window framework (fixed slots, stripes, persisted layout); Repositories → tree tool window

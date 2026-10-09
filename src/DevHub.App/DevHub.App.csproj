@@ -7,6 +7,9 @@
         <RootNamespace>DevHub</RootNamespace>
         <AssemblyName>DevHub.App</AssemblyName>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <!-- Icon baked into the .exe (Explorer/Start menu). Static: Windows reads it from the
+             file, so it can't follow the accent. The window icon is rendered at runtime. -->
+        <ApplicationIcon>Assets\Logo\devhub.ico</ApplicationIcon>
         <!-- MVVM: use compiled bindings everywhere (needs x:DataType on each view). -->
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>

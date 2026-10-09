@@ -1,0 +1,30 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:DevHub.Controls">
+
+    <ControlTheme x:Key="{x:Type c:SettingsRow}" TargetType="c:SettingsRow">
+        <Setter Property="Padding" Value="{DynamicResource Padding.SettingsRow}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="Auto,*" Margin="{TemplateBinding Padding}">
+                    <!-- Fixed-width label column so consecutive rows line up. -->
+                    <StackPanel Width="{DynamicResource Size.SettingsLabel}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,16,0">
+                        <TextBlock Text="{TemplateBinding Label}" TextWrapping="Wrap" />
+                        <TextBlock Classes="small secondary"
+                                   Text="{TemplateBinding Description}" TextWrapping="Wrap"
+                                   IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    </StackPanel>
+                    <ContentPresenter Grid.Column="1"
+                                      Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+</ResourceDictionary>

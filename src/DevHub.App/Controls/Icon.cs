@@ -19,6 +19,14 @@ public class Icon : SvgControl
 {
     private const string IconFolder = "avares://DevHub.App/Assets/Icons/";
 
+    /// <summary>
+    /// CSS applied to the SVG while disabled. Needed because Svg.Skia draws straight to
+    /// Skia and ignores Avalonia's Opacity; CSS inside the SVG is the way to fade it.
+    /// Only leaf shapes are listed so nested groups don't multiply the opacity.
+    /// </summary>
+    private const string DisabledCss =
+        "path, circle, rect, ellipse, line, polyline, polygon { opacity: 0.4; }";
+
     public static readonly StyledProperty<string?> KindProperty =
         AvaloniaProperty.Register<Icon, string?>(nameof(Kind));
 
@@ -39,6 +47,8 @@ public class Icon : SvgControl
 
         if (change.Property == KindProperty)
             UpdatePath();
+        else if (change.Property == IsEffectivelyEnabledProperty)
+            UpdateDisabledLook();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -56,6 +66,13 @@ public class Icon : SvgControl
     }
 
     private void OnActualThemeVariantChanged(object? sender, EventArgs e) => UpdatePath();
+
+    /// <summary>
+    /// IsEffectivelyEnabled is false when this icon or any parent (e.g. its Button) is
+    /// disabled, so icons inside disabled buttons and menu items fade automatically.
+    /// </summary>
+    private void UpdateDisabledLook() =>
+        SetValue(CssProperty, IsEffectivelyEnabled ? null : DisabledCss);
 
     private void UpdatePath()
     {

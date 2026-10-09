@@ -19,6 +19,29 @@
         <Setter Property="Height" Value="{DynamicResource Size.Icon}" />
     </Style>
 
+    <!-- SearchField (a TextBox with the "search" class). <Template> makes a new child per
+         TextBox; a plain control value would be one instance shared by every search box.
+         Same technique Fluent uses for TextBox's own clearButton class. -->
+    <Style Selector="TextBox.search">
+        <Setter Property="InnerLeftContent">
+            <Template>
+                <c:Icon Kind="search" Margin="{DynamicResource Margin.InnerLeft}" />
+            </Template>
+        </Setter>
+    </Style>
+    <!-- :empty is a TextBox pseudo-class (no text); show the clear button otherwise. -->
+    <Style Selector="TextBox.search:not(:empty)">
+        <Setter Property="InnerRightContent">
+            <Template>
+                <c:ActionButton IconKind="close"
+                                Width="{DynamicResource Size.Icon}" Height="{DynamicResource Size.Icon}"
+                                Margin="{DynamicResource Margin.InnerRight}"
+                                ToolTip.Tip="Clear (Esc)"
+                                Command="{Binding $parent[TextBox].Clear}" />
+            </Template>
+        </Setter>
+    </Style>
+
     <!-- ===== Sizing of stock controls ===== -->
     <Style Selector="Button, ToggleButton, RepeatButton">
         <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
