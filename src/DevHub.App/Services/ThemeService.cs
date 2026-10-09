@@ -26,7 +26,14 @@ public sealed class ThemeService : IThemeService
     public bool IsDark
     {
         get => App.ActualThemeVariant == ThemeVariant.Dark;
-        set => App.RequestedThemeVariant = value ? ThemeVariant.Dark : ThemeVariant.Light;
+        set
+        {
+            if (value == IsDark)
+                return;
+
+            App.RequestedThemeVariant = value ? ThemeVariant.Dark : ThemeVariant.Light;
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public bool IsCompact
@@ -53,6 +60,8 @@ public sealed class ThemeService : IThemeService
             // Fluent has its own density switch for the controls we don't size ourselves.
             if (App.Styles.OfType<FluentTheme>().FirstOrDefault() is { } fluent)
                 fluent.DensityStyle = value ? DensityStyle.Compact : DensityStyle.Normal;
+
+            Changed?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -92,13 +101,13 @@ public sealed class ThemeService : IThemeService
 
         Accent = $"#{accent.R:X2}{accent.G:X2}{accent.B:X2}";
         AccentColor = accent;
-        AccentChanged?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>The current accent as a Color, for things that can't use resources (window icon).</summary>
     public Color AccentColor { get; private set; }
 
-    public event EventHandler? AccentChanged;
+    public event EventHandler? Changed;
 
     /// <summary>Lightens (positive) or darkens (negative) a color by changing HSL lightness.</summary>
     private static Color Shade(Color color, double amount)

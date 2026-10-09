@@ -6,6 +6,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:DevHub.ViewModels.Pages"
              xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:a="clr-namespace:DevHub.Actions"
              x:Class="DevHub.Views.Pages.UiGalleryView"
              x:DataType="pages:UiGalleryViewModel">
 
@@ -222,6 +223,54 @@
                             <TextBox Width="280" PlaceholderText="C:\Projects" />
                         </c:SettingsRow>
                     </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== Actions ===== -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Actions" />
+                    <TextBlock Classes="small secondary" TextWrapping="Wrap"
+                               Text="Toolbar, menu and shortcut all come from the ActionRegistry. Rescan is disabled until the Repositories page has a folder, and it greys out everywhere at once." />
+
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Large}">
+                        <!-- Toolbar from actions: command + icon + tooltip ("Rescan (F5)"). -->
+                        <c:Toolbar>
+                            <c:ActionButton Action="{a:Action Repositories.AddFolder}" />
+                            <c:ActionButton Action="{a:Action Repositories.Rescan}" />
+                            <c:ToolbarSeparator />
+                            <c:ActionButton Action="{a:Action View.ToggleTheme}" />
+                        </c:Toolbar>
+
+                        <!-- Same actions in a flyout menu, and in a context menu next to it. -->
+                        <Button Content="Actions ▾">
+                            <Button.Flyout>
+                                <MenuFlyout ItemsSource="{a:ActionMenu 'Repositories.AddFolder,Repositories.Rescan,-,View.ToggleTheme,View.ToggleCompact'}" />
+                            </Button.Flyout>
+                        </Button>
+                        <Border Background="{DynamicResource Brush.Bg.Editor}"
+                                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius.Control}"
+                                Padding="{DynamicResource Padding.Button}">
+                            <Border.ContextMenu>
+                                <ContextMenu ItemsSource="{a:ActionMenu '-,Navigate.Repositories,Navigate.Settings,-,-,View.ToggleTheme,-'}" />
+                            </Border.ContextMenu>
+                            <TextBlock Classes="secondary" Text="Right-click me" />
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Every registered action and its shortcut. -->
+                    <ItemsControl ItemsSource="{a:ActionList}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="a:AppAction">
+                                <Grid ColumnDefinitions="24,260,*" Height="{DynamicResource Size.RowHeight}">
+                                    <c:Icon Kind="{Binding IconKind}" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="2" Classes="code secondary" Text="{Binding Gesture}" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
 

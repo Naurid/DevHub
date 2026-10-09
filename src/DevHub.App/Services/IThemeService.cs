@@ -20,8 +20,9 @@ public interface IThemeService
     void SetAccent(string hex);
 
     /// <summary>
-    /// Raised after the accent changes. Most UI follows automatically via DynamicResource;
-    /// this is for things that can't, like the window icon bitmap.
+    /// Raised after Dark/Light, Compact or the accent changes. Most UI follows automatically
+    /// via DynamicResource; this is for things that can't (the window icon bitmap) and for
+    /// ViewModels that mirror the state (the UI Gallery's switches).
     /// </summary>
-    event EventHandler? AccentChanged;
+    event EventHandler? Changed;
 }

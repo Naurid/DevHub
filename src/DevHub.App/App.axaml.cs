@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using DevHub.Actions;
+using DevHub.Actions.Providers;
 using DevHub.Controls;
 using DevHub.Core.Projects;
 using DevHub.Core.Repositories;
@@ -41,15 +43,17 @@ public partial class App : Application
                 Icon = DevHubLogo.CreateWindowIcon(theme.AccentColor)
             };
 
-            // Title bar / taskbar icon is a bitmap, so re-render it when the accent changes.
+            // Title bar / taskbar icon is a bitmap, so re-render it when the appearance changes.
             void UpdateWindowIcon(object? sender, EventArgs e) =>
                 mainWindow.Icon = DevHubLogo.CreateWindowIcon(theme.AccentColor);
-            theme.AccentChanged += UpdateWindowIcon;
-            mainWindow.Closed += (_, _) => theme.AccentChanged -= UpdateWindowIcon;
+            theme.Changed += UpdateWindowIcon;
+            mainWindow.Closed += (_, _) => theme.Changed -= UpdateWindowIcon;
 
             // The dialog service needs a TopLevel to drive pickers; hand it the window.
             Services.GetRequiredService<DialogService>().Attach(mainWindow);
 
+            // Window-wide keyboard shortcuts for every action that has one.
+            Keymap.Apply(Services.GetRequiredService<ActionRegistry>(), mainWindow);
             desktop.MainWindow = mainWindow;
         }
 
@@ -83,5 +87,11 @@ public partial class App : Application
 
         // Shell.
         services.AddSingleton<MainWindowViewModel>();
+
+        // Actions: each provider contributes some; the registry collects them all
+        // (DI passes every registered IActionProvider as IEnumerable<IActionProvider>).
+        services.AddSingleton<IActionProvider, ViewActionProvider>();
+        services.AddSingleton<IActionProvider, RepositoryActionProvider>();
+        services.AddSingleton<ActionRegistry>();
     }
 }
