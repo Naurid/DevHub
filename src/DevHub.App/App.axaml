@@ -15,19 +15,6 @@
         <ResourceDictionary.MergedDictionaries>
             <ResourceInclude Source="avares://DevHub.App/Themes/DevHubTheme.axaml" />
         </ResourceDictionary.MergedDictionaries>
-
-        <!-- Legacy palette keys, still used by the existing views. They now point at the
-             tokens, so the old views follow Dark/Light too. Remove each key once no view
-             uses it any more (views should use Brush.* directly). -->
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{DynamicResource Color.Bg.Editor}" />
-        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{DynamicResource Color.Bg.Panel}" />
-        <SolidColorBrush x:Key="CardBackgroundBrush" Color="{DynamicResource Color.Bg.Panel}" />
-        <SolidColorBrush x:Key="CardHoverBrush" Color="{DynamicResource Color.Bg.Hover}" />
-        <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource Color.Border}" />
-        <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource Color.Accent}" />
-        <SolidColorBrush x:Key="AccentHoverBrush" Color="{DynamicResource Color.Accent.Hover}" />
-        <SolidColorBrush x:Key="TextPrimaryBrush" Color="{DynamicResource Color.Text.Primary}" />
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="{DynamicResource Color.Text.Secondary}" />
       </ResourceDictionary>
     </Application.Resources>
 

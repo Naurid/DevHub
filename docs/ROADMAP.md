@@ -9,9 +9,10 @@ milestones below).
 - [x] Repositories page: designate folders, scan for git repos, list them
 - [x] Per-repo language detection (marker files; incl. Unity and Tauri)
 - [x] "Open with the right tool" + per-language tool map persisted to `%APPDATA%/DevHub/settings.json`
-- [ ] **NEXT — UI-0: JetBrains-style front end** (see below) — design system + IDE shell,
-      built before the Git client so the Git UI is mostly composition.
-- [ ] **Integrated Git client (in-app, "Fork"-like).** Large; a full git UI
+- [x] UI-0: JetBrains-style front end (see below) — design system + IDE shell,
+      built before the Git client so the Git UI is mostly composition. Rules and recipes:
+      `docs/UI_GUIDE.md`.
+- [ ] **NEXT — Integrated Git client (in-app, "Fork"-like).** Large; a full git UI
       (status/stage/commit/diff/branches/history/remotes) built inside the app.
       Plan it as its own milestone before building.
 
@@ -32,7 +33,7 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 8. Editor area (document tabs) + Welcome view; Generate/Import as documents; drop sidebar
 - [x] 9. Dialog framework + Settings dialog (Ctrl+Alt+S): Open With + Appearance pages, persisted
 - [x] 10. Find Action popup (Ctrl+Shift+A)
-- [ ] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
+- [x] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`

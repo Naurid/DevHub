@@ -39,12 +39,15 @@ src/
     Commands/           post-create command runner
     Storage/            template library location, settings
   DevHub.App/           Avalonia UI (MVVM) — references Core only
-    Views/  ViewModels/  Services/ (dialogs, folder pickers, clipboard)
+    Views/  ViewModels/  (Documents/, ToolWindows/, Dialogs/, Shell/ in both)
+    Services/ (dialogs, pickers, theme, status)   Actions/   Controls/   Themes/
 tests/
   DevHub.Core.Tests/    xUnit, tests Core only
 docs/
   TEMPLATE_FORMAT.md    the template spec — single source of truth
   ROADMAP.md            milestones + checkboxes; the "where are we" file
+  UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
+  ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
 ```
 
 **Dependency direction: `App → Core`, `Tests → Core`. Nothing references `App`.**
@@ -80,13 +83,28 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
   can be shared; they're arbitrary code execution). Run via `ProcessStartInfo`
   with `ArgumentList`, `UseShellExecute = false` — never concatenate a shell string.
 
-## App rules (MVVM) — details in the `avalonia-mvvm` skill
-- ViewModels never reference `Views`, `Window`, `TopLevel` or Avalonia controls;
-  dialogs/pickers go through an interface in `App/Services`.
+## App rules (MVVM + UI) — details in `docs/UI_GUIDE.md` and the `avalonia-mvvm` skill
+- ViewModels never reference `Views`, `Window`, `TopLevel`, `Application` or Avalonia
+  controls; dialogs/pickers/theme/status go through interfaces in `App/Services`
+  (`IDialogService`, `IThemeService`, `IStatusService`). Code-behind = `InitializeComponent()` only.
 - Compiled bindings everywhere (`x:DataType` on every view).
 - All disk/process work is `async`; never `.Result`/`.Wait()` on the UI thread.
 - Every `event`/`+=` subscription has a matching `-=` on the paired lifecycle
   hook; use `event` rather than public delegate fields.
+- **No hex colors, pixel sizes or font names in views**: use the tokens in
+  `Themes/Tokens/` via `DynamicResource` (`Brush.*`, `Size.*`, `Spacing.*`, `Padding.*`,
+  `Radius.*`) and the text classes (`header`, `secondary`, `small`, `code`). Match the
+  token type to the property (a number in `Padding` compiles but crashes at runtime).
+- Use the components in `Controls/` (`ToolWindowFrame`, `ActionButton`, `EmptyState`,
+  `SettingsRow`, …) before building new ones.
+- User operations are **actions** (`Actions/`: `AppAction` + an `IActionProvider`), so
+  they appear in menus, Find Action (Ctrl+Shift+A) and shortcuts. New screens are
+  **documents** (editor tabs), **tool windows** or **dialogs**; follow the recipes in
+  `docs/UI_GUIDE.md` §5.
+- Settings are saved with `store.Update(s => s.Section = …)` (never a stale
+  `AppSettings` copy). Run experiments with `DEVHUB_DATA_DIR` set to a scratch folder.
+- Accessible names: list-item ViewModels override `ToString()`; icon-only/composite
+  buttons get `AutomationProperties.Name`.
 
 ## Natural-language commands (roadmap M10 — design rules from day one)
 A local, user-trained model turns text into a structured tool call; it's a

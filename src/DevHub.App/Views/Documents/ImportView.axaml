@@ -1,16 +1,9 @@
+<!-- Placeholder until this feature is built (see docs/ROADMAP.md). -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
+             xmlns:c="clr-namespace:DevHub.Controls"
              x:Class="DevHub.Views.Documents.ImportView"
              x:DataType="docs:ImportViewModel">
-    <StackPanel Spacing="16">
-        <TextBlock Text="{Binding Title}" FontSize="26" FontWeight="SemiBold"
-                   Foreground="{StaticResource TextPrimaryBrush}" />
-        <Border Background="{StaticResource CardBackgroundBrush}"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                CornerRadius="0" Padding="20">
-            <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
-                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" />
-        </Border>
-    </StackPanel>
+    <c:EmptyState IconKind="{Binding Icon}" Title="{Binding Title}" Description="{Binding Description}" />
 </UserControl>

@@ -1,0 +1,294 @@
+# DevHub UI guide
+
+How the DevHub window is built (the JetBrains "New UI" look from roadmap milestone UI-0),
+the rules every view follows, and step-by-step recipes for adding things. Read this before
+changing anything under `src/DevHub.App`.
+
+Related: [`ACTIONS_AND_FUZZY_MATCHING.md`](ACTIONS_AND_FUZZY_MATCHING.md) explains actions
+and Find Action in depth. The UI Gallery (Debug builds: ☰ → View → UI Gallery) shows every
+token and component live; check changes there in Dark, Light and Compact.
+
+---
+
+## 1. The rules
+
+1. **No hex colors, pixel sizes or font names in views.** Use the tokens (§3):
+   `{DynamicResource Brush.Text.Secondary}`, `{DynamicResource Spacing}`,
+   `<TextBlock Classes="header">`. Only the token files (`Themes/Tokens/`) contain raw values.
+   *Why:* Dark/Light, the accent color and Compact mode all work by swapping token values.
+   A hard-coded value never changes.
+2. **Always `DynamicResource` for tokens, never `StaticResource`.** Static is resolved
+   once, so it would miss theme, accent and Compact changes.
+3. **Match the token's type to the property.** Padding/Margin need a `Padding.*` /
+   `Margin.*` (Thickness); `Spacing`/`Width`/`Height` need `Size.*` / `Spacing.*` (a number).
+   *Why:* resource types aren't checked at build time. A number in `Padding` compiles fine and
+   **crashes the app** when the view first appears (this happened in step 10).
+4. **Use the components (§4) before building your own.** A tool window header is a
+   `ToolWindowFrame`, an icon button is an `ActionButton`, an empty list is an `EmptyState`.
+5. **Anything the user can *do* is an action (§5)**, so it appears in menus, Find Action
+   and shortcuts automatically. Don't wire a button straight to a one-off command when it's
+   a real user operation.
+6. **MVVM as before:** ViewModels never touch controls, windows or `Application`; they use
+   services (`IDialogService`, `IThemeService`, `IStatusService`). Code-behind contains only
+   `InitializeComponent()`. View-only behavior goes into small reusable controls or attached
+   properties (e.g. `FocusOnLoad`), not into code-behind.
+7. **Accessible names.** Screen readers announce a list item's `ToString()` and a button's
+   content. Give list-item ViewModels a `ToString()` that returns their label, and give
+   icon-only or composite buttons `AutomationProperties.Name` (`ActionButton` does this for
+   you when bound to an action).
+8. **Settings sections are saved with `store.Update(s => s.Section = …)`**, never by
+   saving an `AppSettings` you loaded earlier, which would overwrite other features' sections.
+9. **Check it in the running app**, in Dark, Light and Compact, with long names and empty
+   lists. Several bugs in UI-0 only showed up at runtime (see §8).
+
+---
+
+## 2. Where things are
+
+```
+src/DevHub.App/
+  App.axaml(.cs)        theme includes, DI registrations, startup (keymap, save on close)
+  Themes/
+    Tokens/             Colors.axaml (Dark+Light), Sizes.axaml (+ Sizes.Compact.axaml), Fonts.axaml
+    DevHubTheme.axaml   merges the tokens, FluentMapping and component themes
+    FluentMapping.axaml points Fluent's own resource keys at our tokens
+    Controls.axaml      Styles: sizes for stock controls, text classes, shell styles
+    Components/*.axaml  ControlThemes for our controls
+  Controls/             our controls (Icon, ActionButton, ToolWindowFrame, …) + IconKind
+  Actions/              actions, registry, keymap, menus, XAML helpers; Providers/
+  Services/             IDialogService, IThemeService, IStatusService (+ implementations)
+  ViewModels/
+    Documents/          editor tabs (DocumentManager + one VM per document)
+    ToolWindows/        docked panels (ToolWindowManager + one VM per tool window)
+    Dialogs/            DialogViewModelBase, Settings/ (dialog + pages)
+    Shell/              status bar, Find Action
+  Views/                same folders as ViewModels; ViewLocator maps XxxViewModel → XxxView
+  Assets/Icons/         JetBrains expui SVGs (light + _dark) + NOTICE.md / LICENSE-2.0.txt
+  Assets/Logo/          app icon / logo
+```
+
+The window, top to bottom: **title bar** (`Views/Shell/MainToolbar`: logo, ☰ main menu,
+breadcrumb, toolbar, window buttons), the **work area** (stripes at the edges, tool-window
+slots, the **editor area** with tabs or the Welcome view in the center), and the
+**status bar**. The **Find Action** overlay sits on top while open.
+
+---
+
+## 3. Tokens
+
+All in `Themes/Tokens/`. Use the `Brush.*` keys in views; the `Color.*` keys exist for
+Fluent mapping and code.
+
+### Colors (`Colors.axaml`)
+
+| Key | Use for |
+|---|---|
+| `Brush.Bg.Editor` | editor area, text inputs, main content background |
+| `Brush.Bg.Panel` | tool windows, title bar, status bar, dialogs |
+| `Brush.Bg.Popup` | popups, menus, tooltips |
+| `Brush.Bg.Hover` | hover highlight |
+| `Brush.Bg.Selection` / `Brush.Bg.SelectionInactive` | selected row (focused / unfocused) |
+| `Brush.Border` / `Brush.Border.Control` | panel dividers / control outlines |
+| `Brush.Text.Primary` / `.Secondary` / `.Disabled` / `.OnAccent` | text |
+| `Brush.Accent` (+ `.Hover`, `.Pressed`, `.Subtle`) | accent (user-configurable) |
+| `Brush.Status.Error` / `.Warning` / `.Success` (+ `.Subtle`) | status colors; `.Subtle` = tinted backgrounds |
+
+Every color exists in both the `Dark` and `Light` dictionaries; **add new colors to both**.
+
+### Sizes (`Sizes.axaml`, overridden in `Sizes.Compact.axaml`)
+
+| Kind | Keys |
+|---|---|
+| Heights/widths (number) | `Size.RowHeight`, `Size.ButtonHeight`, `Size.ToolbarHeight`, `Size.ToolWindowHeaderHeight`, `Size.StatusBarHeight`, `Size.TabHeight`, `Size.Icon` (16), `Size.StripeIcon` (20), `Size.ActionButton`, … |
+| Gaps (number, for `Spacing`/`ColumnSpacing`) | `Spacing.Small` (4), `Spacing` (8), `Spacing.Large` (16), `Spacing.Toolbar` |
+| Padding/Margin (Thickness) | `Padding.Button`, `Padding.TextBox`, `Padding.ListItem`, `Padding.Dialog`, `Padding.Document`, `Padding.Popup`, `Padding.SettingsRow`, … |
+| Corners | `Radius.Control` (4), `Radius.Popup` (8), `Radius.Badge` |
+
+Compact mode merges `Sizes.Compact.axaml` **after** `Sizes.axaml`; the later dictionary wins.
+To make a size shrink in Compact, add the **same key** with a smaller value there.
+
+### Fonts and text (`Fonts.axaml`, `Controls.axaml`)
+
+Prefer the text classes over font tokens:
+
+| Class | Look |
+|---|---|
+| *(none)* | body text, Inter 13 |
+| `header` | 16, semibold |
+| `secondary` | secondary color |
+| `small` | 12 |
+| `code` | JetBrains Mono (on `TextBlock` and `TextBox`) |
+
+Classes combine: `<TextBlock Classes="small secondary" />`.
+
+### Changing appearance at runtime
+
+`IThemeService`: `Mode` (Dark / Light / System), `IsDark`, `IsCompact`, `SetAccent("#RRGGBB")`,
+`Changed` event. It updates the resources (everything bound with `DynamicResource` follows)
+**and saves the choice**. Never edit `Application.Resources` from elsewhere.
+
+---
+
+## 4. Components
+
+Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery shows each one.
+
+| Component | Use | Example |
+|---|---|---|
+| `Icon` | a JetBrains icon; swaps light/dark files, fades when disabled | `<c:Icon Kind="folder" />` (names in `IconKind`) |
+| `ActionButton` | square icon button; bind to an action for command + icon + tooltip | `<c:ActionButton Action="{a:Action Repositories.Rescan}" />` |
+| `Toolbar` / `ToolbarSeparator` | row of action buttons | `<c:Toolbar><c:ActionButton …/><c:ToolbarSeparator/>…</c:Toolbar>` |
+| `ToolWindowFrame` | tool window chrome: title + header actions + content | `<c:ToolWindowFrame Header="…"><c:ToolWindowFrame.HeaderActions>…` |
+| `SearchField` | text box with search icon, clear ×, Esc clears | `<c:SearchField Text="{Binding Filter}" />` |
+| `EmptyState` | centered "nothing here" with optional icon + action | `<c:EmptyState IconKind="folder" Title="…" Description="…"><Button …/></c:EmptyState>` |
+| `SettingsRow` | label (+ description) column and an editor | `<c:SettingsRow Label="Theme" Description="…"><ComboBox …/></c:SettingsRow>` |
+| `Badge` | small pill; classes `accent`, `success`, `warning`, `error` | `<c:Badge Classes="success" Content="clean" />` |
+| `SplitterThumb` | drag handle resizing a bound size | used by the tool-window slots |
+| `DevHubLogo` | the logo, accent-colored | `<c:DevHubLogo Width="32" Height="32" />` |
+| `FocusOnLoad` | attached property: focus this element when it appears | `<TextBox c:FocusOnLoad.IsEnabled="True" />` |
+
+Stock Fluent controls (Button, TextBox, ComboBox, CheckBox, ListBox, TreeView, …) are
+already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use them.
+`<Button Classes="accent">` is the primary (blue) button.
+
+---
+
+## 5. Recipes
+
+### Add an icon
+1. Copy `x.svg` and `x_dark.svg` from intellij-community `platform/icons/src/expui/…` (same
+   pinned commit as in `Assets/Icons/NOTICE.md`) into `Assets/Icons/`.
+2. Add a constant to `Controls/IconKind.cs` (and to `IconKind.All`).
+3. Add a row to the table in `Assets/Icons/NOTICE.md` (license requirement).
+
+### Add a token
+1. Add it to `Themes/Tokens/Sizes.axaml` (or `Colors.axaml`, in **both** Dark and Light).
+2. If it should shrink in Compact, add the same key to `Sizes.Compact.axaml`.
+3. Name it by purpose (`Padding.Tab`), not by look (`Padding12`). Check the type (rule 3).
+
+### Add an action (a menu item / shortcut / Find Action entry)
+Short version (full recipe in `ACTIONS_AND_FUZZY_MATCHING.md`):
+1. Id constant in `Actions/ActionIds.cs`.
+2. `yield return new AppAction(id, "Text…", someViewModel.SomeCommand) { Category, IconKind, Gesture }`
+   in the feature's `IActionProvider` (new provider → register in `App.axaml.cs`).
+3. Show it: `<c:ActionButton Action="{a:Action Id}" />`, add the id to `Actions/MainMenu.cs`,
+   or `{a:ActionMenu 'id,-,id'}` for a context menu. Find Action and the shortcut work automatically.
+
+### Add a document (an editor tab)
+1. `ViewModels/Documents/FooViewModel.cs`: `public partial class FooViewModel : DocumentViewModelBase`
+   with `Title` and `Icon`. (Its `Id`, saved in settings, defaults to "Foo".)
+2. `Views/Documents/FooView.axaml` (+ `.axaml.cs` with only `InitializeComponent()`),
+   `x:DataType="docs:FooViewModel"`. The ViewLocator finds it by name.
+3. Register: `services.AddSingleton<DocumentViewModelBase, FooViewModel>();` in `App.axaml.cs`.
+4. Done: `DocumentActionProvider` creates `Navigate.Foo` ("Foo"), so it's in Find Action.
+   Add the id to the File menu in `MainMenu.cs`, and a label/shortcut override in
+   `DocumentActionProvider` if wanted.
+
+Documents are singletons: closing and reopening a tab keeps its state. The content area
+already has `Padding.Document` around it.
+
+### Add a tool window (a docked panel)
+1. `ViewModels/ToolWindows/FooViewModel.cs`: subclass `ToolWindowViewModelBase` with
+   `Id` (saved; don't rename), `Title`, `IconKind`, `Slot` (Left / Right / Bottom).
+2. `Views/ToolWindows/FooView.axaml`: wrap the content in a `ToolWindowFrame` with a
+   `Toolbar` of `ActionButton`s in `HeaderActions`, and a hide button
+   (`<c:ActionButton IconKind="close" ToolTip.Tip="Hide" Command="{Binding ToggleCommand}" />`).
+3. Register it twice (as itself, for providers, and as the base type, for the manager):
+   ```csharp
+   services.AddSingleton<FooViewModel>();
+   services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<FooViewModel>());
+   ```
+4. Done: it gets a stripe button, a slot, a saved size, and an Alt+N action
+   (`ToolWindowActionProvider`, numbered in registration order).
+
+### Add a dialog
+1. ViewModel: subclass `DialogViewModelBase` (`Title`, optional `Width`/`Height`,
+   `ShowApply`). Override `CanApply()` and `ApplyChangesAsync()` (return false to keep the
+   dialog open). The base class provides OK / Cancel / Apply; Enter = OK, Esc = Cancel.
+2. View: `Views/Dialogs/FooDialogView.axaml`, only the body (the footer comes from
+   `DialogWindow`).
+3. Register as **transient** (a fresh dialog each time) plus a factory if an action opens it:
+   ```csharp
+   services.AddTransient<FooDialogViewModel>();
+   services.AddSingleton<Func<FooDialogViewModel>>(sp => () => sp.GetRequiredService<FooDialogViewModel>());
+   ```
+4. Open it: `await dialogs.ShowDialogAsync(createDialog())` (returns true for OK).
+
+### Add a Settings page
+1. `ViewModels/Dialogs/Settings/FooSettingsPageViewModel.cs`: subclass
+   `SettingsPageViewModelBase` (`Title`, `Keywords` for the search box). Load the current
+   values in the constructor (into backing fields, so loading isn't an "edit"), call
+   `MarkModified()` when the user changes something, and save in `Apply()` with
+   `store.Update(...)`.
+2. View `Views/Dialogs/Settings/FooSettingsPageView.axaml`: a stack of `SettingsRow`s.
+3. Register transient and add it to `SettingsDialogViewModel`'s constructor and `Pages`.
+
+### Persist something new
+Add a property (or a small class) to `Core/Settings/AppSettings.cs`, nullable if "never
+saved" must be distinguishable from a default. Save with `store.Update(s => s.Foo = …)`.
+Add a round-trip test in `JsonSettingsStoreTests`. For experiments, run the app with
+`DEVHUB_DATA_DIR` pointing at a scratch folder so your real settings stay untouched.
+
+---
+
+## 6. Layout tips
+
+- **Rows that must fit** (icon + text + something on the right): a `Grid` with
+  `ColumnDefinitions="Auto,*,Auto"` and `TextTrimming="CharacterEllipsis"` on the text.
+  A horizontal `StackPanel` gives its children unlimited width, so text never trims and
+  overlaps instead.
+- **Input + button** (path + Browse…): `Grid ColumnDefinitions="*,Auto"`, not a fixed-width
+  TextBox; fixed widths get cropped in narrow places.
+- **Vertical lists of controls:** `StackPanel Spacing="{DynamicResource Spacing}"`.
+- **Comma selectors** in styles (`Selector="TextBox, ComboBox"`) are typed as the controls'
+  common base class, so properties that only one has fail to compile. Write one style per type.
+- **Thicknesses can't contain a resource:** `Margin="0,0,{DynamicResource X},0"` is invalid.
+  Make a Thickness token, or use an empty spacer column.
+
+---
+
+## 7. Styles vs ControlThemes (how theming works)
+
+- A **ControlTheme** is a control's template + defaults + state styles (`^:pointerover`),
+  keyed by type. Ours are in `Themes/Components/`. Fluent's are the defaults for stock controls.
+- A **Style** (`Themes/Controls.axaml`, `<X.Styles>`) adjusts existing controls. Styles beat
+  ControlTheme setters, which is how we restyle Fluent without rewriting its templates.
+- **TemplateBinding beats styles** inside a template, so a style can't override a value a
+  template sets with TemplateBinding (e.g. the drawn title text's visibility); target another
+  property (Opacity) instead.
+- **Fluent's colors** come from its resource keys (`ButtonBackground`, …), which
+  `FluentMapping.axaml` redefines in terms of our tokens. The accent family
+  (`SystemAccentColor…`) is set in code by `ThemeService`.
+
+---
+
+## 8. Avalonia 12 gotchas we hit
+
+| Symptom | Cause | Fix used |
+|---|---|---|
+| App crashes when a view opens: `InvalidCastException Double → Thickness` | a number token in `Padding` | use a Thickness token (rule 3) |
+| `Alt+1` shortcut never fires | `KeyGesture.Parse("Alt+1")` → `Key.Cancel` (enum value 1) | always `Gestures.Parse` |
+| Disabled SVG icon not faded | Svg.Skia ignores `Opacity` | `Icon` injects CSS opacity when disabled |
+| Fullscreen caption button over our toolbar; hiding it shifted min/max/close | Avalonia 12 draws 4 caption buttons; `IsVisible=False` left a gap | collapse it to width 0 (`Controls.axaml`) |
+| Closing a tab left nothing selected | a two-way `SelectedItem` binding nulls the property when the item is removed | remember "was active" before removing |
+| Button text not centered | Fluent leaves `HorizontalContentAlignment` at Stretch | global Button style centers it |
+| TextBox inner icon/× against the border | Fluent applies `Padding` only to the text column | `Margin.InnerLeft/Right` tokens |
+| Screen readers say "Avalonia.Controls.Grid" | no accessible name; falls back to content type / `ToString()` | `ToString()` / `AutomationProperties.Name` (rule 7) |
+| Settings written by one feature lost after another saves | saving a stale `AppSettings` copy | `store.Update` (rule 8) |
+| `Watermark` obsolete warning | renamed in 12 | `PlaceholderText` |
+| `Bitmap.Save(stream)` obsolete | new overload | `Save(stream, PngBitmapEncoderOptions.Default)` |
+| `Svg` is "a namespace but used like a type" | package namespace clash | `using SvgControl = Avalonia.Svg.Skia.Svg;` |
+| Settings ignore the `APPDATA` variable | `GetFolderPath` asks Windows directly | `DEVHUB_DATA_DIR` override |
+| Fuzzy search too loose ("rider" matched Appearance) | matching one long keyword string lets letters scatter | match title and each keyword separately |
+
+---
+
+## 9. Checklist before you're done
+
+- [ ] No hex / pixel / font values in the view; tokens via `DynamicResource`, right types.
+- [ ] Looks right in **Dark**, **Light** and **Compact** (UI Gallery switches, or Settings).
+- [ ] Long names trim, empty lists show an `EmptyState`.
+- [ ] User operations are actions (menu / Find Action / shortcut).
+- [ ] Icon-only buttons and list items have accessible names.
+- [ ] Ran the app and used the feature; no errors in the output.
+- [ ] Settings changes saved with `store.Update`, with a round-trip test.
