@@ -132,7 +132,7 @@ Current providers:
 | `FindActionProvider` | `App.FindAction` "Find Action…" (Ctrl+Shift+A) opens the Find Action overlay. Uses a `Func<FindActionViewModel>` factory because the popup needs the registry that this provider is part of. Added in UI-0 step 10. |
 | `GitActionProvider` | Git actions on the active repository tab (`DocumentManager.ActiveRepository`); disabled when no repository tab is active. G0: `Git.Refresh` (Ctrl+Alt+Y). |
 | `RepositoryActionProvider` | `Repositories.AddFolder`, `Repositories.Rescan` (F5) |
-| `ToolWindowActionProvider` | one `ToolWindow.<Title>` per tool window (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
+| `ToolWindowActionProvider` | one `ToolWindow.<Id>` per tool window (the Id capitalised, so renaming a tool window keeps its action id: the Projects tool window is `ToolWindow.Repositories`) (Alt+1, Alt+2… in registration order, like JetBrains' Alt+1 = Project) and `ToolWindow.HideAll` (Ctrl+Shift+F12). Added in UI-0 step 7, which moved Alt+1… from pages to tool windows. |
 
 The `Navigate.*` ids come from the document's `Id` (its ViewModel type name minus "ViewModel"):
 `TemplatesViewModel` → `Navigate.Templates`, `GenerateViewModel` → `Navigate.Generate`.

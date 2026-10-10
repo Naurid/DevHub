@@ -65,7 +65,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
             () => branchOperations.Branches, Name, services.GitHub);
         RemoteBranches.Remote = Remote;
         _commitOperations = new CommitOperations(client, services.Dialogs, services.Status, RefreshAsync, branchOperations, Remote);
-        CommitLog = new CommitLogViewModel(layout, client, openInEditor, OpenBlame, _commitOperations);
+        CommitLog = new CommitLogViewModel(layout, client, openInEditor, OpenBlame, _commitOperations, services.GitHub);
         Tags = new TagListViewModel(_commitOperations, branchOperations);
         Stashes = new StashListViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
             () => SelectedSection = LocalChangesSection, openInEditor, OpenBlame);

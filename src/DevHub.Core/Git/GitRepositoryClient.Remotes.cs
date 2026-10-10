@@ -64,6 +64,14 @@ public sealed partial class GitRepositoryClient
     public async Task RemoveRemoteAsync(string name, CancellationToken ct = default) =>
         await Runner.RunAsync(RepositoryPath, ["remote", "remove", "--", name], ct: ct);
 
+    /// <summary>A git setting as this repository sees it (local, then global, then system), or null when unset.</summary>
+    public async Task<string?> GetConfigAsync(string key, CancellationToken ct = default)
+    {
+        var result = await Runner.RunAsync(RepositoryPath, ["config", "--get", key],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded && result.StandardOutput.Trim() is { Length: > 0 } value ? value : null;
+    }
+
     /// <summary>Whether <paramref name="name"/> is usable as a remote name (git's ref rules; no spaces or leading "-").</summary>
     public async Task<bool> IsValidRemoteNameAsync(string name, CancellationToken ct = default)
     {

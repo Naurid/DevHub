@@ -19,7 +19,8 @@
                     <Border Padding="{DynamicResource Padding.PaneHeader}" BorderBrush="{DynamicResource Brush.Border}"
                             BorderThickness="0,0,0,1">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
-                            <c:Icon Kind="vcs" VerticalAlignment="Center" />
+                            <c:Avatar ImageData="{Binding Avatar}" Text="{Binding Account}" VerticalAlignment="Center"
+                                      Width="{DynamicResource Size.Avatar}" Height="{DynamicResource Size.Avatar}" />
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Classes="header" Text="{Binding Account}" />
                                 <TextBlock Classes="small secondary" Text="{Binding Detail}" TextWrapping="Wrap"

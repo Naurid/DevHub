@@ -43,7 +43,7 @@ public static class ActionIds
     public const string GitClone = "Git.Clone";
 
     // Tool windows
-    /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>
+    /// <summary>Prefix for "show/hide tool window" actions; the tool window's Id follows, capitalised: "ToolWindow.Repositories" (the Projects tool window).</summary>
     public const string ToolWindowPrefix = "ToolWindow.";
     public const string HideAllToolWindows = "ToolWindow.HideAll";
 }

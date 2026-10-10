@@ -1,5 +1,5 @@
 <!--
-  Repositories tool window: scan folders as tree roots, repositories as children.
+  Projects tool window (ids and class names still say "Repositories"): scan folders as tree roots, repositories as children.
   Right-click a repository to open it / reveal it; right-click a folder to remove it.
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
@@ -30,7 +30,7 @@
 
             <Panel>
                 <c:EmptyState IconKind="folder" Title="No folders yet"
-                              Description="Add a folder and DevHub finds the git repositories inside it."
+                              Description="Add a folder and DevHub finds the projects (git repositories) inside it."
                               IsVisible="{Binding !HasFolders}">
                     <Button Classes="accent" Content="Add Folder…" Command="{Binding AddFolderCommand}" />
                 </c:EmptyState>

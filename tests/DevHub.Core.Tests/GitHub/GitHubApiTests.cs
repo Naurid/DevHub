@@ -34,18 +34,34 @@ public class GitHubApiTests
     public async Task Requests_carry_the_token_and_GitHubs_headers()
     {
         var handler = new FakeHandler();
-        handler.Responses.Enqueue(Json("""{"login":"Naurid","name":null}"""));
+        handler.Responses.Enqueue(Json("""{"login":"Naurid","name":null,"avatar_url":"https://avatars.githubusercontent.com/u/42?v=4"}"""));
         var api = new GitHubApi(new HttpClient(handler));
 
         var user = await api.GetUserAsync("gho_secret");
 
-        Assert.Equal(new GitHubUser("Naurid", null), user);
+        Assert.Equal(new GitHubUser("Naurid", null, "https://avatars.githubusercontent.com/u/42?v=4"), user);
         var request = handler.Requests.Single().Request;
         Assert.Equal("https://api.github.com/user", request.RequestUri!.AbsoluteUri);
         Assert.Equal("Bearer gho_secret", request.Headers.Authorization!.ToString());
         Assert.Equal("2022-11-28", request.Headers.GetValues("X-GitHub-Api-Version").Single());
         Assert.Contains("DevHub", request.Headers.UserAgent.ToString());
         Assert.Contains("application/vnd.github+json", request.Headers.Accept.ToString());
+    }
+
+    [Fact]
+    public async Task Avatars_are_fetched_without_the_token_and_only_from_GitHubs_avatar_host()
+    {
+        var handler = new FakeHandler();
+        handler.Responses.Enqueue(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([1, 2, 3]) });
+        var api = new GitHubApi(new HttpClient(handler));
+
+        Assert.Equal([1, 2, 3], await api.GetAvatarAsync("https://avatars.githubusercontent.com/u/42?v=4", 64));
+        Assert.Null(await api.GetAvatarAsync("https://evil.example.com/a.png"));
+        Assert.Null(await api.GetAvatarAsync("http://avatars.githubusercontent.com/u/42"));
+
+        var request = handler.Requests.Single().Request; // the other two never went out
+        Assert.Equal("https://avatars.githubusercontent.com/u/42?v=4&s=64", request.RequestUri!.AbsoluteUri);
+        Assert.Null(request.Headers.Authorization);
     }
 
     [Fact]

@@ -9,11 +9,53 @@ namespace DevHub.Services;
 /// One place, so every screen offers the same "not signed in: sign in now?" path.
 /// </summary>
 /// <param name="github">Null when git isn't installed (everything then explains that).</param>
+/// <summary>A GitHub account's profile and picture (PNG / JPEG bytes, or null).</summary>
+public sealed record GitHubProfile(GitHubUser User, byte[]? Avatar);
+
 public sealed class GitHubSession(IDialogService dialogs, IStatusService status, GitHubService? github = null)
 {
     public GitHubService? GitHub => github;
 
     public bool IsAvailable => github is not null;
+
+    /// <summary>Profiles already asked for this session (one GitHub call + one picture per account).</summary>
+    private readonly Dictionary<string, Task<GitHubProfile>> _profiles = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Who <paramref name="account"/> is on GitHub, with their picture: asked once, then reused
+    /// (Settings, the commit list of every tab). Throws <see cref="GitHubException"/> when GitHub
+    /// refuses the sign-in; a failed attempt isn't cached, so the next call tries again.
+    /// </summary>
+    public Task<GitHubProfile> GetProfileAsync(string account)
+    {
+        if (github is null)
+            return Task.FromException<GitHubProfile>(new InvalidOperationException("Git is not installed."));
+        if (_profiles.TryGetValue(account, out var cached) && !cached.IsFaulted && !cached.IsCanceled)
+            return cached;
+        return _profiles[account] = LoadProfileAsync(github, account);
+    }
+
+    private static async Task<GitHubProfile> LoadProfileAsync(GitHubService github, string account)
+    {
+        var user = await github.GetUserAsync(account);
+        var avatar = await github.GetAvatarAsync(user);
+        return new GitHubProfile(user, avatar);
+    }
+
+    /// <summary>The first signed-in account's profile ("you"), or null when not signed in or GitHub can't be reached.</summary>
+    public async Task<GitHubProfile?> GetMyProfileAsync()
+    {
+        if (await ListAccountsAsync() is not { Count: > 0 } accounts)
+            return null;
+        try
+        {
+            return await GetProfileAsync(accounts[0]);
+        }
+        catch (Exception)
+        {
+            return null; // offline / signed out: no picture, nothing else breaks
+        }
+    }
 
     /// <summary>
     /// The signed-in accounts. Problems (GCM missing, git missing) go to the status bar and give
@@ -69,6 +111,7 @@ public sealed class GitHubSession(IDialogService dialogs, IStatusService status,
             task.Dispose();
         }
 
+        _profiles.Clear(); // a renewed sign-in may fix a profile that failed
         var added = (await ListAccountsAsync()).Except(before).ToList();
         status.Show(added.Count > 0 ? $"Signed in to GitHub as {string.Join(", ", added)}." : "GitHub sign-in finished.");
         return added.Count > 0 || before.Count > 0;
@@ -89,6 +132,7 @@ public sealed class GitHubSession(IDialogService dialogs, IStatusService status,
         try
         {
             await github.Credentials.SignOutAsync(account);
+            _profiles.Remove(account);
             status.Show($"Signed out {account}.");
         }
         catch (Exception ex)

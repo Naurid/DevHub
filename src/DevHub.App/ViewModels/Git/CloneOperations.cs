@@ -77,7 +77,7 @@ public sealed class CloneOperations(GitHubSession github, IDialogService dialogs
             await repositories.ScanCommand.ExecuteAsync(null);
         status.Show(inScanFolder
             ? $"Cloned {name} into {target}."
-            : $"Cloned {name} into {target}. (Not in a Repositories folder: add {Path.GetDirectoryName(target)} there to list it.)");
+            : $"Cloned {name} into {target}. (Not in a Projects folder: add {Path.GetDirectoryName(target)} there to list it.)");
     }
 
     private static bool IsInside(string path, string folder)

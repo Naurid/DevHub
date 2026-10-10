@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Core.Formatting;
 using DevHub.Core.Git;
+using DevHub.Services;
 
 namespace DevHub.ViewModels.Git;
 
@@ -25,6 +26,15 @@ public partial class CommitLogViewModel : ViewModelBase
 
     private readonly GitRepositoryClient? _client;
     private readonly CommitOperations? _operations;
+    private readonly GitHubSession? _github;
+
+    /// <summary>Your GitHub picture, shared by every row you authored (they all update when it arrives).</summary>
+    private readonly AvatarViewModel _myAvatar = new();
+
+    /// <summary>How your commits are recognised: your e-mail(s) and names (git config, GitHub profile).</summary>
+    private readonly HashSet<string> _myEmails = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _myNames = new(StringComparer.OrdinalIgnoreCase);
+    private string? _myLogin;
     private CancellationTokenSource? _loadCts;
     private int _limit = PageSize;
 
@@ -37,12 +47,66 @@ public partial class CommitLogViewModel : ViewModelBase
     /// <param name="operations">Cherry-pick, revert, new branch / tag; null = no commit menu.</param>
     public CommitLogViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
         Action<FileChangeViewModel, int?>? openInEditor, Action<string, string?>? annotate = null,
-        CommitOperations? operations = null)
+        CommitOperations? operations = null, GitHubSession? github = null)
     {
         Layout = layout;
         _client = client;
         _operations = operations;
+        _github = github;
         Details = new CommitDetailsViewModel(layout, client, openInEditor, annotate);
+        if (client is not null)
+            _ = LoadIdentityAsync(client);
+    }
+
+    /// <summary>
+    /// Finds out who "you" are (this repository's user.email, then your GitHub login, name and
+    /// picture), so your commits show your avatar. Best effort: offline or signed out, rows just
+    /// show initials.
+    /// </summary>
+    private async Task LoadIdentityAsync(GitRepositoryClient client)
+    {
+        try
+        {
+            if (await client.GetConfigAsync("user.email") is { } email)
+                _myEmails.Add(email);
+            if (await client.GetConfigAsync("user.name") is { } name)
+                _myNames.Add(name);
+            RebuildRows();
+
+            if (_github is not null && await _github.GetMyProfileAsync() is { } profile)
+            {
+                _myLogin = profile.User.Login;
+                if (profile.User.Name is { Length: > 0 } fullName)
+                    _myNames.Add(fullName);
+                _myNames.Add(profile.User.Login);
+                _myAvatar.Image = profile.Avatar;
+                RebuildRows();
+            }
+        }
+        catch (Exception)
+        {
+            // Only decoration: never let it disturb the history.
+        }
+    }
+
+    /// <summary>Your commits: your e-mail, GitHub's no-reply address for your login, or your name.</summary>
+    private bool IsMine(GitCommit commit) =>
+        _myEmails.Contains(commit.AuthorEmail)
+        || (_myLogin is { } login
+            && (commit.AuthorEmail.Equals(login + "@users.noreply.github.com", StringComparison.OrdinalIgnoreCase)
+                || commit.AuthorEmail.EndsWith("+" + login + "@users.noreply.github.com", StringComparison.OrdinalIgnoreCase)))
+        || _myNames.Contains(commit.AuthorName);
+
+    private AvatarViewModel? AvatarFor(GitCommit commit) => IsMine(commit) ? _myAvatar : null;
+
+    /// <summary>Recreates the rows with the current idea of "you" (the graph is kept).</summary>
+    private void RebuildRows()
+    {
+        if (_allRows.Count == 0)
+            return;
+        var now = DateTimeOffset.Now;
+        _allRows = _allRows.Select(r => new CommitRowViewModel(r.Commit, r.Graph, r.GraphLanes, now, AvatarFor(r.Commit))).ToList();
+        ApplyFilter();
     }
 
     /// <summary>Panel sizes (details height, file list width), shared by all repository tabs.</summary>
@@ -159,7 +223,7 @@ public partial class CommitLogViewModel : ViewModelBase
             var graph = CommitGraph.Layout(commits);
             var lanes = Math.Clamp(graph.Count == 0 ? 1 : graph.Max(r => r.LaneCount), 1, MaxGraphLanes);
             var now = DateTimeOffset.Now;
-            _allRows = commits.Select((c, i) => new CommitRowViewModel(c, graph[i], lanes, now)).ToList();
+            _allRows = commits.Select((c, i) => new CommitRowViewModel(c, graph[i], lanes, now, AvatarFor(c))).ToList();
             _loadedSignature = signature;
             HasMore = commits.Count >= _limit;
             Error = null;
@@ -212,9 +276,11 @@ public partial class CommitLogViewModel : ViewModelBase
 /// <summary>One commit in the All Commits list.</summary>
 public sealed class CommitRowViewModel
 {
-    public CommitRowViewModel(GitCommit commit, GraphRow graph, int graphLanes, DateTimeOffset now)
+    /// <param name="avatar">The author's picture (yours, for your commits), or null: initials.</param>
+    public CommitRowViewModel(GitCommit commit, GraphRow graph, int graphLanes, DateTimeOffset now, AvatarViewModel? avatar = null)
     {
         Commit = commit;
+        Avatar = avatar;
         Graph = graph;
         GraphLanes = graphLanes;
         Date = RelativeTime.Format(commit.AuthorDate, now);
@@ -230,6 +296,9 @@ public sealed class CommitRowViewModel
 
     public string Subject => Commit.Subject;
     public string Author => Commit.AuthorName;
+
+    /// <summary>The author's picture, or null (the Avatar control shows the first letter of <see cref="Author"/>).</summary>
+    public AvatarViewModel? Avatar { get; }
     public string Date { get; }
     public string ShortId => Commit.ShortId;
 

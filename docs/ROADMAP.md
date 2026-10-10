@@ -44,7 +44,7 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       restore); repository tab with empty sidebar + header; open from Repositories; title-bar
       branch widget (read-only); Git Console tool window
 - [x] G1. Status: porcelain v2 parser (tested); watcher refresh; Local Changes view
-      (read-only), change count in the sidebar, dirty dot on the tab; Repositories tool window
+      (read-only), change count in the sidebar, dirty dot on the tab; Projects (then: Repositories) tool window
       scans saved folders automatically (at startup and after adding a folder)
 - [x] G2. Diff: unified-diff parser (tested); diff pane in Local Changes; "Open in Editor" (F4) in the language's external editor; diff in its own tab
 - [x] G3. Stage / unstage (double-click, Space, Stage All / Unstage All) / discard (confirmed) /

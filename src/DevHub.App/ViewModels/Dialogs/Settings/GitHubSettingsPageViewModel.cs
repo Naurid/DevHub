@@ -67,7 +67,7 @@ public sealed partial class GitHubSettingsPageViewModel : SettingsPageViewModelB
         {
             var row = new GitHubAccountRowViewModel(account, a => _ = SignOutAsync(a));
             Accounts.Add(row);
-            _ = row.CheckAsync(_session.GitHub!);
+            _ = row.CheckAsync(_session);
         }
         IsLoading = false;
         OnPropertyChanged(nameof(HasAccounts));
@@ -113,17 +113,21 @@ public sealed partial class GitHubAccountRowViewModel : ObservableObject
     /// <summary>"Gabor Vilics · signed in", "checking…", or what's wrong.</summary>
     [ObservableProperty] private string _detail = "Checking with GitHub…";
 
+    /// <summary>The account's GitHub picture, once downloaded.</summary>
+    [ObservableProperty] private byte[]? _avatar;
+
     /// <summary>GitHub didn't accept the stored sign-in: Sign In again refreshes it.</summary>
     [ObservableProperty] private bool _isProblem;
 
     public RelayCommand SignOutCommand { get; }
 
     /// <summary>Asks GitHub who this is (proves the sign-in works, with a read-only call).</summary>
-    public async Task CheckAsync(GitHubService github)
+    public async Task CheckAsync(GitHubSession session)
     {
         try
         {
-            var user = await github.GetUserAsync(Account);
+            var (user, avatar) = await session.GetProfileAsync(Account);
+            Avatar = avatar;
             Detail = user.Name is { Length: > 0 } name ? $"{name} · signed in" : "Signed in";
         }
         catch (GitHubException ex)

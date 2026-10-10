@@ -147,9 +147,31 @@ public sealed partial class RemoteOperations : ObservableObject
             newUpstreamRemote = remotes.Contains("origin") ? "origin" : remotes.FirstOrDefault();
             if (newUpstreamRemote is null)
             {
-                await ShowMessageAsync("No Remote",
-                    "This repository has no remote to push to. Add one first (for example \"git remote add origin <url>\").");
-                return;
+                // No remote at all: offer the ways forward instead of a dead end. Both end in a push.
+                var choice = new NoRemoteDialogViewModel(branch.Name);
+                if (!await _dialogs.ShowDialogAsync(choice))
+                    return;
+                if (choice.Choice == NoRemoteChoice.PublishToGitHub)
+                {
+                    await PublishToGitHubAsync();
+                    return;
+                }
+
+                var add = new RemoteEditDialogViewModel(_client, [], null);
+                if (!await _dialogs.ShowDialogAsync(add))
+                    return;
+                try
+                {
+                    await _client.AddRemoteAsync(add.Name, add.Url);
+                }
+                catch (Exception ex)
+                {
+                    _status.Show($"Couldn't add the remote {add.Name}: {(ex is GitException g ? g.StandardError.Trim() : ex.Message)}");
+                    return;
+                }
+                // The user just chose to push there: no second confirmation.
+                newUpstreamRemote = add.Name;
+                confirm = false;
             }
             if (confirm && !await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel("Push New Branch",
                     $"Push {branch.Name} to {newUpstreamRemote}? It's created there as {newUpstreamRemote}/{branch.Name}, " +

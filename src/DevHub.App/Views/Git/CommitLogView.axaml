@@ -125,9 +125,15 @@
                                            ToolTip.Tip="{Binding Subject}" />
                             </DockPanel>
 
-                            <TextBlock Grid.Column="2" Classes="secondary" Text="{Binding Author}"
-                                       Width="{DynamicResource Size.CommitAuthor}" TextTrimming="CharacterEllipsis"
-                                       VerticalAlignment="Center" ToolTip.Tip="{Binding DateToolTip}" />
+                            <!-- Author with their picture (yours from GitHub; others: their initial), like Fork. -->
+                            <DockPanel Grid.Column="2" Width="{DynamicResource Size.CommitAuthor}" VerticalAlignment="Center"
+                                       ToolTip.Tip="{Binding DateToolTip}">
+                                <c:Avatar DockPanel.Dock="Left" ImageData="{Binding Avatar.Image, FallbackValue={x:Null}}" Text="{Binding Author}"
+                                          Width="{DynamicResource Size.AvatarSmall}" Height="{DynamicResource Size.AvatarSmall}"
+                                          Margin="{DynamicResource Margin.InnerRight}" />
+                                <TextBlock Classes="secondary" Text="{Binding Author}" TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center" />
+                            </DockPanel>
                             <TextBlock Grid.Column="3" Classes="secondary" Text="{Binding Date}"
                                        Width="{DynamicResource Size.CommitDate}" TextTrimming="CharacterEllipsis"
                                        VerticalAlignment="Center" ToolTip.Tip="{Binding DateToolTip}" />

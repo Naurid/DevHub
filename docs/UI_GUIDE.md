@@ -156,6 +156,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `DoubleTap` | attached property: run a command on double-click (rows in trees/lists) | `<Grid Background="Transparent" c:DoubleTap.Command="{Binding OpenCommand}" />` |
 | `FocusRequest` | attached property: focus this element whenever a bound number goes up (ViewModel asks for focus) | `<TextBox c:FocusRequest.Token="{Binding Commit.FocusRequest}" />` |
 | `CommitGraphCell` | one row of the commit graph, drawn in code from a Core `GraphRow` (colors `Brush.Graph.0…7`) | `<c:CommitGraphCell Row="{Binding Graph}" Lanes="{Binding GraphLanes}" LaneWidth="{DynamicResource Size.GraphLane}" />` |
+| `Avatar` | a round account picture (bytes from a ViewModel), or the name's first letter on the accent color | `<c:Avatar ImageData="{Binding Avatar.Image}" Text="{Binding Author}" Width="{DynamicResource Size.AvatarSmall}" Height="{DynamicResource Size.AvatarSmall}" />` |
 
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
 template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />`

@@ -14,6 +14,10 @@ public sealed class GitHubService(GitCredentialManager credentials, GitHubApi ap
     public async Task<GitHubUser> GetUserAsync(string account, CancellationToken ct = default) =>
         await api.GetUserAsync(await TokenAsync(account, ct), ct);
 
+    /// <summary>The account's picture (no token involved: avatars are public), or null.</summary>
+    public Task<byte[]?> GetAvatarAsync(GitHubUser user, int size = 96, CancellationToken ct = default) =>
+        user.AvatarUrl is { } url ? api.GetAvatarAsync(url, size, ct) : Task.FromResult<byte[]?>(null);
+
     public async Task<IReadOnlyList<GitHubRepository>> ListRepositoriesAsync(string account, CancellationToken ct = default) =>
         await api.ListRepositoriesAsync(await TokenAsync(account, ct), ct: ct);
 

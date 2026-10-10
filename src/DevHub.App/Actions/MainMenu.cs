@@ -37,7 +37,7 @@ public static class MainMenu
                 MenuBuilder.Separator, ActionIds.ToggleTheme, ActionIds.ToggleCompact,
                 .. gallery,
             ]),
-            Group(registry, "Repositories", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
+            Group(registry, "Projects", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
             Group(registry, "Git",
             [
                 ActionIds.GitCommit, ActionIds.GitPush, ActionIds.GitPull, ActionIds.GitFetch, ActionIds.GitForcePush,

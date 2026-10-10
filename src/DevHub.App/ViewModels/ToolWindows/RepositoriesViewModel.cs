@@ -29,7 +29,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     private IReadOnlyList<GitRepository> _repositories = [];
 
     public override string Id => "repositories";
-    public override string Title => "Repositories";
+    public override string Title => "Projects";
     public override string IconKind => Controls.IconKind.Folder;
     public override ToolWindowSlot Slot => ToolWindowSlot.Left;
 

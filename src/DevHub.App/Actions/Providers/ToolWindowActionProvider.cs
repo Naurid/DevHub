@@ -21,7 +21,9 @@ public sealed class ToolWindowActionProvider(ToolWindowManager toolWindows) : IA
             // So the stripe button's tooltip can show the shortcut too.
             toolWindow.Shortcut = gesture;
 
-            yield return new AppAction(ActionIds.ToolWindowPrefix + toolWindow.Title.Replace(" ", ""),
+            // From the stable Id, not the Title: renaming a tool window ("Repositories" → "Projects")
+            // must not change its action id (menus, the Welcome page and saved shortcuts refer to it).
+            yield return new AppAction(ActionIds.ToolWindowPrefix + char.ToUpperInvariant(toolWindow.Id[0]) + toolWindow.Id[1..],
                 toolWindow.Title, toolWindow.ToggleCommand!)
             {
                 Category = "Tool Windows",

@@ -6,7 +6,8 @@ using System.Text.Json;
 namespace DevHub.Core.GitHub;
 
 /// <summary>A GitHub user (the signed-in account).</summary>
-public sealed record GitHubUser(string Login, string? Name);
+/// <param name="AvatarUrl">Their picture (GitHub makes one up when none was uploaded), or null.</param>
+public sealed record GitHubUser(string Login, string? Name, string? AvatarUrl = null);
 
 /// <summary>A repository on GitHub, as listed for Clone and returned by Publish.</summary>
 public sealed record GitHubRepository(
@@ -40,8 +41,37 @@ public sealed class GitHubApi(HttpClient http)
         using var response = await SendAsync(HttpMethod.Get, "user", token, null, ct);
         using var doc = await ReadJsonAsync(response, ct);
         var root = doc.RootElement;
-        return new GitHubUser(root.GetProperty("login").GetString() ?? "", OptionalString(root, "name"));
+        return new GitHubUser(root.GetProperty("login").GetString() ?? "", OptionalString(root, "name"),
+            OptionalString(root, "avatar_url"));
     }
+
+    /// <summary>
+    /// Downloads an avatar picture (PNG / JPEG bytes) at <paramref name="size"/> pixels. Avatars are
+    /// public: the request carries no token, and only GitHub's avatar host is accepted. Null when
+    /// the URL isn't GitHub's or the download fails (callers show initials instead).
+    /// </summary>
+    public async Task<byte[]?> GetAvatarAsync(string avatarUrl, int size = 96, CancellationToken ct = default)
+    {
+        if (!Uri.TryCreate(avatarUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps
+            || !uri.Host.Equals(AvatarHost, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var sized = new UriBuilder(uri) { Query = (uri.Query.Length > 1 ? uri.Query[1..] + "&" : "") + "s=" + size }.Uri;
+        using var request = new HttpRequestMessage(HttpMethod.Get, sized);
+        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("DevHub", "1.0"));
+        try
+        {
+            using var response = await http.SendAsync(request, ct);
+            return response.IsSuccessStatusCode ? await response.Content.ReadAsByteArrayAsync(ct) : null;
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Where GitHub serves avatars.</summary>
+    public const string AvatarHost = "avatars.githubusercontent.com";
 
     /// <summary>
     /// Repositories the account owns, collaborates on or can see through its organisations,
