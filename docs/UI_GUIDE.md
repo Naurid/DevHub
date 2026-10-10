@@ -89,6 +89,7 @@ Fluent mapping and code.
 | `Brush.Bg.Hover` | hover highlight |
 | `Brush.Bg.Selection` / `Brush.Bg.SelectionInactive` | selected row (focused / unfocused) |
 | `Brush.Border` / `Brush.Border.Control` | panel dividers / control outlines |
+| `Brush.Separator` | a line between two areas that are **both** on the editor color (in Dark, `Brush.Border` equals the editor color and vanishes there) |
 | `Brush.Text.Primary` / `.Secondary` / `.Disabled` / `.OnAccent` | text |
 | `Brush.Accent` (+ `.Hover`, `.Pressed`, `.Subtle`) | accent (user-configurable) |
 | `Brush.Status.Error` / `.Warning` / `.Success` (+ `.Subtle`) | status colors; `.Subtle` = tinted backgrounds |
@@ -148,6 +149,11 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `FocusOnLoad` | attached property: focus this element when it appears | `<TextBox c:FocusOnLoad.IsEnabled="True" />` |
 | `DoubleTap` | attached property: run a command on double-click (rows in trees/lists) | `<Grid Background="Transparent" c:DoubleTap.Command="{Binding OpenCommand}" />` |
 | `FocusRequest` | attached property: focus this element whenever a bound number goes up (ViewModel asks for focus) | `<TextBox c:FocusRequest.Token="{Binding Commit.FocusRequest}" />` |
+| `CommitGraphCell` | one row of the commit graph, drawn in code from a Core `GraphRow` (colors `Brush.Graph.0…7`) | `<c:CommitGraphCell Row="{Binding Graph}" Lanes="{Binding GraphLanes}" LaneWidth="{DynamicResource Size.GraphLane}" />` |
+
+Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
+template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />`
+in the view's `Styles`, then `ItemTemplate="{StaticResource FileRow}"`.
 
 Stock Fluent controls (Button, TextBox, ComboBox, CheckBox, ListBox, TreeView, …) are
 already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use them.
@@ -306,6 +312,8 @@ Add a round-trip test in `JsonSettingsStoreTests`. For experiments, run the app 
 | Closing a tab left nothing selected | a two-way `SelectedItem` binding nulls the property when the item is removed | remember "was active" before removing |
 | Button text not centered | Fluent leaves `HorizontalContentAlignment` at Stretch | global Button style centers it |
 | TextBox inner icon/× against the border | Fluent applies `Padding` only to the text column | `Margin.InnerLeft/Right` tokens |
+| App crashes at startup: `ArgumentException: An item with the same key has already been added. Key: Size.X` | two tokens with the same key (the build doesn't check) | search `Sizes.axaml` for the key before adding one |
+| A `*` column in a list row is empty | the fixed columns are wider than the row; or the ListBox scrolls horizontally, so rows get infinite width | `ScrollViewer.HorizontalScrollBarVisibility="Disabled"` on the list; `MinWidth` on the `*` column (`StaticResource`: a `ColumnDefinition` can't use `DynamicResource`) |
 | Screen readers say "Avalonia.Controls.Grid" | no accessible name; falls back to content type / `ToString()` | `ToString()` / `AutomationProperties.Name` (rule 7) |
 | Settings written by one feature lost after another saves | saving a stale `AppSettings` copy | `store.Update` (rule 8) |
 | `Watermark` obsolete warning | renamed in 12 | `PlaceholderText` |

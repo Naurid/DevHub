@@ -74,23 +74,40 @@ public partial class DiffViewModel : ViewModelBase
     /// changes and after every status refresh (the list items are new objects then), so the
     /// diff follows edits made outside DevHub.
     /// </summary>
-    public async Task LoadAsync(FileChangeViewModel? file)
+    public Task LoadAsync(FileChangeViewModel? file)
+    {
+        var client = _client;
+        return LoadCoreAsync(file,
+            client is null ? null : ct => client.GetDiffAsync(file!.Change, file.IsStagedSide, ct),
+            file is null ? "" : file.IsConflicted ? "Conflict" : file.IsStagedSide ? "Staged" : "Unstaged");
+    }
+
+    /// <summary>Shows a file as a commit changed it (All Commits), compared with the commit's first parent.</summary>
+    public Task LoadCommitFileAsync(GitCommit commit, FileChangeViewModel? file)
+    {
+        var client = _client;
+        return LoadCoreAsync(file,
+            client is null ? null : ct => client.GetCommitDiffAsync(commit, file!.Change, ct),
+            $"Commit {commit.ShortId}");
+    }
+
+    private async Task LoadCoreAsync(FileChangeViewModel? file, Func<CancellationToken, Task<FileDiff>>? load, string side)
     {
         _loadCts?.Cancel();
         File = file;
 
-        if (file is null || _client is null)
+        if (file is null || load is null)
         {
-            Show(null, null);
+            Show(null, null, "");
             return;
         }
 
         var cts = _loadCts = new CancellationTokenSource();
         try
         {
-            var diff = await _client.GetDiffAsync(file.Change, file.IsStagedSide, cts.Token);
+            var diff = await load(cts.Token);
             if (!cts.IsCancellationRequested)
-                Show(file, diff);
+                Show(file, diff, side);
         }
         catch (OperationCanceledException)
         {
@@ -109,7 +126,7 @@ public partial class DiffViewModel : ViewModelBase
     {
         _loadCts?.Cancel();
         File = null;
-        Show(null, null);
+        Show(null, null, "");
         Message = message;
     }
 
@@ -134,7 +151,8 @@ public partial class DiffViewModel : ViewModelBase
 
     private bool CanOpenTab() => File is not null && _openInTab is not null;
 
-    private void Show(FileChangeViewModel? file, FileDiff? diff)
+    /// <param name="side">Where the diff comes from, for the subtitle: "Staged", "Unstaged", "Commit 1a2b3c4d"…</param>
+    private void Show(FileChangeViewModel? file, FileDiff? diff, string side)
     {
         _firstChangedLine = diff?.FirstChangedLine;
         if (file is null || diff is null)
@@ -144,7 +162,6 @@ public partial class DiffViewModel : ViewModelBase
             return;
         }
 
-        var side = file.IsConflicted ? "Conflict" : file.IsStagedSide ? "Staged" : "Unstaged";
         Subtitle = diff.IsRenamed ? $"{side} · renamed from {diff.OldPath}" : side;
         AddedText = diff.AddedCount > 0 ? $"+{diff.AddedCount}" : null;
         RemovedText = diff.RemovedCount > 0 ? $"−{diff.RemovedCount}" : null;

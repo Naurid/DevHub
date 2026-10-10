@@ -52,7 +52,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
 - [ ] G3.1 Multi-select in the file lists; per-hunk / per-line staging (`git apply --cached`)
 - [x] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,
       delete; title-bar branch popup
-- [ ] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs
+- [x] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs;
+      search, "Load more" (1,000 at a time), reload when HEAD or a branch moves
 - [ ] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained
 - [ ] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool
 - [ ] G8. Stashes, tags, cherry-pick, revert, blame, submodules

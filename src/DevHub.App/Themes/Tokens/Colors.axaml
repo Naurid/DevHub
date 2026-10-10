@@ -29,6 +29,8 @@
             <Color x:Key="Color.Bg.SelectionInactive">#43454A</Color>
 
             <Color x:Key="Color.Border">#1E1F22</Color>
+            <!-- A line between two areas on the editor color (Color.Border would vanish there in Dark). -->
+            <Color x:Key="Color.Separator">#393B40</Color>
             <Color x:Key="Color.Border.Control">#4E5157</Color>
 
             <Color x:Key="Color.Text.Primary">#DFE1E5</Color>
@@ -39,6 +41,16 @@
             <Color x:Key="Color.Status.Error">#DB5C5C</Color>
             <Color x:Key="Color.Status.Warning">#F2C55C</Color>
             <Color x:Key="Color.Status.Success">#5FAD65</Color>
+
+            <!-- Commit graph lines (G5): one color per branch line, cycled. -->
+            <Color x:Key="Color.Graph.0">#548AF7</Color>
+            <Color x:Key="Color.Graph.1">#5FAD65</Color>
+            <Color x:Key="Color.Graph.2">#E08855</Color>
+            <Color x:Key="Color.Graph.3">#A571E6</Color>
+            <Color x:Key="Color.Graph.4">#3FB2BD</Color>
+            <Color x:Key="Color.Graph.5">#E06BAF</Color>
+            <Color x:Key="Color.Graph.6">#D6AE58</Color>
+            <Color x:Key="Color.Graph.7">#DB5C5C</Color>
         </ResourceDictionary>
 
         <!-- Rider "New UI" Light: same keys, different values. Every key in
@@ -52,6 +64,7 @@
             <Color x:Key="Color.Bg.SelectionInactive">#DFE1E5</Color>
 
             <Color x:Key="Color.Border">#EBECF0</Color>
+            <Color x:Key="Color.Separator">#EBECF0</Color>
             <Color x:Key="Color.Border.Control">#C9CCD6</Color>
 
             <Color x:Key="Color.Text.Primary">#000000</Color>
@@ -62,6 +75,15 @@
             <Color x:Key="Color.Status.Error">#E55765</Color>
             <Color x:Key="Color.Status.Warning">#E2A53A</Color>
             <Color x:Key="Color.Status.Success">#208A3C</Color>
+
+            <Color x:Key="Color.Graph.0">#3574F0</Color>
+            <Color x:Key="Color.Graph.1">#208A3C</Color>
+            <Color x:Key="Color.Graph.2">#D46A1D</Color>
+            <Color x:Key="Color.Graph.3">#834DF0</Color>
+            <Color x:Key="Color.Graph.4">#078A96</Color>
+            <Color x:Key="Color.Graph.5">#C94F9A</Color>
+            <Color x:Key="Color.Graph.6">#B38A0F</Color>
+            <Color x:Key="Color.Graph.7">#E55765</Color>
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>
@@ -80,6 +102,7 @@
     <SolidColorBrush x:Key="Brush.Bg.SelectionInactive" Color="{DynamicResource Color.Bg.SelectionInactive}" />
 
     <SolidColorBrush x:Key="Brush.Border" Color="{DynamicResource Color.Border}" />
+    <SolidColorBrush x:Key="Brush.Separator" Color="{DynamicResource Color.Separator}" />
     <SolidColorBrush x:Key="Brush.Border.Control" Color="{DynamicResource Color.Border.Control}" />
 
     <SolidColorBrush x:Key="Brush.Text.Primary" Color="{DynamicResource Color.Text.Primary}" />
@@ -103,5 +126,15 @@
     <SolidColorBrush x:Key="Brush.Diff.Added" Color="{DynamicResource Color.Status.Success}" Opacity="0.16" />
     <SolidColorBrush x:Key="Brush.Diff.Removed" Color="{DynamicResource Color.Status.Error}" Opacity="0.16" />
     <SolidColorBrush x:Key="Brush.Diff.Hunk" Color="{DynamicResource Color.Accent}" Opacity="0.1" />
+
+    <!-- Commit graph (G5). CommitGraphCell looks these up by index: Brush.Graph.{color % 8}. -->
+    <SolidColorBrush x:Key="Brush.Graph.0" Color="{DynamicResource Color.Graph.0}" />
+    <SolidColorBrush x:Key="Brush.Graph.1" Color="{DynamicResource Color.Graph.1}" />
+    <SolidColorBrush x:Key="Brush.Graph.2" Color="{DynamicResource Color.Graph.2}" />
+    <SolidColorBrush x:Key="Brush.Graph.3" Color="{DynamicResource Color.Graph.3}" />
+    <SolidColorBrush x:Key="Brush.Graph.4" Color="{DynamicResource Color.Graph.4}" />
+    <SolidColorBrush x:Key="Brush.Graph.5" Color="{DynamicResource Color.Graph.5}" />
+    <SolidColorBrush x:Key="Brush.Graph.6" Color="{DynamicResource Color.Graph.6}" />
+    <SolidColorBrush x:Key="Brush.Graph.7" Color="{DynamicResource Color.Graph.7}" />
 
 </ResourceDictionary>

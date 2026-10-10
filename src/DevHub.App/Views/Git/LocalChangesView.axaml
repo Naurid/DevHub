@@ -16,58 +16,10 @@
         <KeyBinding Gesture="F4" Command="{Binding Diff.OpenInEditorCommand}" />
     </UserControl.KeyBindings>
 
+    <!-- Change colors, the FileRow template and the list header style (shared with All Commits). -->
     <UserControl.Styles>
-        <!-- Status colors: on the letter and the file name (the folder stays secondary). -->
-        <Style Selector="TextBlock.change.modified">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
-        </Style>
-        <Style Selector="TextBlock.change.renamed">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
-        </Style>
-        <Style Selector="TextBlock.change.added">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Success}" />
-        </Style>
-        <Style Selector="TextBlock.change.deleted">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
-        </Style>
-        <Style Selector="TextBlock.change.untracked">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Warning}" />
-        </Style>
-        <Style Selector="TextBlock.change.conflicted">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Error}" />
-        </Style>
-        <Style Selector="Border.listGroupHeader">
-            <Setter Property="Padding" Value="{DynamicResource Padding.ListGroupHeader}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
-            <Setter Property="BorderThickness" Value="0,0,0,1" />
-        </Style>
-        <Style Selector="TextBlock.deleted.name">
-            <Setter Property="TextDecorations" Value="Strikethrough" />
-        </Style>
+        <StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />
     </UserControl.Styles>
-
-    <UserControl.Resources>
-        <!-- One file row, used by both lists. Double-click stages (Unstaged) or unstages (Staged);
-             the transparent background makes the whole row clickable, not just the text. -->
-        <DataTemplate x:Key="FileRow" x:DataType="vm:FileChangeViewModel">
-            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="{DynamicResource Spacing}"
-                  Margin="{DynamicResource Margin.RowEnd}" ToolTip.Tip="{Binding ToolTip}"
-                  Background="Transparent" c:DoubleTap.Command="{Binding ToggleStageCommand}">
-                <TextBlock Classes="code change" Width="{DynamicResource Size.StatusLetter}"
-                           Classes.modified="{Binding IsModified}" Classes.renamed="{Binding IsRenamed}"
-                           Classes.added="{Binding IsAdded}" Classes.deleted="{Binding IsDeleted}"
-                           Classes.untracked="{Binding IsUntracked}" Classes.conflicted="{Binding IsConflicted}"
-                           Text="{Binding StatusLetter}" TextAlignment="Center" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1" Classes="change name"
-                           Classes.modified="{Binding IsModified}" Classes.renamed="{Binding IsRenamed}"
-                           Classes.added="{Binding IsAdded}" Classes.deleted="{Binding IsDeleted}"
-                           Classes.untracked="{Binding IsUntracked}" Classes.conflicted="{Binding IsConflicted}"
-                           Text="{Binding FileName}" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="2" Classes="small secondary" Text="{Binding Directory}"
-                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
-            </Grid>
-        </DataTemplate>
-    </UserControl.Resources>
 
     <DockPanel>
         <!-- Left column, resizable: Unstaged, Staged, commit box. Stays visible without changes

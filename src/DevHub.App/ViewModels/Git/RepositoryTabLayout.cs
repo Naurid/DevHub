@@ -14,4 +14,10 @@ public sealed partial class RepositoryTabLayout : ObservableObject
 
     /// <summary>The file lists in Local Changes (the diff pane takes the rest).</summary>
     [ObservableProperty] private double _changesListWidth = 300;
+
+    /// <summary>All Commits: the details area under the commit list (message, files, diff).</summary>
+    [ObservableProperty] private double _commitDetailsHeight = 340;
+
+    /// <summary>All Commits: the message + file list column in the details (the diff takes the rest).</summary>
+    [ObservableProperty] private double _commitFilesWidth = 320;
 }

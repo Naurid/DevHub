@@ -42,8 +42,11 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         Layout = layout;
         LocalChanges = new LocalChangesViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
             (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab);
+        CommitLog = new CommitLogViewModel(layout, client,
+            (file, line) => services.Editor.Open(path, file.Change.Path, line));
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
         LocalChangesSection = Sections[0];
+        AllCommitsSection = Sections[1];
         BranchesSection = Sections[2];
         RemotesSection = Sections[3];
         _selectedSection = LocalChangesSection;
@@ -112,7 +115,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     public IReadOnlyList<RepositorySection> Sections { get; } =
     [
         new("Local Changes", IconKind.Edit, "Changed files, staging and the commit box arrive in G1–G3."),
-        new("All Commits", IconKind.Commit, "The commit graph arrives in G5."),
+        new("All Commits", IconKind.Commit, ""),
         new("Branches", IconKind.Vcs, ""),
         new("Remotes", IconKind.Fetch, ""),
         new("Tags", IconKind.Template, "Tags arrive in G8."),
@@ -120,8 +123,15 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     ];
 
     private RepositorySection LocalChangesSection { get; }
+    private RepositorySection AllCommitsSection { get; }
     private RepositorySection BranchesSection { get; }
     private RepositorySection RemotesSection { get; }
+
+    /// <summary>History graph + commit details (the All Commits section).</summary>
+    public CommitLogViewModel CommitLog { get; }
+
+    /// <summary>Fingerprint of HEAD and the branch tips from the last refresh: when it changes, the history is reloaded.</summary>
+    private string _historySignature = "";
 
     /// <summary>Local branches (the Branches section).</summary>
     public BranchListViewModel LocalBranches { get; }
@@ -142,9 +152,17 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// </summary>
     public object CurrentContent =>
         SelectedSection == LocalChangesSection ? LocalChanges
+        : SelectedSection == AllCommitsSection ? CommitLog
         : SelectedSection == BranchesSection ? LocalBranches
         : SelectedSection == RemotesSection ? RemoteBranches
         : SelectedSection;
+
+    // The history is loaded the first time All Commits is shown (most visits are to Local Changes).
+    partial void OnSelectedSectionChanged(RepositorySection value)
+    {
+        if (value == AllCommitsSection)
+            _ = CommitLog.EnsureLoadedAsync(_historySignature);
+    }
 
     /// <summary>Git → New Branch…: from the current commit.</summary>
     public Task NewBranchAsync() => _branchOperations.NewBranchAsync();
@@ -194,6 +212,10 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
             BranchPopup.Update(branches);
             BranchesSection.Count = LocalBranches.Count;
             RemotesSection.Count = RemoteBranches.Count;
+
+            // History only changes when HEAD or a branch moves (commit, checkout, fetch…), not on file edits.
+            _historySignature = status.CommitId + "|" + string.Join(",", branches.Select(b => b.Ref + ":" + b.CommitId));
+            _ = CommitLog.RefreshIfChangedAsync(_historySignature);
 
             LocalChanges.Update(status);
             LocalChangesSection.Count = status.Changes.Count;

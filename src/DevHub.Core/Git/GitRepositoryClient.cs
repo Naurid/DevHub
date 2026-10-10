@@ -316,6 +316,66 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
         return result.Succeeded;
     }
 
+    // ---- History (G5) ---------------------------------------------------------------------------
+
+    /// <summary>
+    /// The newest <paramref name="maxCount"/> commits reachable from any branch, remote branch,
+    /// tag or HEAD, children before parents (<c>--topo-order</c>, which the graph layout needs).
+    /// Stashes and notes are left out. An empty repository gives an empty list.
+    /// </summary>
+    public async Task<IReadOnlyList<GitCommit>> GetLogAsync(int maxCount, CancellationToken ct = default)
+    {
+        // --exclude applies to the --all after it. HEAD is included by --all (detached HEAD too).
+        var result = await runner.RunAsync(RepositoryPath,
+            ["log", "--no-color", "--topo-order", "--decorate=full", "--format=" + LogParser.Format,
+             "--max-count=" + maxCount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+             "--exclude=refs/stash", "--exclude=refs/notes/*", "--all"],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        if (result.Succeeded)
+            return LogParser.Parse(result.StandardOutput);
+        // A repository without commits: nothing to show (any other failure is a real error).
+        if (await GetBranchAsync(ct) is null)
+            return [];
+        throw new GitException(["log"], result.ExitCode, result.StandardError);
+    }
+
+    /// <summary>A commit's full message (subject, blank line, body).</summary>
+    public async Task<string> GetCommitMessageAsync(string commitId, CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["log", "-1", "--format=%B", commitId, "--"],
+            new GitRunOptions { ReadOnly = true }, ct);
+        return result.StandardOutput.TrimEnd();
+    }
+
+    /// <summary>
+    /// Files a commit changed, compared with its first parent (for a merge: what the merge
+    /// brought into the branch), or with nothing for a root commit. Renames are detected.
+    /// </summary>
+    public async Task<IReadOnlyList<FileChange>> GetCommitChangesAsync(GitCommit commit, CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath,
+            ["diff-tree", "-r", "-M", "--no-commit-id", "--name-status", "-z", .. CommitRange(commit)],
+            new GitRunOptions { ReadOnly = true }, ct);
+        return LogParser.ParseNameStatus(result.StandardOutput);
+    }
+
+    /// <summary>The diff of one file in a commit (same comparison as <see cref="GetCommitChangesAsync"/>).</summary>
+    public async Task<FileDiff> GetCommitDiffAsync(GitCommit commit, FileChange change, CancellationToken ct = default,
+        int maxLines = DiffParser.DefaultMaxLines)
+    {
+        List<string> args = ["diff-tree", "-p", "-r", "-M", "--no-commit-id", .. CommonDiffArgs, .. CommitRange(commit), "--", change.Path];
+        if (change.OriginalPath is { } from)
+            args.Add(from); // a rename needs both paths, or git shows an add and a delete
+
+        var result = await runner.RunAsync(RepositoryPath, args, new GitRunOptions { ReadOnly = true }, ct);
+        return DiffParser.Parse(result.StandardOutput, maxLines).FirstOrDefault()
+               ?? new FileDiff { OldPath = change.OriginalPath ?? change.Path, NewPath = change.Path };
+    }
+
+    /// <summary>diff-tree arguments: "parent commit" for a normal or merge commit, "--root commit" for a root commit.</summary>
+    private static string[] CommitRange(GitCommit commit) =>
+        commit.ParentIds.Count > 0 ? [commit.ParentIds[0], commit.Id] : ["--root", commit.Id];
+
     /// <summary>
     /// Runs a command on a list of paths given NUL-separated on stdin
     /// (<c>--pathspec-from-file=- --pathspec-file-nul</c>): no command-line length limit and no
