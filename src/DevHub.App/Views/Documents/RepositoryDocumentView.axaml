@@ -44,6 +44,9 @@
                                 <c:ActionButton IconKind="push" AutomationProperties.Name="Push"
                                                 ToolTip.Tip="Push… (Ctrl+Shift+K): send your commits to the remote"
                                                 Command="{Binding Remote.PushCommand}" />
+                                <c:ActionButton IconKind="terminal" AutomationProperties.Name="Open Terminal"
+                                                ToolTip.Tip="Open Terminal (Alt+F12): Git Bash in this repository, for any git command"
+                                                Command="{Binding OpenTerminalCommand}" />
                             </c:Toolbar>
                         </Grid>
                         <TextBlock Classes="small secondary" Text="{Binding Path}"
@@ -168,8 +171,13 @@
                                 </TextBlock>
                             </TreeDataTemplate>
 
+                            <!-- A branch folder ("feature" for feature/…): the one row with an icon, so folders
+                                 stand out from branches. -->
                             <TreeDataTemplate DataType="docs:SidebarFolderNode" ItemsSource="{Binding Children}">
-                                <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing.Small}" Background="Transparent">
+                                    <c:Icon Kind="folder" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                </Grid>
                             </TreeDataTemplate>
 
                             <!-- A branch: bold when checked out, ↑↓ against its upstream. -->

@@ -28,6 +28,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     private readonly RepositoryWatcher? _watcher;
     private readonly BranchOperations _branchOperations;
     private readonly CommitOperations _commitOperations;
+    private readonly TerminalLauncher _terminal;
     private CancellationTokenSource? _refreshCts;
     private Task _refreshTask = Task.CompletedTask;
     private bool _disposed;
@@ -41,6 +42,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     {
         Path = path;
         _client = client;
+        _terminal = services.Terminal;
         Layout = layout;
         Action<FileChangeViewModel, int?> openInEditor = (file, line) => services.Editor.Open(path, file.Change.Path, line);
         LocalChanges = new LocalChangesViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
@@ -259,6 +261,13 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         if (!_revealingBranch && SelectedNode != value)
             SelectedNode = value;
     }
+
+    /// <summary>
+    /// Open Terminal (header button, Git → Open Terminal, Alt+F12 as in JetBrains): Git Bash in
+    /// this repository's folder, for anything DevHub doesn't do itself.
+    /// </summary>
+    [RelayCommand]
+    public void OpenTerminal() => _terminal.Open(Path);
 
     /// <summary>Git → New Branch…: from the current commit.</summary>
     public Task NewBranchAsync() => _branchOperations.NewBranchAsync();

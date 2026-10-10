@@ -53,3 +53,11 @@ cover their compiled IDE builds; the icon source files themselves are Apache 2.0
 
 When the app is published (roadmap M9), this file and `LICENSE-2.0.txt` must ship
 alongside the executable.
+
+## DevHub's own icons
+
+Drawn for DevHub in the same style (not copied from JetBrains; same license as DevHub):
+
+| File | Used as |
+|---|---|
+| terminal.svg / terminal_dark.svg | `IconKind.Terminal` (Open Terminal) |

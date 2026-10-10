@@ -41,6 +41,7 @@ public static class ActionIds
     public const string GitManageRemotes = "Git.ManageRemotes";
     public const string GitPublish = "Git.PublishToGitHub";
     public const string GitClone = "Git.Clone";
+    public const string GitOpenTerminal = "Git.OpenTerminal";
 
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the tool window's Id follows, capitalised: "ToolWindow.Repositories" (the Projects tool window).</summary>

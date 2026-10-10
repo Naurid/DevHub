@@ -98,6 +98,7 @@ public partial class App : Application
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<ExternalEditor>();
         services.AddSingleton<GitHubSession>();
+        services.AddSingleton<TerminalLauncher>();
         services.AddSingleton<RepositoryTabServices>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 

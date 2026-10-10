@@ -41,6 +41,7 @@ public static class IconKind
 
     // Run
     public const string Run = "run";
+    public const string Terminal = "terminal";
     public const string Stop = "stop";
 
     // Status

@@ -10,4 +10,6 @@ namespace DevHub.ViewModels.Documents;
 /// <param name="Dialogs">Confirmations (discard).</param>
 /// <param name="Status">Status bar messages.</param>
 /// <param name="GitHub">The GitHub account (Publish to GitHub).</param>
-public sealed record RepositoryTabServices(ExternalEditor Editor, IDialogService Dialogs, IStatusService Status, GitHubSession GitHub);
+/// <param name="Terminal">Opens a terminal in the repository (Open Terminal).</param>
+public sealed record RepositoryTabServices(ExternalEditor Editor, IDialogService Dialogs, IStatusService Status, GitHubSession GitHub,
+    TerminalLauncher Terminal);

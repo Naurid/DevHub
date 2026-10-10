@@ -28,6 +28,7 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _manageRemotes;
     private readonly AsyncRelayCommand _publish;
     private readonly AsyncRelayCommand _clone;
+    private readonly RelayCommand _openTerminal;
 
     public GitActionProvider(DocumentManager documents, CloneOperations clone)
     {
@@ -64,6 +65,9 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         _pull = RemoteCommand(r => r.PullCommand);
         _push = RemoteCommand(r => r.PushCommand);
         _forcePush = RemoteCommand(r => r.ForcePushCommand);
+        _openTerminal = new RelayCommand(
+            () => _documents.ActiveRepository!.OpenTerminal(),
+            () => _documents.ActiveRepository is not null);
         _manageRemotes = RemoteCommand(r => r.ManageRemotesCommand);
         _publish = RemoteCommand(r => r.PublishToGitHubCommand);
 
@@ -175,6 +179,15 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Description = "Create a branch from the current commit in the active repository.",
         };
 
+        // Alt+F12 = JetBrains' Terminal.
+        yield return new AppAction(ActionIds.GitOpenTerminal, "Open Terminal", _openTerminal)
+        {
+            Category = "Git",
+            IconKind = IconKind.Terminal,
+            Gesture = "Alt+F12",
+            Description = "Open Git Bash (or Windows Terminal / PowerShell) in the active repository's folder.",
+        };
+
         // Ctrl+Alt+Y = JetBrains' "Synchronize" (F5 is already Rescan Repositories).
         yield return new AppAction(ActionIds.GitRefresh, "Refresh Repository", _refresh)
         {
@@ -219,6 +232,7 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             _forcePush.NotifyCanExecuteChanged();
             _stash.NotifyCanExecuteChanged();
             _manageRemotes.NotifyCanExecuteChanged();
+            _openTerminal.NotifyCanExecuteChanged();
             _publish.NotifyCanExecuteChanged();
             _unstash.NotifyCanExecuteChanged();
         }
