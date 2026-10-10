@@ -40,8 +40,13 @@ public partial class LocalChangesViewModel : ViewModelBase
         _dialogs = dialogs;
         _status = status;
         _refresh = refresh;
-        Diff = new DiffViewModel(client, openInEditor, openInTab);
+        Diff = new DiffViewModel(client, openInEditor, openInTab, ApplyPartialAsync);
         Commit = new CommitViewModel(client, status, () => Staged.Count > 0, refresh, push);
+
+        // The selection lists belong to this ViewModel (the ListBoxes fill them), so these
+        // subscriptions live exactly as long as their source and need no unsubscribe.
+        UnstagedSelection.CollectionChanged += (_, _) => UnstagedTargetsChanged();
+        StagedSelection.CollectionChanged += (_, _) => UnstageSelectedCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>The commit box (message, Amend, Commit).</summary>
@@ -50,7 +55,8 @@ public partial class LocalChangesViewModel : ViewModelBase
     /// <summary>A stage / unstage / discard is running: the buttons wait for it.</summary>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StageSelectedCommand), nameof(UnstageSelectedCommand),
-        nameof(StageAllCommand), nameof(UnstageAllCommand), nameof(DiscardSelectedCommand), nameof(DiscardAllCommand))]
+        nameof(StageAllCommand), nameof(UnstageAllCommand), nameof(DiscardSelectedCommand), nameof(DiscardAllCommand),
+        nameof(AcceptYoursCommand), nameof(AcceptTheirsCommand), nameof(MarkResolvedCommand), nameof(OpenMergeToolCommand))]
     private bool _isBusy;
 
     public ObservableCollection<FileChangeViewModel> Unstaged { get; } = new();
@@ -75,6 +81,20 @@ public partial class LocalChangesViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(UnstageSelectedCommand))]
     private FileChangeViewModel? _selectedStaged;
+
+    /// <summary>
+    /// All selected rows of each list (Ctrl+click, Shift+click, Ctrl+A; bound to the ListBoxes'
+    /// SelectedItems). Stage / unstage / discard act on these; the diff shows the clicked one.
+    /// </summary>
+    public ObservableCollection<FileChangeViewModel> UnstagedSelection { get; } = new();
+    public ObservableCollection<FileChangeViewModel> StagedSelection { get; } = new();
+
+    /// <summary>What the Unstaged actions act on: the selected rows, or the current one.</summary>
+    private IReadOnlyList<FileChangeViewModel> UnstagedTargets =>
+        UnstagedSelection.Count > 0 ? UnstagedSelection.ToList() : SelectedUnstaged is { } f ? [f] : [];
+
+    private IReadOnlyList<FileChangeViewModel> StagedTargets =>
+        StagedSelection.Count > 0 ? StagedSelection.ToList() : SelectedStaged is { } f ? [f] : [];
 
     /// <summary>The selected file in either list; the diff pane shows it.</summary>
     public FileChangeViewModel? Selected => SelectedUnstaged ?? SelectedStaged;
@@ -105,6 +125,8 @@ public partial class LocalChangesViewModel : ViewModelBase
     {
         var keepUnstaged = SelectedUnstaged?.Change.Path;
         var keepStaged = SelectedStaged?.Change.Path;
+        var keepUnstagedSelection = UnstagedSelection.Select(f => f.Change.Path).ToHashSet();
+        var keepStagedSelection = StagedSelection.Select(f => f.Change.Path).ToHashSet();
 
         Fill(Unstaged, status.Changes
             .Where(c => c.IsUnstaged || c.IsConflicted)
@@ -119,6 +141,9 @@ public partial class LocalChangesViewModel : ViewModelBase
 
         SelectedUnstaged = Unstaged.FirstOrDefault(f => f.Change.Path == keepUnstaged);
         SelectedStaged = Staged.FirstOrDefault(f => f.Change.Path == keepStaged);
+        // The rows are new objects: select the same files again (the ListBoxes follow the lists).
+        Reselect(UnstagedSelection, Unstaged, keepUnstagedSelection);
+        Reselect(StagedSelection, Staged, keepStagedSelection);
 
         OnPropertyChanged(nameof(UnstagedCount));
         OnPropertyChanged(nameof(StagedCount));
@@ -131,26 +156,52 @@ public partial class LocalChangesViewModel : ViewModelBase
 
     // ---- Stage / unstage / discard ---------------------------------------------------------
 
-    /// <summary>Double-click on a row: stage it if unstaged, unstage it if staged.</summary>
+    // ---- Conflicts (G7) ---------------------------------------------------------------------
+
+    /// <summary>Merge / rebase conflict handling; set by the repository tab right after creation.</summary>
+    public ConflictOperations? Conflicts { get; set; }
+
+    /// <summary>The selected conflicted files (the conflict menu items act on these).</summary>
+    private IReadOnlyList<FileChange> ConflictTargets =>
+        UnstagedTargets.Where(f => f.IsConflicted).Select(f => f.Change).ToList();
+
+    private bool HasConflictTargets() => !IsBusy && Conflicts is not null && ConflictTargets.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(HasConflictTargets))]
+    private Task AcceptYoursAsync() => Conflicts!.ResolveAsync(ConflictTargets, ConflictChoice.Yours);
+
+    [RelayCommand(CanExecute = nameof(HasConflictTargets))]
+    private Task AcceptTheirsAsync() => Conflicts!.ResolveAsync(ConflictTargets, ConflictChoice.Theirs);
+
+    [RelayCommand(CanExecute = nameof(HasConflictTargets))]
+    private Task MarkResolvedAsync() => Conflicts!.MarkResolvedAsync(ConflictTargets);
+
+    /// <summary>The merge tool on the current conflicted file (also double-click on a conflict).</summary>
+    [RelayCommand(CanExecute = nameof(HasConflictTargets))]
+    private Task OpenMergeToolAsync() => Conflicts!.OpenMergeToolAsync(ConflictTargets[0]);
+
+    /// <summary>Double-click on a row: stage it if unstaged, unstage it if staged; a conflict opens the merge tool.</summary>
     private void ToggleStage(FileChangeViewModel file)
     {
-        if (file.IsStagedSide)
+        if (file.IsConflicted)
+            _ = Conflicts?.OpenMergeToolAsync(file.Change);
+        else if (file.IsStagedSide)
             _ = UnstageAsync([file]);
         else
             _ = StageAsync([file]);
     }
 
-    private bool CanStageSelected() => !IsBusy && SelectedUnstaged is not null;
+    private bool CanStageSelected() => !IsBusy && UnstagedTargets.Count > 0;
 
-    /// <summary>Space in the Unstaged list, or "Stage".</summary>
+    /// <summary>Space in the Unstaged list, or "Stage": every selected row.</summary>
     [RelayCommand(CanExecute = nameof(CanStageSelected))]
-    private Task StageSelectedAsync() => StageAsync([SelectedUnstaged!]);
+    private Task StageSelectedAsync() => StageAsync(UnstagedTargets);
 
-    private bool CanUnstageSelected() => !IsBusy && SelectedStaged is not null;
+    private bool CanUnstageSelected() => !IsBusy && StagedTargets.Count > 0;
 
-    /// <summary>Space in the Staged list, or "Unstage".</summary>
+    /// <summary>Space in the Staged list, or "Unstage": every selected row.</summary>
     [RelayCommand(CanExecute = nameof(CanUnstageSelected))]
-    private Task UnstageSelectedAsync() => UnstageAsync([SelectedStaged!]);
+    private Task UnstageSelectedAsync() => UnstageAsync(StagedTargets);
 
     private bool CanStageAll() => !IsBusy && _client is not null && Unstaged.Any(f => !f.IsConflicted);
 
@@ -162,33 +213,34 @@ public partial class LocalChangesViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanUnstageAll))]
     private Task UnstageAllAsync() => RunAsync("Unstage all", client => client.UnstageAllAsync(), Staged, 0);
 
-    private bool CanDiscardSelected() => !IsBusy && SelectedUnstaged is { IsConflicted: false };
+    private bool CanDiscardSelected() => !IsBusy && UnstagedTargets.Any(f => !f.IsConflicted);
 
-    /// <summary>Throws away the selected file's unstaged changes, after asking.</summary>
+    /// <summary>Throws away the selected files' unstaged changes, after asking (conflicts are left alone).</summary>
     [RelayCommand(CanExecute = nameof(CanDiscardSelected))]
-    private Task DiscardSelectedAsync() => DiscardAsync([SelectedUnstaged!]);
+    private Task DiscardSelectedAsync() => DiscardAsync(UnstagedTargets.Where(f => !f.IsConflicted).ToList());
 
     /// <summary>
-    /// Git → Discard Changes… (Ctrl+Alt+Z, window-wide): discards the selected unstaged file,
+    /// Git → Discard Changes… (Ctrl+Alt+Z, window-wide): discards the selected unstaged files,
     /// or says in the status bar why it can't, instead of silently doing nothing.
     /// </summary>
     public Task DiscardSelectionAsync()
     {
         if (IsBusy)
             return Task.CompletedTask;
-        if (SelectedUnstaged is null)
+        var targets = UnstagedTargets;
+        if (targets.Count == 0)
         {
             _status.Show(SelectedStaged is not null
                 ? "Discard works on unstaged changes. Unstage the file first (Space), then discard it."
                 : "Select a file in Unstaged to discard its changes.");
             return Task.CompletedTask;
         }
-        if (SelectedUnstaged.IsConflicted)
+        if (targets.All(f => f.IsConflicted))
         {
-            _status.Show("Conflicted files can't be discarded here (conflict resolution arrives in G7).");
+            _status.Show("A conflicted file isn't discarded: resolve it (Accept Yours / Accept Theirs) instead.");
             return Task.CompletedTask;
         }
-        return DiscardAsync([SelectedUnstaged]);
+        return DiscardAsync(targets.Where(f => !f.IsConflicted).ToList());
     }
 
     private bool CanDiscardAll() => !IsBusy && _client is not null && Unstaged.Any(f => !f.IsConflicted);
@@ -197,16 +249,19 @@ public partial class LocalChangesViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanDiscardAll))]
     private Task DiscardAllAsync() => DiscardAsync(Unstaged.Where(f => !f.IsConflicted).ToList());
 
-    private Task StageAsync(IReadOnlyList<FileChangeViewModel> files)
+    private async Task StageAsync(IReadOnlyList<FileChangeViewModel> files)
     {
-        // "git add" on a conflicted file marks it resolved, conflict markers and all: that's G7's job.
-        if (files.Any(f => f.IsConflicted))
-        {
-            _status.Show("Resolve the conflict before staging (conflict resolution arrives in G7).");
-            files = files.Where(f => !f.IsConflicted).ToList();
-        }
+        // Staging a conflicted file means "resolved as it is now": go through Mark as Resolved,
+        // which warns when conflict markers are still in it.
+        var conflicted = files.Where(f => f.IsConflicted).Select(f => f.Change).ToList();
+        if (conflicted.Count > 0 && Conflicts is not null)
+            await Conflicts.MarkResolvedAsync(conflicted);
+
+        var rest = files.Where(f => !f.IsConflicted).ToList();
+        if (rest.Count == 0)
+            return;
         var index = IndexOfSelection(Unstaged, SelectedUnstaged);
-        return RunAsync("Stage", client => client.StageAsync(Paths(files)), Unstaged, index);
+        await RunAsync("Stage", client => client.StageAsync(Paths(rest)), Unstaged, index);
     }
 
     private Task UnstageAsync(IReadOnlyList<FileChangeViewModel> files)
@@ -230,6 +285,35 @@ public partial class LocalChangesViewModel : ViewModelBase
 
         var index = IndexOfSelection(Unstaged, SelectedUnstaged);
         await RunAsync("Discard", client => client.DiscardAsync(files.Select(f => f.Change).ToList()), Unstaged, index);
+    }
+
+    /// <summary>
+    /// The diff pane's hunk / line buttons (G3.1): stage, unstage or discard part of a file.
+    /// Discard asks first, naming the file and how many lines go back.
+    /// </summary>
+    private async Task ApplyPartialAsync(FileDiff diff, Func<int, int, bool> isSelected, PartialAction action)
+    {
+        if (action == PartialAction.Discard)
+        {
+            var count = 0;
+            for (var h = 0; h < diff.Hunks.Count; h++)
+                for (var i = 0; i < diff.Hunks[h].Lines.Count; i++)
+                    if (diff.Hunks[h].Lines[i].Kind != DiffLineKind.Context && isSelected(h, i))
+                        count++;
+            var confirm = new ConfirmDialogViewModel("Discard Selected Changes",
+                $"Discard {count} changed line{(count == 1 ? "" : "s")} in {diff.Path}? They go back to their staged or " +
+                "last committed version in the file on disk. This can't be undone.", "Discard");
+            if (!await _dialogs.ShowDialogAsync(confirm))
+                return;
+        }
+
+        var (what, list) = action switch
+        {
+            PartialAction.Stage => ("Stage lines", Unstaged),
+            PartialAction.Unstage => ("Unstage lines", Staged),
+            _ => ("Discard lines", Unstaged),
+        };
+        await RunAsync(what, client => client.ApplyPartialAsync(diff, isSelected, action), list, -1);
     }
 
     /// <summary>
@@ -303,6 +387,7 @@ public partial class LocalChangesViewModel : ViewModelBase
     {
         if (value is not null)
             SelectedStaged = null;
+        UnstagedTargetsChanged();
         SelectionChanged();
     }
 
@@ -321,6 +406,29 @@ public partial class LocalChangesViewModel : ViewModelBase
         // the lists are cleared and refilled; Update loads once at the end.
         if (!_updating && Selected != Diff.File)
             _ = Diff.LoadAsync(Selected);
+    }
+
+    private void UnstagedTargetsChanged()
+    {
+        StageSelectedCommand.NotifyCanExecuteChanged();
+        DiscardSelectedCommand.NotifyCanExecuteChanged();
+        AcceptYoursCommand.NotifyCanExecuteChanged();
+        AcceptTheirsCommand.NotifyCanExecuteChanged();
+        MarkResolvedCommand.NotifyCanExecuteChanged();
+        OpenMergeToolCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(HasConflictSelected));
+    }
+
+    /// <summary>A conflicted file is selected: the menu shows the conflict items.</summary>
+    public bool HasConflictSelected => UnstagedTargets.Any(f => f.IsConflicted);
+
+    private static void Reselect(ObservableCollection<FileChangeViewModel> selection,
+        ObservableCollection<FileChangeViewModel> rows, HashSet<string> paths)
+    {
+        if (paths.Count <= 1)
+            return; // a single selection is restored through SelectedUnstaged / SelectedStaged
+        foreach (var row in rows.Where(r => paths.Contains(r.Change.Path) && !selection.Contains(r)))
+            selection.Add(row);
     }
 
     private static void Fill(ObservableCollection<FileChangeViewModel> target, IEnumerable<FileChangeViewModel> items)

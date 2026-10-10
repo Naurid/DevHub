@@ -34,7 +34,7 @@ public sealed partial class BranchListViewModel : ViewModelBase
 
     /// <summary>Shown when there's nothing (or nothing matching).</summary>
     public string EmptyText => !string.IsNullOrWhiteSpace(Filter) ? "No branch matches."
-        : IsRemote ? "No remote branches. Remotes and fetching arrive in G6."
+        : IsRemote ? "No remote branches. Fetch to load them (or add a remote first)."
         : "No branches yet: make the first commit.";
 
     /// <summary>Number of branches (sidebar badge), regardless of the filter.</summary>
@@ -43,7 +43,8 @@ public sealed partial class BranchListViewModel : ViewModelBase
     [ObservableProperty] private string _filter = "";
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(CheckoutCommand), nameof(NewBranchFromCommand), nameof(RenameCommand), nameof(DeleteCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CheckoutCommand), nameof(NewBranchFromCommand), nameof(RenameCommand), nameof(DeleteCommand),
+        nameof(MergeIntoCurrentCommand), nameof(RebaseCurrentOntoCommand))]
     private BranchItemViewModel? _selected;
 
     partial void OnFilterChanged(string value) => Rebuild();
@@ -102,6 +103,14 @@ public sealed partial class BranchListViewModel : ViewModelBase
 
     [RelayCommand(CanExecute = nameof(CanDelete))]
     private Task DeleteAsync() => _operations.DeleteAsync(Selected!.Branch);
+
+    /// <summary>Merge the selected branch into the current one (G7).</summary>
+    [RelayCommand(CanExecute = nameof(CanCheckout))]
+    private Task MergeIntoCurrentAsync() => _operations.MergeIntoCurrentAsync(Selected!.Branch);
+
+    /// <summary>Replay the current branch's commits on top of the selected one (G7).</summary>
+    [RelayCommand(CanExecute = nameof(CanCheckout))]
+    private Task RebaseCurrentOntoAsync() => _operations.RebaseCurrentOntoAsync(Selected!.Branch);
 }
 
 /// <summary>A branch row: name (bold when current), ahead/behind, last commit and when.</summary>

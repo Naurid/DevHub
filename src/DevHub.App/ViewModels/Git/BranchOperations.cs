@@ -125,6 +125,63 @@ public sealed class BranchOperations(GitRepositoryClient? client, IDialogService
         });
     }
 
+    /// <summary>Called when a merge / rebase stops on conflicts (the tab then shows Local Changes).</summary>
+    public Action? ShowConflicts { get; set; }
+
+    /// <summary>JetBrains' "Merge into Current": brings <paramref name="branch"/>'s commits into the current branch.</summary>
+    public async Task MergeIntoCurrentAsync(GitBranch branch)
+    {
+        if (client is null || branch.IsCurrent)
+            return;
+        var current = Branches.FirstOrDefault(b => b.IsCurrent)?.Name ?? "the current commit";
+
+        var confirm = new ConfirmDialogViewModel("Merge",
+            $"Merge {branch.ShortName} into {current}? If both changed the same lines, the merge stops so you can " +
+            "resolve the conflicts (or abort, which puts everything back).", "Merge", destructive: false);
+        if (!await dialogs.ShowDialogAsync(confirm))
+            return;
+
+        await RunAsync("Merge", async () => Report(await client.MergeAsync(branch.ShortName),
+            done: $"Merged {branch.ShortName} into {current}.",
+            upToDate: $"{current} already contains everything in {branch.ShortName}.",
+            conflicts: $"The merge of {branch.ShortName} stopped on conflicts. Resolve them in Local Changes, then Continue."));
+    }
+
+    /// <summary>
+    /// JetBrains' "Rebase Current onto Selected": replays the current branch's own commits on top
+    /// of <paramref name="branch"/>. Rewrites those commits, so the dialog says so.
+    /// </summary>
+    public async Task RebaseCurrentOntoAsync(GitBranch branch)
+    {
+        if (client is null || branch.IsCurrent)
+            return;
+        var current = Branches.FirstOrDefault(b => b.IsCurrent)?.Name ?? "the current commit";
+
+        var confirm = new ConfirmDialogViewModel("Rebase",
+            $"Rebase {current} onto {branch.ShortName}? Your commits on {current} are replayed on top of it as new " +
+            "commits. If they were already pushed, pushing again needs Force Push, which affects anyone who pulled them.",
+            "Rebase", destructive: false);
+        if (!await dialogs.ShowDialogAsync(confirm))
+            return;
+
+        await RunAsync("Rebase", async () => Report(await client.RebaseAsync(branch.ShortName),
+            done: $"Rebased {current} onto {branch.ShortName}.",
+            upToDate: $"{current} is already on top of {branch.ShortName}.",
+            conflicts: "The rebase stopped on conflicts. Resolve them in Local Changes, then Continue (or Skip that commit)."));
+    }
+
+    private void Report(OperationOutcome outcome, string done, string upToDate, string conflicts)
+    {
+        status.Show(outcome switch
+        {
+            OperationOutcome.Done => done,
+            OperationOutcome.UpToDate => upToDate,
+            _ => conflicts,
+        });
+        if (outcome == OperationOutcome.Conflicts)
+            ShowConflicts?.Invoke();
+    }
+
     private async Task RunAsync(string what, Func<Task> operation)
     {
         try

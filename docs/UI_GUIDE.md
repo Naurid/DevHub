@@ -318,6 +318,8 @@ Add a round-trip test in `JsonSettingsStoreTests`. For experiments, run the app 
 | Closing a tab left nothing selected | a two-way `SelectedItem` binding nulls the property when the item is removed | remember "was active" before removing |
 | Button text not centered | Fluent leaves `HorizontalContentAlignment` at Stretch | global Button style centers it |
 | TextBox inner icon/× against the border | Fluent applies `Padding` only to the text column | `Margin.InnerLeft/Right` tokens |
+| App crashes at startup: `XamlLoadException: No precompiled XAML found for DevHub.App` | a build failed half-way (e.g. a locked `obj` DLL while Rider was building) and the next build reused the DLL without its compiled XAML | rebuild with `--no-incremental` |
+| Rows that should be selectable but keep their own look (diff lines) | a `ListBox` adds row height and padding, and a row's own background hides the selection | `ListBox.x > ListBoxItem { MinHeight: 0; Padding: 0 }`, plus a `:selected` style for the row's Border declared after its color styles |
 | App crashes at startup: `ArgumentException: An item with the same key has already been added. Key: Size.X` | two tokens with the same key (the build doesn't check) | search `Sizes.axaml` for the key before adding one |
 | A `*` column in a list row is empty | the fixed columns are wider than the row; or the ListBox scrolls horizontally, so rows get infinite width | `ScrollViewer.HorizontalScrollBarVisibility="Disabled"` on the list; `MinWidth` on the `*` column (`StaticResource`: a `ColumnDefinition` can't use `DynamicResource`) |
 | Screen readers say "Avalonia.Controls.Grid" | no accessible name; falls back to content type / `ToString()` | `ToString()` / `AutomationProperties.Name` (rule 7) |

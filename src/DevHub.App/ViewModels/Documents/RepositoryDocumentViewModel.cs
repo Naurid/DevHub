@@ -59,6 +59,11 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         BranchPopup = new BranchPopupViewModel(branchOperations);
         Remote = new RemoteOperations(client, services.Dialogs, services.Status, RefreshAsync,
             () => branchOperations.Branches, Name);
+        Conflicts = new ConflictOperations(client, services.Dialogs, services.Status, RefreshAsync,
+            file => services.Editor.Open(path, file, null));
+        LocalChanges.Conflicts = Conflicts;
+        // A merge / rebase that stops on conflicts brings Local Changes up, where they're listed.
+        branchOperations.ShowConflicts = () => SelectedSection = LocalChangesSection;
 
         if (_client is null)
             return;
@@ -102,9 +107,6 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <summary>Upstream branch for the tooltip ("origin/main"), or null.</summary>
     [ObservableProperty] private string? _upstream;
 
-    /// <summary>"Merge in progress" etc., or null. Shown as a banner (continue / abort arrive in G7).</summary>
-    [ObservableProperty] private string? _operationText;
-
     /// <summary>Last refresh error (e.g. "not a git repository any more"), or null.</summary>
     [ObservableProperty] private string? _error;
 
@@ -129,6 +131,9 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     private RepositorySection AllCommitsSection { get; }
     private RepositorySection BranchesSection { get; }
     private RepositorySection RemotesSection { get; }
+
+    /// <summary>Merge / rebase in progress: the banner, Continue / Skip / Abort, resolving conflicts (G7).</summary>
+    public ConflictOperations Conflicts { get; }
 
     /// <summary>Fetch / Update / Push (toolbar, Git actions, Commit and Push).</summary>
     public RemoteOperations Remote { get; }
@@ -202,14 +207,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
                 (0, var b) => $"↓{b}",
                 var (a, b) => $"↑{a} ↓{b}",
             };
-            OperationText = operation switch
-            {
-                RepositoryOperation.Merging => "Merge in progress",
-                RepositoryOperation.Rebasing => "Rebase in progress",
-                RepositoryOperation.CherryPicking => "Cherry-pick in progress",
-                RepositoryOperation.Reverting => "Revert in progress",
-                _ => null,
-            };
+            Conflicts.Update(operation, status);
 
             var branches = await client.GetBranchesAsync(ct);
             _branchOperations.Branches = branches;

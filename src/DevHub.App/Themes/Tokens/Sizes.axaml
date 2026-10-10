@@ -115,6 +115,8 @@
          of a repository tab ("Merge in progress"). -->
     <Thickness x:Key="Padding.ListGroupHeader">12,6,8,6</Thickness>
     <Thickness x:Key="Padding.Banner">12,6</Thickness>
+    <!-- Git (G3.1): the small Stage / Discard / Unstage Hunk buttons on a diff hunk header. -->
+    <Thickness x:Key="Padding.HunkAction">6,0</Thickness>
     <!-- Header bar above a pane (the diff's file name); same height as the list group headers. -->
     <Thickness x:Key="Padding.PaneHeader">12,6,8,6</Thickness>
     <!-- Around the commit box under the file lists. -->

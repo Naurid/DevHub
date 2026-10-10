@@ -118,6 +118,28 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
     public Task UnstageAsync(IEnumerable<string> paths, CancellationToken ct = default) =>
         RunWithPathsAsync(["reset", "-q"], paths, ct);
 
+    /// <summary>
+    /// Stages / unstages / discards only the selected lines of <paramref name="diff"/> (the
+    /// file's unstaged diff for Stage and Discard, its staged diff for Unstage), by building a
+    /// patch (<see cref="PatchBuilder"/>) and feeding it to <c>git apply</c>. Discard changes the
+    /// working tree: the caller must have asked. Returns false when nothing was selected.
+    /// </summary>
+    public async Task<bool> ApplyPartialAsync(FileDiff diff, Func<int, int, bool> isSelected, PartialAction action,
+        CancellationToken ct = default)
+    {
+        if (PatchBuilder.Build(diff, isSelected, action) is not { } patch)
+            return false;
+
+        List<string> args = ["apply", "--whitespace=nowarn"];
+        if (action != PartialAction.Discard)
+            args.Add("--cached");
+        if (action != PartialAction.Stage)
+            args.Add("--reverse");
+        args.Add("-");
+        await runner.RunAsync(RepositoryPath, args, new GitRunOptions { StandardInput = patch }, ct);
+        return true;
+    }
+
     /// <summary>Stages every change (<c>git add -A</c>).</summary>
     public async Task StageAllAsync(CancellationToken ct = default) =>
         await runner.RunAsync(RepositoryPath, ["add", "-A"], ct: ct);
@@ -405,6 +427,149 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
     private sealed class LineProgress(Action<string> report) : IProgress<string>
     {
         public void Report(string value) => report(value);
+    }
+
+    // ---- Merge / rebase / conflicts (G7). Only from a user action. -------------------------------
+
+    /// <summary>
+    /// Merges <paramref name="branch"/> into the current branch (<c>merge --no-edit</c>: git's
+    /// default message, fast-forward when possible). Conflicts leave the merge in progress.
+    /// </summary>
+    public Task<OperationOutcome> MergeAsync(string branch, CancellationToken ct = default) =>
+        StartOperationAsync(["merge", "--no-edit", branch], ct);
+
+    /// <summary>
+    /// Replays the current branch's own commits on top of <paramref name="onto"/>
+    /// (<c>rebase --autostash</c>: uncommitted changes are put aside and back). Conflicts stop it
+    /// at the commit concerned.
+    /// </summary>
+    public Task<OperationOutcome> RebaseAsync(string onto, CancellationToken ct = default) =>
+        StartOperationAsync([.. NoEditor, "rebase", "--autostash", onto], ct);
+
+    /// <summary>
+    /// Continues the operation in progress after the conflicts were resolved: a merge is
+    /// committed with git's prepared message; a rebase / cherry-pick / revert goes on with the
+    /// next commit (which may stop on conflicts again).
+    /// </summary>
+    public async Task<OperationOutcome> ContinueAsync(CancellationToken ct = default)
+    {
+        string[] args = await GetOperationAsync(ct) switch
+        {
+            RepositoryOperation.Merging => ["commit", "--no-edit"],
+            RepositoryOperation.Rebasing => [.. NoEditor, "rebase", "--continue"],
+            RepositoryOperation.CherryPicking => [.. NoEditor, "cherry-pick", "--continue"],
+            RepositoryOperation.Reverting => [.. NoEditor, "revert", "--continue"],
+            _ => throw new InvalidOperationException("Nothing to continue: no merge, rebase, cherry-pick or revert is in progress."),
+        };
+        return await StartOperationAsync(args, ct);
+    }
+
+    /// <summary>Rebase only: drops the commit that stopped on conflicts and goes on with the next.</summary>
+    public async Task<OperationOutcome> SkipAsync(CancellationToken ct = default)
+    {
+        if (await GetOperationAsync(ct) != RepositoryOperation.Rebasing)
+            throw new InvalidOperationException("Skip only applies to a rebase in progress.");
+        return await StartOperationAsync([.. NoEditor, "rebase", "--skip"], ct);
+    }
+
+    /// <summary>
+    /// Cancels the operation in progress and puts the branch and files back as they were before
+    /// it started. Destructive for any conflict resolution done so far: the caller asks first.
+    /// </summary>
+    public async Task AbortAsync(CancellationToken ct = default)
+    {
+        string[] args = await GetOperationAsync(ct) switch
+        {
+            RepositoryOperation.Merging => ["merge", "--abort"],
+            RepositoryOperation.Rebasing => ["rebase", "--abort"],
+            RepositoryOperation.CherryPicking => ["cherry-pick", "--abort"],
+            RepositoryOperation.Reverting => ["revert", "--abort"],
+            _ => throw new InvalidOperationException("Nothing to abort."),
+        };
+        await runner.RunAsync(RepositoryPath, args, ct: ct);
+    }
+
+    /// <summary>
+    /// Resolves a conflicted file by keeping one side entirely, then marks it resolved. If the
+    /// kept side deleted the file, it's removed. "Yours" / "theirs" are from the user's point of
+    /// view (see <see cref="ConflictChoice"/>); this maps them onto git's ours / theirs.
+    /// </summary>
+    public async Task ResolveAsync(FileChange file, ConflictChoice choice, CancellationToken ct = default)
+    {
+        var rebasing = await GetOperationAsync(ct) == RepositoryOperation.Rebasing;
+        // In a rebase git's "ours" is the branch rebased onto, "theirs" your replayed commit.
+        var useOurs = (choice == ConflictChoice.Yours) != rebasing;
+        // Unmerged status letters: X = ours, Y = theirs; "D" = that side deleted the file.
+        var deleted = useOurs ? file.IndexStatus == 'D' : file.WorkTreeStatus == 'D';
+
+        if (!deleted)
+        {
+            var checkout = await runner.RunAsync(RepositoryPath,
+                ["checkout", useOurs ? "--ours" : "--theirs", "--", file.Path], new GitRunOptions { AllowFailure = true }, ct);
+            // "does not have our/their version": that side has no file (added on one side only).
+            deleted = !checkout.Succeeded && checkout.StandardError.Contains("does not have", StringComparison.Ordinal);
+            if (!checkout.Succeeded && !deleted)
+                throw new GitException(["checkout", "--" + (useOurs ? "ours" : "theirs"), file.Path], checkout.ExitCode, checkout.StandardError);
+        }
+
+        if (deleted)
+            await runner.RunAsync(RepositoryPath, ["rm", "-q", "--", file.Path], ct: ct);
+        else
+            await RunWithPathsAsync(["add", "-A"], [file.Path], ct);
+    }
+
+    /// <summary>Marks a conflicted file resolved as it is on disk now (<c>add</c>; a deleted file is removed).</summary>
+    public Task MarkResolvedAsync(IEnumerable<string> paths, CancellationToken ct = default) =>
+        RunWithPathsAsync(["add", "-A"], paths, ct);
+
+    /// <summary>Whether the file on disk still has conflict markers (to warn before marking it resolved).</summary>
+    public async Task<bool> HasConflictMarkersAsync(string path, CancellationToken ct = default)
+    {
+        var full = Path.Combine(RepositoryPath, path.Replace('/', Path.DirectorySeparatorChar));
+        return File.Exists(full) && ConflictMarkers.Contains(await File.ReadAllTextAsync(full, ct));
+    }
+
+    /// <summary>The configured merge tool (<c>merge.tool</c>), or null when none is set.</summary>
+    public async Task<string?> GetMergeToolAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["config", "--get", "merge.tool"],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded && result.StandardOutput.Trim() is { Length: > 0 } tool ? tool : null;
+    }
+
+    /// <summary>
+    /// Opens the configured merge tool on one conflicted file and waits until it's closed
+    /// (<c>mergetool --no-prompt</c>; no .orig backup files). When the tool reports success git
+    /// marks the file resolved. Cancelling stops waiting and closes the tool.
+    /// </summary>
+    public async Task RunMergeToolAsync(string path, CancellationToken ct = default) =>
+        await runner.RunAsync(RepositoryPath, ["-c", "mergetool.keepBackup=false", "mergetool", "--no-prompt", "--", path], ct: ct);
+
+    /// <summary>
+    /// For commands that may open an editor for a message (rebase, continue): take git's
+    /// prepared message as it is. There is no terminal to show an editor in.
+    /// </summary>
+    private static readonly string[] NoEditor = ["-c", "core.editor=true"];
+
+    /// <summary>
+    /// Runs a merge / rebase / continue / skip: success → Done (or UpToDate); a failure that
+    /// left an operation in progress → Conflicts; any other failure throws.
+    /// </summary>
+    private async Task<OperationOutcome> StartOperationAsync(IReadOnlyList<string> args, CancellationToken ct)
+    {
+        var result = await runner.RunAsync(RepositoryPath, args, new GitRunOptions { AllowFailure = true }, ct);
+        if (result.Succeeded)
+        {
+            var output = result.StandardOutput + result.StandardError;
+            if (output.Contains("Already up to date", StringComparison.Ordinal)
+                || output.Contains("is up to date", StringComparison.Ordinal))
+                return OperationOutcome.UpToDate;
+            // A rebase can succeed for one commit and stop at the next one's conflicts.
+            return await GetOperationAsync(ct) == RepositoryOperation.None ? OperationOutcome.Done : OperationOutcome.Conflicts;
+        }
+        if (await GetOperationAsync(ct) != RepositoryOperation.None)
+            return OperationOutcome.Conflicts;
+        throw new GitException(args, result.ExitCode, result.StandardError);
     }
 
     // ---- History (G5) ---------------------------------------------------------------------------

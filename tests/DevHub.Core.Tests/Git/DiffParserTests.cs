@@ -166,7 +166,7 @@ public class DiffParserTests
     }
 
     [Fact]
-    public void Crlf_is_stripped_and_lines_that_look_like_headers_stay_content()
+    public void Crlf_is_stripped_but_remembered_and_lines_that_look_like_headers_stay_content()
     {
         // A removed line "-- x" shows as "--- x"; inside a hunk it's content, not a header.
         var output = "diff --git a/a.txt b/a.txt\r\n--- a/a.txt\r\n+++ b/a.txt\r\n@@ -1,2 +1,1 @@\r\n--- x\r\n context\r\n";
@@ -175,7 +175,8 @@ public class DiffParserTests
 
         Assert.Equal("a.txt", diff.Path);
         Assert.Equal(
-            [new DiffLine(DiffLineKind.Removed, "-- x", 1, null), new DiffLine(DiffLineKind.Context, "context", 2, 1)],
+            [new DiffLine(DiffLineKind.Removed, "-- x", 1, null) { HasCarriageReturn = true },
+             new DiffLine(DiffLineKind.Context, "context", 2, 1) { HasCarriageReturn = true }],
             diff.Hunks[0].Lines);
     }
 

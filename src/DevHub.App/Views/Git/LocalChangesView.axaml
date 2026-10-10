@@ -40,9 +40,10 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <!-- Space stages the selected file (Ctrl+Alt+Z, discard, is a window-wide Git action);
-                     right-click for the menu. -->
+                <!-- Several rows: Ctrl+click, Shift+click, Ctrl+A. Space stages the selected files
+                     (Ctrl+Alt+Z, discard, is a window-wide Git action); right-click for the menu. -->
                 <ListBox Grid.Row="1" Background="Transparent" AutomationProperties.Name="Unstaged changes"
+                         SelectionMode="Multiple" SelectedItems="{Binding UnstagedSelection}"
                          ItemsSource="{Binding Unstaged}" SelectedItem="{Binding SelectedUnstaged}"
                          ItemTemplate="{StaticResource FileRow}">
                     <ListBox.KeyBindings>
@@ -50,6 +51,16 @@
                     </ListBox.KeyBindings>
                     <ListBox.ContextMenu>
                         <ContextMenu>
+                            <!-- Conflicts (G7): shown when a conflicted file is selected. -->
+                            <MenuItem Header="Accept Yours…" Command="{Binding AcceptYoursCommand}"
+                                      IsVisible="{Binding HasConflictSelected}" ToolTip.Tip="{Binding Conflicts.YoursHint, FallbackValue=''}" />
+                            <MenuItem Header="Accept Theirs…" Command="{Binding AcceptTheirsCommand}"
+                                      IsVisible="{Binding HasConflictSelected}" ToolTip.Tip="{Binding Conflicts.TheirsHint, FallbackValue=''}" />
+                            <MenuItem Header="Open in Merge Tool" Command="{Binding OpenMergeToolCommand}"
+                                      IsVisible="{Binding HasConflictSelected}" ToolTip.Tip="Your configured git merge tool (double-click does the same)" />
+                            <MenuItem Header="Mark as Resolved" Command="{Binding MarkResolvedCommand}"
+                                      IsVisible="{Binding HasConflictSelected}" ToolTip.Tip="You fixed the file by hand: stage it as it is now" />
+                            <Separator IsVisible="{Binding HasConflictSelected}" />
                             <MenuItem Header="Stage" InputGesture="Space" Command="{Binding StageSelectedCommand}" />
                             <MenuItem Header="Discard Changes…" InputGesture="Ctrl+Alt+Z" Command="{Binding DiscardSelectedCommand}" />
                             <Separator />
@@ -69,6 +80,7 @@
                     </Grid>
                 </Border>
                 <ListBox Grid.Row="3" Background="Transparent" AutomationProperties.Name="Staged changes"
+                         SelectionMode="Multiple" SelectedItems="{Binding StagedSelection}"
                          ItemsSource="{Binding Staged}" SelectedItem="{Binding SelectedStaged}"
                          ItemTemplate="{StaticResource FileRow}">
                     <ListBox.KeyBindings>

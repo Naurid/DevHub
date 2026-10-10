@@ -17,6 +17,9 @@ public sealed record DiffLine(DiffLineKind Kind, string Text, int? OldLineNumber
 {
     /// <summary>Git's "\ No newline at end of file" followed this line.</summary>
     public bool NoNewlineAtEnd { get; init; }
+
+    /// <summary>The line ended in CR (a CRLF file). <see cref="Text"/> doesn't include it; patches put it back.</summary>
+    public bool HasCarriageReturn { get; init; }
 }
 
 /// <summary>
@@ -55,6 +58,12 @@ public sealed class FileDiff
 
     /// <summary>A merge-conflict ("combined") diff: lines can come from either side; old line numbers are omitted.</summary>
     public bool IsCombined { get; init; }
+
+    /// <summary>Mode of a new file ("100644"), from "new file mode"; null otherwise.</summary>
+    public string? NewFileMode { get; init; }
+
+    /// <summary>Mode of a deleted file, from "deleted file mode"; null otherwise.</summary>
+    public string? DeletedFileMode { get; init; }
 
     /// <summary>Only file mode changed (e.g. the executable bit): no line changes.</summary>
     public string? ModeChange { get; init; }

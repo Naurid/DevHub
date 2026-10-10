@@ -26,7 +26,8 @@ public static class DiffParser
 
         foreach (var rawLine in output.Split('\n'))
         {
-            var line = rawLine.EndsWith('\r') ? rawLine[..^1] : rawLine;
+            var hasCr = rawLine.EndsWith('\r');
+            var line = hasCr ? rawLine[..^1] : rawLine;
 
             if (line.StartsWith("diff --git ", StringComparison.Ordinal)
                 || line.StartsWith("diff --cc ", StringComparison.Ordinal)
@@ -49,7 +50,7 @@ public static class DiffParser
 
             if (hunk is not null)
             {
-                if (hunk.TryAdd(line, file))
+                if (hunk.TryAdd(line, hasCr, file))
                     continue;
                 // Not a hunk line: the hunk is over (e.g. the next file's header follows).
                 file.CloseHunk(hunk);
@@ -83,10 +84,16 @@ public static class DiffParser
             file.OldPath = Unquote(line[(line.IndexOf(" from ", StringComparison.Ordinal) + 6)..]);
         else if (line.StartsWith("rename to ", StringComparison.Ordinal) || line.StartsWith("copy to ", StringComparison.Ordinal))
             file.NewPath = Unquote(line[(line.IndexOf(" to ", StringComparison.Ordinal) + 4)..]);
-        else if (line.StartsWith("new file mode", StringComparison.Ordinal))
+        else if (line.StartsWith("new file mode ", StringComparison.Ordinal))
+        {
             file.IsNewFile = true;
-        else if (line.StartsWith("deleted file mode", StringComparison.Ordinal))
+            file.NewFileMode = line["new file mode ".Length..];
+        }
+        else if (line.StartsWith("deleted file mode ", StringComparison.Ordinal))
+        {
             file.IsDeleted = true;
+            file.DeletedFileMode = line["deleted file mode ".Length..];
+        }
         else if (line.StartsWith("old mode ", StringComparison.Ordinal))
             file.OldMode = line[9..];
         else if (line.StartsWith("new mode ", StringComparison.Ordinal))
@@ -229,6 +236,8 @@ public static class DiffParser
         public bool IsCombined { get; init; }
         public string? OldMode { get; set; }
         public string? NewMode { get; set; }
+        public string? NewFileMode { get; set; }
+        public string? DeletedFileMode { get; set; }
         public int LineCount { get; set; }
         public bool IsTruncated { get; set; }
         public int MaxLines => maxLines;
@@ -247,6 +256,8 @@ public static class DiffParser
             IsDeleted = IsDeleted,
             IsBinary = IsBinary,
             IsCombined = IsCombined,
+            NewFileMode = NewFileMode,
+            DeletedFileMode = DeletedFileMode,
             ModeChange = OldMode is not null && NewMode is not null ? $"{OldMode} → {NewMode}" : null,
             IsTruncated = IsTruncated,
             Hunks = _hunks,
@@ -268,7 +279,8 @@ public static class DiffParser
         public List<DiffLine> Lines { get; } = [];
 
         /// <summary>Adds a hunk line; false when the line isn't part of a hunk.</summary>
-        public bool TryAdd(string line, FileBuilder file)
+        /// <param name="hasCarriageReturn">The raw line ended in CR (a CRLF file); kept so a patch can be rebuilt byte for byte.</param>
+        public bool TryAdd(string line, bool hasCarriageReturn, FileBuilder file)
         {
             if (line.StartsWith('\\'))
             {
@@ -292,11 +304,11 @@ public static class DiffParser
 
             var text = line[prefixWidth..];
             if (prefix.Contains('+'))
-                Lines.Add(new DiffLine(DiffLineKind.Added, text, null, _nextNew++));
+                Lines.Add(new DiffLine(DiffLineKind.Added, text, null, _nextNew++) { HasCarriageReturn = hasCarriageReturn });
             else if (prefix.Contains('-'))
-                Lines.Add(new DiffLine(DiffLineKind.Removed, text, prefixWidth == 1 ? _nextOld++ : null, null));
+                Lines.Add(new DiffLine(DiffLineKind.Removed, text, prefixWidth == 1 ? _nextOld++ : null, null) { HasCarriageReturn = hasCarriageReturn });
             else
-                Lines.Add(new DiffLine(DiffLineKind.Context, text, prefixWidth == 1 ? _nextOld++ : null, _nextNew++));
+                Lines.Add(new DiffLine(DiffLineKind.Context, text, prefixWidth == 1 ? _nextOld++ : null, _nextNew++) { HasCarriageReturn = hasCarriageReturn });
             return true;
         }
 

@@ -56,6 +56,9 @@
                     <ContextMenu>
                         <MenuItem Header="Checkout" InputGesture="Enter" Command="{Binding CheckoutCommand}" />
                         <MenuItem Header="New Branch from Here…" Command="{Binding NewBranchFromCommand}" />
+                        <Separator />
+                        <MenuItem Header="Merge into Current Branch…" Command="{Binding MergeIntoCurrentCommand}" />
+                        <MenuItem Header="Rebase Current Branch onto This…" Command="{Binding RebaseCurrentOntoCommand}" />
                         <Separator IsVisible="{Binding !IsRemote}" />
                         <MenuItem Header="Rename…" Command="{Binding RenameCommand}" IsVisible="{Binding !IsRemote}" />
                         <MenuItem Header="Delete…" Command="{Binding DeleteCommand}" IsVisible="{Binding !IsRemote}" />

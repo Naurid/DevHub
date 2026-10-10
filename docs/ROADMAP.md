@@ -49,14 +49,16 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
 - [x] G2. Diff: unified-diff parser (tested); diff pane in Local Changes; "Open in Editor" (F4) in the language's external editor; diff in its own tab
 - [x] G3. Stage / unstage (double-click, Space, Stage All / Unstage All) / discard (confirmed) /
       commit (Ctrl+K, Ctrl+Enter) / amend; failing hooks shown in the commit box
-- [ ] G3.1 Multi-select in the file lists; per-hunk / per-line staging (`git apply --cached`)
+- [x] G3.1 Multi-select in the file lists; per-hunk / per-line staging (`git apply --cached`);
+      hunk / line discard (confirmed)
 - [x] G4. Branches: sidebar Branches/Remotes, checkout (dirty-tree handling), create, rename,
       delete; title-bar branch popup
 - [x] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs;
       search, "Load more" (1,000 at a time), reload when HEAD or a branch moves
 - [x] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained;
       Commit and Push (Ctrl+Alt+K), Force Push (--force-with-lease, confirmed)
-- [ ] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool
+- [x] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool;
+      Merge into Current / Rebase onto from the branch menu, Accept Yours / Theirs, Skip (rebase)
 - [ ] G8. Stashes, tags, cherry-pick, revert, blame, submodules
 
 ## M0 — Skeleton

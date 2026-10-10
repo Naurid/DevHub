@@ -37,12 +37,26 @@
         <Style Selector="TextBlock.removed">
             <Setter Property="Foreground" Value="{DynamicResource Brush.Status.Error}" />
         </Style>
+        <!-- Lines are list items (so they can be selected for partial staging) but must stay
+             as tight as plain text lines: no row height or padding from the list style. -->
+        <Style Selector="ListBox.diff > ListBoxItem">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <!-- A selected line: the selection color replaces the green / red (declared after them, so it wins). -->
+        <Style Selector="ListBox.diff > ListBoxItem:selected Border.diffRow">
+            <Setter Property="Background" Value="{DynamicResource Brush.Bg.Selection}" />
+        </Style>
+        <Style Selector="Button.hunkAction">
+            <Setter Property="Padding" Value="{DynamicResource Padding.HunkAction}" />
+            <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}" />
+        </Style>
     </UserControl.Styles>
 
     <DockPanel>
         <!-- Header: file, side, counts, Open in Editor (external, F4), Open in New Tab. -->
         <Border DockPanel.Dock="Top" Classes="paneHeader" IsVisible="{Binding HasFile}">
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}">
                 <TextBlock Text="{Binding File.FileName, FallbackValue=''}" VerticalAlignment="Center"
                            ToolTip.Tip="{Binding File.ToolTip, FallbackValue=''}" />
                 <TextBlock Grid.Column="1" Classes="small secondary" Text="{Binding Subtitle}"
@@ -51,7 +65,16 @@
                            ToolTip.Tip="Lines added" />
                 <TextBlock Grid.Column="3" Classes="code removed" Text="{Binding RemovedText}" VerticalAlignment="Center"
                            ToolTip.Tip="Lines removed" />
-                <c:Toolbar Grid.Column="4">
+                <!-- Selected lines (click, Ctrl+click, Shift+click in the diff; Space toggles). -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal" IsVisible="{Binding HasSelectedChanges}">
+                    <Button Classes="flat" Content="Stage Lines" Command="{Binding StageLinesCommand}"
+                            IsVisible="{Binding CanStageParts}" ToolTip.Tip="Stage only the selected lines (Space)" />
+                    <Button Classes="flat" Content="Discard Lines…" Command="{Binding DiscardLinesCommand}"
+                            IsVisible="{Binding CanStageParts}" ToolTip.Tip="Undo the selected lines in the file (asks first)" />
+                    <Button Classes="flat" Content="Unstage Lines" Command="{Binding UnstageLinesCommand}"
+                            IsVisible="{Binding CanUnstageParts}" ToolTip.Tip="Take only the selected lines out of the commit (Space)" />
+                </StackPanel>
+                <c:Toolbar Grid.Column="5">
                     <c:ActionButton IconKind="edit" ToolTip.Tip="Open in Editor (F4): the file in the editor set for this language in Settings → Open With"
                                     AutomationProperties.Name="Open in Editor"
                                     Command="{Binding OpenInEditorCommand}" IsVisible="{Binding CanOpenInEditor}" />
@@ -74,35 +97,48 @@
             <c:EmptyState IconKind="edit" Title="Diff" Description="{Binding PlaceholderText}"
                           IsVisible="{Binding PlaceholderText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                          IsVisible="{Binding HasRows}">
-                <ItemsControl ItemsSource="{Binding Rows}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:DiffRowViewModel">
-                            <Border Classes="diffRow" Classes.added="{Binding IsAdded}"
-                                    Classes.removed="{Binding IsRemoved}" Classes.hunk="{Binding IsHunk}">
-                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
-                                            Margin="{DynamicResource Margin.RowEnd}">
-                                    <TextBlock Classes="code lineNumber" Text="{Binding OldNumber}" />
-                                    <TextBlock Classes="code lineNumber" Text="{Binding NewNumber}" />
-                                    <TextBlock Classes="code" Classes.added="{Binding IsAdded}" Classes.removed="{Binding IsRemoved}"
-                                               Width="{DynamicResource Size.DiffSign}" TextAlignment="Center"
-                                               Text="{Binding Sign}" />
-                                    <!-- Hunk headers and notes are muted; notes in the UI font, not code. -->
-                                    <TextBlock Classes.code="{Binding !IsNote}" Classes.secondary="{Binding IsMuted}"
-                                               Classes.small="{Binding IsNote}" Text="{Binding Text}"
-                                               VerticalAlignment="Center" />
+            <!-- A ListBox (virtualized, with its own scrolling) so lines can be selected for partial
+                 staging: click, Ctrl+click, Shift+click; Space stages / unstages the selection. -->
+            <ListBox Classes="diff" IsVisible="{Binding HasRows}" Background="Transparent"
+                     AutomationProperties.Name="Diff lines"
+                     ItemsSource="{Binding Rows}" SelectionMode="Multiple" SelectedItems="{Binding SelectedRows}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <ListBox.KeyBindings>
+                    <KeyBinding Gesture="Space" Command="{Binding ToggleLinesCommand}" />
+                </ListBox.KeyBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DiffRowViewModel">
+                        <Border Classes="diffRow" Classes.added="{Binding IsAdded}"
+                                Classes.removed="{Binding IsRemoved}" Classes.hunk="{Binding IsHunk}">
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+                                        Margin="{DynamicResource Margin.RowEnd}">
+                                <TextBlock Classes="code lineNumber" Text="{Binding OldNumber}" />
+                                <TextBlock Classes="code lineNumber" Text="{Binding NewNumber}" />
+                                <TextBlock Classes="code" Classes.added="{Binding IsAdded}" Classes.removed="{Binding IsRemoved}"
+                                           Width="{DynamicResource Size.DiffSign}" TextAlignment="Center"
+                                           Text="{Binding Sign}" />
+                                <!-- Hunk headers and notes are muted; notes in the UI font, not code. -->
+                                <TextBlock Classes.code="{Binding !IsNote}" Classes.secondary="{Binding IsMuted}"
+                                           Classes.small="{Binding IsNote}" Text="{Binding Text}"
+                                           VerticalAlignment="Center" />
+                                <!-- Hunk header: act on the whole hunk (Fork's "Stage hunk"). -->
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
+                                            IsVisible="{Binding IsHunk}">
+                                    <Button Classes="flat hunkAction" Content="Stage Hunk" CommandParameter="{Binding}"
+                                            Command="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).StageHunkCommand}"
+                                            IsVisible="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).CanStageParts}" />
+                                    <Button Classes="flat hunkAction" Content="Discard Hunk…" CommandParameter="{Binding}"
+                                            Command="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).DiscardHunkCommand}"
+                                            IsVisible="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).CanStageParts}" />
+                                    <Button Classes="flat hunkAction" Content="Unstage Hunk" CommandParameter="{Binding}"
+                                            Command="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).UnstageHunkCommand}"
+                                            IsVisible="{Binding $parent[ListBox].((vm:DiffViewModel)DataContext).CanUnstageParts}" />
                                 </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Panel>
     </DockPanel>
 </UserControl>
