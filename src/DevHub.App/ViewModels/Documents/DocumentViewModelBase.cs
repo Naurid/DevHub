@@ -30,6 +30,12 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// </summary>
     public virtual bool FillsEditorArea => false;
 
+    /// <summary>
+    /// The repository this tab belongs to (a repository tab, or a diff / blame tab of one of its
+    /// files), or null. Git actions use it, so they also work while a diff or blame tab is in front.
+    /// </summary>
+    public virtual string? RepositoryPath => null;
+
     /// <summary>Has unsaved / uncommitted changes: the tab shows a dot (e.g. a repository with local changes).</summary>
     [ObservableProperty] private bool _isDirty;
 

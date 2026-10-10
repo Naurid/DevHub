@@ -21,22 +21,22 @@
                        VerticalAlignment="Center"
                        TextTrimming="CharacterEllipsis" />
 
-            <!-- Running operation (JetBrains' background-task indicator): title, step, bar, Cancel. -->
-            <!-- (Visibility on the Panel, the DataContext switch inside: bindings on the element that
-                 switches DataContext would already look at the task.) -->
-            <Panel Grid.Column="1" IsVisible="{Binding HasTask}">
-                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
-                            DataContext="{Binding Task}" x:DataType="vm:StatusTaskViewModel">
-                    <TextBlock Classes="small" Text="{Binding Title}" VerticalAlignment="Center" />
-                    <TextBlock Classes="small secondary" Text="{Binding Step}" VerticalAlignment="Center"
-                               MaxWidth="{DynamicResource Size.StatusTaskStep}" TextTrimming="CharacterEllipsis" />
-                    <ProgressBar Width="{DynamicResource Size.StatusProgress}" VerticalAlignment="Center"
-                                 Minimum="0" Maximum="100" Value="{Binding Percent}"
-                                 IsIndeterminate="{Binding IsIndeterminate}" />
-                    <c:ActionButton IconKind="close" ToolTip.Tip="Cancel" AutomationProperties.Name="Cancel"
-                                    Command="{Binding CancelCommand}" IsVisible="{Binding CanCancel}" />
-                </StackPanel>
-            </Panel>
+            <!-- Running operation (JetBrains' background-task indicator): title, step, bar, Cancel.
+                 Bound through CurrentTask.* rather than switching DataContext: IDEs check a
+                 DataContext binding against the element's own x:DataType and flag it, while
+                 Avalonia's compiler checks it against the parent's. -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+                        IsVisible="{Binding HasTask}">
+                <TextBlock Classes="small" Text="{Binding CurrentTask.Title, FallbackValue=''}" VerticalAlignment="Center" />
+                <TextBlock Classes="small secondary" Text="{Binding CurrentTask.Step, FallbackValue=''}" VerticalAlignment="Center"
+                           MaxWidth="{DynamicResource Size.StatusTaskStep}" TextTrimming="CharacterEllipsis" />
+                <ProgressBar Width="{DynamicResource Size.StatusProgress}" VerticalAlignment="Center"
+                             Minimum="0" Maximum="100" Value="{Binding CurrentTask.Percent, FallbackValue=0}"
+                             IsIndeterminate="{Binding CurrentTask.IsIndeterminate, FallbackValue=False}" />
+                <c:ActionButton IconKind="close" ToolTip.Tip="Cancel" AutomationProperties.Name="Cancel"
+                                Command="{Binding CurrentTask.CancelCommand, FallbackValue={x:Null}}"
+                                IsVisible="{Binding CurrentTask.CanCancel, FallbackValue=False}" />
+            </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Button Classes="statusWidget"

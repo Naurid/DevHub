@@ -127,6 +127,7 @@ public partial class App : Application
         // Instance documents: one tab per repository, created on demand / restored by id.
         services.AddSingleton<IDocumentFactory, RepositoryDocumentFactory>();
         services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
+        services.AddSingleton<IDocumentFactory, BlameDocumentFactory>();
         services.AddSingleton<DocumentManager>();
 
         // Dialogs: transient = a fresh instance every time one is requested, so each opening

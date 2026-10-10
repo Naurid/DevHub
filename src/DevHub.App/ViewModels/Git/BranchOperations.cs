@@ -50,15 +50,19 @@ public sealed class BranchOperations(GitRepositoryClient? client, IDialogService
     }
 
     /// <summary>New branch from <paramref name="startPoint"/> (null = the current commit), asking for the name.</summary>
-    public async Task NewBranchAsync(GitBranch? startPoint = null)
+    public Task NewBranchAsync(GitBranch? startPoint = null) =>
+        NewBranchAtAsync(startPoint?.ShortName, startPoint?.ShortName, startPoint is { IsRemote: true } ? startPoint.Name : "");
+
+    /// <summary>New branch at <paramref name="from"/> (a branch, tag or commit id; null = the current commit), asking for the name.</summary>
+    /// <param name="label">How the dialog title names the start point ("v1.0", "1a2b3c4d").</param>
+    public async Task NewBranchAtAsync(string? from, string? label, string initialName = "")
     {
         if (client is null)
             return;
 
-        var from = startPoint?.ShortName;
         var dialog = new BranchNameDialogViewModel(client, Branches,
-            title: from is null ? "New Branch" : $"New Branch from {from}",
-            initialName: startPoint is { IsRemote: true } ? startPoint.Name : "",
+            title: label is null ? "New Branch" : $"New Branch from {label}",
+            initialName: initialName,
             showCheckout: true);
         if (!await dialogs.ShowDialogAsync(dialog))
             return;

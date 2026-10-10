@@ -52,55 +52,11 @@
         <!-- Selected commit, resizable from its top edge. Hidden when the list is empty (no
              commits yet, or no search matches): the list's message then fills the section.
              The top line uses Brush.Separator: list and diff are both on the editor color, where
-             Brush.Border is invisible in Dark. The "nothing selected" state sits on the panel
-             color, so it never blends into the list either.
-             (DataContext switches on the Panel, not the Border: the Border's own bindings would
-             otherwise look for Layout / HasRows on the details.) -->
+             Brush.Border is invisible in Dark. -->
         <Border DockPanel.Dock="Bottom" Height="{Binding Layout.CommitDetailsHeight}" IsVisible="{Binding HasRows}"
                 BorderBrush="{DynamicResource Brush.Separator}" BorderThickness="0,1,0,0">
-            <Panel DataContext="{Binding Details}" x:DataType="vm:CommitDetailsViewModel">
-                <Border Background="{DynamicResource Brush.Bg.Panel}" IsVisible="{Binding !HasCommit}">
-                    <c:EmptyState IconKind="commit" Title="No commit selected"
-                                  Description="Select a commit to see its message, files and changes." />
-                </Border>
-
-                <DockPanel IsVisible="{Binding HasCommit}">
-                    <!-- Message + files (left), resizable. -->
-                    <Border DockPanel.Dock="Left" Width="{Binding $parent[UserControl].((vm:CommitLogViewModel)DataContext).Layout.CommitFilesWidth}"
-                            Background="{DynamicResource Brush.Bg.Panel}">
-                        <DockPanel>
-                            <StackPanel DockPanel.Dock="Top" Margin="{DynamicResource Padding.PaneHeader}"
-                                        Spacing="{DynamicResource Spacing.Small}">
-                                <!-- Selectable, so the id (or any of it) can be copied with Ctrl+C. -->
-                                <SelectableTextBlock Classes="code small" Text="{Binding IdText}" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Classes="small secondary" Text="{Binding AuthorText}" TextTrimming="CharacterEllipsis"
-                                           ToolTip.Tip="{Binding AuthorText}" />
-                                <TextBlock Classes="small secondary" Text="{Binding DateText}" />
-                                <TextBlock Classes="small secondary" Text="{Binding ParentsText}" TextWrapping="Wrap" />
-                                <ScrollViewer MaxHeight="{DynamicResource Size.CommitDetailsMessageMax}"
-                                              HorizontalScrollBarVisibility="Disabled">
-                                    <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap" />
-                                </ScrollViewer>
-                                <SelectableTextBlock Classes="small" Text="{Binding Error}" TextWrapping="Wrap"
-                                                     Foreground="{DynamicResource Brush.Status.Error}"
-                                                     IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                            </StackPanel>
-
-                            <Border DockPanel.Dock="Top" Classes="listGroupHeader" BorderThickness="0,1,0,1">
-                                <TextBlock Classes="secondary" Text="{Binding FilesText}" />
-                            </Border>
-                            <ListBox Background="Transparent" AutomationProperties.Name="Changed files"
-                                     ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}"
-                                     ItemTemplate="{StaticResource FileRow}" />
-                        </DockPanel>
-                    </Border>
-                    <c:SplitterThumb DockPanel.Dock="Left" Minimum="200" MaximumFraction="0.6"
-                                     Value="{Binding $parent[UserControl].((vm:CommitLogViewModel)DataContext).Layout.CommitFilesWidth}" />
-
-                    <!-- The selected file's diff (the same view as in Local Changes). -->
-                    <ContentControl Content="{Binding Diff}" />
-                </DockPanel>
-            </Panel>
+            <!-- CommitDetailsViewModel → CommitDetailsView (shared with Stashes). -->
+            <ContentControl Content="{Binding Details}" />
         </Border>
         <c:SplitterThumb DockPanel.Dock="Bottom" Orientation="Horizontal" Invert="True" IsVisible="{Binding HasRows}"
                          Minimum="120" MaximumFraction="0.8" Value="{Binding Layout.CommitDetailsHeight}" />
@@ -116,6 +72,18 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      AutomationProperties.Name="Commits" IsVisible="{Binding HasRows}"
                      ItemsSource="{Binding Rows}" SelectedItem="{Binding Selected}">
+                <!-- JetBrains' Log menu (G8). Right-click selects the row first. -->
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Cherry-Pick" Command="{Binding CherryPickCommand}"
+                                  ToolTip.Tip="Copy this commit's changes onto the current branch as a new commit" />
+                        <MenuItem Header="Revert Commit" Command="{Binding RevertCommand}"
+                                  ToolTip.Tip="Add a new commit that undoes this one (history isn't rewritten)" />
+                        <Separator />
+                        <MenuItem Header="New Branch from Here…" Command="{Binding NewBranchHereCommand}" />
+                        <MenuItem Header="New Tag Here…" Command="{Binding NewTagHereCommand}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:CommitRowViewModel">
                         <!-- The subject keeps a minimum width: in a narrow pane the columns on the right get

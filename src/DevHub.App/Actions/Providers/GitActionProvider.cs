@@ -7,8 +7,8 @@ using DevHub.ViewModels.Git;
 namespace DevHub.Actions.Providers;
 
 /// <summary>
-/// Git actions. They act on the **active repository tab** (<see cref="DocumentManager.ActiveRepository"/>)
-/// and are disabled while the active tab isn't a repository: commit, push / update / fetch, branches, refresh;
+/// Git actions. They act on the **active repository** (<see cref="DocumentManager.ActiveRepository"/>: the
+/// repository tab in front, or the one a diff / blame tab in front belongs to) and are disabled otherwise: commit, push / update / fetch, stash, branches, refresh;
 /// more join milestone by milestone (docs/GIT_CLIENT_PLAN.md).
 /// </summary>
 public sealed class GitActionProvider : IActionProvider, IDisposable
@@ -23,6 +23,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _pull;
     private readonly AsyncRelayCommand _push;
     private readonly AsyncRelayCommand _forcePush;
+    private readonly AsyncRelayCommand _stash;
+    private readonly RelayCommand _unstash;
 
     public GitActionProvider(DocumentManager documents)
     {
@@ -31,18 +33,24 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             () => _documents.ActiveRepository!.RefreshAsync(),
             () => _documents.ActiveRepository is not null);
         _commit = new RelayCommand(
-            () => _documents.ActiveRepository!.FocusCommit(),
+            () => Shown().FocusCommit(),
             () => _documents.ActiveRepository is not null);
         // Enabled whenever a repository tab is active (not only with a selection), so the key
         // always answers: it discards, or the status bar says what to select.
         _discard = new AsyncRelayCommand(
-            () => _documents.ActiveRepository!.DiscardSelectionAsync(),
+            () => Shown().DiscardSelectionAsync(),
             () => _documents.ActiveRepository is not null);
         _branches = new RelayCommand(
             () => _documents.ActiveRepository!.BranchPopup.Open(),
             () => _documents.ActiveRepository is not null);
         _newBranch = new AsyncRelayCommand(
             () => _documents.ActiveRepository!.NewBranchAsync(),
+            () => _documents.ActiveRepository is not null);
+        _stash = new AsyncRelayCommand(
+            () => _documents.ActiveRepository!.StashChangesAsync(),
+            () => _documents.ActiveRepository is not null);
+        _unstash = new RelayCommand(
+            () => Shown().ShowStashes(),
             () => _documents.ActiveRepository is not null);
 
         // The active tab's own commands (the same ones its toolbar buttons use). While one is
@@ -116,6 +124,21 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Description = "Overwrite the remote branch with yours (after amend / rebase). Asks first; --force-with-lease.",
         };
 
+        // JetBrains: Git → Uncommitted Changes → Stash Changes… / Unstash Changes….
+        yield return new AppAction(ActionIds.GitStash, "Stash Changes…", _stash)
+        {
+            Category = "Git",
+            IconKind = IconKind.Copy,
+            Description = "Put the uncommitted changes of the active repository aside (asks for a message first).",
+        };
+
+        yield return new AppAction(ActionIds.GitUnstash, "Unstash Changes…", _unstash)
+        {
+            Category = "Git",
+            IconKind = IconKind.Copy,
+            Description = "Show the stashes of the active repository, to apply or pop one.",
+        };
+
         yield return new AppAction(ActionIds.GitNewBranch, "New Branch…", _newBranch)
         {
             Category = "Git",
@@ -131,6 +154,17 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Gesture = "Ctrl+Alt+Y",
             Description = "Re-read the active repository tab (branch, and later changes).",
         };
+    }
+
+    /// <summary>
+    /// The active repository, with its tab brought to the front: for actions that show something
+    /// in it (commit box, Stashes) when a diff or blame tab of that repository is in front.
+    /// </summary>
+    private RepositoryDocumentViewModel Shown()
+    {
+        var repository = _documents.ActiveRepository!;
+        _documents.Active = repository;
+        return repository;
     }
 
     private AsyncRelayCommand RemoteCommand(Func<RemoteOperations, IAsyncRelayCommand> pick) =>
@@ -154,6 +188,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             _pull.NotifyCanExecuteChanged();
             _push.NotifyCanExecuteChanged();
             _forcePush.NotifyCanExecuteChanged();
+            _stash.NotifyCanExecuteChanged();
+            _unstash.NotifyCanExecuteChanged();
         }
     }
 

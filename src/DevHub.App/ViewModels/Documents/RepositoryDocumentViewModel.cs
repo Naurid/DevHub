@@ -9,7 +9,7 @@ namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// One repository open as an editor tab: Fork's per-repository workspace (a sidebar with
-/// Local Changes, All Commits, Branches, Remotes, Tags, Stashes) in JetBrains style. Several can
+/// Local Changes, All Commits, Branches, Remotes, Tags, Stashes, Submodules) in JetBrains style. Several can
 /// be open side by side. Created by <see cref="RepositoryDocumentFactory"/>; disposed when its
 /// tab closes.
 /// </summary>
@@ -26,6 +26,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     private readonly GitRepositoryClient? _client;
     private readonly RepositoryWatcher? _watcher;
     private readonly BranchOperations _branchOperations;
+    private readonly CommitOperations _commitOperations;
     private CancellationTokenSource? _refreshCts;
     private Task _refreshTask = Task.CompletedTask;
     private bool _disposed;
@@ -40,16 +41,19 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         Path = path;
         _client = client;
         Layout = layout;
+        Action<FileChangeViewModel, int?> openInEditor = (file, line) => services.Editor.Open(path, file.Change.Path, line);
         LocalChanges = new LocalChangesViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
-            (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab,
-            push: () => Remote!.PushWithoutAskingAsync()); // Remote is created below; this runs later
-        CommitLog = new CommitLogViewModel(layout, client,
-            (file, line) => services.Editor.Open(path, file.Change.Path, line));
+            openInEditor, OpenDiffInTab,
+            push: () => Remote!.PushWithoutAskingAsync(), // Remote is created below; this runs later
+            annotate: OpenBlame);
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
         LocalChangesSection = Sections[0];
         AllCommitsSection = Sections[1];
         BranchesSection = Sections[2];
         RemotesSection = Sections[3];
+        TagsSection = Sections[4];
+        StashesSection = Sections[5];
+        SubmodulesSection = Sections[6];
         _selectedSection = LocalChangesSection;
 
         var branchOperations = new BranchOperations(client, services.Dialogs, services.Status, RefreshAsync);
@@ -59,6 +63,13 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         BranchPopup = new BranchPopupViewModel(branchOperations);
         Remote = new RemoteOperations(client, services.Dialogs, services.Status, RefreshAsync,
             () => branchOperations.Branches, Name);
+        _commitOperations = new CommitOperations(client, services.Dialogs, services.Status, RefreshAsync, branchOperations, Remote);
+        CommitLog = new CommitLogViewModel(layout, client, openInEditor, OpenBlame, _commitOperations);
+        Tags = new TagListViewModel(_commitOperations, branchOperations);
+        Stashes = new StashListViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
+            () => SelectedSection = LocalChangesSection, openInEditor, OpenBlame);
+        Submodules = new SubmoduleListViewModel(client, Remote, services.Status,
+            folder => OpenDocument?.Invoke(RepositoryDocumentFactory.IdFor(folder)));
         Conflicts = new ConflictOperations(client, services.Dialogs, services.Status, RefreshAsync,
             file => services.Editor.Open(path, file, null));
         LocalChanges.Conflicts = Conflicts;
@@ -92,6 +103,8 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <summary>Repository root folder.</summary>
     public string Path { get; }
 
+    public override string RepositoryPath => Path;
+
     /// <summary>Folder name, shown as the tab title.</summary>
     public string Name { get; }
 
@@ -123,14 +136,18 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         new("All Commits", IconKind.Commit, ""),
         new("Branches", IconKind.Vcs, ""),
         new("Remotes", IconKind.Fetch, ""),
-        new("Tags", IconKind.Template, "Tags arrive in G8."),
-        new("Stashes", IconKind.Copy, "Stashes arrive in G8."),
+        new("Tags", IconKind.Template, ""),
+        new("Stashes", IconKind.Copy, ""),
+        new("Submodules", IconKind.Folder, ""),
     ];
 
     private RepositorySection LocalChangesSection { get; }
     private RepositorySection AllCommitsSection { get; }
     private RepositorySection BranchesSection { get; }
     private RepositorySection RemotesSection { get; }
+    private RepositorySection TagsSection { get; }
+    private RepositorySection StashesSection { get; }
+    private RepositorySection SubmodulesSection { get; }
 
     /// <summary>Merge / rebase in progress: the banner, Continue / Skip / Abort, resolving conflicts (G7).</summary>
     public ConflictOperations Conflicts { get; }
@@ -150,6 +167,15 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <summary>Remote-tracking branches (the Remotes section).</summary>
     public BranchListViewModel RemoteBranches { get; }
 
+    /// <summary>The Tags section.</summary>
+    public TagListViewModel Tags { get; }
+
+    /// <summary>The Stashes section (and Git → Stash Changes…).</summary>
+    public StashListViewModel Stashes { get; }
+
+    /// <summary>The Submodules section.</summary>
+    public SubmoduleListViewModel Submodules { get; }
+
     /// <summary>The title-bar branch popup (click the branch, or Ctrl+Shift+`).</summary>
     public BranchPopupViewModel BranchPopup { get; }
 
@@ -166,6 +192,9 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         : SelectedSection == AllCommitsSection ? CommitLog
         : SelectedSection == BranchesSection ? LocalBranches
         : SelectedSection == RemotesSection ? RemoteBranches
+        : SelectedSection == TagsSection ? Tags
+        : SelectedSection == StashesSection ? Stashes
+        : SelectedSection == SubmodulesSection ? Submodules
         : SelectedSection;
 
     // The history is loaded the first time All Commits is shown (most visits are to Local Changes).
@@ -217,8 +246,23 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
             BranchesSection.Count = LocalBranches.Count;
             RemotesSection.Count = RemoteBranches.Count;
 
-            // History only changes when HEAD or a branch moves (commit, checkout, fetch…), not on file edits.
-            _historySignature = status.CommitId + "|" + string.Join(",", branches.Select(b => b.Ref + ":" + b.CommitId));
+            var tags = await client.GetTagsAsync(ct);
+            _commitOperations.Tags = tags;
+            Tags.Update(tags);
+            TagsSection.Count = tags.Count;
+
+            var stashes = await client.GetStashesAsync(ct);
+            Stashes.Update(stashes);
+            StashesSection.Count = stashes.Count;
+
+            // No .gitmodules: no git call at all (most repositories).
+            var submodules = await client.GetSubmodulesAsync(ct);
+            Submodules.Update(submodules);
+            SubmodulesSection.Count = submodules.Count;
+
+            // History only changes when HEAD, a branch or a tag moves (commit, checkout, fetch, tag…), not on file edits.
+            _historySignature = status.CommitId + "|" + string.Join(",", branches.Select(b => b.Ref + ":" + b.CommitId))
+                                + "|" + string.Join(",", tags.Select(t => t.Name + ":" + t.CommitId));
             _ = CommitLog.RefreshIfChangedAsync(_historySignature);
 
             LocalChanges.Update(status);
@@ -259,6 +303,16 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         SelectedSection = LocalChangesSection;
         return LocalChanges.DiscardSelectionAsync();
     }
+
+    /// <summary>Git → Stash Changes…: the Stashes section's dialog, from anywhere.</summary>
+    public Task StashChangesAsync() => Stashes.StashChangesCommand.ExecuteAsync(null);
+
+    /// <summary>Git → Unstash Changes…: shows the Stashes section (apply or pop one there).</summary>
+    public void ShowStashes() => SelectedSection = StashesSection;
+
+    /// <summary>The diff pane's Blame: a blame tab for the file (commit id null = as on disk).</summary>
+    private void OpenBlame(string file, string? commitId) =>
+        OpenDocument?.Invoke(BlameDocumentFactory.IdFor(Path, file, commitId));
 
     /// <summary>"Open in New Tab" in the diff pane: the file's diff as its own tab, for more room.</summary>
     private void OpenDiffInTab(FileChangeViewModel file) =>

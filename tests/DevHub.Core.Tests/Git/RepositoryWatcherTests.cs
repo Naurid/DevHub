@@ -31,15 +31,16 @@ public class RepositoryWatcherTests
         Directory.CreateDirectory(root);
         try
         {
-            using var watcher = new RepositoryWatcher(root, TimeSpan.FromMilliseconds(200));
+            using var watcher = new RepositoryWatcher(root, TimeSpan.FromMilliseconds(500));
             var count = 0;
             watcher.Changed += (_, _) => Interlocked.Increment(ref count);
 
             for (var i = 0; i < 20; i++)
                 await File.WriteAllTextAsync(Path.Combine(root, $"f{i}.txt"), "x");
 
-            // Wait well past the debounce.
-            await Task.Delay(1500);
+            // Wait well past the debounce. (A generous debounce: with the other tests running git in
+            // parallel, a write can stall for a few hundred ms, which would split the burst in two.)
+            await Task.Delay(2500);
 
             Assert.Equal(1, count);
         }

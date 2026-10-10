@@ -54,7 +54,7 @@
     </UserControl.Styles>
 
     <DockPanel>
-        <!-- Header: file, side, counts, Open in Editor (external, F4), Open in New Tab. -->
+        <!-- Header: file, side, counts, Blame, Open in Editor (external, F4), Open in New Tab. -->
         <Border DockPanel.Dock="Top" Classes="paneHeader" IsVisible="{Binding HasFile}">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}">
                 <TextBlock Text="{Binding File.FileName, FallbackValue=''}" VerticalAlignment="Center"
@@ -75,6 +75,9 @@
                             IsVisible="{Binding CanUnstageParts}" ToolTip.Tip="Take only the selected lines out of the commit (Space)" />
                 </StackPanel>
                 <c:Toolbar Grid.Column="5">
+                    <!-- JetBrains' "Annotate with Git Blame": who last changed each line, in a tab. -->
+                    <Button Classes="flat" Content="Blame" Command="{Binding AnnotateCommand}" IsVisible="{Binding CanAnnotate}"
+                            ToolTip.Tip="Blame: who last changed each line of this file, and in which commit (opens a tab)" />
                     <c:ActionButton IconKind="edit" ToolTip.Tip="Open in Editor (F4): the file in the editor set for this language in Settings → Open With"
                                     AutomationProperties.Name="Open in Editor"
                                     Command="{Binding OpenInEditorCommand}" IsVisible="{Binding CanOpenInEditor}" />

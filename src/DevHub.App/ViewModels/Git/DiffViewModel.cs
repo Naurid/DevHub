@@ -22,6 +22,7 @@ public partial class DiffViewModel : ViewModelBase
     private readonly Action<FileChangeViewModel, int?>? _openInEditor;
     private readonly Action<FileChangeViewModel>? _openInTab;
     private readonly Func<FileDiff, Func<int, int, bool>, PartialAction, Task>? _applyPartial;
+    private readonly Action<string, string?>? _annotate;
     private CancellationTokenSource? _loadCts;
 
     /// <summary>The diff shown (for building partial patches), or null.</summary>
@@ -30,6 +31,9 @@ public partial class DiffViewModel : ViewModelBase
     /// <summary>The shown diff is a local change (not a commit), so parts of it can be staged.</summary>
     private bool _isLocalChange;
 
+    /// <summary>The commit the shown file comes from (All Commits, Stashes), or null for a local change.</summary>
+    private string? _commitId;
+
     /// <summary>Where the first change is, so the editor opens there.</summary>
     private int? _firstChangedLine;
 
@@ -37,14 +41,17 @@ public partial class DiffViewModel : ViewModelBase
     /// <param name="openInEditor">Opens the file in the external editor for the repository's language, at a line.</param>
     /// <param name="openInTab">Opens this diff as its own tab; null hides the button (e.g. in that tab).</param>
     /// <param name="applyPartial">Stages / unstages / discards selected lines of the shown diff; null = read-only.</param>
+    /// <param name="annotate">Opens a blame tab: file path, commit id (null = the file on disk); null hides Blame.</param>
     public DiffViewModel(GitRepositoryClient? client, Action<FileChangeViewModel, int?>? openInEditor = null,
         Action<FileChangeViewModel>? openInTab = null,
-        Func<FileDiff, Func<int, int, bool>, PartialAction, Task>? applyPartial = null)
+        Func<FileDiff, Func<int, int, bool>, PartialAction, Task>? applyPartial = null,
+        Action<string, string?>? annotate = null)
     {
         _client = client;
         _openInEditor = openInEditor;
         _openInTab = openInTab;
         _applyPartial = applyPartial;
+        _annotate = annotate;
 
         // Owned by this ViewModel (the ListBox fills it): no unsubscribe needed.
         SelectedRows.CollectionChanged += (_, _) =>
@@ -60,7 +67,7 @@ public partial class DiffViewModel : ViewModelBase
     /// <summary>The file shown, or null (nothing selected).</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasFile), nameof(PlaceholderText))]
-    [NotifyCanExecuteChangedFor(nameof(OpenInEditorCommand), nameof(OpenInTabCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenInEditorCommand), nameof(OpenInTabCommand), nameof(AnnotateCommand))]
     private FileChangeViewModel? _file;
 
     public bool HasFile => File is not null;
@@ -95,6 +102,7 @@ public partial class DiffViewModel : ViewModelBase
 
     public bool CanOpenInEditor => _openInEditor is not null;
     public bool CanOpenInTab => _openInTab is not null;
+    public bool CanAnnotate => _annotate is not null;
 
     // ---- Partial staging (G3.1) ----------------------------------------------------------------
 
@@ -185,14 +193,15 @@ public partial class DiffViewModel : ViewModelBase
         var client = _client;
         return LoadCoreAsync(file,
             client is null ? null : ct => client.GetCommitDiffAsync(commit, file!.Change, ct),
-            $"Commit {commit.ShortId}", isLocalChange: false);
+            $"Commit {commit.ShortId}", isLocalChange: false, commitId: commit.Id);
     }
 
     private async Task LoadCoreAsync(FileChangeViewModel? file, Func<CancellationToken, Task<FileDiff>>? load, string side,
-        bool isLocalChange)
+        bool isLocalChange, string? commitId = null)
     {
         _loadCts?.Cancel();
         _isLocalChange = isLocalChange;
+        _commitId = commitId;
         File = file;
 
         if (file is null || load is null)
@@ -249,6 +258,22 @@ public partial class DiffViewModel : ViewModelBase
     }
 
     private bool CanOpenTab() => File is not null && _openInTab is not null;
+
+    /// <summary>
+    /// JetBrains' "Annotate with Git Blame": who last changed each line, in a tab. For a local
+    /// change the file as it is on disk; in a commit (or stash), the file as it was there.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanAnnotateFile))]
+    private void Annotate()
+    {
+        if (File is not null)
+            _annotate?.Invoke(File.Change.Path, _commitId);
+    }
+
+    // Nothing to blame in a deleted file, or in one git has no history for yet (untracked / newly added, on disk).
+    private bool CanAnnotateFile() =>
+        _annotate is not null && File is { IsDeleted: false, IsUntracked: false } file && !file.Change.Path.EndsWith('/')
+        && !(_commitId is null && file is { IsAdded: true });
 
     /// <param name="side">Where the diff comes from, for the subtitle: "Staged", "Unstaged", "Commit 1a2b3c4d"…</param>
     private void Show(FileChangeViewModel? file, FileDiff? diff, string side)

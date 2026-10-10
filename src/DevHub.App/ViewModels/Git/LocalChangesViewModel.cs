@@ -30,17 +30,18 @@ public partial class LocalChangesViewModel : ViewModelBase
     /// <param name="openInEditor">Opens a file in the external editor for the repository's language, at a line.</param>
     /// <param name="openInTab">Opens a file's diff as its own tab.</param>
     /// <param name="push">Pushes the current branch (Commit and Push); null hides it.</param>
+    /// <param name="annotate">Opens a blame tab for a file (path; commit id null = as on disk).</param>
     public LocalChangesViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
         IDialogService dialogs, IStatusService status, Func<Task> refresh,
         Action<FileChangeViewModel, int?>? openInEditor, Action<FileChangeViewModel>? openInTab,
-        Func<Task>? push = null)
+        Func<Task>? push = null, Action<string, string?>? annotate = null)
     {
         Layout = layout;
         _client = client;
         _dialogs = dialogs;
         _status = status;
         _refresh = refresh;
-        Diff = new DiffViewModel(client, openInEditor, openInTab, ApplyPartialAsync);
+        Diff = new DiffViewModel(client, openInEditor, openInTab, ApplyPartialAsync, annotate);
         Commit = new CommitViewModel(client, status, () => Staged.Count > 0, refresh, push);
 
         // The selection lists belong to this ViewModel (the ListBoxes fill them), so these

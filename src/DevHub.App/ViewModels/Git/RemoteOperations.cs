@@ -203,6 +203,21 @@ public sealed partial class RemoteOperations : ObservableObject
     // ---- Running ---------------------------------------------------------------------------------
 
     /// <summary>
+    /// Runs another network command (pushing a tag, updating submodules) like Fetch / Push: status
+    /// bar progress with Cancel, failures explained, then a refresh. False when it failed, was
+    /// cancelled, or another one is still running.
+    /// </summary>
+    public async Task<bool> RunNetworkAsync(string title, Func<IProgress<GitProgress>, CancellationToken, Task> operation)
+    {
+        if (!CanRun())
+        {
+            _status.Show(IsBusy ? "Another fetch / push is still running; try again when it's done." : "Git is not available.");
+            return false;
+        }
+        return await RunAsync(title, operation);
+    }
+
+    /// <summary>
     /// Runs one network operation in the status bar (progress, Cancel), then refreshes the
     /// repository. Returns true when it succeeded; on failure explains it in a dialog and returns
     /// false, except for <paramref name="throwOn"/>, which is rethrown for the caller to handle.

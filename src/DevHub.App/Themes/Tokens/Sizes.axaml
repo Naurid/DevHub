@@ -59,6 +59,13 @@
     <!-- Git (G6): a running operation in the status bar: its progress bar and the step text. -->
     <x:Double x:Key="Size.StatusProgress">120</x:Double>
     <x:Double x:Key="Size.StatusTaskStep">240</x:Double>
+    <!-- Git (G8): blame gutter (commit id, author, date before each block of lines); stash /
+         tag message dialogs; the tag and submodule name columns. -->
+    <x:Double x:Key="Size.BlameId">70</x:Double>
+    <x:Double x:Key="Size.BlameAuthor">120</x:Double>
+    <x:Double x:Key="Size.BlameDate">90</x:Double>
+    <x:Double x:Key="Size.TagMessage">72</x:Double>
+    <x:Double x:Key="Size.RefName">200</x:Double>
     <x:Double x:Key="Size.BranchPopupWidth">380</x:Double>
     <x:Double x:Key="Size.BranchPopupMaxHeight">460</x:Double>
     <!-- Find Action popup (UI-0 step 10) -->
@@ -121,6 +128,8 @@
     <Thickness x:Key="Padding.PaneHeader">12,6,8,6</Thickness>
     <!-- Around the commit box under the file lists. -->
     <Thickness x:Key="Padding.CommitBox">12,8</Thickness>
+    <!-- Blame tab (G8): the gutter's inner padding, so the commit id doesn't touch the edge. -->
+    <Thickness x:Key="Padding.BlameGutter">8,0,0,0</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

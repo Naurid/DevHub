@@ -29,12 +29,12 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
     [ObservableProperty] private string _themeLabel = "";
     [ObservableProperty] private string _densityLabel = "";
 
-    /// <summary>The operation shown in the bar, or null.</summary>
+    /// <summary>The operation shown in the bar, or null. (Not named "Task": that clashes with System.Threading.Tasks.Task.)</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasTask))]
-    private StatusTaskViewModel? _task;
+    private StatusTaskViewModel? _currentTask;
 
-    public bool HasTask => Task is not null;
+    public bool HasTask => CurrentTask is not null;
 
     public StatusBarViewModel(IThemeService theme)
     {
@@ -50,14 +50,14 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
     {
         var task = new StatusTaskViewModel(title, cancel, Remove);
         _tasks.Add(task);
-        Task = task;
+        CurrentTask = task;
         return task;
     }
 
     private void Remove(StatusTaskViewModel task)
     {
         _tasks.Remove(task);
-        Task = _tasks.LastOrDefault();
+        CurrentTask = _tasks.LastOrDefault();
     }
 
     private void OnThemeChanged(object? sender, EventArgs e) => UpdateAppearance();

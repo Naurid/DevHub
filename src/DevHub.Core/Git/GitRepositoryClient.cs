@@ -5,9 +5,12 @@ namespace DevHub.Core.Git;
 /// through <see cref="GitRunner"/> in the repository's folder. G0 has the read-only basics;
 /// status, diff, staging, branches… are added milestone by milestone (docs/GIT_CLIENT_PLAN.md).
 /// </summary>
-public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
+public sealed partial class GitRepositoryClient(GitRunner runner, string repositoryPath)
 {
     public string RepositoryPath { get; } = repositoryPath;
+
+    /// <summary>The runner, for the other parts of this class (a primary-constructor parameter is only in scope in this file).</summary>
+    private GitRunner Runner => runner;
 
     /// <summary>True when the folder is inside a git work tree.</summary>
     public async Task<bool> IsRepositoryAsync(CancellationToken ct = default)

@@ -160,6 +160,10 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
 template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />`
 in the view's `Styles`, then `ItemTemplate="{StaticResource FileRow}"`.
+A commit's (or stash's) message + files + diff is one reusable view: put a
+`CommitDetailsViewModel` in a `ContentControl` and the ViewLocator shows `CommitDetailsView`
+(All Commits and Stashes both do). List context menus also open with Shift+F10 / the Menu key,
+so every right-click action is reachable from the keyboard (and from UI tests).
 
 Stock Fluent controls (Button, TextBox, ComboBox, CheckBox, ListBox, TreeView, …) are
 already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use them.

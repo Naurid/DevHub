@@ -59,7 +59,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       Commit and Push (Ctrl+Alt+K), Force Push (--force-with-lease, confirmed)
 - [x] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool;
       Merge into Current / Rebase onto from the branch menu, Accept Yours / Theirs, Skip (rebase)
-- [ ] G8. Stashes, tags, cherry-pick, revert, blame, submodules
+- [x] G8. Stashes (stash / apply / pop / drop, files + diffs), Tags (new / push / delete local + remote),
+      cherry-pick / revert from All Commits, Blame tab, Submodules (update, open as a tab)
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`

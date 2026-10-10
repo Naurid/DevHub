@@ -8,7 +8,8 @@ namespace DevHub.ViewModels.Git;
 /// <summary>
 /// The All Commits section of a repository tab (Fork's "All Commits", JetBrains' Log): every
 /// branch's history as a graph + list, newest first, and the selected commit's details below
-/// (message, changed files, the selected file's diff). Read-only.
+/// (message, changed files, the selected file's diff). Right-click a commit: Cherry-Pick, Revert,
+/// New Branch / New Tag here (G8).
 /// </summary>
 /// <remarks>
 /// Loaded the first time the section is shown, then reloaded when a refresh sees the branches
@@ -23,6 +24,7 @@ public partial class CommitLogViewModel : ViewModelBase
     private const int MaxGraphLanes = 16;
 
     private readonly GitRepositoryClient? _client;
+    private readonly CommitOperations? _operations;
     private CancellationTokenSource? _loadCts;
     private int _limit = PageSize;
 
@@ -31,12 +33,16 @@ public partial class CommitLogViewModel : ViewModelBase
 
     private IReadOnlyList<CommitRowViewModel> _allRows = [];
 
+    /// <param name="annotate">Opens a blame tab (file path, commit id).</param>
+    /// <param name="operations">Cherry-pick, revert, new branch / tag; null = no commit menu.</param>
     public CommitLogViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
-        Action<FileChangeViewModel, int?>? openInEditor)
+        Action<FileChangeViewModel, int?>? openInEditor, Action<string, string?>? annotate = null,
+        CommitOperations? operations = null)
     {
         Layout = layout;
         _client = client;
-        Details = new CommitDetailsViewModel(client, openInEditor);
+        _operations = operations;
+        Details = new CommitDetailsViewModel(layout, client, openInEditor, annotate);
     }
 
     /// <summary>Panel sizes (details height, file list width), shared by all repository tabs.</summary>
@@ -79,7 +85,9 @@ public partial class CommitLogViewModel : ViewModelBase
     /// <summary>"1,000 commits" (or "12 of 1,000 commits" while filtering).</summary>
     [ObservableProperty] private string _countText = "";
 
-    [ObservableProperty] private CommitRowViewModel? _selected;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CherryPickCommand), nameof(RevertCommand), nameof(NewBranchHereCommand), nameof(NewTagHereCommand))]
+    private CommitRowViewModel? _selected;
 
     /// <summary>What the list area says when there are no rows (empty repository, no matches, error).</summary>
     public string? PlaceholderText =>
@@ -108,6 +116,24 @@ public partial class CommitLogViewModel : ViewModelBase
         }
         return _loadedSignature is not null && _loadedSignature != signature ? LoadAsync(signature) : Task.CompletedTask;
     }
+
+    // ---- Commit menu (G8) ------------------------------------------------------------------------
+
+    private bool HasSelection() => Selected is not null && _operations is { IsAvailable: true };
+
+    /// <summary>Copy the selected commit's changes onto the current branch.</summary>
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private Task CherryPickAsync() => _operations!.CherryPickAsync(Selected!.Commit);
+
+    /// <summary>A new commit that undoes the selected one.</summary>
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private Task RevertAsync() => _operations!.RevertAsync(Selected!.Commit);
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private Task NewBranchHereAsync() => _operations!.NewBranchAtAsync(Selected!.Commit);
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private Task NewTagHereAsync() => _operations!.NewTagAsync(Selected!.Commit);
 
     [RelayCommand(CanExecute = nameof(HasMore))]
     private Task LoadMoreAsync()

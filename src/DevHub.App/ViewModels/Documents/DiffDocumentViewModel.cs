@@ -34,7 +34,8 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
         var trimmed = filePath.TrimEnd('/');
         var name = trimmed[(trimmed.LastIndexOf('/') + 1)..];
         Title = staged ? name + " (staged)" : name;
-        Diff = new DiffViewModel(client, (file, line) => editor.Open(repositoryPath, file.Change.Path, line));
+        Diff = new DiffViewModel(client, (file, line) => editor.Open(repositoryPath, file.Change.Path, line),
+            annotate: (file, commitId) => OpenDocument?.Invoke(BlameDocumentFactory.IdFor(repositoryPath, file, commitId)));
 
         if (client is null)
         {
@@ -64,7 +65,7 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
     /// <summary>The diff runs edge to edge, like in Local Changes.</summary>
     public override bool FillsEditorArea => true;
 
-    public string RepositoryPath { get; }
+    public override string RepositoryPath { get; }
     public string FilePath { get; }
     public bool IsStaged { get; }
 
