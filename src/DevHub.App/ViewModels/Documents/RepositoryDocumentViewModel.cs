@@ -41,7 +41,8 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         _client = client;
         Layout = layout;
         LocalChanges = new LocalChangesViewModel(layout, client, services.Dialogs, services.Status, RefreshAsync,
-            (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab);
+            (file, line) => services.Editor.Open(path, file.Change.Path, line), OpenDiffInTab,
+            push: () => Remote!.PushWithoutAskingAsync()); // Remote is created below; this runs later
         CommitLog = new CommitLogViewModel(layout, client,
             (file, line) => services.Editor.Open(path, file.Change.Path, line));
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
@@ -56,6 +57,8 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         LocalBranches = new BranchListViewModel(branchOperations, remote: false);
         RemoteBranches = new BranchListViewModel(branchOperations, remote: true);
         BranchPopup = new BranchPopupViewModel(branchOperations);
+        Remote = new RemoteOperations(client, services.Dialogs, services.Status, RefreshAsync,
+            () => branchOperations.Branches, Name);
 
         if (_client is null)
             return;
@@ -126,6 +129,9 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     private RepositorySection AllCommitsSection { get; }
     private RepositorySection BranchesSection { get; }
     private RepositorySection RemotesSection { get; }
+
+    /// <summary>Fetch / Update / Push (toolbar, Git actions, Commit and Push).</summary>
+    public RemoteOperations Remote { get; }
 
     /// <summary>History graph + commit details (the All Commits section).</summary>
     public CommitLogViewModel CommitLog { get; }

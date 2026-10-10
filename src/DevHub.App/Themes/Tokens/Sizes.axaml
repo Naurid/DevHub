@@ -56,6 +56,9 @@
     <x:Double x:Key="Size.CommitSubjectMin">180</x:Double>
     <x:Double x:Key="Size.CommitFilter">280</x:Double>
     <x:Double x:Key="Size.CommitDetailsMessageMax">160</x:Double>
+    <!-- Git (G6): a running operation in the status bar: its progress bar and the step text. -->
+    <x:Double x:Key="Size.StatusProgress">120</x:Double>
+    <x:Double x:Key="Size.StatusTaskStep">240</x:Double>
     <x:Double x:Key="Size.BranchPopupWidth">380</x:Double>
     <x:Double x:Key="Size.BranchPopupMaxHeight">460</x:Double>
     <!-- Find Action popup (UI-0 step 10) -->

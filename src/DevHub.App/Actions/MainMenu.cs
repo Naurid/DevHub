@@ -38,7 +38,12 @@ public static class MainMenu
                 .. gallery,
             ]),
             Group(registry, "Repositories", [ActionIds.AddScanFolder, MenuBuilder.Separator, ActionIds.RescanRepositories]),
-            Group(registry, "Git", [ActionIds.GitCommit, ActionIds.GitDiscard, ActionIds.GitBranches, ActionIds.GitNewBranch, ActionIds.GitRefresh]),
+            Group(registry, "Git",
+            [
+                ActionIds.GitCommit, ActionIds.GitPush, ActionIds.GitPull, ActionIds.GitFetch, ActionIds.GitForcePush,
+                MenuBuilder.Separator, ActionIds.GitDiscard, ActionIds.GitBranches, ActionIds.GitNewBranch,
+                MenuBuilder.Separator, ActionIds.GitRefresh,
+            ]),
             Group(registry, "Help", [ActionIds.FindAction]),
         ];
     }

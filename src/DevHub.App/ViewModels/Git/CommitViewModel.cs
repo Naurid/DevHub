@@ -15,32 +15,37 @@ public partial class CommitViewModel : ViewModelBase
     private readonly IStatusService _status;
     private readonly Func<bool> _hasStagedChanges;
     private readonly Func<Task> _afterCommit;
+    private readonly Func<Task>? _push;
 
     /// <summary>The message Amend filled in, to clear it again when Amend is turned off untouched.</summary>
     private string? _amendMessage;
 
     /// <param name="hasStagedChanges">Whether anything is staged (a commit needs something, unless amending).</param>
     /// <param name="afterCommit">Refreshes the repository after a commit.</param>
+    /// <param name="push">Pushes the current branch (for Commit and Push); null hides that button.</param>
     public CommitViewModel(GitRepositoryClient? client, IStatusService status, Func<bool> hasStagedChanges,
-        Func<Task> afterCommit)
+        Func<Task> afterCommit, Func<Task>? push = null)
     {
         _client = client;
         _status = status;
         _hasStagedChanges = hasStagedChanges;
         _afterCommit = afterCommit;
+        _push = push;
     }
 
+    public bool CanPush => _push is not null;
+
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(CommitCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CommitCommand), nameof(CommitAndPushCommand))]
     private string _message = "";
 
     /// <summary>Replace the last commit (its message is filled in to edit) instead of adding one.</summary>
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(CommitCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CommitCommand), nameof(CommitAndPushCommand))]
     private bool _isAmend;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(CommitCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CommitCommand), nameof(CommitAndPushCommand))]
     private bool _isCommitting;
 
     /// <summary>Why the last commit failed (e.g. a pre-commit hook's output), or null.</summary>
@@ -55,15 +60,33 @@ public partial class CommitViewModel : ViewModelBase
     public void RequestFocus() => FocusRequest++;
 
     /// <summary>Re-checks whether Commit is possible (the staged list changed).</summary>
-    public void StagedChanged() => CommitCommand.NotifyCanExecuteChanged();
+    public void StagedChanged()
+    {
+        CommitCommand.NotifyCanExecuteChanged();
+        CommitAndPushCommand.NotifyCanExecuteChanged();
+    }
 
     private bool CanCommit() =>
         _client is not null && !IsCommitting && !string.IsNullOrWhiteSpace(Message)
         && (_hasStagedChanges() || IsAmend);
 
     [RelayCommand(CanExecute = nameof(CanCommit))]
-    private async Task CommitAsync()
+    private Task CommitAsync() => CommitCoreAsync();
+
+    private bool CanCommitAndPush() => CanCommit() && _push is not null;
+
+    /// <summary>JetBrains' Commit and Push (Ctrl+Alt+K): commit, then push the branch (no extra question).</summary>
+    [RelayCommand(CanExecute = nameof(CanCommitAndPush))]
+    private async Task CommitAndPushAsync()
     {
+        if (await CommitCoreAsync())
+            await _push!();
+    }
+
+    /// <summary>Commits; true when it worked (the message is then cleared and the repository refreshed).</summary>
+    private async Task<bool> CommitCoreAsync()
+    {
+        var committed = false;
         IsCommitting = true;
         Error = null;
         try
@@ -74,6 +97,7 @@ public partial class CommitViewModel : ViewModelBase
             _amendMessage = null;
             Message = "";
             IsAmend = false;
+            committed = true;
         }
         catch (Exception ex)
         {
@@ -86,6 +110,7 @@ public partial class CommitViewModel : ViewModelBase
             IsCommitting = false;
         }
         await _afterCommit();
+        return committed;
     }
 
     partial void OnIsAmendChanged(bool value)

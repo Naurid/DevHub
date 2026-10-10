@@ -16,16 +16,19 @@
         Background="{DynamicResource Brush.Bg.Panel}">
 
     <DockPanel>
-        <!-- Footer. IsDefault = Enter presses OK; IsCancel = Esc presses Cancel. -->
+        <!-- Footer. IsDefault = Enter presses OK; IsCancel = Esc presses Cancel (or OK, in an
+             OK-only message dialog). -->
         <Border DockPanel.Dock="Bottom"
                 BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
                 Padding="{DynamicResource Padding.Dialog}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{DynamicResource Spacing}">
                 <Button Classes="accent" Classes.danger="{Binding IsDestructive}"
                         Content="{Binding OkText}" MinWidth="80" IsDefault="True"
+                        IsCancel="{Binding !ShowCancel}"
                         Command="{Binding OkCommand}" />
                 <Button Content="Cancel" MinWidth="80" IsCancel="True"
-                        Command="{Binding CancelCommand}" />
+                        Command="{Binding CancelCommand}"
+                        IsVisible="{Binding ShowCancel}" />
                 <Button Content="Apply" MinWidth="80"
                         Command="{Binding ApplyCommand}"
                         IsVisible="{Binding ShowApply}" />

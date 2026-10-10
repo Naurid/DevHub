@@ -23,6 +23,13 @@ public sealed record GitRunOptions
 
     /// <summary>Return a failed result instead of throwing <see cref="GitException"/>.</summary>
     public bool AllowFailure { get; init; }
+
+    /// <summary>
+    /// Receives each stderr line while git runs (git writes progress there, redrawing a line
+    /// with "\r"; both "\r" and "\n" end a line here). The full stderr is still in the result.
+    /// Use with <c>--progress</c>, since git only prints progress to a terminal otherwise.
+    /// </summary>
+    public IProgress<string>? StandardErrorLines { get; init; }
 }
 
 /// <summary>A git command exited with a non-zero code.</summary>
@@ -83,7 +90,10 @@ public sealed class GitRunner
             CreateNoWindow = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            RedirectStandardInput = options.StandardInput is not null,
+            // Always redirected, and closed at once when there's nothing to send: a helper that
+            // wants to ask something on the console (ssh's passphrase or host-key question) gets
+            // "end of input" and fails, instead of waiting for an answer nobody can type.
+            RedirectStandardInput = true,
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
         };
@@ -117,7 +127,9 @@ public sealed class GitRunner
         // Start reading both streams before anything else: if git fills a pipe nobody reads
         // (stdout, stderr) while we're still writing stdin, both sides would wait forever.
         var stdoutTask = process.StandardOutput.ReadToEndAsync(ct);
-        var stderrTask = process.StandardError.ReadToEndAsync(ct);
+        var stderrTask = options.StandardErrorLines is { } lines
+            ? ReadLinesAsync(process.StandardError, lines, ct)
+            : process.StandardError.ReadToEndAsync(ct);
 
         try
         {
@@ -126,6 +138,10 @@ public sealed class GitRunner
                 // UTF-8 without BOM, so the first line of a commit message isn't polluted.
                 await using var stdin = new StreamWriter(process.StandardInput.BaseStream, new UTF8Encoding(false));
                 await stdin.WriteAsync(options.StandardInput.AsMemory(), ct);
+            }
+            else
+            {
+                process.StandardInput.Close();
             }
 
             await process.WaitForExitAsync(ct);
@@ -150,6 +166,35 @@ public sealed class GitRunner
             throw new GitException(arguments, result.ExitCode, stderr);
 
         return result;
+    }
+
+    /// <summary>Reads a stream to the end, reporting each line ("\r" or "\n" ends one) as it arrives.</summary>
+    private static async Task<string> ReadLinesAsync(StreamReader reader, IProgress<string> lines, CancellationToken ct)
+    {
+        var all = new StringBuilder();
+        var line = new StringBuilder();
+        var buffer = new char[512];
+        int read;
+        while ((read = await reader.ReadAsync(buffer.AsMemory(), ct)) > 0)
+        {
+            all.Append(buffer, 0, read);
+            for (var i = 0; i < read; i++)
+            {
+                if (buffer[i] is '\r' or '\n')
+                {
+                    if (line.Length > 0)
+                        lines.Report(line.ToString());
+                    line.Clear();
+                }
+                else
+                {
+                    line.Append(buffer[i]);
+                }
+            }
+        }
+        if (line.Length > 0)
+            lines.Report(line.ToString());
+        return all.ToString();
     }
 
     private static void TryKill(Process process)

@@ -7,6 +7,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:DevHub.ViewModels.Shell"
              xmlns:a="clr-namespace:DevHub.Actions"
+             xmlns:c="clr-namespace:DevHub.Controls"
              x:Class="DevHub.Views.Shell.StatusBarView"
              x:DataType="vm:StatusBarViewModel">
 
@@ -14,13 +15,30 @@
             Background="{DynamicResource Brush.Bg.Panel}"
             BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
             Padding="{DynamicResource Padding.StatusBar}">
-        <Grid ColumnDefinitions="*,Auto">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="{DynamicResource Spacing.Large}">
             <TextBlock Classes="small secondary"
                        Text="{Binding Message}"
                        VerticalAlignment="Center"
                        TextTrimming="CharacterEllipsis" />
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <!-- Running operation (JetBrains' background-task indicator): title, step, bar, Cancel. -->
+            <!-- (Visibility on the Panel, the DataContext switch inside: bindings on the element that
+                 switches DataContext would already look at the task.) -->
+            <Panel Grid.Column="1" IsVisible="{Binding HasTask}">
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+                            DataContext="{Binding Task}" x:DataType="vm:StatusTaskViewModel">
+                    <TextBlock Classes="small" Text="{Binding Title}" VerticalAlignment="Center" />
+                    <TextBlock Classes="small secondary" Text="{Binding Step}" VerticalAlignment="Center"
+                               MaxWidth="{DynamicResource Size.StatusTaskStep}" TextTrimming="CharacterEllipsis" />
+                    <ProgressBar Width="{DynamicResource Size.StatusProgress}" VerticalAlignment="Center"
+                                 Minimum="0" Maximum="100" Value="{Binding Percent}"
+                                 IsIndeterminate="{Binding IsIndeterminate}" />
+                    <c:ActionButton IconKind="close" ToolTip.Tip="Cancel" AutomationProperties.Name="Cancel"
+                                    Command="{Binding CancelCommand}" IsVisible="{Binding CanCancel}" />
+                </StackPanel>
+            </Panel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Button Classes="statusWidget"
                         Content="{Binding DensityLabel}"
                         ToolTip.Tip="Toggle Compact Mode"

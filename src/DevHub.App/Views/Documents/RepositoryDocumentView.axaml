@@ -26,11 +26,24 @@
                     <!-- Repository header: name, path, branch. -->
                     <StackPanel DockPanel.Dock="Top" Margin="{DynamicResource Padding.SidebarHeader}"
                                 Spacing="{DynamicResource Spacing.Small}">
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
                             <c:Icon Kind="vcs" Width="{DynamicResource Size.StripeIcon}"
                                     Height="{DynamicResource Size.StripeIcon}" VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1" Classes="header" Text="{Binding Name}"
                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                            <!-- Fork's Fetch / Pull / Push buttons (also Git menu, Ctrl+T, Ctrl+Shift+K).
+                                 Disabled while one runs; progress and Cancel are in the status bar. -->
+                            <c:Toolbar Grid.Column="2">
+                                <c:ActionButton IconKind="fetch" AutomationProperties.Name="Fetch"
+                                                ToolTip.Tip="Fetch: download what's new on the remotes (changes nothing locally)"
+                                                Command="{Binding Remote.FetchCommand}" />
+                                <c:ActionButton IconKind="update" AutomationProperties.Name="Update"
+                                                ToolTip.Tip="Update (Ctrl+T): pull the current branch's new commits"
+                                                Command="{Binding Remote.PullCommand}" />
+                                <c:ActionButton IconKind="push" AutomationProperties.Name="Push"
+                                                ToolTip.Tip="Push… (Ctrl+Shift+K): send your commits to the remote"
+                                                Command="{Binding Remote.PushCommand}" />
+                            </c:Toolbar>
                         </Grid>
                         <TextBlock Classes="small secondary" Text="{Binding Path}"
                                    TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" />

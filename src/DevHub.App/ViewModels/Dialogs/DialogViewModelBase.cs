@@ -37,6 +37,9 @@ public abstract partial class DialogViewModelBase : ViewModelBase
     /// <summary>The OK button is destructive (red, not accent): discard, delete…</summary>
     public virtual bool IsDestructive => false;
 
+    /// <summary>Show the Cancel button. False for a message that only needs acknowledging (Esc then presses OK).</summary>
+    public virtual bool ShowCancel => true;
+
     /// <summary>Show an Apply button (settings-style dialogs) next to OK/Cancel.</summary>
     public virtual bool ShowApply => false;
 

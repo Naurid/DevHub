@@ -88,6 +88,10 @@
                 <Border Grid.Row="4" Padding="{DynamicResource Padding.CommitBox}"
                         BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0">
                     <StackPanel Spacing="{DynamicResource Spacing}">
+                        <!-- Amend above the message (like JetBrains' commit options): it decides what the
+                             message is for, and ticking it fills the box with the last commit's message. -->
+                        <CheckBox Content="Amend" IsChecked="{Binding Commit.IsAmend}"
+                                  ToolTip.Tip="Replace the last commit instead of adding a new one (its message is filled in)" />
                         <TextBox Text="{Binding Commit.Message}" PlaceholderText="Commit message"
                                  AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"
                                  MinHeight="{DynamicResource Size.CommitMessage}"
@@ -96,6 +100,7 @@
                                  c:FocusRequest.Token="{Binding Commit.FocusRequest}">
                             <TextBox.KeyBindings>
                                 <KeyBinding Gesture="Ctrl+Enter" Command="{Binding Commit.CommitCommand}" />
+                                <KeyBinding Gesture="Ctrl+Alt+K" Command="{Binding Commit.CommitAndPushCommand}" />
                             </TextBox.KeyBindings>
                         </TextBox>
 
@@ -108,12 +113,13 @@
                             </ScrollViewer>
                         </Border>
 
-                        <Grid ColumnDefinitions="*,Auto">
-                            <CheckBox Content="Amend" IsChecked="{Binding Commit.IsAmend}"
-                                      ToolTip.Tip="Replace the last commit instead of adding a new one (its message is filled in)" />
-                            <Button Grid.Column="1" Classes="accent" Content="{Binding Commit.CommitButtonText}"
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{DynamicResource Spacing}">
+                            <Button Content="Commit and Push" Command="{Binding Commit.CommitAndPushCommand}"
+                                    IsVisible="{Binding Commit.CanPush}"
+                                    ToolTip.Tip="Commit the staged changes, then push the branch (Ctrl+Alt+K)" />
+                            <Button Classes="accent" Content="{Binding Commit.CommitButtonText}"
                                     Command="{Binding Commit.CommitCommand}" ToolTip.Tip="Commit the staged changes (Ctrl+Enter)" />
-                        </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </Grid>

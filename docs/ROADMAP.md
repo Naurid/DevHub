@@ -54,7 +54,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       delete; title-bar branch popup
 - [x] G5. All Commits: log parser + graph layout (tested), commit list, details + diffs;
       search, "Load more" (1,000 at a time), reload when HEAD or a branch moves
-- [ ] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained
+- [x] G6. Remotes: fetch / pull / push with progress + cancel; auth errors explained;
+      Commit and Push (Ctrl+Alt+K), Force Push (--force-with-lease, confirmed)
 - [ ] G7. Merge / rebase / conflicts: state, continue / abort, conflict list, merge tool
 - [ ] G8. Stashes, tags, cherry-pick, revert, blame, submodules
 

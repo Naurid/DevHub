@@ -32,6 +32,10 @@ public static class ActionIds
     public const string GitDiscard = "Git.Discard";
     public const string GitBranches = "Git.Branches";
     public const string GitNewBranch = "Git.NewBranch";
+    public const string GitFetch = "Git.Fetch";
+    public const string GitPull = "Git.Pull";
+    public const string GitPush = "Git.Push";
+    public const string GitForcePush = "Git.ForcePush";
 
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>

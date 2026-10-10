@@ -40,6 +40,12 @@ token and component live; check changes there in Dark, Light and Compact.
    saving an `AppSettings` you loaded earlier, which would overwrite other features' sections.
 9. **Check it in the running app**, in Dark, Light and Compact, with long names and empty
    lists. Several bugs in UI-0 only showed up at runtime (see §8).
+10. **Long operations show in the status bar, cancellable.** Wrap the work in
+   `using var task = status.StartTask("Pushing main…", cts.Cancel)` and call
+   `task.Report(step, percent)` as it goes (any thread); the bar shows the title, step, a
+   progress bar (indeterminate when `percent` is null) and a Cancel button. Failures that need
+   explaining go in a dialog: `new ConfirmDialogViewModel(title, explanation, "OK", details,
+   destructive: false, showCancel: false)` is an OK-only message.
 
 ---
 

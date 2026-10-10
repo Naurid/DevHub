@@ -1,4 +1,4 @@
-<!-- Confirmation for destructive operations: warning icon, what will happen, which items. -->
+<!-- Confirmation or message: icon (warning when destructive, else info), what will happen, which items. -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs"
@@ -7,14 +7,15 @@
              x:DataType="vm:ConfirmDialogViewModel">
     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing.Large}"
           Margin="{DynamicResource Padding.Dialog}">
-        <c:Icon Kind="warning" Width="{DynamicResource Size.StripeIcon}" Height="{DynamicResource Size.StripeIcon}"
+        <c:Icon Kind="{Binding IconKind}" Width="{DynamicResource Size.StripeIcon}" Height="{DynamicResource Size.StripeIcon}"
                 VerticalAlignment="Top" />
         <StackPanel Grid.Column="1" Spacing="{DynamicResource Spacing}">
             <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
             <ItemsControl ItemsSource="{Binding Items}" IsVisible="{Binding HasItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="x:String">
-                        <TextBlock Classes="code" Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                        <!-- Wrapped, not trimmed: the end of a git error line usually says why. -->
+                        <TextBlock Classes="code" Text="{Binding}" TextWrapping="Wrap" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

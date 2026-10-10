@@ -2,13 +2,14 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.ViewModels.Documents;
+using DevHub.ViewModels.Git;
 
 namespace DevHub.Actions.Providers;
 
 /// <summary>
 /// Git actions. They act on the **active repository tab** (<see cref="DocumentManager.ActiveRepository"/>)
-/// and are disabled while the active tab isn't a repository. Commit (Ctrl+K) and Refresh so far; push, branches…
-/// join milestone by milestone (docs/GIT_CLIENT_PLAN.md).
+/// and are disabled while the active tab isn't a repository: commit, push / update / fetch, branches, refresh;
+/// more join milestone by milestone (docs/GIT_CLIENT_PLAN.md).
 /// </summary>
 public sealed class GitActionProvider : IActionProvider, IDisposable
 {
@@ -18,6 +19,10 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _discard;
     private readonly RelayCommand _branches;
     private readonly AsyncRelayCommand _newBranch;
+    private readonly AsyncRelayCommand _fetch;
+    private readonly AsyncRelayCommand _pull;
+    private readonly AsyncRelayCommand _push;
+    private readonly AsyncRelayCommand _forcePush;
 
     public GitActionProvider(DocumentManager documents)
     {
@@ -39,6 +44,13 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         _newBranch = new AsyncRelayCommand(
             () => _documents.ActiveRepository!.NewBranchAsync(),
             () => _documents.ActiveRepository is not null);
+
+        // The active tab's own commands (the same ones its toolbar buttons use). While one is
+        // already running there, they do nothing (their CanExecute is false).
+        _fetch = RemoteCommand(r => r.FetchCommand);
+        _pull = RemoteCommand(r => r.PullCommand);
+        _push = RemoteCommand(r => r.PushCommand);
+        _forcePush = RemoteCommand(r => r.ForcePushCommand);
 
         // Re-check "is a repository tab active?" when the active tab changes. Unsubscribed in Dispose.
         _documents.PropertyChanged += OnDocumentsChanged;
@@ -73,6 +85,37 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Description = "Search the active repository's branches and check one out.",
         };
 
+        // JetBrains: Push… = Ctrl+Shift+K, Update Project… = Ctrl+T.
+        yield return new AppAction(ActionIds.GitPush, "Push…", _push)
+        {
+            Category = "Git",
+            IconKind = IconKind.Push,
+            Gesture = "Ctrl+Shift+K",
+            Description = "Push the current branch of the active repository (shows the commits first).",
+        };
+
+        yield return new AppAction(ActionIds.GitPull, "Update", _pull)
+        {
+            Category = "Git",
+            IconKind = IconKind.Update,
+            Gesture = "Ctrl+T",
+            Description = "Pull the current branch's new commits (fast-forward; offers a rebase if both sides changed).",
+        };
+
+        yield return new AppAction(ActionIds.GitFetch, "Fetch", _fetch)
+        {
+            Category = "Git",
+            IconKind = IconKind.Fetch,
+            Description = "Download what's new on every remote of the active repository; changes nothing locally.",
+        };
+
+        yield return new AppAction(ActionIds.GitForcePush, "Force Push…", _forcePush)
+        {
+            Category = "Git",
+            IconKind = IconKind.Push,
+            Description = "Overwrite the remote branch with yours (after amend / rebase). Asks first; --force-with-lease.",
+        };
+
         yield return new AppAction(ActionIds.GitNewBranch, "New Branch…", _newBranch)
         {
             Category = "Git",
@@ -90,6 +133,14 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         };
     }
 
+    private AsyncRelayCommand RemoteCommand(Func<RemoteOperations, IAsyncRelayCommand> pick) =>
+        new(async () =>
+            {
+                if (_documents.ActiveRepository?.Remote is { } remote && pick(remote) is { } command && command.CanExecute(null))
+                    await command.ExecuteAsync(null);
+            },
+            () => _documents.ActiveRepository is not null);
+
     private void OnDocumentsChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(DocumentManager.ActiveRepository))
@@ -99,6 +150,10 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             _discard.NotifyCanExecuteChanged();
             _branches.NotifyCanExecuteChanged();
             _newBranch.NotifyCanExecuteChanged();
+            _fetch.NotifyCanExecuteChanged();
+            _pull.NotifyCanExecuteChanged();
+            _push.NotifyCanExecuteChanged();
+            _forcePush.NotifyCanExecuteChanged();
         }
     }
 

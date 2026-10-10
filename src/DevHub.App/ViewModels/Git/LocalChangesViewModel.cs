@@ -29,9 +29,11 @@ public partial class LocalChangesViewModel : ViewModelBase
     /// <param name="refresh">Re-reads the repository status after an operation.</param>
     /// <param name="openInEditor">Opens a file in the external editor for the repository's language, at a line.</param>
     /// <param name="openInTab">Opens a file's diff as its own tab.</param>
+    /// <param name="push">Pushes the current branch (Commit and Push); null hides it.</param>
     public LocalChangesViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
         IDialogService dialogs, IStatusService status, Func<Task> refresh,
-        Action<FileChangeViewModel, int?>? openInEditor, Action<FileChangeViewModel>? openInTab)
+        Action<FileChangeViewModel, int?>? openInEditor, Action<FileChangeViewModel>? openInTab,
+        Func<Task>? push = null)
     {
         Layout = layout;
         _client = client;
@@ -39,7 +41,7 @@ public partial class LocalChangesViewModel : ViewModelBase
         _status = status;
         _refresh = refresh;
         Diff = new DiffViewModel(client, openInEditor, openInTab);
-        Commit = new CommitViewModel(client, status, () => Staged.Count > 0, refresh);
+        Commit = new CommitViewModel(client, status, () => Staged.Count > 0, refresh, push);
     }
 
     /// <summary>The commit box (message, Amend, Commit).</summary>

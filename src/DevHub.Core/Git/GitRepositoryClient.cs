@@ -316,6 +316,97 @@ public sealed class GitRepositoryClient(GitRunner runner, string repositoryPath)
         return result.Succeeded;
     }
 
+    // ---- Remotes (G6). Network: may take long, so they take progress + cancellation. -------------
+
+    /// <summary>The configured remotes ("origin", …), in git's order.</summary>
+    public async Task<IReadOnlyList<string>> GetRemotesAsync(CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath, ["remote"], new GitRunOptions { ReadOnly = true }, ct);
+        return result.StandardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    /// <summary>
+    /// Downloads new commits and branches from every remote (<c>fetch --all --prune</c>: remote
+    /// branches deleted on the server disappear here too). Changes no local branch or file.
+    /// </summary>
+    public Task FetchAsync(IProgress<GitProgress>? progress = null, CancellationToken ct = default) =>
+        RunRemoteAsync(["fetch", "--all", "--prune", "--progress"], progress, ct);
+
+    /// <summary>
+    /// Brings the current branch up to date with its upstream. <see cref="PullMode.FastForwardOnly"/>
+    /// (the default) never creates a merge commit and fails with <see cref="RemoteErrorKind.Diverged"/>
+    /// when both sides have new commits; <see cref="PullMode.Rebase"/> then replays the local
+    /// commits on top, stashing uncommitted changes around it (<c>--autostash</c>).
+    /// </summary>
+    public Task PullAsync(PullMode mode = PullMode.FastForwardOnly, IProgress<GitProgress>? progress = null,
+        CancellationToken ct = default) =>
+        RunRemoteAsync(mode == PullMode.Rebase
+                ? ["pull", "--rebase", "--autostash", "--progress"]
+                : ["pull", "--ff-only", "--progress"],
+            progress, ct);
+
+    /// <summary>
+    /// Pushes the current branch. With an upstream it goes there, even if the remote branch has
+    /// another name (<c>push.default=upstream</c> for this command only). Without one, pass
+    /// <paramref name="newUpstreamRemote"/>: the branch is pushed under its own name and starts
+    /// tracking it (<c>-u</c>). <paramref name="forceWithLease"/> overwrites the remote branch,
+    /// but only if it's still where we last saw it (never a blind <c>--force</c>).
+    /// </summary>
+    public Task PushAsync(string? newUpstreamRemote = null, bool forceWithLease = false,
+        IProgress<GitProgress>? progress = null, CancellationToken ct = default)
+    {
+        List<string> args = ["-c", "push.default=upstream", "push", "--progress"];
+        if (forceWithLease)
+            args.Add("--force-with-lease");
+        if (newUpstreamRemote is not null)
+            args.AddRange(["-u", newUpstreamRemote, "HEAD"]);
+        return RunRemoteAsync(args, progress, ct);
+    }
+
+    /// <summary>
+    /// The commits a push would send: on the current branch but not on its upstream, newest
+    /// first (at most <paramref name="maxCount"/>). Empty without an upstream.
+    /// </summary>
+    public async Task<IReadOnlyList<GitCommit>> GetUnpushedCommitsAsync(int maxCount = 100, CancellationToken ct = default)
+    {
+        var result = await runner.RunAsync(RepositoryPath,
+            ["log", "--no-color", "--format=" + LogParser.Format,
+             "--max-count=" + maxCount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+             "@{upstream}..HEAD", "--"],
+            new GitRunOptions { ReadOnly = true, AllowFailure = true }, ct);
+        return result.Succeeded ? LogParser.Parse(result.StandardOutput) : [];
+    }
+
+    /// <summary>
+    /// Runs a network command, reporting progress lines. A failure throws
+    /// <see cref="RemoteOperationException"/> with the error explained.
+    /// </summary>
+    private async Task RunRemoteAsync(IReadOnlyList<string> args, IProgress<GitProgress>? progress, CancellationToken ct)
+    {
+        var lines = progress is null
+            ? null
+            : new LineProgress(line =>
+            {
+                if (ProgressParser.Parse(line) is { } p)
+                    progress.Report(p);
+            });
+        try
+        {
+            // Not AllowFailure: a failed fetch/push is a real failure and shows red in the Git Console.
+            await runner.RunAsync(RepositoryPath, args, new GitRunOptions { StandardErrorLines = lines }, ct);
+        }
+        catch (GitException ex)
+        {
+            throw new RemoteOperationException(RemoteErrorExplainer.Explain(ex.StandardError), ex);
+        }
+    }
+
+    /// <summary>An IProgress that calls back synchronously (on git's reader thread), unlike Progress&lt;T&gt;.</summary>
+    private sealed class LineProgress(Action<string> report) : IProgress<string>
+    {
+        public void Report(string value) => report(value);
+    }
+
     // ---- History (G5) ---------------------------------------------------------------------------
 
     /// <summary>
