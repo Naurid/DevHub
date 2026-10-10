@@ -38,6 +38,9 @@ public static class ActionIds
     public const string GitForcePush = "Git.ForcePush";
     public const string GitStash = "Git.Stash";
     public const string GitUnstash = "Git.Unstash";
+    public const string GitManageRemotes = "Git.ManageRemotes";
+    public const string GitPublish = "Git.PublishToGitHub";
+    public const string GitClone = "Git.Clone";
 
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the title follows, e.g. "ToolWindow.Repositories".</summary>

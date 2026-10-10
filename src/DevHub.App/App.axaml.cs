@@ -5,6 +5,7 @@ using DevHub.Actions;
 using DevHub.Actions.Providers;
 using DevHub.Controls;
 using DevHub.Core.Git;
+using DevHub.Core.GitHub;
 using DevHub.Core.Projects;
 using DevHub.Core.Repositories;
 using DevHub.Core.Settings;
@@ -12,6 +13,7 @@ using DevHub.Services;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Dialogs.Settings;
 using DevHub.ViewModels.Documents;
+using DevHub.ViewModels.Git;
 using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
@@ -95,6 +97,7 @@ public partial class App : Application
         services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<ExternalEditor>();
+        services.AddSingleton<GitHubSession>();
         services.AddSingleton<RepositoryTabServices>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
 
@@ -105,6 +108,10 @@ public partial class App : Application
         {
             services.AddSingleton(git);
             services.AddSingleton<GitRunner>(sp => new GitRunner(git, sp.GetRequiredService<IGitCommandLog>()));
+            // GitHub: the account comes from Git Credential Manager (git), so it needs git too.
+            services.AddSingleton<GitCredentialManager>();
+            services.AddSingleton(new GitHubApi(new HttpClient { Timeout = TimeSpan.FromSeconds(30) }));
+            services.AddSingleton<GitHubService>();
         }
 
         // Tool windows: registered as themselves (for providers) and as the base type, so the
@@ -129,11 +136,13 @@ public partial class App : Application
         services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
         services.AddSingleton<IDocumentFactory, BlameDocumentFactory>();
         services.AddSingleton<DocumentManager>();
+        services.AddSingleton<CloneOperations>();
 
         // Dialogs: transient = a fresh instance every time one is requested, so each opening
         // of Settings starts from the saved values. The Func is a tiny factory for the action.
         services.AddTransient<AppearanceSettingsPageViewModel>();
         services.AddTransient<OpenWithSettingsPageViewModel>();
+        services.AddTransient<GitHubSettingsPageViewModel>();
         services.AddTransient<SettingsDialogViewModel>();
         services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
         services.AddTransient<FindActionViewModel>();

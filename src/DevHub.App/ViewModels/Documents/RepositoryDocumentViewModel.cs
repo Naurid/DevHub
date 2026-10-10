@@ -62,7 +62,8 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         RemoteBranches = new BranchListViewModel(branchOperations, remote: true);
         BranchPopup = new BranchPopupViewModel(branchOperations);
         Remote = new RemoteOperations(client, services.Dialogs, services.Status, RefreshAsync,
-            () => branchOperations.Branches, Name);
+            () => branchOperations.Branches, Name, services.GitHub);
+        RemoteBranches.Remote = Remote;
         _commitOperations = new CommitOperations(client, services.Dialogs, services.Status, RefreshAsync, branchOperations, Remote);
         CommitLog = new CommitLogViewModel(layout, client, openInEditor, OpenBlame, _commitOperations);
         Tags = new TagListViewModel(_commitOperations, branchOperations);

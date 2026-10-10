@@ -21,11 +21,14 @@ public sealed partial class RemoteOperations : ObservableObject
     private readonly Func<Task> _refresh;
     private readonly Func<IReadOnlyList<GitBranch>> _branches;
     private readonly string _repositoryName;
+    private readonly GitHubSession? _github;
 
     /// <param name="branches">The branches as last loaded (for the current branch, its upstream and ahead/behind).</param>
+    /// <param name="github">The GitHub account, for Publish to GitHub (null: Publish explains it can't).</param>
     public RemoteOperations(GitRepositoryClient? client, IDialogService dialogs, IStatusService status,
-        Func<Task> refresh, Func<IReadOnlyList<GitBranch>> branches, string repositoryName)
+        Func<Task> refresh, Func<IReadOnlyList<GitBranch>> branches, string repositoryName, GitHubSession? github = null)
     {
+        _github = github;
         _client = client;
         _dialogs = dialogs;
         _status = status;
@@ -36,7 +39,8 @@ public sealed partial class RemoteOperations : ObservableObject
 
     /// <summary>A fetch / pull / push is running in this repository.</summary>
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(FetchCommand), nameof(PullCommand), nameof(PushCommand), nameof(ForcePushCommand))]
+    [NotifyCanExecuteChangedFor(nameof(FetchCommand), nameof(PullCommand), nameof(PushCommand), nameof(ForcePushCommand),
+        nameof(ManageRemotesCommand), nameof(PublishToGitHubCommand))]
     private bool _isBusy;
 
     private bool CanRun() => _client is not null && !IsBusy;
@@ -200,6 +204,77 @@ public sealed partial class RemoteOperations : ObservableObject
         }
     }
 
+    // ---- Remotes and GitHub (G9) -----------------------------------------------------------------
+
+    /// <summary>Manage Remotes: add / edit / remove. A new remote is fetched right away so its branches show up.</summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task ManageRemotesAsync()
+    {
+        var dialog = new RemotesDialogViewModel(_client!, _dialogs, _status);
+        await _dialogs.ShowDialogAsync(dialog);
+        if (dialog.AddedRemote && FetchCommand.CanExecute(null))
+            await FetchCommand.ExecuteAsync(null);
+        else if (dialog.Changed)
+            await _refresh();
+    }
+
+    /// <summary>
+    /// Publish to GitHub: create an empty repository under the account (in the dialog), add it as
+    /// a remote, push the current branch to it and track it. If a later step fails, the message
+    /// says what already happened, so nothing is half-done without the user knowing.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task PublishToGitHubAsync()
+    {
+        if (_github is null)
+        {
+            _status.Show("Git is not installed, so DevHub can't reach GitHub.");
+            return;
+        }
+        if (await _github.RequireAccountsAsync("publish this repository on GitHub") is not { Count: > 0 } accounts)
+            return;
+
+        IReadOnlyList<string> remotes;
+        try
+        {
+            remotes = (await _client!.GetRemoteDetailsAsync()).Select(r => r.Name).ToList();
+        }
+        catch (Exception ex)
+        {
+            _status.Show("Couldn't read the remotes: " + ex.Message);
+            return;
+        }
+
+        var dialog = new PublishToGitHubDialogViewModel(_github.GitHub!, accounts, _repositoryName, remotes);
+        if (!await _dialogs.ShowDialogAsync(dialog) || dialog.Created is not { } created)
+            return;
+
+        try
+        {
+            await _client.AddRemoteAsync(dialog.RemoteName, created.CloneUrl);
+        }
+        catch (Exception ex)
+        {
+            _status.Show($"Created {created.HtmlUrl} on GitHub, but adding it as the remote {dialog.RemoteName} failed: {ex.Message}");
+            await _refresh();
+            return;
+        }
+
+        if (Current is not { } branch)
+        {
+            // No commits yet (or a detached HEAD): nothing to push.
+            _status.Show($"Created {created.HtmlUrl} and added it as {dialog.RemoteName}. Commit, then Push to send your work.");
+            await _refresh();
+            return;
+        }
+
+        if (await RunAsync($"Publishing {branch.Name} to GitHub",
+                (p, ct) => _client.PushAsync(dialog.RemoteName, forceWithLease: false, p, ct)))
+            _status.Show($"Published to {created.HtmlUrl}: {branch.Name} is pushed and tracks {dialog.RemoteName}/{branch.Name}.");
+        else
+            _status.Show($"Created {created.HtmlUrl} and added it as {dialog.RemoteName}, but the push didn't go through; try Push again.");
+    }
+
     // ---- Running ---------------------------------------------------------------------------------
 
     /// <summary>
@@ -270,9 +345,10 @@ public sealed partial class RemoteOperations : ObservableObject
 
     private static string S(int n) => n == 1 ? "" : "s";
 
-    /// <summary>git's progress → the status bar (called on git's reader thread; the task marshals to the UI).</summary>
-    private sealed class StatusProgress(IStatusTask task) : IProgress<GitProgress>
-    {
-        public void Report(GitProgress value) => task.Report(value.Phase, value.Percent);
-    }
+}
+
+/// <summary>git's progress → the status bar (called on git's reader thread; the task marshals to the UI).</summary>
+internal sealed class StatusProgress(IStatusTask task) : IProgress<GitProgress>
+{
+    public void Report(GitProgress value) => task.Report(value.Phase, value.Percent);
 }

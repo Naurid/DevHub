@@ -61,6 +61,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       Merge into Current / Rebase onto from the branch menu, Accept Yours / Theirs, Skip (rebase)
 - [x] G8. Stashes (stash / apply / pop / drop, files + diffs), Tags (new / push / delete local + remote),
       cherry-pick / revert from All Commits, Blame tab, Submodules (update, open as a tab)
+- [x] G9. Remotes & GitHub: Manage Remotes (add / edit / remove), GitHub account via Git Credential
+      Manager (Settings → GitHub), Publish to GitHub, Clone Repository (your GitHub repositories or a URL)
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`

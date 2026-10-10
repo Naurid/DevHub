@@ -9,4 +9,5 @@ namespace DevHub.ViewModels.Documents;
 /// <param name="Editor">Opens files in the external editor for the repository's language.</param>
 /// <param name="Dialogs">Confirmations (discard).</param>
 /// <param name="Status">Status bar messages.</param>
-public sealed record RepositoryTabServices(ExternalEditor Editor, IDialogService Dialogs, IStatusService Status);
+/// <param name="GitHub">The GitHub account (Publish to GitHub).</param>
+public sealed record RepositoryTabServices(ExternalEditor Editor, IDialogService Dialogs, IStatusService Status, GitHubSession GitHub);

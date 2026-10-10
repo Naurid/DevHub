@@ -36,6 +36,11 @@
                             IsVisible="{Binding !IsRemote}" />
                     <Button Classes="flat" Content="New Branch from…" Command="{Binding NewBranchFromCommand}"
                             ToolTip.Tip="New local branch starting at the selected remote branch" IsVisible="{Binding IsRemote}" />
+                    <!-- G9: the remotes themselves (Remotes section only). -->
+                    <Button Classes="flat" Content="Manage Remotes…" Command="{Binding Remote.ManageRemotesCommand, FallbackValue={x:Null}}"
+                            ToolTip.Tip="Add a remote (name + URL), change its URL, rename or remove it" IsVisible="{Binding IsRemote}" />
+                    <Button Classes="flat" Content="Publish to GitHub…" Command="{Binding Remote.PublishToGitHubCommand, FallbackValue={x:Null}}"
+                            ToolTip.Tip="Create a repository on your GitHub account, add it as a remote and push" IsVisible="{Binding IsRemote}" />
                     <Button Classes="flat" Content="Rename…" Command="{Binding RenameCommand}" IsVisible="{Binding !IsRemote}" />
                     <Button Classes="flat" Content="Delete…" Command="{Binding DeleteCommand}" IsVisible="{Binding !IsRemote}"
                             ToolTip.Tip="Delete the selected branch (asks first; not the current one)" />

@@ -26,6 +26,9 @@ public sealed partial class BranchListViewModel : ViewModelBase
     /// <summary>Remotes section (else Branches).</summary>
     public bool IsRemote { get; }
 
+    /// <summary>Manage Remotes / Publish to GitHub (the Remotes section's header buttons); set by the tab.</summary>
+    public RemoteOperations? Remote { get; set; }
+
     public string Title => IsRemote ? "Remote Branches" : "Local Branches";
 
     public ObservableCollection<BranchItemViewModel> Items { get; } = new();
@@ -34,7 +37,7 @@ public sealed partial class BranchListViewModel : ViewModelBase
 
     /// <summary>Shown when there's nothing (or nothing matching).</summary>
     public string EmptyText => !string.IsNullOrWhiteSpace(Filter) ? "No branch matches."
-        : IsRemote ? "No remote branches. Fetch to load them (or add a remote first)."
+        : IsRemote ? "No remote branches. Add a remote (Manage Remotes…) and Fetch, or Publish to GitHub… to create one there."
         : "No branches yet: make the first commit.";
 
     /// <summary>Number of branches (sidebar badge), regardless of the filter.</summary>

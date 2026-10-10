@@ -30,6 +30,22 @@ public sealed record GitRunOptions
     /// Use with <c>--progress</c>, since git only prints progress to a terminal otherwise.
     /// </summary>
     public IProgress<string>? StandardErrorLines { get; init; }
+
+    /// <summary>
+    /// Allow helpers to interact with the user (don't set GIT_TERMINAL_PROMPT=0). Only for
+    /// commands whose whole point is a sign-in window, like Git Credential Manager's
+    /// <c>github login</c>; everything else must fail rather than wait for input.
+    /// </summary>
+    public bool Interactive { get; init; }
+
+    /// <summary>
+    /// The output may contain a secret (a token from <c>credential fill</c>): the Git Console
+    /// records the command but not what it printed.
+    /// </summary>
+    public bool Sensitive { get; init; }
+
+    /// <summary>Extra environment variables for this command only (null value = remove the variable).</summary>
+    public IReadOnlyDictionary<string, string?>? Environment { get; init; }
 }
 
 /// <summary>A git command exited with a non-zero code.</summary>
@@ -102,8 +118,9 @@ public sealed class GitRunner
         foreach (var argument in arguments)
             psi.ArgumentList.Add(argument);
 
-        // Never wait for a password/username prompt nobody can see.
-        psi.Environment["GIT_TERMINAL_PROMPT"] = "0";
+        // Never wait for a password/username prompt nobody can see (unless the command is a sign-in).
+        if (!options.Interactive)
+            psi.Environment["GIT_TERMINAL_PROMPT"] = "0";
         // English output, whatever the system language: some machine formats are translated
         // (for-each-ref's "ahead 2"/"gone"), and DevHub recognises a few error messages
         // ("would be overwritten by checkout"). LC_ALL wins over LANG for git's gettext.
@@ -111,7 +128,7 @@ public sealed class GitRunner
         psi.Environment["LANGUAGE"] = "C";
         if (options.ReadOnly)
             psi.Environment["GIT_OPTIONAL_LOCKS"] = "0";
-        foreach (var (name, value) in _environment)
+        foreach (var (name, value) in options.Environment is null ? _environment : _environment.Concat(options.Environment))
         {
             if (value is null)
                 psi.Environment.Remove(name);
@@ -157,7 +174,8 @@ public sealed class GitRunner
         var stderr = await stderrTask;
         var result = new GitResult(process.ExitCode, stdout, stderr, stopwatch.Elapsed);
 
-        var shown = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
+        var shown = options.Sensitive ? "(output hidden: it may contain a credential)"
+            : string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
         _log.Add(new GitCommandEntry(workingDirectory, arguments, started, result.Duration, result.ExitCode,
             shown.Length > LoggedOutputLength ? shown[..LoggedOutputLength] + "…" : shown,
             FailureExpected: options.AllowFailure));

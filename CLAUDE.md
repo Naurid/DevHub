@@ -116,6 +116,8 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
 - Anything that **changes** a repository happens only on a user action; destructive ones
   (discard, reset, delete unmerged branch, force push) need a confirmation saying what is lost.
 - Every command shows up in the Git Console (the runner logs it automatically).
+- Credentials come only from Git Credential Manager: never ask for, store or log a password or token
+  (borrow it per API call with `credential fill`, run as `Sensitive`).
 - Core git tests use real git in temp repos (`TempGitRepo`, `[GitFact]`); UI checks use
   scratch repositories, never the user's own.
 

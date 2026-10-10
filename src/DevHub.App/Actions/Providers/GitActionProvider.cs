@@ -25,10 +25,15 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _forcePush;
     private readonly AsyncRelayCommand _stash;
     private readonly RelayCommand _unstash;
+    private readonly AsyncRelayCommand _manageRemotes;
+    private readonly AsyncRelayCommand _publish;
+    private readonly AsyncRelayCommand _clone;
 
-    public GitActionProvider(DocumentManager documents)
+    public GitActionProvider(DocumentManager documents, CloneOperations clone)
     {
         _documents = documents;
+        // Clone needs no repository: always available.
+        _clone = new AsyncRelayCommand(clone.CloneAsync);
         _refresh = new AsyncRelayCommand(
             () => _documents.ActiveRepository!.RefreshAsync(),
             () => _documents.ActiveRepository is not null);
@@ -59,6 +64,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         _pull = RemoteCommand(r => r.PullCommand);
         _push = RemoteCommand(r => r.PushCommand);
         _forcePush = RemoteCommand(r => r.ForcePushCommand);
+        _manageRemotes = RemoteCommand(r => r.ManageRemotesCommand);
+        _publish = RemoteCommand(r => r.PublishToGitHubCommand);
 
         // Re-check "is a repository tab active?" when the active tab changes. Unsubscribed in Dispose.
         _documents.PropertyChanged += OnDocumentsChanged;
@@ -139,6 +146,28 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Description = "Show the stashes of the active repository, to apply or pop one.",
         };
 
+        // JetBrains: Git → Manage Remotes…, Share Project on GitHub, Get from Version Control….
+        yield return new AppAction(ActionIds.GitManageRemotes, "Manage Remotes…", _manageRemotes)
+        {
+            Category = "Git",
+            IconKind = IconKind.Fetch,
+            Description = "Add a remote (name + URL) to the active repository, change its URL, rename or remove it.",
+        };
+
+        yield return new AppAction(ActionIds.GitPublish, "Publish to GitHub…", _publish)
+        {
+            Category = "Git",
+            IconKind = IconKind.Push,
+            Description = "Create a repository on your GitHub account, add it as a remote and push the current branch.",
+        };
+
+        yield return new AppAction(ActionIds.GitClone, "Clone Repository…", _clone)
+        {
+            Category = "Git",
+            IconKind = IconKind.Fetch,
+            Description = "Clone one of your GitHub repositories (or any URL) and open it as a repository tab.",
+        };
+
         yield return new AppAction(ActionIds.GitNewBranch, "New Branch…", _newBranch)
         {
             Category = "Git",
@@ -189,6 +218,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             _push.NotifyCanExecuteChanged();
             _forcePush.NotifyCanExecuteChanged();
             _stash.NotifyCanExecuteChanged();
+            _manageRemotes.NotifyCanExecuteChanged();
+            _publish.NotifyCanExecuteChanged();
             _unstash.NotifyCanExecuteChanged();
         }
     }

@@ -43,6 +43,7 @@ public static class MainMenu
                 ActionIds.GitCommit, ActionIds.GitPush, ActionIds.GitPull, ActionIds.GitFetch, ActionIds.GitForcePush,
                 MenuBuilder.Separator, ActionIds.GitDiscard, ActionIds.GitStash, ActionIds.GitUnstash,
                 MenuBuilder.Separator, ActionIds.GitBranches, ActionIds.GitNewBranch,
+                MenuBuilder.Separator, ActionIds.GitManageRemotes, ActionIds.GitPublish, ActionIds.GitClone,
                 MenuBuilder.Separator, ActionIds.GitRefresh,
             ]),
             Group(registry, "Help", [ActionIds.FindAction]),

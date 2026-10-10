@@ -14,6 +14,7 @@
         <c:ToolWindowFrame.HeaderActions>
             <c:Toolbar>
                 <c:ActionButton Action="{a:Action Repositories.AddFolder}" />
+                <c:ActionButton Action="{a:Action Git.Clone}" />
                 <c:ActionButton Action="{a:Action Repositories.Rescan}" />
                 <c:ToolbarSeparator />
                 <c:ActionButton IconKind="close" ToolTip.Tip="Hide" Command="{Binding ToggleCommand}" />

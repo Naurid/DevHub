@@ -31,9 +31,10 @@ public partial class SettingsDialogViewModel : DialogViewModelBase
     /// <summary>Search box text: fuzzy-matches page titles and keywords ("acc" finds Appearance via "accent").</summary>
     [ObservableProperty] private string _filter = "";
 
-    public SettingsDialogViewModel(AppearanceSettingsPageViewModel appearance, OpenWithSettingsPageViewModel openWith)
+    public SettingsDialogViewModel(AppearanceSettingsPageViewModel appearance, OpenWithSettingsPageViewModel openWith,
+        GitHubSettingsPageViewModel github)
     {
-        Pages = [appearance, openWith];
+        Pages = [appearance, openWith, github];
         foreach (var page in Pages)
             page.Modified = () => ApplyCommand.NotifyCanExecuteChanged();
 
