@@ -32,7 +32,13 @@
                     <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
                         <TextBlock Classes="secondary" Text="Unstaged" VerticalAlignment="Center" />
                         <c:Badge Grid.Column="1" Content="{Binding UnstagedCount}" />
-                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                            <!-- Fork's tree / flat switch, for both lists (remembered). An icon, so the header fits. -->
+                            <ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"
+                                          AutomationProperties.Name="Show folders"
+                                          ToolTip.Tip="Show folders: the changes in their folders (on) or as one flat list (off)">
+                                <c:Icon Kind="folder" />
+                            </ToggleButton>
                             <Button Classes="flat" Content="Stage All" Command="{Binding StageAllCommand}"
                                     ToolTip.Tip="Stage every unstaged change (one file: double-click or Space)" />
                             <Button Classes="flat" Content="Discard All…" Command="{Binding DiscardAllCommand}"
@@ -44,10 +50,20 @@
                      (Ctrl+Alt+Z, discard, is a window-wide Git action); right-click for the menu. -->
                 <ListBox Grid.Row="1" Background="Transparent" AutomationProperties.Name="Unstaged changes"
                          SelectionMode="Multiple" SelectedItems="{Binding UnstagedSelection}"
-                         ItemsSource="{Binding Unstaged}" SelectedItem="{Binding SelectedUnstaged}"
-                         ItemTemplate="{StaticResource FileRow}">
+                         ItemsSource="{Binding UnstagedRows}" SelectedItem="{Binding SelectedUnstagedRow}">
+                    <!-- Files and (tree view) folders: one template each. -->
+                    <ListBox.DataTemplates>
+                        <DataTemplate DataType="vm:ChangeFolderRowViewModel">
+                            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FolderRow}" />
+                        </DataTemplate>
+                        <DataTemplate DataType="vm:FileChangeViewModel">
+                            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FileRow}" />
+                        </DataTemplate>
+                    </ListBox.DataTemplates>
                     <ListBox.KeyBindings>
                         <KeyBinding Gesture="Space" Command="{Binding StageSelectedCommand}" />
+                        <KeyBinding Gesture="Left" Command="{Binding CollapseFolderCommand}" CommandParameter="{Binding SelectedUnstagedRow}" />
+                        <KeyBinding Gesture="Right" Command="{Binding ExpandFolderCommand}" CommandParameter="{Binding SelectedUnstagedRow}" />
                     </ListBox.KeyBindings>
                     <ListBox.ContextMenu>
                         <ContextMenu>
@@ -81,10 +97,19 @@
                 </Border>
                 <ListBox Grid.Row="3" Background="Transparent" AutomationProperties.Name="Staged changes"
                          SelectionMode="Multiple" SelectedItems="{Binding StagedSelection}"
-                         ItemsSource="{Binding Staged}" SelectedItem="{Binding SelectedStaged}"
-                         ItemTemplate="{StaticResource FileRow}">
+                         ItemsSource="{Binding StagedRows}" SelectedItem="{Binding SelectedStagedRow}">
+                    <ListBox.DataTemplates>
+                        <DataTemplate DataType="vm:ChangeFolderRowViewModel">
+                            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FolderRow}" />
+                        </DataTemplate>
+                        <DataTemplate DataType="vm:FileChangeViewModel">
+                            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FileRow}" />
+                        </DataTemplate>
+                    </ListBox.DataTemplates>
                     <ListBox.KeyBindings>
                         <KeyBinding Gesture="Space" Command="{Binding UnstageSelectedCommand}" />
+                        <KeyBinding Gesture="Left" Command="{Binding CollapseFolderCommand}" CommandParameter="{Binding SelectedStagedRow}" />
+                        <KeyBinding Gesture="Right" Command="{Binding ExpandFolderCommand}" CommandParameter="{Binding SelectedStagedRow}" />
                     </ListBox.KeyBindings>
                     <ListBox.ContextMenu>
                         <ContextMenu>
@@ -136,7 +161,7 @@
                 </Border>
             </Grid>
         </Border>
-        <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding Layout.ChangesListWidth}" Minimum="200" MaximumFraction="0.7" />
+        <c:SplitterThumb DockPanel.Dock="Left" Value="{Binding Layout.ChangesListWidth}" Minimum="290" MaximumFraction="0.7" />
 
         <Panel>
             <c:EmptyState IconKind="success" Title="No local changes"

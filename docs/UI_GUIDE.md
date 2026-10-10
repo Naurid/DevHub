@@ -157,6 +157,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `FocusRequest` | attached property: focus this element whenever a bound number goes up (ViewModel asks for focus) | `<TextBox c:FocusRequest.Token="{Binding Commit.FocusRequest}" />` |
 | `CommitGraphCell` | one row of the commit graph, drawn in code from a Core `GraphRow` (colors `Brush.Graph.0…7`) | `<c:CommitGraphCell Row="{Binding Graph}" Lanes="{Binding GraphLanes}" LaneWidth="{DynamicResource Size.GraphLane}" />` |
 | `Avatar` | a round account picture (bytes from a ViewModel), or the name's first letter on the accent color | `<c:Avatar ImageData="{Binding Avatar.Image}" Text="{Binding Author}" Width="{DynamicResource Size.AvatarSmall}" Height="{DynamicResource Size.AvatarSmall}" />` |
+| `IconToggle` / `FoldArrow` (themes) | a small flat on/off icon button (e.g. "show folders"); a ▸ / ▾ fold arrow for custom tree rows | `<ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"><c:Icon Kind="folder" /></ToggleButton>` |
 
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
 template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />`
@@ -323,6 +324,8 @@ Add a round-trip test in `JsonSettingsStoreTests`. For experiments, run the app 
 | Closing a tab left nothing selected | a two-way `SelectedItem` binding nulls the property when the item is removed | remember "was active" before removing |
 | Button text not centered | Fluent leaves `HorizontalContentAlignment` at Stretch | global Button style centers it |
 | TextBox inner icon/× against the border | Fluent applies `Padding` only to the text column | `Margin.InnerLeft/Right` tokens |
+| Screen readers / UI tests see `TreeView` rows without a name | unlike `ListBoxItem`, a `TreeViewItem` doesn't use the item's `ToString()` | style: `<Style Selector="TreeViewItem" x:DataType="…"><Setter Property="AutomationProperties.Name" Value="{Binding AccessibleName}" /></Style>` |
+| Multi-line test strings suddenly contain `\r` | raw / verbatim literals take the source file's line endings, and `core.autocrlf` checks files out as CRLF | normalise in the test (`text.ReplaceLineEndings("\n")`) instead of relying on the checkout |
 | App crashes at startup: `XamlLoadException: No precompiled XAML found for DevHub.App` | a build failed half-way (e.g. a locked `obj` DLL while Rider was building) and the next build reused the DLL without its compiled XAML | rebuild with `--no-incremental` |
 | Rows that should be selectable but keep their own look (diff lines) | a `ListBox` adds row height and padding, and a row's own background hides the selection | `ListBox.x > ListBoxItem { MinHeight: 0; Padding: 0 }`, plus a `:selected` style for the row's Border declared after its color styles |
 | App crashes at startup: `ArgumentException: An item with the same key has already been added. Key: Size.X` | two tokens with the same key (the build doesn't check) | search `Sizes.axaml` for the key before adding one |

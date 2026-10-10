@@ -29,7 +29,7 @@ public sealed class CommitOperations(GitRepositoryClient? client, IDialogService
         await RunAsync("Cherry-pick", async () => Report(await client.CherryPickAsync(commit),
             done: $"Cherry-picked {commit.ShortId} \"{commit.Subject}\" onto the current branch.",
             upToDate: $"The current branch already has the changes of {commit.ShortId}; nothing to do.",
-            conflicts: $"Cherry-picking {commit.ShortId} stopped on conflicts. Resolve them in Local Changes, then Continue (or Abort)."));
+            conflicts: $"Cherry-picking {commit.ShortId} stopped on conflicts. Resolve them in Changes, then Continue (or Abort)."));
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public sealed class CommitOperations(GitRepositoryClient? client, IDialogService
         await RunAsync("Revert", async () => Report(await client.RevertAsync(commit),
             done: $"Reverted {commit.ShortId}: a new commit undoes \"{commit.Subject}\".",
             upToDate: $"The changes of {commit.ShortId} are already undone; nothing to do.",
-            conflicts: $"Reverting {commit.ShortId} stopped on conflicts. Resolve them in Local Changes, then Continue (or Abort)."));
+            conflicts: $"Reverting {commit.ShortId} stopped on conflicts. Resolve them in Changes, then Continue (or Abort)."));
     }
 
     /// <summary>New branch starting at <paramref name="commit"/>.</summary>

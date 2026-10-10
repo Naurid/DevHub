@@ -113,7 +113,7 @@ public sealed partial class StashListViewModel : ViewModelBase
                                  : $"Applied \"{stash.Message}\"; the stash is kept.");
                 return;
             }
-            _status.Show($"\"{stash.Message}\" clashed with your files: resolve the conflicts in Local Changes. The stash is kept" +
+            _status.Show($"\"{stash.Message}\" clashed with your files: resolve the conflicts in Changes. The stash is kept" +
                          (pop ? "; drop it once you're done." : "."));
             _showConflicts();
         });

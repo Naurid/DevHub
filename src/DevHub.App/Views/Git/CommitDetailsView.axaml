@@ -47,11 +47,30 @@
                     </StackPanel>
 
                     <Border DockPanel.Dock="Top" Classes="listGroupHeader" BorderThickness="0,1,0,1">
-                        <TextBlock Classes="secondary" Text="{Binding FilesText}" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="secondary" Text="{Binding FilesText}" VerticalAlignment="Center" />
+                            <!-- The same Folders switch as in Changes (one setting for both). -->
+                            <ToggleButton Grid.Column="1" Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"
+                                          AutomationProperties.Name="Show folders"
+                                          ToolTip.Tip="Show folders: the files in their folders (on) or as one flat list (off)">
+                                <c:Icon Kind="folder" />
+                            </ToggleButton>
+                        </Grid>
                     </Border>
                     <ListBox Background="Transparent" AutomationProperties.Name="Changed files"
-                             ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}"
-                             ItemTemplate="{StaticResource FileRow}">
+                             ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}">
+                        <ListBox.DataTemplates>
+                            <DataTemplate DataType="vm:ChangeFolderRowViewModel">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FolderRow}" />
+                            </DataTemplate>
+                            <DataTemplate DataType="vm:FileChangeViewModel">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FileRow}" />
+                            </DataTemplate>
+                        </ListBox.DataTemplates>
+                        <ListBox.KeyBindings>
+                            <KeyBinding Gesture="Left" Command="{Binding CollapseFolderCommand}" />
+                            <KeyBinding Gesture="Right" Command="{Binding ExpandFolderCommand}" />
+                        </ListBox.KeyBindings>
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Blame" Command="{Binding Diff.AnnotateCommand}"

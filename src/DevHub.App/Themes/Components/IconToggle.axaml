@@ -1,0 +1,55 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:DevHub.Controls">
+
+    <!--
+      A small, flat on/off button showing just its content (an icon), for toolbars and tree rows:
+      transparent; hover = Brush.Bg.Hover; on = Brush.Bg.Selection. Unlike Fluent's ToggleButton it
+      never draws the accent fill, so it doesn't shout in a list header.
+      <ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding …}"><c:Icon Kind="folder" /></ToggleButton>
+    -->
+    <ControlTheme x:Key="IconToggle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="{DynamicResource Padding.IconToggle}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Radius.Control}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+        </Style>
+        <Style Selector="^:checked">
+            <Setter Property="Background" Value="{DynamicResource Brush.Bg.Selection}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+      A tree row's fold arrow: ▸ folded, ▾ unfolded, no background (the row's hover shows).
+      Used by the repository sidebar's tree rows (arrow on the right, Fork-style).
+    -->
+    <ControlTheme x:Key="FoldArrow" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <c:Icon Name="Folded" Kind="chevronRight" />
+                    <c:Icon Name="Unfolded" Kind="chevronDown" IsVisible="False" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:checked /template/ c|Icon#Folded">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:checked /template/ c|Icon#Unfolded">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

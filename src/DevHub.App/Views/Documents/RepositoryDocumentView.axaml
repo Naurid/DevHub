@@ -9,6 +9,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
              xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:conv="clr-namespace:DevHub.Converters"
              x:Class="DevHub.Views.Documents.RepositoryDocumentView"
              x:DataType="docs:RepositoryDocumentViewModel">
 
@@ -63,19 +64,144 @@
                         </Grid>
                     </StackPanel>
 
-                    <!-- Sections, with a count badge (Local Changes: changed files). -->
-                    <ListBox ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
-                             Background="Transparent">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="docs:RepositorySection">
-                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
-                                    <c:Icon Kind="{Binding IconKind}" VerticalAlignment="Center" />
-                                    <TextBlock Grid.Column="1" Text="{Binding Title}" VerticalAlignment="Center" />
-                                    <c:Badge Grid.Column="2" Content="{Binding Count}" IsVisible="{Binding HasCount}" />
+                    <!-- Fork's sidebar as a tree: Changes, All Commits, then Local and Remotes folding
+                         open to their branches (in folders: feature/login → feature ▸ login), Tags,
+                         Stashes, Submodules. No icons: names start at the edge; the fold arrow is on the
+                         right (SidebarItem theme). A branch: select = show it in All Commits,
+                         double-click / Enter = check out, right-click = its menu. Left / Right fold. -->
+                    <TreeView ItemsSource="{Binding Sidebar}" SelectedItem="{Binding SelectedNode}"
+                              Background="Transparent" AutomationProperties.Name="Repository sidebar">
+                        <TreeView.Resources>
+                            <!-- Rows indent by depth (Level × Size.TreeIndent). -->
+                            <conv:IndentConverter x:Key="SidebarIndent" Step="{StaticResource Size.TreeIndent}" />
+
+                            <!-- A sidebar row: [indent][content ……][arrow]. Replaces Fluent's TreeViewItem,
+                                 which puts the arrow on the left and shifts every name by its width.
+                                 PART_Header is the part TreeViewItem looks for (double-click folds). -->
+                            <ControlTheme x:Key="SidebarItem" TargetType="TreeViewItem">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Padding" Value="{DynamicResource Padding.SidebarRow}" />
+                                <Setter Property="MinHeight" Value="0" />
+                                <Setter Property="Template">
+                                    <ControlTemplate>
+                                        <StackPanel>
+                                            <Border Name="PART_Header" Background="{TemplateBinding Background}"
+                                                    Height="{DynamicResource Size.SidebarRow}" Padding="{TemplateBinding Padding}">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing.Small}">
+                                                    <ContentPresenter Name="PART_HeaderPresenter" VerticalAlignment="Center"
+                                                                      HorizontalContentAlignment="Stretch"
+                                                                      Margin="{TemplateBinding Level, Converter={StaticResource SidebarIndent}}"
+                                                                      Content="{TemplateBinding Header}"
+                                                                      ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                                                    <ToggleButton Grid.Column="1" Name="PART_ExpandCollapseChevron" Theme="{StaticResource FoldArrow}"
+                                                                  Focusable="False" IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                                                                  Width="{DynamicResource Size.TreeArrow}" Height="{DynamicResource Size.TreeArrow}" />
+                                                </Grid>
+                                            </Border>
+                                            <ItemsPresenter Name="PART_ItemsPresenter" IsVisible="{TemplateBinding IsExpanded}"
+                                                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </Setter>
+                                <!-- No children: no arrow. -->
+                                <Style Selector="^:empty /template/ ToggleButton#PART_ExpandCollapseChevron">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </Style>
+                                <Style Selector="^:pointerover /template/ Border#PART_Header">
+                                    <Setter Property="Background" Value="{DynamicResource Brush.Bg.Hover}" />
+                                </Style>
+                                <Style Selector="^:selected /template/ Border#PART_Header">
+                                    <Setter Property="Background" Value="{DynamicResource Brush.Bg.Selection}" />
+                                </Style>
+                            </ControlTheme>
+                        </TreeView.Resources>
+                        <TreeView.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding ActivateNodeCommand}" />
+                        </TreeView.KeyBindings>
+                        <TreeView.Styles>
+                            <Style Selector="TreeViewItem" x:DataType="docs:SidebarNode">
+                                <Setter Property="Theme" Value="{StaticResource SidebarItem}" />
+                                <!-- Folding follows the ViewModel (kept across refreshes). -->
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                <!-- Tree items don't use ToString() as their accessible name (list items do). -->
+                                <Setter Property="AutomationProperties.Name" Value="{Binding AccessibleName}" />
+                            </Style>
+                            <Style Selector="TextBlock.current">
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Style>
+                        </TreeView.Styles>
+                        <TreeView.DataTemplates>
+                            <!-- A section: name, count. -->
+                            <TreeDataTemplate DataType="docs:RepositorySection" ItemsSource="{Binding Children}">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}" Background="Transparent">
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    <c:Badge Grid.Column="1" Content="{Binding Count}" IsVisible="{Binding HasCount}" />
                                 </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                            </TreeDataTemplate>
+
+                            <!-- Local / Remotes: their menus act on the group. -->
+                            <TreeDataTemplate DataType="docs:SidebarGroupNode" ItemsSource="{Binding Children}">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}" Background="Transparent">
+                                    <Grid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="New Branch…" Command="{Binding NewBranchCommand}" IsVisible="{Binding IsBranches}" />
+                                            <MenuItem Header="Manage Remotes…" Command="{Binding ManageRemotesCommand}" IsVisible="{Binding IsRemotes}" />
+                                            <MenuItem Header="Publish to GitHub…" Command="{Binding PublishCommand}" IsVisible="{Binding IsRemotes}" />
+                                            <MenuItem Header="Fetch All" Command="{Binding FetchCommand}" IsVisible="{Binding IsRemotes}" />
+                                        </ContextMenu>
+                                    </Grid.ContextMenu>
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    <c:Badge Grid.Column="1" Content="{Binding Count}" IsVisible="{Binding HasCount}" />
+                                </Grid>
+                            </TreeDataTemplate>
+
+                            <!-- A remote ("origin"): URL in the tooltip. -->
+                            <TreeDataTemplate DataType="docs:SidebarRemoteNode" ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                           Background="Transparent" ToolTip.Tip="{Binding ToolTip}">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Fetch" Command="{Binding FetchCommand}" />
+                                            <MenuItem Header="Edit / Remove Remote…" Command="{Binding ManageRemotesCommand}" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </TreeDataTemplate>
+
+                            <TreeDataTemplate DataType="docs:SidebarFolderNode" ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                            </TreeDataTemplate>
+
+                            <!-- A branch: bold when checked out, ↑↓ against its upstream. -->
+                            <TreeDataTemplate DataType="docs:SidebarBranchNode" ItemsSource="{Binding Children}">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}" Background="Transparent"
+                                      ToolTip.Tip="{Binding ToolTip}" c:DoubleTap.Command="{Binding CheckoutCommand}">
+                                    <Grid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Checkout" InputGesture="Enter" Command="{Binding CheckoutCommand}" />
+                                            <MenuItem Header="New Branch from Here…" Command="{Binding NewBranchFromCommand}" />
+                                            <Separator />
+                                            <MenuItem Header="Merge into Current Branch…" Command="{Binding MergeIntoCurrentCommand}" />
+                                            <MenuItem Header="Rebase Current Branch onto This…" Command="{Binding RebaseCurrentOntoCommand}" />
+                                            <Separator IsVisible="{Binding IsLocal}" />
+                                            <MenuItem Header="Rename…" Command="{Binding RenameCommand}" IsVisible="{Binding IsLocal}" />
+                                            <MenuItem Header="Delete…" Command="{Binding DeleteCommand}" IsVisible="{Binding IsLocal}" />
+                                        </ContextMenu>
+                                    </Grid.ContextMenu>
+                                    <TextBlock Text="{Binding Title}" Classes.current="{Binding IsCurrent}"
+                                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Classes="small secondary" Text="{Binding SyncText}" VerticalAlignment="Center"
+                                               IsVisible="{Binding SyncText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                </Grid>
+                            </TreeDataTemplate>
+
+                            <!-- "No remotes yet…": muted; double-click does what it says. -->
+                            <TreeDataTemplate DataType="docs:SidebarHintNode" ItemsSource="{Binding Children}">
+                                <TextBlock Classes="small secondary" Text="{Binding Title}" TextWrapping="Wrap" Background="Transparent"
+                                           c:DoubleTap.Command="{Binding Command}" />
+                            </TreeDataTemplate>
+                        </TreeView.DataTemplates>
+                    </TreeView>
                 </DockPanel>
             </Border>
             <!-- Drag to resize the sidebar (the thumb also draws its edge line). The width is

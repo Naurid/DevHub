@@ -63,6 +63,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       cherry-pick / revert from All Commits, Blame tab, Submodules (update, open as a tab)
 - [x] G9. Remotes & GitHub: Manage Remotes (add / edit / remove), GitHub account via Git Credential
       Manager (Settings → GitHub), Publish to GitHub, Clone Repository (your GitHub repositories or a URL)
+- [x] G9.1 Fork-style sidebar tree (Branches / Remotes → origin → folders → branches); Local Changes
+      in folders (tree / flat switch, saved)
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`

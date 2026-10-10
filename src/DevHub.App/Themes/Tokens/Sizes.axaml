@@ -71,6 +71,14 @@
     <!-- Avatars: an account (Settings → GitHub) and a commit author (All Commits rows). -->
     <x:Double x:Key="Size.Avatar">32</x:Double>
     <x:Double x:Key="Size.AvatarSmall">16</x:Double>
+    <!-- Tree rows drawn as an indented list (Local Changes folders): indent per level, the fold arrow. -->
+    <x:Double x:Key="Size.TreeIndent">16</x:Double>
+    <x:Double x:Key="Size.TreeArrow">14</x:Double>
+    <!-- IconToggle (a small on/off icon button, e.g. Folders in Changes). -->
+    <Thickness x:Key="Padding.IconToggle">3</Thickness>
+    <!-- The repository sidebar rows: the name sits this far from the edge; the fold arrow on the right. -->
+    <Thickness x:Key="Padding.SidebarRow">10,0,8,0</Thickness>
+    <x:Double x:Key="Size.SidebarRow">26</x:Double>
     <x:Double x:Key="Size.CloneListHeight">260</x:Double>
     <x:Double x:Key="Size.BranchPopupWidth">380</x:Double>
     <x:Double x:Key="Size.BranchPopupMaxHeight">460</x:Double>

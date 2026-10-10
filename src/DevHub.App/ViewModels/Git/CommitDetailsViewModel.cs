@@ -1,4 +1,6 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DevHub.Core.Git;
 
 namespace DevHub.ViewModels.Git;
@@ -77,6 +79,78 @@ public partial class CommitDetailsViewModel : ViewModelBase
 
     [ObservableProperty] private FileChangeViewModel? _selectedFile;
 
+    /// <summary>What the file list shows: the files, or folders + files (the same Folders switch as Changes).</summary>
+    public ObservableCollection<ChangeRowViewModel> Rows { get; } = new();
+
+    /// <summary>The clicked row; a file row is the <see cref="SelectedFile"/> whose diff shows.</summary>
+    [ObservableProperty] private ChangeRowViewModel? _selectedRow;
+
+    /// <summary>Folded folders; every commit starts with all of them open.</summary>
+    private readonly HashSet<string> _collapsed = new(StringComparer.Ordinal);
+
+    /// <summary>Tree view (folders) or flat list; shared with Changes and saved.</summary>
+    public bool ChangesAsTree
+    {
+        get => Layout.ChangesAsTree;
+        set
+        {
+            if (Layout.ChangesAsTree == value)
+                return;
+            Layout.ChangesAsTree = value;
+            OnPropertyChanged();
+            RebuildRows();
+        }
+    }
+
+    partial void OnFilesChanged(IReadOnlyList<FileChangeViewModel> value)
+    {
+        _collapsed.Clear();
+        RebuildRows();
+        OnPropertyChanged(nameof(ChangesAsTree)); // Changes may have switched it meanwhile
+    }
+
+    private void RebuildRows()
+    {
+        var keep = SelectedRow?.Key;
+        ChangeRows.Build(Files, Rows, ChangesAsTree, _collapsed, ToggleFolder);
+        SelectedRow = keep is null ? null : Rows.FirstOrDefault(r => r.Key == keep);
+    }
+
+    private void ToggleFolder(ChangeFolderRowViewModel folder)
+    {
+        ChangeRows.Toggle(folder, _collapsed);
+        var current = SelectedRow;
+        RebuildRows();
+        // The selected file may have been inside the folded folder: select the folder instead.
+        if (SelectedRow is null && current is not null)
+            SelectedRow = Rows.FirstOrDefault(r => r.Key == folder.Key);
+    }
+
+    /// <summary>Left on a folder row: fold it.</summary>
+    [RelayCommand]
+    private void CollapseFolder()
+    {
+        if (SelectedRow is ChangeFolderRowViewModel { IsExpanded: true } folder)
+            ToggleFolder(folder);
+    }
+
+    /// <summary>Right on a folder row: unfold it.</summary>
+    [RelayCommand]
+    private void ExpandFolder()
+    {
+        if (SelectedRow is ChangeFolderRowViewModel { IsExpanded: false } folder)
+            ToggleFolder(folder);
+    }
+
+    // A folder row shows no diff; a file row shows its own.
+    partial void OnSelectedRowChanged(ChangeRowViewModel? value)
+    {
+        if (value is FileChangeViewModel file)
+            SelectedFile = file;
+        else if (value is ChangeFolderRowViewModel)
+            SelectedFile = null;
+    }
+
     [ObservableProperty] private string? _error;
 
     /// <summary>Shows <paramref name="commit"/> (null clears). The first file is selected so its diff shows at once.</summary>
@@ -118,7 +192,8 @@ public partial class CommitDetailsViewModel : ViewModelBase
                 .ToList();
             _sources = rows.ToDictionary(r => r.Row, r => r.Source);
             Files = rows.Select(r => r.Row).ToList();
-            SelectedFile = Files.FirstOrDefault();
+            // The first file as listed (in tree view, folders come first).
+            SelectedFile = Rows.OfType<FileChangeViewModel>().FirstOrDefault();
         }
         catch (OperationCanceledException)
         {
@@ -132,6 +207,8 @@ public partial class CommitDetailsViewModel : ViewModelBase
 
     partial void OnSelectedFileChanged(FileChangeViewModel? value)
     {
+        if (value is not null && SelectedRow != value)
+            SelectedRow = value; // set from code: the list follows
         if (Commit is { } commit)
             _ = Diff.LoadCommitFileAsync(value is not null && _sources.TryGetValue(value, out var source) ? source : commit, value);
         else

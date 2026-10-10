@@ -153,6 +153,34 @@ public partial class CommitLogViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(CherryPickCommand), nameof(RevertCommand), nameof(NewBranchHereCommand), nameof(NewTagHereCommand))]
     private CommitRowViewModel? _selected;
 
+    /// <summary>A commit to select once the history has loaded (a branch clicked in the sidebar before that).</summary>
+    private string? _pendingReveal;
+
+    /// <summary>
+    /// Selects <paramref name="commitId"/> (Fork: clicking a branch in the sidebar shows it in the
+    /// history). The list scrolls to it. If the history is still loading, it happens when it
+    /// arrives; a search that hides the commit is cleared.
+    /// </summary>
+    public void Reveal(string commitId)
+    {
+        _pendingReveal = commitId;
+        if (_loadedSignature is not null && !IsLoading)
+            ApplyReveal();
+    }
+
+    private void ApplyReveal()
+    {
+        if (_pendingReveal is not { } id)
+            return;
+        var row = _allRows.FirstOrDefault(r => r.Commit.Id == id);
+        if (row is null)
+            return; // not loaded (older than the loaded pages) or not there yet: keep waiting
+        _pendingReveal = null;
+        if (!Rows.Contains(row))
+            Filter = "";
+        Selected = row;
+    }
+
     /// <summary>What the list area says when there are no rows (empty repository, no matches, error).</summary>
     public string? PlaceholderText =>
         HasRows ? null
@@ -228,6 +256,7 @@ public partial class CommitLogViewModel : ViewModelBase
             HasMore = commits.Count >= _limit;
             Error = null;
             ApplyFilter();
+            ApplyReveal();
         }
         catch (OperationCanceledException)
         {

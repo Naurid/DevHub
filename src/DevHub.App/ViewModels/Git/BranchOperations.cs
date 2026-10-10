@@ -148,7 +148,7 @@ public sealed class BranchOperations(GitRepositoryClient? client, IDialogService
         await RunAsync("Merge", async () => Report(await client.MergeAsync(branch.ShortName),
             done: $"Merged {branch.ShortName} into {current}.",
             upToDate: $"{current} already contains everything in {branch.ShortName}.",
-            conflicts: $"The merge of {branch.ShortName} stopped on conflicts. Resolve them in Local Changes, then Continue."));
+            conflicts: $"The merge of {branch.ShortName} stopped on conflicts. Resolve them in Changes, then Continue."));
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public sealed class BranchOperations(GitRepositoryClient? client, IDialogService
         await RunAsync("Rebase", async () => Report(await client.RebaseAsync(branch.ShortName),
             done: $"Rebased {current} onto {branch.ShortName}.",
             upToDate: $"{current} is already on top of {branch.ShortName}.",
-            conflicts: "The rebase stopped on conflicts. Resolve them in Local Changes, then Continue (or Skip that commit)."));
+            conflicts: "The rebase stopped on conflicts. Resolve them in Changes, then Continue (or Skip that commit)."));
     }
 
     private void Report(OperationOutcome outcome, string done, string upToDate, string conflicts)

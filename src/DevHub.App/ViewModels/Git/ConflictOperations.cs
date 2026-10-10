@@ -63,8 +63,8 @@ public sealed partial class ConflictOperations : ObservableObject
         0 => Operation == RepositoryOperation.Merging
             ? "All conflicts are resolved: Continue to commit the merge."
             : "All conflicts are resolved: Continue.",
-        1 => "1 conflicted file: resolve it in Local Changes (right-click: Accept Yours / Theirs, Merge Tool), then Continue.",
-        var n => $"{n} conflicted files: resolve them in Local Changes (right-click: Accept Yours / Theirs, Merge Tool), then Continue.",
+        1 => "1 conflicted file: resolve it in Changes (right-click: Accept Yours / Theirs, Merge Tool), then Continue.",
+        var n => $"{n} conflicted files: resolve them in Changes (right-click: Accept Yours / Theirs, Merge Tool), then Continue.",
     };
 
     /// <summary>Only a rebase can skip the commit that stopped it.</summary>

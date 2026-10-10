@@ -1,5 +1,6 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Core.Git;
 using DevHub.Services;
@@ -47,23 +48,29 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
             push: () => Remote!.PushWithoutAskingAsync(), // Remote is created below; this runs later
             annotate: OpenBlame);
         Name = System.IO.Path.GetFileName(path.TrimEnd('\\', '/')) is { Length: > 0 } name ? name : path;
-        LocalChangesSection = Sections[0];
-        AllCommitsSection = Sections[1];
-        BranchesSection = Sections[2];
-        RemotesSection = Sections[3];
-        TagsSection = Sections[4];
-        StashesSection = Sections[5];
-        SubmodulesSection = Sections[6];
         _selectedSection = LocalChangesSection;
+        _selectedNode = LocalChangesSection;
 
         var branchOperations = new BranchOperations(client, services.Dialogs, services.Status, RefreshAsync);
         _branchOperations = branchOperations;
-        LocalBranches = new BranchListViewModel(branchOperations, remote: false);
-        RemoteBranches = new BranchListViewModel(branchOperations, remote: true);
+        _branchTree = new SidebarBranchTree(branchOperations);
         BranchPopup = new BranchPopupViewModel(branchOperations);
         Remote = new RemoteOperations(client, services.Dialogs, services.Status, RefreshAsync,
             () => branchOperations.Branches, Name, services.GitHub);
-        RemoteBranches.Remote = Remote;
+
+        // Fork's sidebar: sections, then Branches and Remotes as folding trees, then more sections.
+        BranchesGroup = new SidebarGroupNode("Local", IconKind.Vcs)
+        {
+            NewBranchCommand = new AsyncRelayCommand(() => branchOperations.NewBranchAsync()),
+        };
+        RemotesGroup = new SidebarGroupNode("Remotes", IconKind.Fetch)
+        {
+            ManageRemotesCommand = Remote.ManageRemotesCommand,
+            PublishCommand = Remote.PublishToGitHubCommand,
+            FetchCommand = Remote.FetchCommand,
+        };
+        Sidebar = [LocalChangesSection, AllCommitsSection, BranchesGroup, RemotesGroup, TagsSection, StashesSection, SubmodulesSection];
+
         _commitOperations = new CommitOperations(client, services.Dialogs, services.Status, RefreshAsync, branchOperations, Remote);
         CommitLog = new CommitLogViewModel(layout, client, openInEditor, OpenBlame, _commitOperations, services.GitHub);
         Tags = new TagListViewModel(_commitOperations, branchOperations);
@@ -130,25 +137,77 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <summary>Panel widths (the splitters bind to these).</summary>
     public RepositoryTabLayout Layout { get; }
 
-    /// <summary>The sidebar (Fork-style). Each section says which milestone fills it in.</summary>
-    public IReadOnlyList<RepositorySection> Sections { get; } =
-    [
-        new("Local Changes", IconKind.Edit, "Changed files, staging and the commit box arrive in G1–G3."),
-        new("All Commits", IconKind.Commit, ""),
-        new("Branches", IconKind.Vcs, ""),
-        new("Remotes", IconKind.Fetch, ""),
-        new("Tags", IconKind.Template, ""),
-        new("Stashes", IconKind.Copy, ""),
-        new("Submodules", IconKind.Folder, ""),
-    ];
+    /// <summary>
+    /// The sidebar tree (Fork-style): Local Changes, All Commits, Branches and Remotes (folding
+    /// open to their branches, in folders), Tags, Stashes, Submodules.
+    /// </summary>
+    public IReadOnlyList<SidebarNode> Sidebar { get; }
 
-    private RepositorySection LocalChangesSection { get; }
-    private RepositorySection AllCommitsSection { get; }
-    private RepositorySection BranchesSection { get; }
-    private RepositorySection RemotesSection { get; }
-    private RepositorySection TagsSection { get; }
-    private RepositorySection StashesSection { get; }
-    private RepositorySection SubmodulesSection { get; }
+    private RepositorySection LocalChangesSection { get; } = new("Changes", IconKind.Edit, "");
+    private RepositorySection AllCommitsSection { get; } = new("All Commits", IconKind.Commit, "");
+    private RepositorySection TagsSection { get; } = new("Tags", IconKind.Template, "");
+    private RepositorySection StashesSection { get; } = new("Stashes", IconKind.Copy, "");
+    private RepositorySection SubmodulesSection { get; } = new("Submodules", IconKind.Folder, "");
+
+    /// <summary>The Branches group (local branches) and the Remotes group (each remote, its branches).</summary>
+    public SidebarGroupNode BranchesGroup { get; }
+    public SidebarGroupNode RemotesGroup { get; }
+
+    private readonly SidebarBranchTree _branchTree;
+
+    /// <summary>
+    /// The selected sidebar row. A section shows its page; a branch shows All Commits at that
+    /// branch's commit (double-click checks it out); groups, remotes and folders just fold.
+    /// </summary>
+    [ObservableProperty] private SidebarNode? _selectedNode;
+
+    /// <summary>Set while a branch row drives the page, so switching to All Commits doesn't steal the selection.</summary>
+    private bool _revealingBranch;
+
+    /// <summary>Set while the selection is put back after a refresh rebuilt the rows (nothing should happen).</summary>
+    private bool _restoringNode;
+
+    partial void OnSelectedNodeChanged(SidebarNode? value)
+    {
+        if (_restoringNode)
+            return;
+        switch (value)
+        {
+            case RepositorySection section:
+                SelectedSection = section;
+                break;
+            case SidebarBranchNode branch:
+                _revealingBranch = true;
+                try
+                {
+                    SelectedSection = AllCommitsSection;
+                }
+                finally
+                {
+                    _revealingBranch = false;
+                }
+                CommitLog.Reveal(branch.Branch.CommitId);
+                break;
+        }
+    }
+
+    /// <summary>Enter on a sidebar row: check out a branch, act on a hint, or fold / unfold.</summary>
+    [RelayCommand]
+    private void ActivateNode()
+    {
+        switch (SelectedNode)
+        {
+            case SidebarBranchNode branch when branch.CheckoutCommand.CanExecute(null):
+                branch.CheckoutCommand.Execute(null);
+                break;
+            case SidebarHintNode { Command: { } command } when command.CanExecute(null):
+                command.Execute(null);
+                break;
+            case { Children.Count: > 0 } node:
+                node.IsExpanded = !node.IsExpanded;
+                break;
+        }
+    }
 
     /// <summary>Merge / rebase in progress: the banner, Continue / Skip / Abort, resolving conflicts (G7).</summary>
     public ConflictOperations Conflicts { get; }
@@ -161,12 +220,6 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
 
     /// <summary>Fingerprint of HEAD and the branch tips from the last refresh: when it changes, the history is reloaded.</summary>
     private string _historySignature = "";
-
-    /// <summary>Local branches (the Branches section).</summary>
-    public BranchListViewModel LocalBranches { get; }
-
-    /// <summary>Remote-tracking branches (the Remotes section).</summary>
-    public BranchListViewModel RemoteBranches { get; }
 
     /// <summary>The Tags section.</summary>
     public TagListViewModel Tags { get; }
@@ -191,8 +244,6 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     public object CurrentContent =>
         SelectedSection == LocalChangesSection ? LocalChanges
         : SelectedSection == AllCommitsSection ? CommitLog
-        : SelectedSection == BranchesSection ? LocalBranches
-        : SelectedSection == RemotesSection ? RemoteBranches
         : SelectedSection == TagsSection ? Tags
         : SelectedSection == StashesSection ? Stashes
         : SelectedSection == SubmodulesSection ? Submodules
@@ -203,6 +254,10 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     {
         if (value == AllCommitsSection)
             _ = CommitLog.EnsureLoadedAsync(_historySignature);
+        // Shown from code (Ctrl+K, Unstash, conflicts…): the sidebar follows. Not while a branch
+        // row is what put All Commits there (that row stays selected).
+        if (!_revealingBranch && SelectedNode != value)
+            SelectedNode = value;
     }
 
     /// <summary>Git → New Branch…: from the current commit.</summary>
@@ -241,11 +296,26 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
 
             var branches = await client.GetBranchesAsync(ct);
             _branchOperations.Branches = branches;
-            LocalBranches.Update(branches);
-            RemoteBranches.Update(branches);
             BranchPopup.Update(branches);
-            BranchesSection.Count = LocalBranches.Count;
-            RemotesSection.Count = RemoteBranches.Count;
+            var remotes = await client.GetRemoteDetailsAsync(ct);
+            var selectedKey = SelectedNode?.Key;
+            if (_branchTree.Update(BranchesGroup, RemotesGroup, branches, remotes, Remote.ManageRemotesCommand, Remote.FetchCommand)
+                && SelectedNode is not RepositorySection && selectedKey is not null)
+            {
+                // The rows are new objects: select the same branch / folder again.
+                var again = SidebarBranchTree.Descendants(BranchesGroup).Concat(SidebarBranchTree.Descendants(RemotesGroup))
+                    .FirstOrDefault(n => n.Key == selectedKey);
+                // Only re-select: don't jump All Commits back to the branch on every refresh.
+                _restoringNode = true;
+                try
+                {
+                    SelectedNode = again ?? SelectedSection;
+                }
+                finally
+                {
+                    _restoringNode = false;
+                }
+            }
 
             var tags = await client.GetTagsAsync(ct);
             _commitOperations.Tags = tags;
@@ -338,23 +408,4 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
         _refreshCts?.Dispose();
         _refreshCts = null;
     }
-}
-
-/// <summary>An entry in the repository sidebar, with an optional count (e.g. changed files).</summary>
-public sealed partial class RepositorySection(string title, string iconKind, string placeholder) : ObservableObject
-{
-    public string Title { get; } = title;
-    public string IconKind { get; } = iconKind;
-
-    /// <summary>What the section will show and in which milestone (until it's built).</summary>
-    public string Placeholder { get; } = placeholder;
-
-    /// <summary>Shown as a badge when above zero.</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasCount))]
-    private int _count;
-
-    public bool HasCount => Count > 0;
-
-    public override string ToString() => HasCount ? $"{Title}, {Count}" : Title;
 }

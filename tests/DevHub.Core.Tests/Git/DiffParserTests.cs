@@ -5,6 +5,13 @@ namespace DevHub.Core.Tests.Git;
 
 public class DiffParserTests
 {
+    /// <summary>
+    /// git's output uses "\n". The sample diffs below are multi-line literals, which take this
+    /// file's own line endings, and those depend on how it was checked out (core.autocrlf turns
+    /// them into "\r\n" on Windows). Normalise, so the tests don't depend on the checkout.
+    /// </summary>
+    private static string Lf(string text) => text.ReplaceLineEndings("\n");
+
     // ---- Parser on fixed text -------------------------------------------------------------
 
     [Fact]
@@ -27,7 +34,7 @@ public class DiffParserTests
 
             """;
 
-        var diff = Assert.Single(DiffParser.Parse(output));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output)));
 
         Assert.Equal("src/App.cs", diff.OldPath);
         Assert.Equal("src/App.cs", diff.NewPath);
@@ -74,7 +81,7 @@ public class DiffParserTests
 
             """;
 
-        var diffs = DiffParser.Parse(output);
+        var diffs = DiffParser.Parse(Lf(output));
 
         Assert.Equal(2, diffs.Count);
         Assert.True(diffs[0].IsNewFile);
@@ -101,7 +108,7 @@ public class DiffParserTests
 
             """;
 
-        var diff = Assert.Single(DiffParser.Parse(output));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output)));
 
         Assert.True(diff.IsRenamed);
         Assert.Equal("old name.txt", diff.OldPath);
@@ -119,7 +126,7 @@ public class DiffParserTests
 
             """;
 
-        var diff = Assert.Single(DiffParser.Parse(output));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output)));
 
         Assert.True(diff.IsBinary);
         Assert.Equal("img/logo.png", diff.Path);
@@ -136,7 +143,7 @@ public class DiffParserTests
 
             """;
 
-        var diff = Assert.Single(DiffParser.Parse(output));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output)));
 
         Assert.Equal("100644 → 100755", diff.ModeChange);
         Assert.Equal("run.sh", diff.Path);
@@ -157,7 +164,7 @@ public class DiffParserTests
 
             """;
 
-        var lines = Assert.Single(DiffParser.Parse(output)).Hunks[0].Lines;
+        var lines = Assert.Single(DiffParser.Parse(Lf(output))).Hunks[0].Lines;
 
         Assert.Equal(2, lines.Count);
         Assert.True(lines[0].NoNewlineAtEnd);
@@ -206,7 +213,7 @@ public class DiffParserTests
 
             """;
 
-        var diff = Assert.Single(DiffParser.Parse(output));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output)));
 
         Assert.True(diff.IsCombined);
         Assert.Equal("f.txt", diff.Path);
@@ -223,7 +230,7 @@ public class DiffParserTests
         var output = "diff --git a/big.txt b/big.txt\n--- a/big.txt\n+++ b/big.txt\n@@ -0,0 +1,100 @@\n"
                      + string.Concat(Enumerable.Range(1, 100).Select(i => $"+line {i}\n"));
 
-        var diff = Assert.Single(DiffParser.Parse(output, maxLinesPerFile: 10));
+        var diff = Assert.Single(DiffParser.Parse(Lf(output), maxLinesPerFile: 10));
 
         Assert.True(diff.IsTruncated);
         Assert.Equal(10, diff.Hunks[0].Lines.Count);
@@ -242,7 +249,7 @@ public class DiffParserTests
     {
         var output = "diff --git a/f.txt b/f.txt\n--- a/f.txt\n+++ b/f.txt\n" + hunks;
 
-        Assert.Equal(expected, Assert.Single(DiffParser.Parse(output)).FirstChangedLine);
+        Assert.Equal(expected, Assert.Single(DiffParser.Parse(Lf(output))).FirstChangedLine);
     }
 
     [Fact]

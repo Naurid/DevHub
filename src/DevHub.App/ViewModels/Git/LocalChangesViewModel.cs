@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DevHub.Core.Formatting;
 using DevHub.Core.Git;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs;
@@ -60,8 +61,36 @@ public partial class LocalChangesViewModel : ViewModelBase
         nameof(AcceptYoursCommand), nameof(AcceptTheirsCommand), nameof(MarkResolvedCommand), nameof(OpenMergeToolCommand))]
     private bool _isBusy;
 
+    /// <summary>The changed files of each side (what the commands act on).</summary>
     public ObservableCollection<FileChangeViewModel> Unstaged { get; } = new();
     public ObservableCollection<FileChangeViewModel> Staged { get; } = new();
+
+    /// <summary>
+    /// What each list shows: the files (flat), or folders and files in tree order (tree view,
+    /// Fork-style; folded folders hide their contents). Rebuilt from <see cref="Unstaged"/> /
+    /// <see cref="Staged"/>.
+    /// </summary>
+    public ObservableCollection<ChangeRowViewModel> UnstagedRows { get; } = new();
+    public ObservableCollection<ChangeRowViewModel> StagedRows { get; } = new();
+
+    /// <summary>Folded folders per side (by path), kept across refreshes.</summary>
+    private readonly HashSet<string> _collapsedUnstaged = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _collapsedStaged = new(StringComparer.Ordinal);
+
+    /// <summary>Tree view (folders) or flat list; shared by all repository tabs and saved.</summary>
+    public bool ChangesAsTree
+    {
+        get => Layout.ChangesAsTree;
+        set
+        {
+            if (Layout.ChangesAsTree == value)
+                return;
+            Layout.ChangesAsTree = value;
+            OnPropertyChanged();
+            RebuildRows(staged: false);
+            RebuildRows(staged: true);
+        }
+    }
 
     public int UnstagedCount => Unstaged.Count;
     public int StagedCount => Staged.Count;
@@ -84,18 +113,39 @@ public partial class LocalChangesViewModel : ViewModelBase
     private FileChangeViewModel? _selectedStaged;
 
     /// <summary>
-    /// All selected rows of each list (Ctrl+click, Shift+click, Ctrl+A; bound to the ListBoxes'
-    /// SelectedItems). Stage / unstage / discard act on these; the diff shows the clicked one.
+    /// The clicked row of each list (a file or a folder; bound to the ListBoxes' SelectedItem).
+    /// A file row sets <see cref="SelectedUnstaged"/> / <see cref="SelectedStaged"/>, which the diff shows.
     /// </summary>
-    public ObservableCollection<FileChangeViewModel> UnstagedSelection { get; } = new();
-    public ObservableCollection<FileChangeViewModel> StagedSelection { get; } = new();
+    [ObservableProperty] private ChangeRowViewModel? _selectedUnstagedRow;
+    [ObservableProperty] private ChangeRowViewModel? _selectedStagedRow;
 
-    /// <summary>What the Unstaged actions act on: the selected rows, or the current one.</summary>
-    private IReadOnlyList<FileChangeViewModel> UnstagedTargets =>
-        UnstagedSelection.Count > 0 ? UnstagedSelection.ToList() : SelectedUnstaged is { } f ? [f] : [];
+    /// <summary>
+    /// All selected rows of each list (Ctrl+click, Shift+click, Ctrl+A; bound to the ListBoxes'
+    /// SelectedItems). Stage / unstage / discard act on these (a folder: every file in it); the
+    /// diff shows the clicked file.
+    /// </summary>
+    public ObservableCollection<ChangeRowViewModel> UnstagedSelection { get; } = new();
+    public ObservableCollection<ChangeRowViewModel> StagedSelection { get; } = new();
 
-    private IReadOnlyList<FileChangeViewModel> StagedTargets =>
-        StagedSelection.Count > 0 ? StagedSelection.ToList() : SelectedStaged is { } f ? [f] : [];
+    /// <summary>What the Unstaged actions act on: the selected rows (folders → their files), or the current row.</summary>
+    private IReadOnlyList<FileChangeViewModel> UnstagedTargets => Targets(UnstagedSelection, SelectedUnstagedRow);
+
+    private IReadOnlyList<FileChangeViewModel> StagedTargets => Targets(StagedSelection, SelectedStagedRow);
+
+    private static IReadOnlyList<FileChangeViewModel> Targets(IReadOnlyCollection<ChangeRowViewModel> selection,
+        ChangeRowViewModel? current)
+    {
+        IEnumerable<ChangeRowViewModel> rows = selection.Count > 0 ? selection : current is null ? [] : [current];
+        return rows
+            .SelectMany(r => r switch
+            {
+                FileChangeViewModel file => [file],
+                ChangeFolderRowViewModel folder => folder.Files,
+                _ => [],
+            })
+            .Distinct()
+            .ToList();
+    }
 
     /// <summary>The selected file in either list; the diff pane shows it.</summary>
     public FileChangeViewModel? Selected => SelectedUnstaged ?? SelectedStaged;
@@ -124,11 +174,6 @@ public partial class LocalChangesViewModel : ViewModelBase
 
     private void Refill(RepoStatus status)
     {
-        var keepUnstaged = SelectedUnstaged?.Change.Path;
-        var keepStaged = SelectedStaged?.Change.Path;
-        var keepUnstagedSelection = UnstagedSelection.Select(f => f.Change.Path).ToHashSet();
-        var keepStagedSelection = StagedSelection.Select(f => f.Change.Path).ToHashSet();
-
         Fill(Unstaged, status.Changes
             .Where(c => c.IsUnstaged || c.IsConflicted)
             // Conflicts first (they block everything), then by path.
@@ -140,11 +185,10 @@ public partial class LocalChangesViewModel : ViewModelBase
             .OrderBy(c => c.Path, StringComparer.OrdinalIgnoreCase)
             .Select(c => new FileChangeViewModel(c, staged: true, ToggleStage)));
 
-        SelectedUnstaged = Unstaged.FirstOrDefault(f => f.Change.Path == keepUnstaged);
-        SelectedStaged = Staged.FirstOrDefault(f => f.Change.Path == keepStaged);
-        // The rows are new objects: select the same files again (the ListBoxes follow the lists).
-        Reselect(UnstagedSelection, Unstaged, keepUnstagedSelection);
-        Reselect(StagedSelection, Staged, keepStagedSelection);
+        // The file objects are new: rebuild the rows and select the same files / folders again.
+        RebuildRows(staged: false);
+        RebuildRows(staged: true);
+        OnPropertyChanged(nameof(ChangesAsTree)); // another tab may have switched the view
 
         OnPropertyChanged(nameof(UnstagedCount));
         OnPropertyChanged(nameof(StagedCount));
@@ -153,6 +197,80 @@ public partial class LocalChangesViewModel : ViewModelBase
         UnstageAllCommand.NotifyCanExecuteChanged();
         DiscardAllCommand.NotifyCanExecuteChanged();
         Commit.StagedChanged();
+    }
+
+    // ---- Rows: flat list or tree -------------------------------------------------------------
+
+    /// <summary>
+    /// Rebuilds one side's rows from its files (flat, or folders + files when <see cref="ChangesAsTree"/>),
+    /// keeping the clicked row and the multi-selection (by path) and the folded folders.
+    /// </summary>
+    private void RebuildRows(bool staged)
+    {
+        var rows = staged ? StagedRows : UnstagedRows;
+        var selection = staged ? StagedSelection : UnstagedSelection;
+        var keepCurrent = (staged ? SelectedStagedRow : SelectedUnstagedRow)?.Key;
+        var keepSelection = selection.Select(r => r.Key).ToHashSet();
+
+        var wasUpdating = _updating;
+        _updating = true; // clearing the list deselects for a moment: don't load an empty diff
+        try
+        {
+            BuildRows(staged ? Staged : Unstaged, rows, staged ? _collapsedStaged : _collapsedUnstaged);
+            var current = keepCurrent is null ? null : rows.FirstOrDefault(r => r.Key == keepCurrent);
+            if (staged)
+                SelectedStagedRow = current;
+            else if (current is not null || SelectedStagedRow is null)
+                SelectedUnstagedRow = current;
+            Reselect(selection, rows, keepSelection);
+        }
+        finally
+        {
+            _updating = wasUpdating;
+        }
+        if (!_updating && Selected != Diff.File)
+            _ = Diff.LoadAsync(Selected);
+    }
+
+    private void BuildRows(IReadOnlyList<FileChangeViewModel> files, ObservableCollection<ChangeRowViewModel> rows,
+        HashSet<string> collapsed) =>
+        ChangeRows.Build(files, rows, ChangesAsTree, collapsed, ToggleFolder);
+
+    /// <summary>Folds / unfolds a folder (arrow, double-click, Left / Right) and keeps it selected.</summary>
+    private void ToggleFolder(ChangeFolderRowViewModel folder)
+    {
+        var staged = StagedRows.Contains(folder);
+        var collapsed = staged ? _collapsedStaged : _collapsedUnstaged;
+        if (!collapsed.Add(folder.Path))
+            collapsed.Remove(folder.Path);
+
+        var current = staged ? SelectedStagedRow : SelectedUnstagedRow;
+        RebuildRows(staged);
+        // The clicked row may have been inside the folded folder: select the folder instead.
+        if ((staged ? SelectedStagedRow : SelectedUnstagedRow) is null && current is not null)
+        {
+            var row = (staged ? StagedRows : UnstagedRows).FirstOrDefault(r => r.Key == folder.Key);
+            if (staged)
+                SelectedStagedRow = row;
+            else
+                SelectedUnstagedRow = row;
+        }
+    }
+
+    /// <summary>Left on a folder row: fold it.</summary>
+    [RelayCommand]
+    private void CollapseFolder(ChangeRowViewModel? row)
+    {
+        if (row is ChangeFolderRowViewModel { IsExpanded: true } folder)
+            ToggleFolder(folder);
+    }
+
+    /// <summary>Right on a folder row: unfold it.</summary>
+    [RelayCommand]
+    private void ExpandFolder(ChangeRowViewModel? row)
+    {
+        if (row is ChangeFolderRowViewModel { IsExpanded: false } folder)
+            ToggleFolder(folder);
     }
 
     // ---- Stage / unstage / discard ---------------------------------------------------------
@@ -212,7 +330,7 @@ public partial class LocalChangesViewModel : ViewModelBase
     private bool CanUnstageAll() => !IsBusy && _client is not null && Staged.Count > 0;
 
     [RelayCommand(CanExecute = nameof(CanUnstageAll))]
-    private Task UnstageAllAsync() => RunAsync("Unstage all", client => client.UnstageAllAsync(), Staged, 0);
+    private Task UnstageAllAsync() => RunAsync("Unstage all", client => client.UnstageAllAsync(), StagedRows, 0);
 
     private bool CanDiscardSelected() => !IsBusy && UnstagedTargets.Any(f => !f.IsConflicted);
 
@@ -261,14 +379,14 @@ public partial class LocalChangesViewModel : ViewModelBase
         var rest = files.Where(f => !f.IsConflicted).ToList();
         if (rest.Count == 0)
             return;
-        var index = IndexOfSelection(Unstaged, SelectedUnstaged);
-        await RunAsync("Stage", client => client.StageAsync(Paths(rest)), Unstaged, index);
+        var index = IndexOfSelection(UnstagedRows, SelectedUnstagedRow);
+        await RunAsync("Stage", client => client.StageAsync(Paths(rest)), UnstagedRows, index);
     }
 
     private Task UnstageAsync(IReadOnlyList<FileChangeViewModel> files)
     {
-        var index = IndexOfSelection(Staged, SelectedStaged);
-        return RunAsync("Unstage", client => client.UnstageAsync(Paths(files)), Staged, index);
+        var index = IndexOfSelection(StagedRows, SelectedStagedRow);
+        return RunAsync("Unstage", client => client.UnstageAsync(Paths(files)), StagedRows, index);
     }
 
     private async Task DiscardAsync(IReadOnlyList<FileChangeViewModel> files)
@@ -284,8 +402,8 @@ public partial class LocalChangesViewModel : ViewModelBase
         if (!await _dialogs.ShowDialogAsync(confirm))
             return;
 
-        var index = IndexOfSelection(Unstaged, SelectedUnstaged);
-        await RunAsync("Discard", client => client.DiscardAsync(files.Select(f => f.Change).ToList()), Unstaged, index);
+        var index = IndexOfSelection(UnstagedRows, SelectedUnstagedRow);
+        await RunAsync("Discard", client => client.DiscardAsync(files.Select(f => f.Change).ToList()), UnstagedRows, index);
     }
 
     /// <summary>
@@ -310,9 +428,9 @@ public partial class LocalChangesViewModel : ViewModelBase
 
         var (what, list) = action switch
         {
-            PartialAction.Stage => ("Stage lines", Unstaged),
-            PartialAction.Unstage => ("Unstage lines", Staged),
-            _ => ("Discard lines", Unstaged),
+            PartialAction.Stage => ("Stage lines", UnstagedRows),
+            PartialAction.Unstage => ("Unstage lines", StagedRows),
+            _ => ("Discard lines", UnstagedRows),
         };
         await RunAsync(what, client => client.ApplyPartialAsync(diff, isSelected, action), list, -1);
     }
@@ -347,7 +465,7 @@ public partial class LocalChangesViewModel : ViewModelBase
     /// Space repeatedly stages file after file.
     /// </summary>
     private async Task RunAsync(string what, Func<GitRepositoryClient, Task> operation,
-        ObservableCollection<FileChangeViewModel> list, int selectIndex)
+        ObservableCollection<ChangeRowViewModel> rows, int selectIndex)
     {
         if (_client is null || IsBusy)
             return;
@@ -367,27 +485,51 @@ public partial class LocalChangesViewModel : ViewModelBase
         }
 
         await _refresh();
-        if (selectIndex >= 0 && list.Count > 0 && Selected is null)
+        if (selectIndex >= 0 && rows.Count > 0 && Selected is null
+            && (rows == UnstagedRows ? SelectedUnstagedRow : SelectedStagedRow) is null)
         {
-            var next = list[Math.Min(selectIndex, list.Count - 1)];
-            if (list == Unstaged)
-                SelectedUnstaged = next;
+            // The file now at that place, else the nearest one before it (in the tree, rows can be folders).
+            var at = Math.Min(selectIndex, rows.Count - 1);
+            var next = rows.Skip(at).OfType<FileChangeViewModel>().FirstOrDefault()
+                       ?? rows.Take(at).OfType<FileChangeViewModel>().LastOrDefault();
+            if (rows == UnstagedRows)
+                SelectedUnstagedRow = next;
             else
-                SelectedStaged = next;
+                SelectedStagedRow = next;
         }
     }
 
-    private static int IndexOfSelection(ObservableCollection<FileChangeViewModel> list, FileChangeViewModel? selected) =>
-        selected is null ? -1 : list.IndexOf(selected);
+    private static int IndexOfSelection(ObservableCollection<ChangeRowViewModel> rows, ChangeRowViewModel? selected) =>
+        selected is null ? -1 : rows.IndexOf(selected);
 
     /// <summary>A rename needs both paths, or git would only half-stage it.</summary>
     private static IEnumerable<string> Paths(IEnumerable<FileChangeViewModel> files) =>
         files.SelectMany(f => f.Change.OriginalPath is { } from ? [f.Change.Path, from] : new[] { f.Change.Path });
 
+    // The clicked row (file or folder) drives the file selection the diff shows; a folder shows no diff.
+    partial void OnSelectedUnstagedRowChanged(ChangeRowViewModel? value)
+    {
+        if (value is not null)
+            SelectedStagedRow = null;
+        SelectedUnstaged = value as FileChangeViewModel;
+        UnstagedTargetsChanged();
+    }
+
+    partial void OnSelectedStagedRowChanged(ChangeRowViewModel? value)
+    {
+        if (value is not null)
+            SelectedUnstagedRow = null;
+        SelectedStaged = value as FileChangeViewModel;
+        UnstageSelectedCommand.NotifyCanExecuteChanged();
+    }
+
     partial void OnSelectedUnstagedChanged(FileChangeViewModel? value)
     {
         if (value is not null)
+        {
             SelectedStaged = null;
+            SelectedUnstagedRow = value; // set from code (e.g. after staging): the list follows
+        }
         UnstagedTargetsChanged();
         SelectionChanged();
     }
@@ -395,7 +537,10 @@ public partial class LocalChangesViewModel : ViewModelBase
     partial void OnSelectedStagedChanged(FileChangeViewModel? value)
     {
         if (value is not null)
+        {
             SelectedUnstaged = null;
+            SelectedStagedRow = value;
+        }
         SelectionChanged();
     }
 
@@ -423,12 +568,12 @@ public partial class LocalChangesViewModel : ViewModelBase
     /// <summary>A conflicted file is selected: the menu shows the conflict items.</summary>
     public bool HasConflictSelected => UnstagedTargets.Any(f => f.IsConflicted);
 
-    private static void Reselect(ObservableCollection<FileChangeViewModel> selection,
-        ObservableCollection<FileChangeViewModel> rows, HashSet<string> paths)
+    private static void Reselect(ObservableCollection<ChangeRowViewModel> selection,
+        ObservableCollection<ChangeRowViewModel> rows, HashSet<string> keys)
     {
-        if (paths.Count <= 1)
-            return; // a single selection is restored through SelectedUnstaged / SelectedStaged
-        foreach (var row in rows.Where(r => paths.Contains(r.Change.Path) && !selection.Contains(r)))
+        if (keys.Count <= 1)
+            return; // a single selection is restored through SelectedUnstagedRow / SelectedStagedRow
+        foreach (var row in rows.Where(r => keys.Contains(r.Key) && !selection.Contains(r)))
             selection.Add(row);
     }
 
@@ -451,8 +596,57 @@ public enum ChangeColor
     Conflicted,
 }
 
+/// <summary>
+/// A row in a file list: a file, or (in tree view) a folder. <see cref="Depth"/> indents it; the
+/// lists hold both kinds, so selection, Space and the menus work the same on either.
+/// </summary>
+public abstract partial class ChangeRowViewModel : ObservableObject
+{
+    /// <summary>Nesting level in tree view (0 = top; always 0 in the flat list).</summary>
+    [ObservableProperty] private int _depth;
+
+    /// <summary>Identifies the row across refreshes (to keep it selected): "F:path" or "D:path".</summary>
+    public abstract string Key { get; }
+}
+
+/// <summary>A folder in the tree view of Local Changes: fold / unfold; acting on it acts on every file inside.</summary>
+public sealed partial class ChangeFolderRowViewModel : ChangeRowViewModel
+{
+    public ChangeFolderRowViewModel(string name, string path, IReadOnlyList<FileChangeViewModel> files, bool isExpanded,
+        Action<ChangeFolderRowViewModel> toggle)
+    {
+        Name = name;
+        Path = path;
+        Files = files;
+        _isExpanded = isExpanded;
+        ToggleCommand = new RelayCommand(() => toggle(this));
+    }
+
+    /// <summary>"Views", or "src/DevHub.App" for a folder whose only content is one subfolder.</summary>
+    public string Name { get; }
+
+    /// <summary>Full folder path (git form): the key for remembering that it's folded.</summary>
+    public string Path { get; }
+
+    /// <summary>Every changed file under this folder, at any depth.</summary>
+    public IReadOnlyList<FileChangeViewModel> Files { get; }
+
+    public int Count => Files.Count;
+
+    [ObservableProperty] private bool _isExpanded;
+
+    /// <summary>The arrow, double-click, Left / Right.</summary>
+    public RelayCommand ToggleCommand { get; }
+
+    public override string Key => "D:" + Path;
+
+    public string ToolTip => $"{Path} ({Count} changed file{(Count == 1 ? "" : "s")})";
+
+    public override string ToString() => $"Folder {Path}, {Count} files";
+}
+
 /// <summary>A file row in Local Changes. In the Staged list it shows the staged status letter, in Unstaged the unstaged one.</summary>
-public sealed class FileChangeViewModel
+public sealed partial class FileChangeViewModel : ChangeRowViewModel
 {
     /// <param name="toggleStage">Double-click: stage (Unstaged list) or unstage (Staged list) this row.</param>
     public FileChangeViewModel(FileChange change, bool staged, Action<FileChangeViewModel>? toggleStage = null)
@@ -517,6 +711,11 @@ public sealed class FileChangeViewModel
     public string ToolTip => Change.OriginalPath is { } from
         ? $"{StatusText}: {from} → {Change.Path}"
         : $"{StatusText}: {Change.Path}";
+
+    public override string Key => "F:" + Change.Path;
+
+    /// <summary>Show the folder next to the name (flat list); in tree view the folder rows say it.</summary>
+    [ObservableProperty] private bool _showDirectory = true;
 
     public override string ToString() => $"{StatusText} {Change.Path}";
 }

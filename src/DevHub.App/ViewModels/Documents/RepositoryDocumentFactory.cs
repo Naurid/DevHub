@@ -1,4 +1,5 @@
 using DevHub.Core.Git;
+using DevHub.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels.Git;
 
@@ -6,16 +7,17 @@ namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// Creates repository tabs from ids like "Repository:C:\P\DevHub" (opening from the
-/// Repositories tool window, and restoring tabs at startup).
+/// Projects tool window, and restoring tabs at startup).
 /// </summary>
 /// <param name="runner">
 /// Shared git runner; null when git isn't installed (tabs then explain that). The default value
 /// is what lets DI construct this without a registered GitRunner.
 /// </param>
-public sealed class RepositoryDocumentFactory(RepositoryTabServices services, GitRunner? runner = null) : IDocumentFactory
+public sealed class RepositoryDocumentFactory(RepositoryTabServices services, ISettingsStore store, GitRunner? runner = null)
+    : IDocumentFactory
 {
     /// <summary>Panel widths shared by every repository tab this factory creates.</summary>
-    private readonly RepositoryTabLayout _layout = new();
+    private readonly RepositoryTabLayout _layout = new(store);
 
     public string IdPrefix => RepositoryDocumentViewModel.IdPrefix;
 

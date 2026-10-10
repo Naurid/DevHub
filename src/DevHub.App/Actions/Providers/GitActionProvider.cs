@@ -79,7 +79,7 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Category = "Git",
             IconKind = IconKind.Commit,
             Gesture = "Ctrl+K",
-            Description = "Show Local Changes of the active repository with the cursor in the commit message.",
+            Description = "Show Changes of the active repository with the cursor in the commit message.",
         };
 
         // Ctrl+Alt+Z = JetBrains' Rollback. Window-wide, so it works wherever the focus is.
@@ -88,7 +88,7 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Category = "Git",
             IconKind = IconKind.Delete,
             Gesture = "Ctrl+Alt+Z",
-            Description = "Throw away the unstaged changes of the file selected in Local Changes (asks first).",
+            Description = "Throw away the unstaged changes of the file selected in Changes (asks first).",
         };
 
         // Ctrl+Shift+` = JetBrains' Branches popup (the key left of 1 on US keyboards).
