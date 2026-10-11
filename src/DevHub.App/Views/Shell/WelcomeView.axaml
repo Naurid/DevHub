@@ -29,11 +29,12 @@
                           LineThickness="3" />
             <StackPanel VerticalAlignment="Center" Spacing="{DynamicResource Spacing.Small}">
                 <TextBlock Classes="header" Text="Welcome to DevHub" />
-                <TextBlock Classes="secondary" Text="Projects, templates and repositories in one place." />
+                <TextBlock Classes="secondary" Text="Your developer workbench, built from the plugins you choose." />
             </StackPanel>
         </StackPanel>
 
-        <ItemsControl ItemsSource="{a:Actions 'App.FindAction,Navigate.Generate,Navigate.Import,Navigate.Templates,Repositories.AddFolder,ToolWindow.Repositories,App.Settings'}">
+        <!-- Every action with a WelcomeOrder, from the shell and the loaded plugins. -->
+        <ItemsControl ItemsSource="{a:WelcomeActions}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="a:AppAction">
                     <!-- AutomationProperties.Name: what screen readers (and UI tests) call the button;

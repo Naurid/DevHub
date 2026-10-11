@@ -26,7 +26,7 @@ public sealed class AppAction
         Command = command;
     }
 
-    /// <summary>Stable id, "Area.Verb" style (see <see cref="ActionIds"/>). Used by menus, keymaps and settings.</summary>
+    /// <summary>Stable id, "Area.Verb" style (e.g. "Git.Commit"). Used by menus, keymaps and settings.</summary>
     public string Id { get; }
 
     /// <summary>Short label for menus and buttons, e.g. "Rescan". Use "…" when it opens a dialog.</summary>
@@ -49,6 +49,22 @@ public sealed class AppAction
     /// Settable so a user keymap can override the default later (UI-0 step 9).
     /// </summary>
     public string? Gesture { get; set; }
+
+    // ---- Where it appears (besides Find Action and its shortcut) -------------------------------
+    // Orders: lowest first; a new hundred (0–99, 100–199, …) starts a new group, with a separator
+    // in front. So "Commit" at 0 and "Discard" at 100 end up in separate groups.
+
+    /// <summary>Top-level main-menu (☰) group it appears in: "File", "View", "Git", … Null = not in the main menu.</summary>
+    public string? Menu { get; init; }
+
+    /// <summary>Position inside its <see cref="Menu"/> group.</summary>
+    public int MenuOrder { get; init; }
+
+    /// <summary>Position on the title-bar toolbar; null = not on the toolbar.</summary>
+    public int? ToolbarOrder { get; init; }
+
+    /// <summary>Position in the Welcome view's list (shown with no tab open); null = not there.</summary>
+    public int? WelcomeOrder { get; init; }
 
     /// <summary>"Category: Text", or just Text. What Find Action lists and searches.</summary>
     public string DisplayName => Category is null ? Text : $"{Category}: {Text}";

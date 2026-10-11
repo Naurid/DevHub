@@ -16,6 +16,10 @@ public sealed class RepositoryActionProvider(RepositoriesViewModel repositories)
         {
             Category = "Projects",
             IconKind = IconKind.Add,
+            Menu = "Projects",
+            MenuOrder = 0,
+            ToolbarOrder = 100,
+            WelcomeOrder = 40,
             Description = "Choose a folder to scan for projects (git repositories).",
         };
 
@@ -24,6 +28,9 @@ public sealed class RepositoryActionProvider(RepositoriesViewModel repositories)
             Category = "Projects",
             IconKind = IconKind.Refresh,
             Gesture = "F5",
+            Menu = "Projects",
+            MenuOrder = 100,
+            ToolbarOrder = 101,
             Description = "Scan the project folders for git repositories again.",
         };
     }

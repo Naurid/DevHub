@@ -16,13 +16,14 @@ namespace DevHub.ViewModels.Git;
 /// </summary>
 public sealed partial class CloneDialogViewModel : DialogViewModelBase
 {
-    private readonly GitHubSession _session;
+    private readonly GitHubSession? _session;
     private readonly IDialogService _dialogs;
     private IReadOnlyList<GitHubRepositoryRowViewModel> _allRepositories = [];
     private CancellationTokenSource? _loadCts;
 
+    /// <param name="session">The GitHub account; null when the GitHub plugin is off (then only a URL can be cloned).</param>
     /// <param name="folder">Where the clone goes by default (a scan folder).</param>
-    public CloneDialogViewModel(GitHubSession session, IDialogService dialogs, string folder)
+    public CloneDialogViewModel(GitHubSession? session, IDialogService dialogs, string folder)
     {
         _session = session;
         _dialogs = dialogs;
@@ -92,6 +93,12 @@ public sealed partial class CloneDialogViewModel : DialogViewModelBase
 
     private async Task LoadAccountsAsync()
     {
+        if (_session is null)
+        {
+            ListMessage = "The GitHub plugin is switched off (Settings → Plugins): clone from a URL.";
+            IsFromGitHub = false;
+            return;
+        }
         Accounts = await _session.ListAccountsAsync();
         if (Accounts.Count == 0)
         {
@@ -111,7 +118,7 @@ public sealed partial class CloneDialogViewModel : DialogViewModelBase
         _loadCts?.Cancel();
         _allRepositories = [];
         Repositories = [];
-        if (account is null || _session.GitHub is null)
+        if (account is null || _session?.GitHub is null)
             return;
 
         var cts = _loadCts = new CancellationTokenSource();
@@ -137,7 +144,7 @@ public sealed partial class CloneDialogViewModel : DialogViewModelBase
     [RelayCommand]
     private async Task SignInAsync()
     {
-        if (await _session.SignInAsync())
+        if (_session is not null && await _session.SignInAsync())
         {
             IsFromGitHub = true;
             await LoadAccountsAsync();

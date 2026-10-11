@@ -21,6 +21,9 @@ public sealed class FindActionProvider(MainWindowViewModel shell, Func<FindActio
             Category = "Help",
             IconKind = IconKind.Search,
             Gesture = "Ctrl+Shift+A",
+            Menu = "Help",
+            ToolbarOrder = 0,
+            WelcomeOrder = 0,
             Description = "Search every action by name and run it.",
         };
     }

@@ -37,19 +37,7 @@ public partial class DocumentManager : ViewModelBase
     /// <summary>The selected tab (two-way bound to the tab strip), or null when none is open.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ActiveTitle))]
-    [NotifyPropertyChangedFor(nameof(ActiveRepository))]
     private DocumentViewModelBase? _active;
-
-    /// <summary>
-    /// The repository of the active tab: the tab itself when it's a repository, or for a diff / blame
-    /// tab the open repository tab it belongs to; else null. Git actions and the title-bar branch
-    /// widget act on this repository.
-    /// </summary>
-    public RepositoryDocumentViewModel? ActiveRepository =>
-        Active as RepositoryDocumentViewModel
-        ?? (Active?.RepositoryPath is { } path
-            ? Open.OfType<RepositoryDocumentViewModel>().FirstOrDefault(r => string.Equals(r.Path, path, StringComparison.OrdinalIgnoreCase))
-            : null);
 
     /// <summary>True while at least one tab is open (false shows the Welcome view).</summary>
     public bool HasDocuments => Open.Count > 0;
@@ -68,12 +56,7 @@ public partial class DocumentManager : ViewModelBase
         foreach (var document in Available)
             AttachCommands(document);
 
-        Open.CollectionChanged += (_, _) =>
-        {
-            OnPropertyChanged(nameof(HasDocuments));
-            // A diff / blame tab's repository can open or close while it stays active.
-            OnPropertyChanged(nameof(ActiveRepository));
-        };
+        Open.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDocuments));
         Restore(_store.Load().Editor);
     }
 

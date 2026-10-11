@@ -66,7 +66,9 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
     /// <summary>The diff runs edge to edge, like in Local Changes.</summary>
     public override bool FillsEditorArea => true;
 
-    public override string RepositoryPath { get; }
+    public string RepositoryPath { get; }
+
+    public override string? ContextPath => RepositoryPath;
     public string FilePath { get; }
     public bool IsStaged { get; }
 

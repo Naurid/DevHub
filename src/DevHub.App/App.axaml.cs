@@ -1,18 +1,16 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
 using DevHub.Actions;
 using DevHub.Actions.Providers;
 using DevHub.Controls;
-using DevHub.Git.Core;
-using DevHub.GitHub.Core;
-using DevHub.Projects.Core;
+using DevHub.Plugins;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Dialogs.Settings;
 using DevHub.ViewModels.Documents;
-using DevHub.ViewModels.Git;
 using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
@@ -34,11 +32,30 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // DEVHUB_DATA_DIR (optional) points settings at another folder, e.g. to try things or
+            // run a test copy without touching your real %APPDATA%\DevHub\settings.json.
+            var store = new JsonSettingsStore(Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } dir ? dir : null);
+
+            // Which plugins load is decided before the container exists: a switched-off plugin
+            // registers nothing, so no menu item, tab, tool window or shortcut of it appears.
+            var plugins = PluginHost.Load(store);
+
             var collection = new ServiceCollection();
-            ConfigureServices(collection);
+            ConfigureServices(collection, store, plugins);
+            plugins.ConfigureServices(collection, store);
+#if DEBUG
+            // Check every registration can be built now, not when it's first used: with plugins
+            // switched on and off, a missing dependency would otherwise only fail on some click.
+            Services = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true });
+#else
             Services = collection.BuildServiceProvider();
+#endif
             // XAML markup extensions ({a:Action …}, in the Sdk and in plugins) read the container from here.
             AppServices.Current = Services;
+
+            // The plugins' own resources (design tokens, styles), before any window exists.
+            foreach (var uri in plugins.Resources)
+                Resources.MergedDictionaries.Add(new ResourceInclude(uri) { Source = uri });
 
             // Push the accent into Fluent's keys before any window is created.
             var theme = Services.GetRequiredService<ThemeService>();
@@ -69,13 +86,21 @@ public partial class App : Application
                 Services.GetRequiredService<ToolWindowManager>().Save();
             };
 
+            // A plugin that was switched on but couldn't load (e.g. its requirement is missing).
+            if (plugins.Summary() is { } summary)
+                Services.GetRequiredService<IStatusService>().Show(summary);
+
             desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private static void ConfigureServices(IServiceCollection services)
+    /// <summary>
+    /// The shell's own services: window, tabs, tool-window frame, menus, Settings, Find Action.
+    /// Every feature registers itself in its plugin (Plugins/FeaturePlugins.cs).
+    /// </summary>
+    private static void ConfigureServices(IServiceCollection services, ISettingsStore store, PluginHost plugins)
     {
         // Services (UI seams the ViewModels talk to instead of touching Avalonia).
         // Registered once; exposed both as the concrete type (for App to Attach the window)
@@ -89,64 +114,21 @@ public partial class App : Application
         services.AddSingleton<StatusBarViewModel>();
         services.AddSingleton<IStatusService>(sp => sp.GetRequiredService<StatusBarViewModel>());
 
-        // Core services.
-        // DEVHUB_DATA_DIR (optional) points settings at another folder, e.g. to try things or
-        // run a test copy without touching your real %APPDATA%\DevHub\settings.json.
-        services.AddSingleton<ISettingsStore>(_ =>
-            new JsonSettingsStore(Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } dir ? dir : null));
-        services.AddSingleton<IToolLocator, ToolLocator>();
-        services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
-        services.AddSingleton<IProjectLauncher, ProjectLauncher>();
-        services.AddSingleton<ExternalEditor>();
-        services.AddSingleton<GitHubSession>();
-        services.AddSingleton<TerminalLauncher>();
-        services.AddSingleton<RepositoryTabServices>();
-        services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
+        services.AddSingleton(store);
+        services.AddSingleton(plugins);
 
-        // Git: one shared command log and runner. The runner is only registered when git is
-        // installed (and new enough); without it, repository tabs show how to install Git.
-        services.AddSingleton<IGitCommandLog, GitCommandLog>();
-        if (GitExecutable.TryLocate() is { } git)
-        {
-            services.AddSingleton(git);
-            services.AddSingleton<GitRunner>(sp => new GitRunner(git, sp.GetRequiredService<IGitCommandLog>()));
-            // GitHub: the account comes from Git Credential Manager (git), so it needs git too.
-            services.AddSingleton<GitCredentialManager>();
-            services.AddSingleton(new GitHubApi(new HttpClient { Timeout = TimeSpan.FromSeconds(30) }));
-            services.AddSingleton<GitHubService>();
-        }
-
-        // Tool windows: registered as themselves (for providers) and as the base type, so the
-        // ToolWindowManager receives all of them as IEnumerable<ToolWindowViewModelBase>.
-        services.AddSingleton<RepositoriesViewModel>();
-        services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<RepositoriesViewModel>());
-        services.AddSingleton<GitConsoleViewModel>();
-        services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<GitConsoleViewModel>());
+        // Tool windows (from plugins, registered as ToolWindowViewModelBase) and editor tabs
+        // (DocumentViewModelBase singletons, IDocumentFactory for one tab per id).
         services.AddSingleton<ToolWindowManager>();
-
-        // Documents (editor tabs): each registered as the base type so the DocumentManager
-        // receives them all as IEnumerable<DocumentViewModelBase>; the order is the menu order.
-        services.AddSingleton<DocumentViewModelBase, TemplatesViewModel>();
-        services.AddSingleton<DocumentViewModelBase, GenerateViewModel>();
-        services.AddSingleton<DocumentViewModelBase, ImportViewModel>();
+        services.AddSingleton<DocumentManager>();
 #if DEBUG
         // Design-system playground; not shipped in Release builds.
         services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();
 #endif
-        // Instance documents: one tab per repository, created on demand / restored by id.
-        // The layout (panel widths, tree / flat, unified / side-by-side) is shared by all of them.
-        services.AddSingleton(sp => new RepositoryTabLayout(sp.GetRequiredService<ISettingsStore>()));
-        services.AddSingleton<IDocumentFactory, RepositoryDocumentFactory>();
-        services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
-        services.AddSingleton<IDocumentFactory, BlameDocumentFactory>();
-        services.AddSingleton<DocumentManager>();
-        services.AddSingleton<CloneOperations>();
 
         // Dialogs: transient = a fresh instance every time one is requested, so each opening
         // of Settings starts from the saved values. The Func is a tiny factory for the action.
-        services.AddTransient<AppearanceSettingsPageViewModel>();
-        services.AddTransient<OpenWithSettingsPageViewModel>();
-        services.AddTransient<GitHubSettingsPageViewModel>();
+        services.AddTransient<SettingsPageViewModelBase, AppearanceSettingsPageViewModel>();
         services.AddTransient<SettingsDialogViewModel>();
         services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
         services.AddTransient<FindActionViewModel>();
@@ -155,15 +137,13 @@ public partial class App : Application
         // Shell.
         services.AddSingleton<MainWindowViewModel>();
 
-        // Actions: each provider contributes some; the registry collects them all
-        // (DI passes every registered IActionProvider as IEnumerable<IActionProvider>).
+        // Actions: each provider contributes some (plugins add theirs); the registry collects
+        // them all (DI passes every registered IActionProvider as IEnumerable<IActionProvider>).
         services.AddSingleton<IActionProvider, ViewActionProvider>();
-        services.AddSingleton<IActionProvider, RepositoryActionProvider>();
         services.AddSingleton<IActionProvider, ToolWindowActionProvider>();
         services.AddSingleton<IActionProvider, DocumentActionProvider>();
         services.AddSingleton<IActionProvider, SettingsActionProvider>();
         services.AddSingleton<IActionProvider, FindActionProvider>();
-        services.AddSingleton<IActionProvider, GitActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

@@ -21,7 +21,11 @@ public sealed class SettingsActionProvider(IDialogService dialogs, Func<Settings
             Category = "File",
             IconKind = IconKind.Settings,
             Gesture = "Ctrl+Alt+S",
-            Description = "Appearance, Open With and other preferences.",
+            Menu = "File",
+            MenuOrder = 900,
+            ToolbarOrder = 201,
+            WelcomeOrder = 900,
+            Description = "Appearance, plugins and the preferences of each plugin.",
         };
     }
 }

@@ -14,6 +14,12 @@ public abstract partial class SettingsPageViewModelBase : ViewModelBase
     /// <summary>Extra words the dialog's search box matches, e.g. "theme accent color".</summary>
     public virtual string Keywords => "";
 
+    /// <summary>
+    /// Position in the page list, lowest first. Pages come from every loaded plugin (registered
+    /// in DI as transient <see cref="SettingsPageViewModelBase"/>); Appearance is 0, Plugins 900.
+    /// </summary>
+    public virtual int Order => 500;
+
     /// <summary>True when the page has edits that Apply would save (shown as a dot in the list).</summary>
     [ObservableProperty] private bool _isModified;
 

@@ -42,7 +42,9 @@ public sealed partial class BlameDocumentViewModel : DocumentViewModelBase
     public override string Icon => IconKind.Commit;
     public override bool FillsEditorArea => true;
 
-    public override string RepositoryPath { get; }
+    public string RepositoryPath { get; }
+
+    public override string? ContextPath => RepositoryPath;
     public string FilePath { get; }
     public string? CommitId { get; }
 

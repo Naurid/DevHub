@@ -19,7 +19,17 @@ menus, pages or shortcuts. Decisions confirmed on 2026-10-11:
 - **Timing:** now, before M1. Templates will be written as a plugin from the start.
 - **First run:** presets ("Git client", "Project templates", "Everything") above a checklist.
 
-Status: **design agreed; P1 (Core split + plugin settings sections) and P2 (`DevHub.Sdk`) done.**
+Status: **P1 (Core split + plugin settings sections), P2 (`DevHub.Sdk`) and P3 (plugin contract +
+extension points) done.**
+P3 as built: `PluginInfo` / `PluginResolver` in Sdk.Core (tested); `IPlugin`, `PluginContext`,
+`[DevHubPlugin]`, `TitleBarWidgetViewModelBase` / `StatusBarWidgetViewModelBase` in the Sdk;
+`PluginHost` in the app scans `DevHub*.dll`, resolves against `AppSettings.EnabledPlugins` (null =
+all) before DI is built, and shows a status note for plugins that couldn't load. Placement is
+action metadata (`Menu`/`MenuOrder`, `ToolbarOrder`, `WelcomeOrder`; documents via
+`Navigation`, tool windows via `Order`). `{a:Action id}` hides its control when the id's plugin is
+off. Git owns `ActiveRepositoryService` (the shell only has `DocumentViewModelBase.ContextPath`).
+Debug builds validate all DI registrations at startup. Left for P4: the plugins' own assemblies,
+their own token files, `IRemoteHostProvider` (GitHub is already optional for Git: null-tolerant).
 P2 notes: namespaces didn't change (`DevHub.Controls` etc. now span Sdk + App); XAML uses
 `using:` namespaces; the shell sets the base classes' host-only members through
 `InternalsVisibleTo("DevHub.App")`; markup extensions get the container from `AppServices.Current`. Progress is tracked in `docs/ROADMAP.md` (milestone P).

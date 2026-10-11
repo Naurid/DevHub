@@ -4,49 +4,52 @@ using DevHub.ViewModels.Documents;
 namespace DevHub.Actions.Providers;
 
 /// <summary>
-/// "Open X" for every document (New Project = Ctrl+N, like Rider), plus
-/// tab handling: Close Tab (Ctrl+F4), Next/Previous Tab (Alt+Right / Alt+Left).
+/// "Open X" for every single document (label, shortcut, menu and Welcome place come from the
+/// document's <see cref="DocumentViewModelBase.Navigation"/>), plus tab handling: Close Tab
+/// (Ctrl+F4), Next/Previous Tab (Alt+Right / Alt+Left).
 /// </summary>
 public sealed class DocumentActionProvider(DocumentManager documents) : IActionProvider
 {
-    /// <summary>Shortcuts and nicer menu labels for specific documents (by document Id).</summary>
-    private static readonly Dictionary<string, (string Text, string? Gesture)> Overrides = new()
-    {
-        ["Generate"] = ("New Project…", "Ctrl+N"),
-        ["Import"] = ("Import Folder…", null),
-    };
-
     public IEnumerable<AppAction> GetActions()
     {
         foreach (var document in documents.Available)
         {
             var captured = document;
-            var (text, gesture) = Overrides.TryGetValue(document.Id, out var o) ? o : (document.Title, null);
+            var navigation = document.Navigation;
 
-            yield return new AppAction(ActionIds.NavigatePrefix + document.Id, text,
+            yield return new AppAction(ActionIds.NavigatePrefix + document.Id, navigation.Text ?? document.Title,
                 new RelayCommand(() => documents.Show(captured)))
             {
                 Category = "Navigate",
                 IconKind = document.Icon,
-                Gesture = gesture,
+                Gesture = navigation.Gesture,
+                Menu = navigation.Menu,
+                MenuOrder = navigation.MenuOrder,
+                WelcomeOrder = navigation.WelcomeOrder,
             };
         }
 
-        yield return new AppAction(ActionIds.CloseTab, "Close Tab", documents.CloseActiveCommand)
-        {
-            Category = "Editor",
-            IconKind = Controls.IconKind.Close,
-            Gesture = "Ctrl+F4",
-        };
         yield return new AppAction(ActionIds.NextTab, "Next Tab", new RelayCommand(() => documents.Cycle(+1)))
         {
             Category = "Editor",
             Gesture = "Alt+Right",
+            Menu = "View",
+            MenuOrder = 200,
         };
         yield return new AppAction(ActionIds.PreviousTab, "Previous Tab", new RelayCommand(() => documents.Cycle(-1)))
         {
             Category = "Editor",
             Gesture = "Alt+Left",
+            Menu = "View",
+            MenuOrder = 201,
+        };
+        yield return new AppAction(ActionIds.CloseTab, "Close Tab", documents.CloseActiveCommand)
+        {
+            Category = "Editor",
+            IconKind = Controls.IconKind.Close,
+            Gesture = "Ctrl+F4",
+            Menu = "View",
+            MenuOrder = 202,
         };
     }
 }

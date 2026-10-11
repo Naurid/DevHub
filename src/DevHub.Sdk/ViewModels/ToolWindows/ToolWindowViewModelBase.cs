@@ -30,6 +30,15 @@ public abstract partial class ToolWindowViewModelBase : ViewModelBase
     /// <summary>Which edge it docks to.</summary>
     public abstract ToolWindowSlot Slot { get; }
 
+    /// <summary>
+    /// Position in the stripes, the View menu and the Alt+1…9 shortcuts (lowest first), so they
+    /// don't depend on which plugins load or in what order. The Projects tool window is 0 (Alt+1).
+    /// </summary>
+    public virtual int Order => 100;
+
+    /// <summary>Position of its show/hide action in the Welcome view; null = not there.</summary>
+    public virtual int? WelcomeOrder => null;
+
     /// <summary>Whether it's currently shown. Set by <see cref="ToolWindowManager"/> only.</summary>
     [ObservableProperty] private bool _isOpen;
 

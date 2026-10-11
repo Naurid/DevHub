@@ -15,6 +15,7 @@ public partial class UiGalleryViewModel : DocumentViewModelBase, IDisposable
 
     public override string Title => "UI Gallery";
     public override string Icon => IconKind.Palette;
+    public override DocumentNavigation Navigation => new() { Menu = "View", MenuOrder = 400 };
 
     [ObservableProperty] private bool _isDark;
     [ObservableProperty] private bool _isCompact;

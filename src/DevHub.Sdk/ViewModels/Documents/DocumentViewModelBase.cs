@@ -31,10 +31,18 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     public virtual bool FillsEditorArea => false;
 
     /// <summary>
-    /// The repository this tab belongs to (a repository tab, or a diff / blame tab of one of its
-    /// files), or null. Git actions use it, so they also work while a diff or blame tab is in front.
+    /// The folder this tab is about (a repository, or the repository of a diff / blame tab), or
+    /// null. Lets a plugin relate tabs to each other: Git acts on the repository of the tab in
+    /// front, also while one of its diff tabs is in front.
     /// </summary>
-    public virtual string? RepositoryPath => null;
+    public virtual string? ContextPath => null;
+
+    /// <summary>
+    /// How this (single) document's "open" action, <c>Navigate.&lt;Id&gt;</c>, appears: label,
+    /// shortcut, main-menu group and Welcome position. Instance documents (from an
+    /// <see cref="IDocumentFactory"/>) have no such action.
+    /// </summary>
+    public virtual DocumentNavigation Navigation => new();
 
     /// <summary>Has unsaved / uncommitted changes: the tab shows a dot (e.g. a repository with local changes).</summary>
     [ObservableProperty] private bool _isDirty;

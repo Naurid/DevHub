@@ -7,13 +7,13 @@ using DevHub.ViewModels.Git;
 namespace DevHub.Actions.Providers;
 
 /// <summary>
-/// Git actions. They act on the **active repository** (<see cref="DocumentManager.ActiveRepository"/>: the
+/// Git actions. They act on the **active repository** (<see cref="ActiveRepositoryService.Repository"/>: the
 /// repository tab in front, or the one a diff / blame tab in front belongs to) and are disabled otherwise: commit, push / update / fetch, stash, branches, refresh;
 /// more join milestone by milestone (docs/GIT_CLIENT_PLAN.md).
 /// </summary>
 public sealed class GitActionProvider : IActionProvider, IDisposable
 {
-    private readonly DocumentManager _documents;
+    private readonly ActiveRepositoryService _active;
     private readonly AsyncRelayCommand _refresh;
     private readonly RelayCommand _commit;
     private readonly AsyncRelayCommand _discard;
@@ -30,34 +30,34 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _clone;
     private readonly RelayCommand _openTerminal;
 
-    public GitActionProvider(DocumentManager documents, CloneOperations clone)
+    public GitActionProvider(ActiveRepositoryService active, CloneOperations clone)
     {
-        _documents = documents;
+        _active = active;
         // Clone needs no repository: always available.
         _clone = new AsyncRelayCommand(clone.CloneAsync);
         _refresh = new AsyncRelayCommand(
-            () => _documents.ActiveRepository!.RefreshAsync(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository!.RefreshAsync(),
+            () => _active.Repository is not null);
         _commit = new RelayCommand(
             () => Shown().FocusCommit(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository is not null);
         // Enabled whenever a repository tab is active (not only with a selection), so the key
         // always answers: it discards, or the status bar says what to select.
         _discard = new AsyncRelayCommand(
             () => Shown().DiscardSelectionAsync(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository is not null);
         _branches = new RelayCommand(
-            () => _documents.ActiveRepository!.BranchPopup.Open(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository!.BranchPopup.Open(),
+            () => _active.Repository is not null);
         _newBranch = new AsyncRelayCommand(
-            () => _documents.ActiveRepository!.NewBranchAsync(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository!.NewBranchAsync(),
+            () => _active.Repository is not null);
         _stash = new AsyncRelayCommand(
-            () => _documents.ActiveRepository!.StashChangesAsync(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository!.StashChangesAsync(),
+            () => _active.Repository is not null);
         _unstash = new RelayCommand(
             () => Shown().ShowStashes(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository is not null);
 
         // The active tab's own commands (the same ones its toolbar buttons use). While one is
         // already running there, they do nothing (their CanExecute is false).
@@ -66,13 +66,13 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         _push = RemoteCommand(r => r.PushCommand);
         _forcePush = RemoteCommand(r => r.ForcePushCommand);
         _openTerminal = new RelayCommand(
-            () => _documents.ActiveRepository!.OpenTerminal(),
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository!.OpenTerminal(),
+            () => _active.Repository is not null);
         _manageRemotes = RemoteCommand(r => r.ManageRemotesCommand);
         _publish = RemoteCommand(r => r.PublishToGitHubCommand);
 
         // Re-check "is a repository tab active?" when the active tab changes. Unsubscribed in Dispose.
-        _documents.PropertyChanged += OnDocumentsChanged;
+        _active.PropertyChanged += OnActiveChanged;
     }
 
     public IEnumerable<AppAction> GetActions()
@@ -81,6 +81,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitCommit, "Commit…", _commit)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 0,
             IconKind = IconKind.Commit,
             Gesture = "Ctrl+K",
             Description = "Show Changes of the active repository with the cursor in the commit message.",
@@ -90,6 +92,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitDiscard, "Discard Changes…", _discard)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 100,
             IconKind = IconKind.Delete,
             Gesture = "Ctrl+Alt+Z",
             Description = "Throw away the unstaged changes of the file selected in Changes (asks first).",
@@ -99,6 +103,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitBranches, "Branches…", _branches)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 200,
             IconKind = IconKind.Vcs,
             Gesture = "Ctrl+Shift+OemTilde",
             Description = "Search the active repository's branches and check one out.",
@@ -108,6 +114,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitPush, "Push…", _push)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 1,
             IconKind = IconKind.Push,
             Gesture = "Ctrl+Shift+K",
             Description = "Push the current branch of the active repository (shows the commits first).",
@@ -116,6 +124,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitPull, "Update", _pull)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 2,
             IconKind = IconKind.Update,
             Gesture = "Ctrl+T",
             Description = "Pull the current branch's new commits (fast-forward; offers a rebase if both sides changed).",
@@ -124,6 +134,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitFetch, "Fetch", _fetch)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 3,
             IconKind = IconKind.Fetch,
             Description = "Download what's new on every remote of the active repository; changes nothing locally.",
         };
@@ -131,6 +143,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitForcePush, "Force Push…", _forcePush)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 4,
             IconKind = IconKind.Push,
             Description = "Overwrite the remote branch with yours (after amend / rebase). Asks first; --force-with-lease.",
         };
@@ -139,6 +153,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitStash, "Stash Changes…", _stash)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 101,
             IconKind = IconKind.Copy,
             Description = "Put the uncommitted changes of the active repository aside (asks for a message first).",
         };
@@ -146,6 +162,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitUnstash, "Unstash Changes…", _unstash)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 102,
             IconKind = IconKind.Copy,
             Description = "Show the stashes of the active repository, to apply or pop one.",
         };
@@ -154,6 +172,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitManageRemotes, "Manage Remotes…", _manageRemotes)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 300,
             IconKind = IconKind.Fetch,
             Description = "Add a remote (name + URL) to the active repository, change its URL, rename or remove it.",
         };
@@ -161,6 +181,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitPublish, "Publish to GitHub…", _publish)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 301,
             IconKind = IconKind.Push,
             Description = "Create a repository on your GitHub account, add it as a remote and push the current branch.",
         };
@@ -168,6 +190,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitClone, "Clone Repository…", _clone)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 302,
             IconKind = IconKind.Fetch,
             Description = "Clone one of your GitHub repositories (or any URL) and open it as a repository tab.",
         };
@@ -175,6 +199,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitNewBranch, "New Branch…", _newBranch)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 201,
             IconKind = IconKind.Add,
             Description = "Create a branch from the current commit in the active repository.",
         };
@@ -183,6 +209,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitOpenTerminal, "Open Terminal", _openTerminal)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 400,
             IconKind = IconKind.Terminal,
             Gesture = "Alt+F12",
             Description = "Open Git Bash (or Windows Terminal / PowerShell) in the active repository's folder.",
@@ -192,6 +220,8 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         yield return new AppAction(ActionIds.GitRefresh, "Refresh Repository", _refresh)
         {
             Category = "Git",
+            Menu = "Git",
+            MenuOrder = 401,
             IconKind = IconKind.Refresh,
             Gesture = "Ctrl+Alt+Y",
             Description = "Re-read the active repository tab (branch, and later changes).",
@@ -202,24 +232,19 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     /// The active repository, with its tab brought to the front: for actions that show something
     /// in it (commit box, Stashes) when a diff or blame tab of that repository is in front.
     /// </summary>
-    private RepositoryDocumentViewModel Shown()
-    {
-        var repository = _documents.ActiveRepository!;
-        _documents.Active = repository;
-        return repository;
-    }
+    private RepositoryDocumentViewModel Shown() => _active.BringToFront();
 
     private AsyncRelayCommand RemoteCommand(Func<RemoteOperations, IAsyncRelayCommand> pick) =>
         new(async () =>
             {
-                if (_documents.ActiveRepository?.Remote is { } remote && pick(remote) is { } command && command.CanExecute(null))
+                if (_active.Repository?.Remote is { } remote && pick(remote) is { } command && command.CanExecute(null))
                     await command.ExecuteAsync(null);
             },
-            () => _documents.ActiveRepository is not null);
+            () => _active.Repository is not null);
 
-    private void OnDocumentsChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnActiveChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(DocumentManager.ActiveRepository))
+        if (e.PropertyName == nameof(ActiveRepositoryService.Repository))
         {
             _refresh.NotifyCanExecuteChanged();
             _commit.NotifyCanExecuteChanged();
@@ -238,5 +263,5 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
         }
     }
 
-    public void Dispose() => _documents.PropertyChanged -= OnDocumentsChanged;
+    public void Dispose() => _active.PropertyChanged -= OnActiveChanged;
 }

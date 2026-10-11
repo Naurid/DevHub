@@ -39,6 +39,14 @@
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <!-- Widgets from plugins (shown through the ViewLocator), then the built-in ones. -->
+                <ItemsControl ItemsSource="{Binding Widgets}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
                 <Button Classes="statusWidget"
                         Content="{Binding DensityLabel}"
                         ToolTip.Tip="Toggle Compact Mode"

@@ -74,11 +74,13 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
       LanguageToolChoice), Git.Core, GitHub.Core; tests split + TestKit; settings sections + migration (tested)
 - [x] P2. `DevHub.Sdk`: base classes, Controls, Themes, action contracts, service interfaces; ViewLocator,
       Icon and avares URIs work across assemblies (XAML uses `using:` namespaces)
-- [ ] **NEXT — P3.** Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
+- [x] P3. Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
       metadata, settings-page list, title/status-bar widgets, Welcome placement, tool-window order;
-      no `ActiveRepository` in the shell
-- [ ] P4. Move Projects, Git, GitHub into plugin assemblies; soft hooks `IProjectOpener`, `IRemoteHostProvider`;
-      drop the Templates placeholder pages
+      no `ActiveRepository` in the shell; the four features are `IPlugin`s (still inside DevHub.App),
+      `enabledPlugins` in settings decides what loads; `IProjectOpener` soft hook; GitHub optional for Git
+- [ ] **NEXT — P4.** Move Projects, Git, GitHub (and the Templates placeholders) into plugin assemblies,
+      each with its own ids class and its feature tokens (`Brush.Diff.*`, graph, branch widget) as plugin
+      resources; `IRemoteHostProvider` soft hook (Publish to GitHub / avatars contributed by GitHub)
 - [ ] P5. Settings → Plugins page, first-run presets + checklist, skipped-plugin notes
 - [ ] P6. Docs: PLUGINS.md as reference + recipe, CLAUDE.md, UI_GUIDE §5, skills
 

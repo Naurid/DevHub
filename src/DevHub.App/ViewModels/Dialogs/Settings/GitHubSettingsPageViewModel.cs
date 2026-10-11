@@ -22,6 +22,7 @@ public sealed partial class GitHubSettingsPageViewModel : SettingsPageViewModelB
     }
 
     public override string Title => "GitHub";
+    public override int Order => 300;
     public override string Keywords => "github account sign in login logout token credential manager clone publish";
 
     public ObservableCollection<GitHubAccountRowViewModel> Accounts { get; } = new();

@@ -13,8 +13,10 @@ namespace DevHub.ViewModels.Git;
 /// then the new repository opens as a tab and the Repositories tool window rescans when the clone
 /// landed in one of its folders. One clone at a time.
 /// </summary>
-public sealed class CloneOperations(GitHubSession github, IDialogService dialogs, IStatusService status,
-    DocumentManager documents, ISettingsStore settings, RepositoriesViewModel repositories, GitRunner? runner = null)
+/// <param name="github">The GitHub account for "your repositories"; null when the GitHub plugin is off (clone by URL only).</param>
+public sealed class CloneOperations(IDialogService dialogs, IStatusService status,
+    DocumentManager documents, ISettingsStore settings, RepositoriesViewModel repositories, GitRunner? runner = null,
+    GitHubSession? github = null)
 {
     private bool _busy;
 

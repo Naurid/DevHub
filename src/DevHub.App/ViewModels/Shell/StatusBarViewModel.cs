@@ -36,6 +36,9 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
 
     public bool HasTask => CurrentTask is not null;
 
+    /// <summary>Widgets from the loaded plugins, left of the theme / density widgets. Set once by the main window ViewModel.</summary>
+    public IReadOnlyList<StatusBarWidgetViewModelBase> Widgets { get; internal set; } = [];
+
     public StatusBarViewModel(IThemeService theme)
     {
         _theme = theme;

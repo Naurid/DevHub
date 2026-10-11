@@ -25,6 +25,12 @@ public sealed class AppSettings
     public EditorLayout? Editor { get; set; }
 
     /// <summary>
+    /// Ids of the plugins the user switched on (Settings → Plugins, first-run picker). Null until
+    /// the first choice: then every installed plugin loads. Changes apply after a restart.
+    /// </summary>
+    public List<string>? EnabledPlugins { get; set; }
+
+    /// <summary>
     /// Plugin id → that plugin's settings, kept as raw JSON. Sections of plugins that are switched
     /// off (or unknown to this version) are kept as they are, so turning a plugin back on finds
     /// its settings again.

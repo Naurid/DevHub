@@ -22,7 +22,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     private readonly IProjectLauncher _launcher;
     private readonly IStatusService _status;
     private readonly ISettingsStore _store;
-    private readonly DocumentManager _documents;
+    private readonly IProjectOpener? _opener;
 
     /// <summary>Results of the last scan (flat). The tree is built from this + the folders.</summary>
     private IReadOnlyList<GitRepository> _repositories = [];
@@ -31,6 +31,10 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     public override string Title => "Projects";
     public override string IconKind => Controls.IconKind.Folder;
     public override ToolWindowSlot Slot => ToolWindowSlot.Left;
+
+    /// <summary>First in the stripe and Alt+1, like JetBrains' Project; also offered on the Welcome view.</summary>
+    public override int Order => 0;
+    public override int? WelcomeOrder => 50;
 
     /// <summary>Folders the user has chosen to scan; saved in settings.</summary>
     public ObservableCollection<string> ScanFolders { get; } = new();
@@ -52,14 +56,15 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     [ObservableProperty] private string _filter = "";
 
     public RepositoriesViewModel(IRepositoryScanner scanner, IDialogService dialogs, IProjectLauncher launcher,
-        IStatusService status, ISettingsStore store, DocumentManager documents)
+        IStatusService status, ISettingsStore store, IEnumerable<IProjectOpener> openers)
     {
         _scanner = scanner;
         _dialogs = dialogs;
         _launcher = launcher;
         _status = status;
         _store = store;
-        _documents = documents;
+        // Soft hook: another plugin (Git) may open projects inside DevHub. None → the external tool.
+        _opener = openers.FirstOrDefault();
 
         foreach (var folder in _store.LoadSection<ProjectsSettings>().RepositoryFolders)
             ScanFolders.Add(folder);
@@ -125,9 +130,15 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
 
     private void RemoveFolder(string folder) => ScanFolders.Remove(folder);
 
-    /// <summary>Opens the repository as an editor tab (or switches to its tab if it's already open).</summary>
-    private void OpenInDevHub(GitRepository repo) =>
-        _documents.OpenById(RepositoryDocumentFactory.IdFor(repo.Path));
+    /// <summary>
+    /// Opens the project inside DevHub through the plugin that offers it (Git: its repository tab),
+    /// or, with no such plugin, in the external tool chosen for its language.
+    /// </summary>
+    private void OpenInDevHub(GitRepository repo)
+    {
+        if (_opener is null || !_opener.Open(repo))
+            Open(repo);
+    }
 
     /// <summary>
     /// Enter in the tree: open the selected repository as a tab. (A key binding on the TreeView,

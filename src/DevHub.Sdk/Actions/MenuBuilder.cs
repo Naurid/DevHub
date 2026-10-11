@@ -29,17 +29,25 @@ public static class MenuBuilder
                 continue;
             }
 
+            // An action of a plugin that isn't loaded: leave it out.
+            if (!registry.TryGet(id, out var action))
+                continue;
+
             if (pendingSeparator)
             {
                 items.Add(new Avalonia.Controls.Separator());
                 pendingSeparator = false;
             }
 
-            items.Add(CreateItem(registry.Get(id)));
+            items.Add(CreateItem(action!));
         }
 
         return items;
     }
+
+    /// <summary>Menu items for arranged actions (<see cref="ActionLayout.Arrange"/>): null = separator.</summary>
+    public static IReadOnlyList<Control> Build(IEnumerable<AppAction?> actions) =>
+        actions.Select(a => a is null ? (Control)new Avalonia.Controls.Separator() : CreateItem(a)).ToList();
 
     private static MenuItem CreateItem(AppAction action) => new()
     {

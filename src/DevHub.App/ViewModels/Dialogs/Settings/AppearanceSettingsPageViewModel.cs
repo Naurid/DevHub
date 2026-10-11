@@ -10,6 +10,7 @@ public partial class AppearanceSettingsPageViewModel : SettingsPageViewModelBase
     private readonly IThemeService _theme;
 
     public override string Title => "Appearance";
+    public override int Order => 0;
     public override string Keywords => "theme dark light system windows accent color colour compact density size";
 
     /// <summary>Choices for the theme combo box.</summary>

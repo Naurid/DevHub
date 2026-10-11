@@ -31,15 +31,15 @@ public partial class SettingsDialogViewModel : DialogViewModelBase
     /// <summary>Search box text: fuzzy-matches page titles and keywords ("acc" finds Appearance via "accent").</summary>
     [ObservableProperty] private string _filter = "";
 
-    public SettingsDialogViewModel(AppearanceSettingsPageViewModel appearance, OpenWithSettingsPageViewModel openWith,
-        GitHubSettingsPageViewModel github)
+    /// <param name="pages">Every page the shell and the loaded plugins registered (fresh instances, as they're transient).</param>
+    public SettingsDialogViewModel(IEnumerable<SettingsPageViewModelBase> pages)
     {
-        Pages = [appearance, openWith, github];
+        Pages = pages.OrderBy(p => p.Order).ToList();
         foreach (var page in Pages)
             page.Modified = () => ApplyCommand.NotifyCanExecuteChanged();
 
         ApplyFilter();
-        SelectedPage = Pages[0];
+        SelectedPage = Pages.FirstOrDefault();
     }
 
     partial void OnFilterChanged(string value) => ApplyFilter();

@@ -14,6 +14,7 @@ public class OpenWithSettingsPageViewModel : SettingsPageViewModelBase
     private readonly IReadOnlyList<string> _availableIds;
 
     public override string Title => "Open With";
+    public override int Order => 100;
     public override string Keywords => "tools editor ide rider visual studio code unity hub language program executable";
 
     public IReadOnlyList<LanguageToolRowViewModel> LanguageTools { get; }

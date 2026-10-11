@@ -69,6 +69,19 @@ project (the "Core" in the rules below means "a `.Core` project"). If you catch 
 writing file I/O, path math, or string templating in a ViewModel, move it to a Core
 service and inject it.
 
+**Features are plugins** (`IPlugin` in DevHub.Sdk; today's four are in
+`src/DevHub.App/Plugins/FeaturePlugins.cs`: Projects, Git → Projects, GitHub → Git, Templates →
+Projects). A plugin registers everything it adds in its `ConfigureServices`; the shell's
+`App.ConfigureServices` holds only shell services. A switched-off plugin registers nothing, so:
+- never hardcode a feature in the shell (menus, toolbar, Welcome come from action metadata:
+  `Menu`/`MenuOrder`, `ToolbarOrder`, `WelcomeOrder`; title/status-bar widgets are contributions);
+- a plugin uses another plugin's services only if it declares it in `Requires`; optional
+  integrations go through a hook interface the other side may or may not register (e.g.
+  `IProjectOpener`, injected as `IEnumerable<…>` or an optional `T? x = null` parameter);
+- Debug builds validate every DI registration at startup (`ValidateOnBuild`), so a missing
+  dependency shows up immediately. Try plugin combinations with `enabledPlugins` in a scratch
+  `DEVHUB_DATA_DIR` settings file.
+
 **Plugin settings** live in their own section: a class implementing `ISettingsSection`
 (`SectionId` = plugin id) in the plugin's `.Core`, read with `store.LoadSection<T>()`,
 changed with `store.UpdateSection<T>(s => …)`. Don't add plugin fields to `AppSettings`.

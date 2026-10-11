@@ -17,7 +17,7 @@ public partial class ToolWindowManager : ViewModelBase
 {
     private readonly ISettingsStore _store;
 
-    /// <summary>Every tool window, in registration order.</summary>
+    /// <summary>Every tool window, by <see cref="ToolWindowViewModelBase.Order"/> (then registration order).</summary>
     public IReadOnlyList<ToolWindowViewModelBase> All { get; }
 
     /// <summary>Stripe contents: left-stripe top, left-stripe bottom (bottom slot), right stripe.</summary>
@@ -41,7 +41,7 @@ public partial class ToolWindowManager : ViewModelBase
     public ToolWindowManager(IEnumerable<ToolWindowViewModelBase> toolWindows, ISettingsStore store)
     {
         _store = store;
-        All = toolWindows.ToList();
+        All = toolWindows.OrderBy(t => t.Order).ToList();
 
         var ids = new HashSet<string>(StringComparer.Ordinal);
         foreach (var toolWindow in All)

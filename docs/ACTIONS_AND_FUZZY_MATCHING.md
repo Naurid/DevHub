@@ -241,7 +241,25 @@ the tooltip ("Rescan (F5)") in one go, so a toolbar is just:
 ```
 
 In the XAML previewer there is no DI container, so the extensions return "no value" /
-an empty list instead of crashing.
+an empty list instead of crashing. An id whose plugin isn't loaded isn't an error either:
+`{a:Action}` hides the control it's set on, and the list extensions leave the id out.
+
+### Where an action appears: metadata, not id lists (plugin architecture, P3)
+
+Since features became plugins, the shell can't list their ids. Each action says where it
+goes, and the shell builds the places from the registry:
+
+| Property | Place | Built by |
+|---|---|---|
+| `Menu`, `MenuOrder` | main menu (☰) group and position | `MainMenu` / `{a:MainMenu}` |
+| `ToolbarOrder` | title-bar toolbar | `{a:ToolbarActions}` |
+| `WelcomeOrder` | Welcome view list | `{a:WelcomeActions}` |
+
+Orders sort lowest first, and **a new hundred starts a new group** (a separator in menus
+and the toolbar): Git's Commit/Push/Update/Fetch are 0–4, Discard/Stash 100–102, and so on
+(`ActionLayout.Arrange`). Menu groups: File and View first, Help last, plugin groups in
+between in the order their plugins load. Documents set theirs through
+`DocumentViewModelBase.Navigation`, tool windows through `Order` / `WelcomeOrder`.
 
 **Why markup extensions and not ViewModel properties?** The obvious alternative, a
 ViewModel exposing `ActionRegistry`, creates a dependency loop: the registry needs the

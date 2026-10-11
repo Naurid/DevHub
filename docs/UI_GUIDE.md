@@ -208,21 +208,25 @@ already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use th
 
 ### Add an action (a menu item / shortcut / Find Action entry)
 Short version (full recipe in `ACTIONS_AND_FUZZY_MATCHING.md`):
-1. Id constant in `Actions/ActionIds.cs`.
+1. Id constant ("Area.Verb") in `Actions/ActionIds.cs` (from P4: the plugin's own ids class).
 2. `yield return new AppAction(id, "Text…", someViewModel.SomeCommand) { Category, IconKind, Gesture }`
-   in the feature's `IActionProvider` (new provider → register in `App.axaml.cs`).
-3. Show it: `<c:ActionButton Action="{a:Action Id}" />`, add the id to `Actions/MainMenu.cs`,
-   or `{a:ActionMenu 'id,-,id'}` for a context menu. Find Action and the shortcut work automatically.
+   in the feature's `IActionProvider`. A new provider is registered in its **plugin's**
+   `ConfigureServices` (`Plugins/FeaturePlugins.cs`); shell actions in `App.axaml.cs`.
+3. Say where it appears **on the action itself**: `Menu = "Git", MenuOrder = 100` (main-menu
+   group; a new hundred starts a new section with a separator), `ToolbarOrder` (title-bar
+   toolbar), `WelcomeOrder` (Welcome view). There's no list of ids to edit. In a view:
+   `<c:ActionButton Action="{a:Action Id}" />` (hidden when the action's plugin is off), or
+   `{a:ActionMenu 'id,-,id'}` for a context menu. Find Action and the shortcut work automatically.
 
 ### Add a document (an editor tab)
 1. `ViewModels/Documents/FooViewModel.cs`: `public partial class FooViewModel : DocumentViewModelBase`
    with `Title` and `Icon`. (Its `Id`, saved in settings, defaults to "Foo".)
 2. `Views/Documents/FooView.axaml` (+ `.axaml.cs` with only `InitializeComponent()`),
    `x:DataType="docs:FooViewModel"`. The ViewLocator finds it by name.
-3. Register: `services.AddSingleton<DocumentViewModelBase, FooViewModel>();` in `App.axaml.cs`.
-4. Done: `DocumentActionProvider` creates `Navigate.Foo` ("Foo"), so it's in Find Action.
-   Add the id to the File menu in `MainMenu.cs`, and a label/shortcut override in
-   `DocumentActionProvider` if wanted.
+3. Register in the plugin's `ConfigureServices`: `services.AddSingleton<DocumentViewModelBase, FooViewModel>();`.
+4. Done: `DocumentActionProvider` creates `Navigate.Foo` ("Foo"), so it's in Find Action. For a
+   menu entry, label, shortcut or Welcome link, override `Navigation`:
+   `public override DocumentNavigation Navigation => new() { Text = "New Foo…", Gesture = "Ctrl+N", Menu = "File", MenuOrder = 0, WelcomeOrder = 10 };`
 
 Documents are singletons: closing and reopening a tab keeps its state. The content area
 already has `Padding.Document` around it.
@@ -254,13 +258,13 @@ code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
 2. `Views/ToolWindows/FooView.axaml`: wrap the content in a `ToolWindowFrame` with a
    `Toolbar` of `ActionButton`s in `HeaderActions`, and a hide button
    (`<c:ActionButton IconKind="close" ToolTip.Tip="Hide" Command="{Binding ToggleCommand}" />`).
-3. Register it twice (as itself, for providers, and as the base type, for the manager):
+3. Register it twice in the plugin's `ConfigureServices` (as itself, for providers, and as the base type, for the manager):
    ```csharp
    services.AddSingleton<FooViewModel>();
    services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<FooViewModel>());
    ```
-4. Done: it gets a stripe button, a slot, a saved size, and an Alt+N action
-   (`ToolWindowActionProvider`, numbered in registration order).
+4. Done: it gets a stripe button, a slot, a saved size, a View-menu entry and an Alt+N action
+   (`ToolWindowActionProvider`, numbered by `Order`; override `Order`, and `WelcomeOrder` for a Welcome link).
 
 ### Add a dialog
 1. ViewModel: subclass `DialogViewModelBase` (`Title`, optional `Width`/`Height`,
@@ -290,9 +294,18 @@ For text actions inside a pane header ("Stage All"), use `<Button Classes="flat"
    `SettingsPageViewModelBase` (`Title`, `Keywords` for the search box). Load the current
    values in the constructor (into backing fields, so loading isn't an "edit"), call
    `MarkModified()` when the user changes something, and save in `Apply()` with
-   `store.Update(...)`.
+   `store.UpdateSection<FooSettings>(...)` (a plugin's section) or `store.Update(...)` (shell).
+   Override `Order` for its place in the list.
 2. View `Views/Dialogs/Settings/FooSettingsPageView.axaml`: a stack of `SettingsRow`s.
-3. Register transient and add it to `SettingsDialogViewModel`'s constructor and `Pages`.
+3. Register in the plugin's `ConfigureServices` as **transient** under the base type:
+   `services.AddTransient<SettingsPageViewModelBase, FooSettingsPageViewModel>();`. The dialog
+   receives every page that way (fresh ones each time it opens).
+
+### Add a title-bar or status-bar widget
+1. ViewModel: subclass `TitleBarWidgetViewModelBase` or `StatusBarWidgetViewModelBase`
+   (`Order` for its position); a View next to it as usual. Example: Git's `BranchWidgetViewModel`.
+2. Register in the plugin: `services.AddSingleton<TitleBarWidgetViewModelBase, FooWidgetViewModel>();`.
+   Title-bar widgets need `WindowDecorationProperties.ElementRole="User"` on clickable parts.
 
 ### Persist something new
 **A plugin's setting** (almost everything): add a property to the plugin's settings section

@@ -113,7 +113,7 @@ public sealed partial class RepositoryDocumentViewModel : DocumentViewModelBase,
     /// <summary>Repository root folder.</summary>
     public string Path { get; }
 
-    public override string RepositoryPath => Path;
+    public override string? ContextPath => Path;
 
     /// <summary>Folder name, shown as the tab title.</summary>
     public string Name { get; }
