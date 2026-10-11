@@ -26,7 +26,7 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
     /// <param name="editor">Opens the file in the external editor for the repository's language.</param>
     /// <param name="layout">Shared view choices (unified / side-by-side).</param>
     public DiffDocumentViewModel(string repositoryPath, string filePath, bool staged, GitRepositoryClient? client,
-        ExternalEditor editor, RepositoryTabLayout layout)
+        RepositoryFileOpener editor, RepositoryTabLayout layout)
     {
         RepositoryPath = repositoryPath;
         FilePath = filePath;

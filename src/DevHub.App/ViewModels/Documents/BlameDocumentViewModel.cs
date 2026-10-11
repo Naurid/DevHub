@@ -19,12 +19,12 @@ public sealed partial class BlameDocumentViewModel : DocumentViewModelBase
     public const string IdPrefix = "Blame:";
 
     private readonly GitRepositoryClient? _client;
-    private readonly ExternalEditor _editor;
+    private readonly RepositoryFileOpener _editor;
     private CancellationTokenSource? _loadCts;
 
     /// <param name="commitId">The commit to blame the file in; null = the file on disk now.</param>
     public BlameDocumentViewModel(string repositoryPath, string filePath, string? commitId, GitRepositoryClient? client,
-        ExternalEditor editor)
+        RepositoryFileOpener editor)
     {
         RepositoryPath = repositoryPath;
         FilePath = filePath;

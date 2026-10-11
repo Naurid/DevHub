@@ -41,6 +41,7 @@ public static class ActionIds
     public const string GitManageRemotes = "Git.ManageRemotes";
     public const string GitPublish = "Git.PublishToGitHub";
     public const string GitClone = "Git.Clone";
+    public const string GitOpenRepository = "Git.OpenRepository";
     public const string GitOpenTerminal = "Git.OpenTerminal";
 
     // Tool windows

@@ -28,13 +28,15 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
     private readonly AsyncRelayCommand _manageRemotes;
     private readonly AsyncRelayCommand _publish;
     private readonly AsyncRelayCommand _clone;
+    private readonly AsyncRelayCommand _openRepository;
     private readonly RelayCommand _openTerminal;
 
-    public GitActionProvider(ActiveRepositoryService active, CloneOperations clone)
+    public GitActionProvider(ActiveRepositoryService active, CloneOperations clone, OpenRepositoryOperation openRepository)
     {
         _active = active;
-        // Clone needs no repository: always available.
+        // Clone and Open Repository need no repository: always available.
         _clone = new AsyncRelayCommand(clone.CloneAsync);
+        _openRepository = new AsyncRelayCommand(openRepository.OpenAsync);
         _refresh = new AsyncRelayCommand(
             () => _active.Repository!.RefreshAsync(),
             () => _active.Repository is not null);
@@ -187,11 +189,22 @@ public sealed class GitActionProvider : IActionProvider, IDisposable
             Description = "Create a repository on your GitHub account, add it as a remote and push the current branch.",
         };
 
-        yield return new AppAction(ActionIds.GitClone, "Clone Repository…", _clone)
+        yield return new AppAction(ActionIds.GitOpenRepository, "Open Repository…", _openRepository)
         {
             Category = "Git",
             Menu = "Git",
             MenuOrder = 302,
+            WelcomeOrder = 45,
+            IconKind = IconKind.Vcs,
+            Description = "Choose a folder and open its git repository as a tab.",
+        };
+
+        yield return new AppAction(ActionIds.GitClone, "Clone Repository…", _clone)
+        {
+            Category = "Git",
+            Menu = "Git",
+            MenuOrder = 303,
+            WelcomeOrder = 46,
             IconKind = IconKind.Fetch,
             Description = "Clone one of your GitHub repositories (or any URL) and open it as a repository tab.",
         };

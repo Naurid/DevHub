@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
+using DevHub.Integration;
 using DevHub.Projects.Core;
 using DevHub.Sdk.Core.Search;
 using DevHub.Sdk.Core.Settings;
@@ -15,7 +16,7 @@ namespace DevHub.ViewModels.ToolWindows;
 /// the git repositories found under it, as a tree. All file-system work lives in
 /// <see cref="IRepositoryScanner"/> (Core); this drives it and shapes the results for the tree.
 /// </summary>
-public partial class RepositoriesViewModel : ToolWindowViewModelBase
+public partial class RepositoriesViewModel : ToolWindowViewModelBase, IProjectFolders
 {
     private readonly IRepositoryScanner _scanner;
     private readonly IDialogService _dialogs;
@@ -86,6 +87,12 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
             ScanCommand.Execute(null);
     }
 
+    // ---- IProjectFolders (offered to other plugins, e.g. Git's Clone) ----
+
+    IReadOnlyList<string> IProjectFolders.Folders => ScanFolders.ToList();
+
+    Task IProjectFolders.RescanAsync() => ScanCommand.CanExecute(null) ? ScanCommand.ExecuteAsync(null) : Task.CompletedTask;
+
     partial void OnFilterChanged(string value) => RebuildTree();
 
     [RelayCommand]
@@ -136,7 +143,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
     /// </summary>
     private void OpenInDevHub(GitRepository repo)
     {
-        if (_opener is null || !_opener.Open(repo))
+        if (_opener is null || !_opener.Open(repo.Path))
             Open(repo);
     }
 

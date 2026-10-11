@@ -1,21 +1,21 @@
 using DevHub.Git.Core;
-using DevHub.Projects.Core;
-using DevHub.Sdk.Core.Settings;
+using DevHub.Integration;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs;
 using DevHub.ViewModels.Documents;
-using DevHub.ViewModels.ToolWindows;
 
 namespace DevHub.ViewModels.Git;
 
 /// <summary>
 /// Git → Clone Repository…: the dialog, then the clone in the status bar (progress, Cancel),
-/// then the new repository opens as a tab and the Repositories tool window rescans when the clone
-/// landed in one of its folders. One clone at a time.
+/// then the new repository opens as a tab. With the Projects plugin on, the clone goes into a
+/// project folder by default and Projects rescans when it landed in one (<see cref="IProjectFolders"/>).
+/// One clone at a time.
 /// </summary>
+/// <param name="projectFolders">Offered by the Projects plugin (empty when it's off).</param>
 /// <param name="github">The GitHub account for "your repositories"; null when the GitHub plugin is off (clone by URL only).</param>
 public sealed class CloneOperations(IDialogService dialogs, IStatusService status,
-    DocumentManager documents, ISettingsStore settings, RepositoriesViewModel repositories, GitRunner? runner = null,
+    DocumentManager documents, IEnumerable<IProjectFolders> projectFolders, GitRunner? runner = null,
     GitHubSession? github = null)
 {
     private bool _busy;
@@ -33,7 +33,8 @@ public sealed class CloneOperations(IDialogService dialogs, IStatusService statu
             return;
         }
 
-        var scanFolders = settings.LoadSection<ProjectsSettings>().RepositoryFolders;
+        var projects = projectFolders.FirstOrDefault();
+        var scanFolders = projects?.Folders ?? [];
         var folder = scanFolders.FirstOrDefault(Directory.Exists)
                      ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var dialog = new CloneDialogViewModel(github, dialogs, folder);
@@ -76,9 +77,9 @@ public sealed class CloneOperations(IDialogService dialogs, IStatusService statu
 
         documents.OpenById(RepositoryDocumentFactory.IdFor(target));
         var inScanFolder = scanFolders.Any(f => IsInside(target, f));
-        if (inScanFolder && repositories.ScanCommand.CanExecute(null))
-            await repositories.ScanCommand.ExecuteAsync(null);
-        status.Show(inScanFolder
+        if (inScanFolder)
+            await projects!.RescanAsync();
+        status.Show(projects is null || inScanFolder
             ? $"Cloned {name} into {target}."
             : $"Cloned {name} into {target}. (Not in a Projects folder: add {Path.GetDirectoryName(target)} there to list it.)");
     }

@@ -77,7 +77,9 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 - [x] P3. Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
       metadata, settings-page list, title/status-bar widgets, Welcome placement, tool-window order;
       no `ActiveRepository` in the shell; the four features are `IPlugin`s (still inside DevHub.App),
-      `enabledPlugins` in settings decides what loads; `IProjectOpener` soft hook; GitHub optional for Git
+      `enabledPlugins` in settings decides what loads; Projects and Git independent of each
+      other (linked through `DevHub.Integration`: `IProjectOpener`, `IProjectFileEditor`, `IProjectFolders`;
+      Git → Open Repository…); GitHub → Git the only hard link, GitHub optional for Git
 - [ ] **NEXT — P4.** Move Projects, Git, GitHub (and the Templates placeholders) into plugin assemblies,
       each with its own ids class and its feature tokens (`Brush.Diff.*`, graph, branch widget) as plugin
       resources; `IRemoteHostProvider` soft hook (Publish to GitHub / avatars contributed by GitHub)

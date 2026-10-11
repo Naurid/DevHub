@@ -92,8 +92,10 @@ tabs, appearance) are top-level fields. Each plugin has its own section under
 Which plugins load is the shell field `"enabledPlugins": ["devhub.projects", "devhub.git"]`
 (missing = all of them; a plugin's requirements are switched on with it). Until the Plugins page
 arrives (P5) you can edit it by hand; changes apply on the next start. The plugins today:
-`devhub.projects`, `devhub.git` (requires Projects), `devhub.github` (requires Git) and
-`devhub.templates` (requires Projects).
+`devhub.projects`, `devhub.git`, `devhub.github` (requires Git) and `devhub.templates`
+(requires Projects). Projects and Git are independent: each works alone (Git has Open
+Repository… and Clone), and with both on they link up: double-click a project to open its
+repository tab, and Git's Open in Editor uses Projects' Open With.
 
 Settings files from before the split (with top-level `git`, `languageTools` and
 `repositoryFolders`) are moved into these sections automatically.

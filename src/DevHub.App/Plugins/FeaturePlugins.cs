@@ -2,6 +2,7 @@ using DevHub.Actions;
 using DevHub.Actions.Providers;
 using DevHub.Git.Core;
 using DevHub.GitHub.Core;
+using DevHub.Integration;
 using DevHub.Projects.Core;
 using DevHub.Sdk.Core.Plugins;
 using DevHub.Services;
@@ -37,12 +38,13 @@ public sealed class ProjectsPlugin : IPlugin
         services.AddSingleton<IProjectLanguageDetector, ProjectLanguageDetector>();
         services.AddSingleton<IProjectLauncher, ProjectLauncher>();
         services.AddSingleton<IRepositoryScanner, RepositoryScanner>();
-        // Used by plugins that require Projects (Git opens files and terminals with them).
-        services.AddSingleton<ExternalEditor>();
-        services.AddSingleton<TerminalLauncher>();
+        // Offered to other plugins without depending on them (DevHub.Integration): Git uses these
+        // when Projects is on (Open in Editor with Open With, Clone into a project folder).
+        services.AddSingleton<IProjectFileEditor, ProjectFileEditor>();
 
         services.AddSingleton<RepositoriesViewModel>();
         services.AddSingleton<ToolWindowViewModelBase>(sp => sp.GetRequiredService<RepositoriesViewModel>());
+        services.AddSingleton<IProjectFolders>(sp => sp.GetRequiredService<RepositoriesViewModel>());
         services.AddSingleton<IActionProvider, RepositoryActionProvider>();
         services.AddTransient<SettingsPageViewModelBase, OpenWithSettingsPageViewModel>();
     }
@@ -58,7 +60,7 @@ public sealed class GitPlugin : IPlugin
 
     public PluginInfo Info { get; } = new(Id, "Git",
         "A Fork-style Git client: changes, staging per line, commits, history graph, branches, remotes, merge and rebase, stashes, blame.",
-        [ProjectsPlugin.Id]) { Category = "Version control" };
+        []) { Category = "Version control" }; // No requirements: works without Projects (Open Repository…), links up with it when both are on.
 
     public void ConfigureServices(IServiceCollection services, PluginContext context)
     {
@@ -82,10 +84,13 @@ public sealed class GitPlugin : IPlugin
         services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
         services.AddSingleton<IDocumentFactory, BlameDocumentFactory>();
         services.AddSingleton<CloneOperations>();
+        services.AddSingleton<OpenRepositoryOperation>();
+        services.AddSingleton<RepositoryFileOpener>();
+        services.AddSingleton<TerminalLauncher>();
 
         services.AddSingleton<ActiveRepositoryService>();
         services.AddSingleton<TitleBarWidgetViewModelBase, BranchWidgetViewModel>();
-        // Soft hook of Projects: double-click a project → its repository tab.
+        // Offered to Projects (DevHub.Integration): double-click a project → its repository tab.
         services.AddSingleton<IProjectOpener, GitProjectOpener>();
         services.AddSingleton<IActionProvider, GitActionProvider>();
     }

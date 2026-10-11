@@ -73,7 +73,7 @@ public sealed class GitPlugin : IPlugin
 {
     public PluginInfo Info { get; } = new(
         Id: "devhub.git", Name: "Git", Description: "Fork-style Git client…",
-        Version: "1.0", Requires: ["devhub.projects"], Category: "Version control");
+        Version: "1.0", Requires: [], Category: "Version control");   // GitHub: Requires: ["devhub.git"]
 
     public void ConfigureServices(IServiceCollection services, PluginContext context) { … }
     public IEnumerable<Uri> Resources => [new("avares://DevHub.Git/Themes/GitTokens.axaml")];
@@ -108,19 +108,30 @@ public sealed class GitPlugin : IPlugin
 ContextPath` (the folder a tab is about). The Git plugin owns an `IActiveRepository` service
 that watches `DocumentManager.Active`, so Git actions and the branch widget use that.
 
-**Soft hooks (optional integrations):**
-- `IProjectOpener` (defined by Projects, implemented by Git): "Open in Git" or double-click
-  in Projects opens a repository tab. Without Git, Projects uses its own Open With.
-- `IRemoteHostProvider` (defined by Git, implemented by GitHub): Publish to GitHub,
-  Clone-from-account list, commit avatars. Without GitHub, Git still does remotes by URL.
-- Today's `RepositoryTabServices` then holds only Git's own things, plus Projects' editor and
-  terminal launcher (Git requires Projects).
+**Dependency graph (decided 2026-10-11):** GitHub → Git is the only hard link between the
+version-control plugins. **Projects and Git don't depend on each other in either direction**;
+each works alone and they link up when both are on. Templates → Projects. (Templates can run
+`git init` as a post-create command, so it doesn't need Git.)
 
-**Dependency graph:** Projects ← Git ← GitHub, and Templates → Projects. Templates can run
-`git init` as a post-create command, so it doesn't need Git. A Git-only dev therefore gets
-the shell + Projects + Git. Projects is how you list and open repositories. If later we want
-Git without the Projects list, Git can provide an "Open Repository…" action itself and the
-dependency becomes a soft hook. That's a small change.
+**Optional integrations between independent plugins** meet in the Sdk
+(`src/DevHub.Sdk/Integration/`), which both sides build on: small interfaces that pass only
+paths, never a plugin's own types. The offering plugin registers one; the using plugin takes
+`IEnumerable<T>` (first or none) or an optional `T? x = null` and has a fallback:
+
+| Interface | Offered by | Used by | Fallback when the other plugin is off |
+|---|---|---|---|
+| `IProjectOpener` | Git (repository tab) | Projects: double-click / Enter / Open in DevHub | open in the project's external tool |
+| `IProjectFileEditor` | Projects (Open With per language) | Git: Open in Editor (F4), conflicts | the Windows default app for the file |
+| `IProjectFolders` | Projects (scan folders + rescan) | Git: Clone's default folder, rescan afterwards | Documents, no rescan |
+
+Git's own way in without Projects: **Git → Open Repository…** (also on the Welcome view),
+next to Clone. Git's Open Terminal is Git's own service (`TerminalLauncher`).
+
+Between a plugin and its declared requirement no hook is needed (GitHub may use Git's types),
+but a hook still keeps the required plugin free of the dependent one:
+`IRemoteHostProvider` (P4; defined by Git, implemented by GitHub) for Publish to GitHub, the
+Clone-from-account list and commit avatars. Until then Git takes `GitHubSession?` (null when
+GitHub is off).
 
 ## Migration in phases (each ends building, with tests green and the app working the same)
 1. **Core split (pure moves):** add `Directory.Build.props`. Create Sdk.Core,
@@ -138,8 +149,8 @@ dependency becomes a soft hook. That's a small change.
    - Wrap each feature in an `IPlugin` class registered by the host.
    - `App.ConfigureServices` keeps only shell services.
 4. **Move features out**, one assembly pair at a time: Projects, then Git, then GitHub.
-   The Git→GitHub links become `IRemoteHostProvider`, and Projects→Git becomes
-   `IProjectOpener`. The placeholder Templates/Generate/Import pages are deleted (M1
+   The Git→GitHub links become `IRemoteHostProvider` (Projects↔Git already go through
+   `DevHub.Integration`, so neither assembly references the other). The placeholder Templates/Generate/Import pages are deleted (M1
    rebuilds them as the Templates plugin). UI Gallery stays a DEBUG-only shell page.
 5. **Plugins UI:** a Settings → Plugins page (list, description, requires, on/off, "Restart
    to apply", turning one off warns about plugins that depend on it), a first-run page
