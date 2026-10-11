@@ -16,5 +16,11 @@ public sealed record PluginInfo(string Id, string Name, string Description, IRea
 
     public string Version { get; init; } = "1.0";
 
+    /// <summary>
+    /// Where the plugin comes in lists: discovery (and so load) order among unrelated plugins, the
+    /// main-menu order of its groups, the Plugins page. Lowest first; requirements still load first.
+    /// </summary>
+    public int Order { get; init; } = 1000;
+
     public override string ToString() => Id;
 }

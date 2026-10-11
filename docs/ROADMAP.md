@@ -80,10 +80,11 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
       `enabledPlugins` in settings decides what loads; Projects and Git independent of each
       other (linked through `DevHub.Integration`: `IProjectOpener`, `IProjectFileEditor`, `IProjectFolders`;
       Git → Open Repository…); GitHub → Git the only hard link, GitHub optional for Git
-- [ ] **NEXT — P4.** Move Projects, Git, GitHub (and the Templates placeholders) into plugin assemblies,
-      each with its own ids class and its feature tokens (`Brush.Diff.*`, graph, branch widget) as plugin
-      resources; `IRemoteHostProvider` soft hook (Publish to GitHub / avatars contributed by GitHub)
-- [ ] P5. Settings → Plugins page, first-run presets + checklist, skipped-plugin notes
+- [x] P4. Projects, Git, GitHub and Templates in their own plugin assemblies (`plugins/DevHub.*`), each
+      with its plugin class and ids; Git's tokens as plugin resources; `IDocumentService` (Sdk) instead of
+      the shell's DocumentManager; Git's `IRemoteHost` implemented by GitHub (Publish, avatar, Clone list);
+      the app ships the plugins without using their types (`Aliases="plugins"`)
+- [ ] **NEXT — P5.** Settings → Plugins page, first-run presets + checklist, skipped-plugin notes
 - [ ] P6. Docs: PLUGINS.md as reference + recipe, CLAUDE.md, UI_GUIDE §5, skills
 
 ## M0 — Skeleton

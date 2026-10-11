@@ -1,8 +1,9 @@
 namespace DevHub.Actions;
 
 /// <summary>
-/// Ids of all actions, so C# code gets autocomplete and typo checks. XAML uses the same
-/// strings: <c>{a:Action View.ToggleTheme}</c>.
+/// Ids of the shell's own actions, so C# code gets autocomplete and typo checks. XAML uses the
+/// same strings: <c>{a:Action View.ToggleTheme}</c>. Each plugin has its own ids class
+/// (e.g. <c>GitActionIds</c>).
 /// </summary>
 public static class ActionIds
 {
@@ -21,28 +22,6 @@ public static class ActionIds
     // App
     public const string OpenSettings = "App.Settings";
     public const string FindAction = "App.FindAction";
-
-    // Repositories
-    public const string AddScanFolder = "Repositories.AddFolder";
-    public const string RescanRepositories = "Repositories.Rescan";
-
-    // Git (act on the active repository tab)
-    public const string GitRefresh = "Git.Refresh";
-    public const string GitCommit = "Git.Commit";
-    public const string GitDiscard = "Git.Discard";
-    public const string GitBranches = "Git.Branches";
-    public const string GitNewBranch = "Git.NewBranch";
-    public const string GitFetch = "Git.Fetch";
-    public const string GitPull = "Git.Pull";
-    public const string GitPush = "Git.Push";
-    public const string GitForcePush = "Git.ForcePush";
-    public const string GitStash = "Git.Stash";
-    public const string GitUnstash = "Git.Unstash";
-    public const string GitManageRemotes = "Git.ManageRemotes";
-    public const string GitPublish = "Git.PublishToGitHub";
-    public const string GitClone = "Git.Clone";
-    public const string GitOpenRepository = "Git.OpenRepository";
-    public const string GitOpenTerminal = "Git.OpenTerminal";
 
     // Tool windows
     /// <summary>Prefix for "show/hide tool window" actions; the tool window's Id follows, capitalised: "ToolWindow.Repositories" (the Projects tool window).</summary>

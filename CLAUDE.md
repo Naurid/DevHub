@@ -28,26 +28,27 @@ compile.
 
 ## Solution layout
 DevHub is being split into a **bare shell + plugins** (milestone P, design in
-`docs/PLUGINS.md`); `README.md` shows the current state. After P1:
+`docs/PLUGINS.md`); `README.md` shows the current state. After P4:
 
 ```
 DevHub.sln   Directory.Build.props (net10.0, Nullable, ImplicitUsings for every project)
 src/
   DevHub.Sdk.Core/        base for everything, NO Avalonia: settings store (shell sections +
-                          one section per plugin, ISettingsSection), FuzzyMatcher, Formatting
-  DevHub.Sdk/             Avalonia building blocks for the shell and every plugin UI: base classes
-                          (ViewModelBase, DocumentViewModelBase, ToolWindowViewModelBase,
-                          DialogViewModelBase, SettingsPageViewModelBase), action system, service
-                          interfaces, Controls/, Themes/ (tokens), Assets/Icons/
-  DevHub.App/             the shell exe (window, managers, menus, Settings, Find Action). For now it
-                          also holds the plugins' UI (moves into plugin projects in P4)
-    Views/  ViewModels/  (Documents/, ToolWindows/, Dialogs/, Shell/, Git/ in both)
-    Services/ (dialog/theme implementations, feature services)   Actions/ (ids, keymap, menu, providers)
-plugins/                  each plugin = X.Core (logic, NO Avalonia, tested) + later X (UI)
-  DevHub.Projects.Core/   repository scanning, language detection, Open With (ProjectsSettings)
-  DevHub.Git.Core/        GitRunner, GitRepositoryClient, parsers, graph/diff layout (GitSettings)
-  DevHub.GitHub.Core/     Git Credential Manager, GitHub API (requires Git)
-  (planned) DevHub.Templates.Core/   template model, renderer, generator, importer, commands
+                          one section per plugin, ISettingsSection), plugin model + resolver,
+                          FuzzyMatcher, Formatting
+  DevHub.Sdk/             Avalonia building blocks for the shell and every plugin UI: IPlugin, base
+                          classes (ViewModelBase, DocumentViewModelBase, ToolWindowViewModelBase,
+                          DialogViewModelBase, SettingsPageViewModelBase, widgets), IDocumentService,
+                          action system, service interfaces, Integration/ (cross-plugin hooks),
+                          Controls/ (incl. Avatar), Themes/ (shared tokens), Assets/Icons/
+  DevHub.App/             the shell exe only: window, DocumentManager, ToolWindowManager, menus,
+                          Settings, Find Action, PluginHost. References the plugins only to ship
+                          them (alias "plugins": their types are off-limits here)
+plugins/                  each plugin = X (UI: views, ViewModels, actions, its plugin class) + X.Core
+  DevHub.Projects/ + .Core   Projects tool window, Open With (ProjectsSettings)
+  DevHub.Git/ + .Core        Git client UI, IRemoteHost, Themes/GitTokens.axaml (GitSettings)
+  DevHub.GitHub/ + .Core     GitHub account, Publish, GitHubRemoteHost (requires Git)
+  DevHub.Templates/          placeholder pages; (planned) DevHub.Templates.Core = the engine
 tests/
   DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
   DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
@@ -60,17 +61,21 @@ docs/
   GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G9)
 ```
 
-**Dependency direction:** `App → Sdk (→ Sdk.Core) + plugin .Core projects`; a plugin's `.Core` →
-`Sdk.Core` (+ another plugin's `.Core` only for a declared hard dependency, e.g. GitHub →
-Git); tests → the project they test. **`Sdk.Core` never knows about a plugin, and nothing
+**Dependency direction:** `App → Sdk (→ Sdk.Core)` (+ the plugins, aliased, only to ship them);
+a plugin's UI project → `Sdk` + its own `.Core`; a plugin's `.Core` → `Sdk.Core`; a plugin may
+reference another plugin's projects only for a declared hard dependency (GitHub → Git); tests →
+the project they test. **`Sdk.Core` never knows about a plugin, and nothing
 references `App`; `Sdk` never references `App` or a plugin** (the shell may set the
 base classes' host-only `internal` members via `InternalsVisibleTo`). All logic that can be tested without a window lives in a `.Core`
 project (the "Core" in the rules below means "a `.Core` project"). If you catch yourself
 writing file I/O, path math, or string templating in a ViewModel, move it to a Core
 service and inject it.
 
-**Features are plugins** (`IPlugin` in DevHub.Sdk; today's four are in
-`src/DevHub.App/Plugins/FeaturePlugins.cs`: Projects, Git, GitHub → Git, Templates → Projects).
+**Features are plugins** (`IPlugin` in DevHub.Sdk; each plugin project has its plugin class,
+e.g. `plugins/DevHub.Git/GitPlugin.cs`, marked `[assembly: DevHubPlugin(…)]`: Projects, Git,
+GitHub → Git, Templates → Projects). A plugin's own design tokens go in its `Themes/*.axaml`,
+returned from `IPlugin.Resources`; its views' `avares://` URIs name its own assembly.
+Git → GitHub-style features go through Git's `IRemoteHost` (GitHub implements it).
 **Projects and Git must never depend on each other** (either direction); they link through the
 `DevHub.Integration` interfaces in the Sdk (`IProjectOpener`, `IProjectFileEditor`,
 `IProjectFolders`), and each has a fallback when the other is off. A plugin registers everything it adds in its `ConfigureServices`; the shell's

@@ -29,9 +29,18 @@
         <!-- The shell builds on the Sdk (base classes, actions, design system; icons live there too). -->
         <ProjectReference Include="..\DevHub.Sdk\DevHub.Sdk.csproj" />
         <ProjectReference Include="..\DevHub.Sdk.Core\DevHub.Sdk.Core.csproj" />
-        <!-- Until P4 the plugins' UI still lives in this project, so it references their logic directly. -->
-        <ProjectReference Include="..\..\plugins\DevHub.Projects.Core\DevHub.Projects.Core.csproj" />
-        <ProjectReference Include="..\..\plugins\DevHub.Git.Core\DevHub.Git.Core.csproj" />
-        <ProjectReference Include="..\..\plugins\DevHub.GitHub.Core\DevHub.GitHub.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--
+          The plugins that ship with DevHub: referenced only so they're built and copied next to the
+          app, where PluginHost finds them. The "plugins" alias keeps their types out of the shell's
+          code (they'd need `extern alias plugins;`, which the shell must never use): the shell
+          knows plugins only through IPlugin and the extension points.
+        -->
+        <ProjectReference Include="..\..\plugins\DevHub.Projects\DevHub.Projects.csproj" Aliases="plugins" />
+        <ProjectReference Include="..\..\plugins\DevHub.Git\DevHub.Git.csproj" Aliases="plugins" />
+        <ProjectReference Include="..\..\plugins\DevHub.GitHub\DevHub.GitHub.csproj" Aliases="plugins" />
+        <ProjectReference Include="..\..\plugins\DevHub.Templates\DevHub.Templates.csproj" Aliases="plugins" />
     </ItemGroup>
 </Project>

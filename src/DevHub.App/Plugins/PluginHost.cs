@@ -109,6 +109,7 @@ public sealed class PluginHost
                 }
             }
         }
-        return plugins;
+        // Their own order first (Projects before Git in the menus), then the id: stable on every start.
+        return plugins.OrderBy(p => p.Info.Order).ThenBy(p => p.Info.Id, StringComparer.Ordinal).ToList();
     }
 }

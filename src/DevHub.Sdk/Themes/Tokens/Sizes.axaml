@@ -31,44 +31,12 @@
     <x:Double x:Key="Size.TabCloseButton">18</x:Double>
     <x:Double x:Key="Size.WelcomeWidth">440</x:Double>
     <x:Double x:Key="Size.WelcomeLogo">56</x:Double>
-    <!-- Git (G1): the "modified" dot on a tab, and the status-letter column in Local Changes. -->
+    <!-- The "modified" dot on a tab. -->
     <x:Double x:Key="Size.DirtyDot">6</x:Double>
-    <x:Double x:Key="Size.StatusLetter">14</x:Double>
-    <!-- Longest branch name shown in the title bar before it ends in "…". -->
-    <x:Double x:Key="Size.BranchWidgetText">280</x:Double>
-    <!-- Diff view (G2): the old / new line-number columns (5 digits) and the +/- column. -->
-    <x:Double x:Key="Size.DiffLineNumber">44</x:Double>
-    <x:Double x:Key="Size.DiffSign">16</x:Double>
-    <!-- Commit box (G3): message height (grows up to the max as you type) and the error area. -->
-    <x:Double x:Key="Size.CommitMessage">72</x:Double>
-    <x:Double x:Key="Size.CommitMessageMax">200</x:Double>
-    <x:Double x:Key="Size.CommitErrorMax">120</x:Double>
-    <!-- Branches (G4): the filter box above the branch list, and the title-bar branch popup. -->
-    <x:Double x:Key="Size.BranchFilter">220</x:Double>
-    <!-- Git (G5): All Commits. A graph lane's width, the commit dot, the line thickness; the
-         author / date / id columns; how tall the commit message may grow before it scrolls. -->
-    <x:Double x:Key="Size.GraphLane">14</x:Double>
-    <x:Double x:Key="Size.GraphDot">8</x:Double>
-    <x:Double x:Key="Size.GraphLine">1.5</x:Double>
-    <x:Double x:Key="Size.CommitAuthor">120</x:Double>
-    <x:Double x:Key="Size.CommitDate">100</x:Double>
-    <x:Double x:Key="Size.CommitId">70</x:Double>
-    <x:Double x:Key="Size.CommitSubjectMin">180</x:Double>
-    <x:Double x:Key="Size.CommitFilter">280</x:Double>
-    <x:Double x:Key="Size.CommitDetailsMessageMax">160</x:Double>
-    <!-- Git (G6): a running operation in the status bar: its progress bar and the step text. -->
+    <!-- A running operation in the status bar: its progress bar and the step text. -->
     <x:Double x:Key="Size.StatusProgress">120</x:Double>
     <x:Double x:Key="Size.StatusTaskStep">240</x:Double>
-    <!-- Git (G8): blame gutter (commit id, author, date before each block of lines); stash /
-         tag message dialogs; the tag and submodule name columns. -->
-    <x:Double x:Key="Size.BlameId">70</x:Double>
-    <x:Double x:Key="Size.BlameAuthor">120</x:Double>
-    <x:Double x:Key="Size.BlameDate">90</x:Double>
-    <x:Double x:Key="Size.TagMessage">72</x:Double>
-    <x:Double x:Key="Size.RefName">200</x:Double>
-    <!-- Git (G9): the remote name column in Manage Remotes; the GitHub repository list in Clone. -->
-    <x:Double x:Key="Size.RemoteName">90</x:Double>
-    <!-- Avatars: an account (Settings → GitHub) and a commit author (All Commits rows). -->
+    <!-- Avatar control: an account (Settings → GitHub) and a small one in list rows (All Commits). -->
     <x:Double x:Key="Size.Avatar">32</x:Double>
     <x:Double x:Key="Size.AvatarSmall">16</x:Double>
     <!-- Tree rows drawn as an indented list (Local Changes folders): indent per level, the fold arrow. -->
@@ -76,12 +44,9 @@
     <x:Double x:Key="Size.TreeArrow">14</x:Double>
     <!-- IconToggle (a small on/off icon button, e.g. Folders in Changes). -->
     <Thickness x:Key="Padding.IconToggle">3</Thickness>
-    <!-- The repository sidebar rows: the name sits this far from the edge; the fold arrow on the right. -->
+    <!-- Sidebar tree rows (e.g. a repository tab's sidebar): text inset, fold arrow on the right. Shrinks in Compact. -->
     <Thickness x:Key="Padding.SidebarRow">10,0,8,0</Thickness>
     <x:Double x:Key="Size.SidebarRow">26</x:Double>
-    <x:Double x:Key="Size.CloneListHeight">260</x:Double>
-    <x:Double x:Key="Size.BranchPopupWidth">380</x:Double>
-    <x:Double x:Key="Size.BranchPopupMaxHeight">460</x:Double>
     <!-- Find Action popup (UI-0 step 10) -->
     <x:Double x:Key="Size.FindActionWidth">580</x:Double>
     <x:Double x:Key="Size.FindActionMaxHeight">460</x:Double>
@@ -123,9 +88,6 @@
     <!-- Inside popups (Find Action). A Thickness: Padding/Margin need one, not a Spacing.* double
          (DynamicResource types are only checked at runtime; a double here crashed the app). -->
     <Thickness x:Key="Padding.Popup">4</Thickness>
-    <!-- Git (G0) -->
-    <!-- Gap between the title-bar breadcrumb and the branch widget. -->
-    <Thickness x:Key="Margin.BranchWidget">12,0,0,0</Thickness>
     <!-- Space below a block in a document (e.g. the repository header). -->
     <Thickness x:Key="Margin.BlockBelow">0,0,0,12</Thickness>
     <!-- Keeps the last item of a tree/list row (language, count badge) off the panel's edge. -->
@@ -136,14 +98,8 @@
          of a repository tab ("Merge in progress"). -->
     <Thickness x:Key="Padding.ListGroupHeader">12,6,8,6</Thickness>
     <Thickness x:Key="Padding.Banner">12,6</Thickness>
-    <!-- Git (G3.1): the small Stage / Discard / Unstage Hunk buttons on a diff hunk header. -->
-    <Thickness x:Key="Padding.HunkAction">6,0</Thickness>
     <!-- Header bar above a pane (the diff's file name); same height as the list group headers. -->
     <Thickness x:Key="Padding.PaneHeader">12,6,8,6</Thickness>
-    <!-- Around the commit box under the file lists. -->
-    <Thickness x:Key="Padding.CommitBox">12,8</Thickness>
-    <!-- Blame tab (G8): the gutter's inner padding, so the commit id doesn't touch the edge. -->
-    <Thickness x:Key="Padding.BlameGutter">8,0,0,0</Thickness>
 
     <!-- Rounded corners: CornerRadius -->
     <CornerRadius x:Key="Radius.Control">4</CornerRadius>

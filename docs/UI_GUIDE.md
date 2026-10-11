@@ -2,7 +2,7 @@
 
 How the DevHub window is built (the JetBrains "New UI" look from roadmap milestone UI-0),
 the rules every view follows, and step-by-step recipes for adding things. Read this before
-changing anything under `src/DevHub.App` or `src/DevHub.Sdk` (or, later, a plugin's UI project).
+changing anything under `src/DevHub.App`, `src/DevHub.Sdk` or a plugin's UI project (`plugins/DevHub.*`).
 
 Related: [`ACTIONS_AND_FUZZY_MATCHING.md`](ACTIONS_AND_FUZZY_MATCHING.md) explains actions
 and Find Action in depth. The UI Gallery (Debug builds: ☰ → View → UI Gallery) shows every
@@ -51,9 +51,11 @@ token and component live; check changes there in Dark, Light and Compact.
 
 ## 2. Where things are
 
-The UI is split in two (plugin architecture, `docs/PLUGINS.md`): **DevHub.Sdk** holds what
-every UI part builds on, **DevHub.App** is the shell (and, until P4, the plugins' screens).
-Namespaces are the same in both (`DevHub.Controls`, `DevHub.Actions`, `DevHub.ViewModels…`).
+The UI is split (plugin architecture, `docs/PLUGINS.md`): **DevHub.Sdk** holds what every UI
+part builds on, **DevHub.App** is the shell, and each feature's screens live in its plugin's UI
+project (`plugins/DevHub.Git/`, `plugins/DevHub.Projects/`, …) with the same folder layout
+(`Actions/`, `ViewModels/…`, `Views/…`, `Themes/`). Namespaces are the same everywhere
+(`DevHub.Controls`, `DevHub.Actions`, `DevHub.ViewModels.Git…`), whichever assembly a class is in.
 
 ```
 src/DevHub.Sdk/                   shared by the shell and every plugin
@@ -67,26 +69,33 @@ src/DevHub.Sdk/                   shared by the shell and every plugin
   Converters/           value converters used in views
   Actions/              AppAction, IActionProvider, ActionRegistry, MenuBuilder, {a:…} XAML helpers
   Services/             IDialogService, IThemeService, IStatusService (interfaces only)
-  ViewModels/           ViewModelBase; DocumentViewModelBase + IDocumentFactory;
-                        ToolWindowViewModelBase; DialogViewModelBase + ConfirmDialogViewModel;
-                        SettingsPageViewModelBase
+  ViewModels/           ViewModelBase, AvatarViewModel; DocumentViewModelBase + IDocumentFactory +
+                        IDocumentService; ToolWindowViewModelBase; DialogViewModelBase +
+                        ConfirmDialogViewModel; SettingsPageViewModelBase; Shell/ widget bases
   Views/Dialogs/        ConfirmDialogView
+  Plugins/              IPlugin, PluginContext, [DevHubPlugin]
+  Integration/          hooks between independent plugins (IProjectOpener, IProjectFileEditor, IProjectFolders)
   Assets/Icons/         JetBrains expui SVGs (light + _dark) + NOTICE.md / LICENSE-2.0.txt
   AppServices.cs        the DI container for XAML markup extensions (set by the app)
 
-src/DevHub.App/                   the shell
-  App.axaml(.cs)        theme includes, DI registrations, startup (keymap, save on close)
+src/DevHub.App/                   the shell (no feature code)
+  App.axaml(.cs)        theme includes, shell DI registrations, startup (plugins, keymap, save on close)
+  Plugins/PluginHost.cs finds, resolves and loads the plugins
   ViewLocator.cs        XxxViewModel → XxxView, looked up in the ViewModel's own assembly
-  Actions/              ActionIds, Keymap, MainMenu (+ {a:MainMenu}); Providers/
-  Services/             DialogService, ThemeService (+ feature services until P4)
-  ViewModels/
-    Documents/          editor tabs (DocumentManager + one VM per document)
-    ToolWindows/        docked panels (ToolWindowManager + one VM per tool window)
-    Dialogs/            Settings/ (dialog + pages)
-    Shell/              status bar, Find Action
+  Actions/              ActionIds (shell), Keymap, MainMenu (+ {a:MainMenu}, toolbar, Welcome); Providers/
+  Services/             DialogService, ThemeService
+  ViewModels/           DocumentManager, ToolWindowManager, Settings dialog + Appearance page,
+                        status bar, Find Action, UI Gallery (Debug)
   Views/                same folders as ViewModels
-  Controls/             shell / feature controls (DevHubLogo, CommitGraphCell, Avatar)
+  Controls/             DevHubLogo
   Assets/Logo/          app icon / logo
+
+plugins/DevHub.Git/               a plugin UI project (the others look the same)
+  GitPlugin.cs          the IPlugin: its info and every registration
+  Actions/              GitActionIds, Providers/GitActionProvider
+  ViewModels/  Views/   Git/, Documents/ (repository, diff, blame tabs), ToolWindows/ (Git Console)
+  Services/  Controls/  RepositoryFileOpener, TerminalLauncher; CommitGraphCell
+  Themes/GitTokens.axaml   Git-only tokens (diff / graph colors, list widths), from IPlugin.Resources
 ```
 
 **XAML namespaces: use `using:`, not `clr-namespace:`** (`xmlns:c="using:DevHub.Controls"`).
@@ -180,7 +189,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `IconToggle` / `FoldArrow` (themes) | a small flat on/off icon button (e.g. "show folders"); a ▸ / ▾ fold arrow for custom tree rows | `<ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"><c:Icon Kind="folder" /></ToggleButton>` |
 
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
-template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" /> (the assembly name in the URI is the one the file lives in)`
+template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.Git/Views/Git/FileChangeStyles.axaml" />` (the assembly name in the URI is the one the file lives in)
 in the view's `Styles`, then `ItemTemplate="{StaticResource FileRow}"`.
 A commit's (or stash's) message + files + diff is one reusable view: put a
 `CommitDetailsViewModel` in a `ContentControl` and the ViewLocator shows `CommitDetailsView`
@@ -202,6 +211,10 @@ already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use th
 3. Add a row to the table in `Assets/Icons/NOTICE.md` (license requirement).
 
 ### Add a token
+Shared tokens (used by the shell or several plugins) go in the Sdk's `Themes/Tokens/`. A token
+only one plugin uses goes in that plugin's own dictionary (e.g. `plugins/DevHub.Git/Themes/GitTokens.axaml`,
+listed in its `IPlugin.Resources`); colors there also need Dark and Light `ThemeDictionaries`.
+Plugin dictionaries have no Compact variant yet, so a token that must shrink stays in the Sdk.
 1. Add it to `Themes/Tokens/Sizes.axaml` (or `Colors.axaml`, in **both** Dark and Light).
 2. If it should shrink in Compact, add the same key to `Sizes.Compact.axaml`.
 3. Name it by purpose (`Padding.Tab`), not by look (`Padding12`). Check the type (rule 3).
@@ -211,7 +224,7 @@ Short version (full recipe in `ACTIONS_AND_FUZZY_MATCHING.md`):
 1. Id constant ("Area.Verb") in `Actions/ActionIds.cs` (from P4: the plugin's own ids class).
 2. `yield return new AppAction(id, "Text…", someViewModel.SomeCommand) { Category, IconKind, Gesture }`
    in the feature's `IActionProvider`. A new provider is registered in its **plugin's**
-   `ConfigureServices` (`Plugins/FeaturePlugins.cs`); shell actions in `App.axaml.cs`.
+   `ConfigureServices` (e.g. `plugins/DevHub.Git/GitPlugin.cs`); shell actions in `App.axaml.cs`.
 3. Say where it appears **on the action itself**: `Menu = "Git", MenuOrder = 100` (main-menu
    group; a new hundred starts a new section with a separator), `ToolbarOrder` (title-bar
    toolbar), `WelcomeOrder` (Welcome view). There's no list of ids to edit. In a view:

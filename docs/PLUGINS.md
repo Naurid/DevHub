@@ -19,8 +19,18 @@ menus, pages or shortcuts. Decisions confirmed on 2026-10-11:
 - **Timing:** now, before M1. Templates will be written as a plugin from the start.
 - **First run:** presets ("Git client", "Project templates", "Everything") above a checklist.
 
-Status: **P1 (Core split + plugin settings sections), P2 (`DevHub.Sdk`) and P3 (plugin contract +
-extension points) done.**
+Status: **P1 (Core split + plugin settings sections), P2 (`DevHub.Sdk`), P3 (plugin contract +
+extension points) and P4 (plugins in their own assemblies) done.**
+P4 as built: `plugins/DevHub.{Projects,Git,GitHub,Templates}` UI projects, each with its plugin
+class and `[assembly: DevHubPlugin]`; `PluginInfo.Order` keeps Projects → Git → GitHub →
+Templates in lists and menus. The app references them with `Aliases="plugins"` (shipped, never
+used). Plugins reach the editor area through `IDocumentService` (Sdk). Git defines `IRemoteHost`
+(Publish, your identity / avatar, accounts + repositories for Clone); GitHub implements it with
+`GitHubRemoteHost`, so the Git assembly never references GitHub. Per-plugin action ids
+(`GitActionIds`, `ProjectsActionIds`). Git's tokens and the branch-widget style moved to the Git
+plugin (`Themes/GitTokens.axaml`, `BranchWidgetView`); the Avatar control moved to the Sdk. The
+Templates placeholder pages became the Templates plugin rather than being deleted. Debug builds
+print the found / loaded plugins to stdout at startup.
 P3 as built: `PluginInfo` / `PluginResolver` in Sdk.Core (tested); `IPlugin`, `PluginContext`,
 `[DevHubPlugin]`, `TitleBarWidgetViewModelBase` / `StatusBarWidgetViewModelBase` in the Sdk;
 `PluginHost` in the app scans `DevHub*.dll`, resolves against `AppSettings.EnabledPlugins` (null =
@@ -28,8 +38,7 @@ all) before DI is built, and shows a status note for plugins that couldn't load.
 action metadata (`Menu`/`MenuOrder`, `ToolbarOrder`, `WelcomeOrder`; documents via
 `Navigation`, tool windows via `Order`). `{a:Action id}` hides its control when the id's plugin is
 off. Git owns `ActiveRepositoryService` (the shell only has `DocumentViewModelBase.ContextPath`).
-Debug builds validate all DI registrations at startup. Left for P4: the plugins' own assemblies,
-their own token files, `IRemoteHostProvider` (GitHub is already optional for Git: null-tolerant).
+Debug builds validate all DI registrations at startup.
 P2 notes: namespaces didn't change (`DevHub.Controls` etc. now span Sdk + App); XAML uses
 `using:` namespaces; the shell sets the base classes' host-only members through
 `InternalsVisibleTo("DevHub.App")`; markup extensions get the container from `AppServices.Current`. Progress is tracked in `docs/ROADMAP.md` (milestone P).
@@ -129,9 +138,10 @@ next to Clone. Git's Open Terminal is Git's own service (`TerminalLauncher`).
 
 Between a plugin and its declared requirement no hook is needed (GitHub may use Git's types),
 but a hook still keeps the required plugin free of the dependent one:
-`IRemoteHostProvider` (P4; defined by Git, implemented by GitHub) for Publish to GitHub, the
-Clone-from-account list and commit avatars. Until then Git takes `GitHubSession?` (null when
-GitHub is off).
+`IRemoteHost` (in the Git plugin, implemented by GitHub's `GitHubRemoteHost`) for Publish, the
+Clone-from-account list and your avatar on your commits. Git injects it as `IRemoteHost? = null`:
+without GitHub, Publish isn't offered and Clone works by URL. It's host-neutral (a GitLab
+plugin could implement it too).
 
 ## Migration in phases (each ends building, with tests green and the app working the same)
 1. **Core split (pure moves):** add `Directory.Build.props`. Create Sdk.Core,
@@ -149,9 +159,10 @@ GitHub is off).
    - Wrap each feature in an `IPlugin` class registered by the host.
    - `App.ConfigureServices` keeps only shell services.
 4. **Move features out**, one assembly pair at a time: Projects, then Git, then GitHub.
-   The Git→GitHub links become `IRemoteHostProvider` (Projects↔Git already go through
-   `DevHub.Integration`, so neither assembly references the other). The placeholder Templates/Generate/Import pages are deleted (M1
-   rebuilds them as the Templates plugin). UI Gallery stays a DEBUG-only shell page.
+   The Git→GitHub links become `IRemoteHost` (Projects↔Git already go through
+   `DevHub.Integration`, so neither assembly references the other). The placeholder
+   Templates/Generate/Import pages become the Templates plugin (M1 fills it in). UI Gallery
+   stays a DEBUG-only shell page.
 5. **Plugins UI:** a Settings → Plugins page (list, description, requires, on/off, "Restart
    to apply", turning one off warns about plugins that depend on it), a first-run page
    with presets + checklist, and a status note when a plugin was skipped (missing dependency).

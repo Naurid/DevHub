@@ -30,14 +30,17 @@ src/
   DevHub.Sdk/                the UI base every screen builds on: base classes for ViewModels,
                              editor tabs, tool windows, dialogs and settings pages; the action
                              system; service interfaces; the design system (tokens, controls, icons)
-  DevHub.App/                the shell (main window, tabs, tool windows, menus, Settings, Find
-                             Action). Right now it still contains the UI of Projects, Git and
-                             GitHub; those move into plugin projects in P4.
+  DevHub.App/                the shell only (main window, tabs, tool windows, menus, Settings, Find
+                             Action, finding and loading plugins)
 
-plugins/                     one folder per plugin part; logic lives in X.Core (no UI, tested)
+plugins/                     each plugin: X (its UI + plugin class) and X.Core (logic, no UI, tested)
+  DevHub.Projects/           the Projects tool window, Open With settings
   DevHub.Projects.Core/      repository scanning, language detection, "Open With" tools
+  DevHub.Git/                the Git client UI, its own design tokens (Themes/GitTokens.axaml)
   DevHub.Git.Core/           running git, parsing its output, diff / graph layout
-  DevHub.GitHub.Core/        Git Credential Manager + GitHub API (requires Git)
+  DevHub.GitHub/             GitHub account, Publish to GitHub (requires Git)
+  DevHub.GitHub.Core/        Git Credential Manager + GitHub API
+  DevHub.Templates/          template pages (placeholders until milestone M1)
 
 tests/
   DevHub.TestKit/            shared helpers: TempGitRepo (real git in a temp folder), [GitFact]
@@ -52,15 +55,17 @@ docs/                        design docs and guides (see below)
 What each project may reference:
 
 ```
-DevHub.App ──► DevHub.Sdk ──► DevHub.Sdk.Core
-     │
-     └──────► DevHub.Projects.Core ──► DevHub.Sdk.Core
-     └──────► DevHub.Git.Core ───────► DevHub.Sdk.Core
-     └──────► DevHub.GitHub.Core ────► DevHub.Git.Core, DevHub.Sdk.Core
+DevHub.App ──────► DevHub.Sdk ──► DevHub.Sdk.Core
+ (ships the plugins;  ▲
+  never uses them)    │
+DevHub.Projects ──────┤ + DevHub.Projects.Core
+DevHub.Git ───────────┤ + DevHub.Git.Core
+DevHub.GitHub ────────┤ + DevHub.GitHub.Core + DevHub.Git   (GitHub requires Git)
+DevHub.Templates ─────┘
 ```
 
-`DevHub.Sdk` and `DevHub.Sdk.Core` never know about a plugin, and nothing references
-`DevHub.App`.
+`DevHub.Sdk` and `DevHub.Sdk.Core` never know about a plugin, nothing references `DevHub.App`,
+and Projects and Git never reference each other (they link through small interfaces in the Sdk).
 
 ## Build, test, run
 

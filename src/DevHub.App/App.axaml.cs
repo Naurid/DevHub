@@ -39,6 +39,12 @@ public partial class App : Application
             // Which plugins load is decided before the container exists: a switched-off plugin
             // registers nothing, so no menu item, tab, tool window or shortcut of it appears.
             var plugins = PluginHost.Load(store);
+#if DEBUG
+            // One line for whoever starts the app from a console or script (stdout; a WinExe has no window for it).
+            Console.WriteLine("DevHub plugins: found " + string.Join(", ", plugins.Available.Select(p => p.Info.Id))
+                              + "; loaded " + string.Join(", ", plugins.Loaded.Select(p => p.Info.Id))
+                              + (plugins.Skipped.Count > 0 ? "; skipped " + string.Join(", ", plugins.Skipped.Select(s => s.Plugin.Id)) : ""));
+#endif
 
             var collection = new ServiceCollection();
             ConfigureServices(collection, store, plugins);
@@ -121,6 +127,7 @@ public partial class App : Application
         // (DocumentViewModelBase singletons, IDocumentFactory for one tab per id).
         services.AddSingleton<ToolWindowManager>();
         services.AddSingleton<DocumentManager>();
+        services.AddSingleton<IDocumentService>(sp => sp.GetRequiredService<DocumentManager>());
 #if DEBUG
         // Design-system playground; not shipped in Release builds.
         services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();

@@ -22,7 +22,7 @@ namespace DevHub.ViewModels.Documents;
 /// </list>
 /// Opening a document that's already open (same Id) just activates its tab.
 /// </remarks>
-public partial class DocumentManager : ViewModelBase
+public partial class DocumentManager : ViewModelBase, IDocumentService
 {
     private readonly ISettingsStore _store;
     private readonly IReadOnlyList<IDocumentFactory> _factories;
@@ -38,6 +38,11 @@ public partial class DocumentManager : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ActiveTitle))]
     private DocumentViewModelBase? _active;
+
+    IReadOnlyList<DocumentViewModelBase> IDocumentService.OpenDocuments => Open;
+
+    /// <inheritdoc />
+    public event EventHandler? OpenDocumentsChanged;
 
     /// <summary>True while at least one tab is open (false shows the Welcome view).</summary>
     public bool HasDocuments => Open.Count > 0;
@@ -56,7 +61,11 @@ public partial class DocumentManager : ViewModelBase
         foreach (var document in Available)
             AttachCommands(document);
 
-        Open.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDocuments));
+        Open.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(HasDocuments));
+            OpenDocumentsChanged?.Invoke(this, EventArgs.Empty);
+        };
         Restore(_store.Load().Editor);
     }
 
