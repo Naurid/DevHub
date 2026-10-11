@@ -152,13 +152,13 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Templates tool window (left stripe, Alt+2): the list at hand; double-click / Use starts New Project or Add Files, Edit, New Template
 
 ## M7 — Import from an existing folder
-- [ ] Ignore-glob matcher (Core, tested)
-- [ ] Import preview: file tree with ignored items greyed out
-- [ ] Literal → variable replacement with per-file hit counts
-- [ ] Save as a new template (project or item) in a chosen library
+- [x] Ignore rules, gitignore-style (name anywhere, name/ folders, /path from the top, globs) (Core, tested)
+- [x] Import tab: preview tree with left-out items greyed out and placeholders per file
+- [x] Literal → variable replacement; other spellings of a multi-word literal become transforms; an existing {{Var}} is escaped
+- [x] Save as a new template (project or item) in a chosen library; it opens in the editor
 
 ## M8 — Built-in templates
-- [ ] .NET (console, classlib, solution + add project, Avalonia, xUnit), Unity (`@unity`, installed editors)
+- [ ] **NEXT —** .NET (console, classlib, solution + add project, Avalonia, xUnit), Unity (`@unity`, installed editors)
 - [ ] Web (Vite React/Vue/Svelte TS, Tauri), Rust (cargo bin/lib), Python (venv layout), Go (go mod)
 - [ ] Each checked against the real tool when installed (skipped otherwise)
 
