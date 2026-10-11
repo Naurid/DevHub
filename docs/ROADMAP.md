@@ -149,6 +149,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Moves / deletes of existing files spelled out in the preview; only what changes shown (or everything)
 - [x] Namespace inference (nearest `.csproj` RootNamespace or name, `.asmdef` rootNamespace, Unity project; + folders)
 - [x] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
+- [x] Templates tool window (left stripe, Alt+2): the list at hand; double-click / Use starts New Project or Add Files, Edit, New Template
 
 ## M7 — Import from an existing folder
 - [ ] Ignore-glob matcher (Core, tested)
