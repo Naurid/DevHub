@@ -122,15 +122,15 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
       entered values checked (required / pattern / choice / bool) — 61 tests
 
 ## M3 — Generation pipeline (Core)
-- [ ] **NEXT —** Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
-- [ ] Staging + base command (`runIn` root / parent); overlay of `content/` (binary detection, encoding/BOM kept)
-- [ ] Steps engine (createFolder / move / rename / delete, globs, nothing outside the root)
-- [ ] Result tree model for the preview; preview edits → applied + convertible to `steps` ("Save to template")
-- [ ] Conflict check, place into target; item templates applied into an existing folder (incl. moving existing files)
-- [ ] Post-create commands; the "commands that will run" list for the confirmation; tests in temp folders
+- [x] Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
+- [x] Staging + base command (`runIn` root / parent); overlay of `content/` (binary detection, encoding/BOM kept)
+- [x] Steps engine (createFolder / move / rename / delete, globs, nothing outside the root)
+- [x] Result tree model for the preview; preview edits → applied + convertible to `steps` ("Save to template")
+- [x] Conflict check, place into target; item templates applied into an existing folder (incl. moving existing files)
+- [x] Post-create commands; the "commands that will run" list for the confirmation; tests in temp folders
 
 ## M4 — Browse + generate UI
-- [ ] Template browser: group by language or category, filter by both + library, search; project / item
+- [ ] **NEXT —** Template browser: group by language or category, filter by both + library, search; project / item
 - [ ] Variable form from the manifest (string / bool / choice, validation messages); target folder picker
 - [ ] Confirmation (every command, rendered) → progress → editable preview tree (drag / rename / delete /
       new folder, Save to template) → place → post-create with live output
