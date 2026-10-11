@@ -24,8 +24,9 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
     /// <param name="filePath">Git path of the file (relative, forward slashes).</param>
     /// <param name="staged">The staged side (index vs HEAD), else the unstaged side.</param>
     /// <param name="editor">Opens the file in the external editor for the repository's language.</param>
+    /// <param name="layout">Shared view choices (unified / side-by-side).</param>
     public DiffDocumentViewModel(string repositoryPath, string filePath, bool staged, GitRepositoryClient? client,
-        ExternalEditor editor)
+        ExternalEditor editor, RepositoryTabLayout layout)
     {
         RepositoryPath = repositoryPath;
         FilePath = filePath;
@@ -34,7 +35,7 @@ public sealed class DiffDocumentViewModel : DocumentViewModelBase, IDisposable
         var trimmed = filePath.TrimEnd('/');
         var name = trimmed[(trimmed.LastIndexOf('/') + 1)..];
         Title = staged ? name + " (staged)" : name;
-        Diff = new DiffViewModel(client, (file, line) => editor.Open(repositoryPath, file.Change.Path, line),
+        Diff = new DiffViewModel(layout, client, (file, line) => editor.Open(repositoryPath, file.Change.Path, line),
             annotate: (file, commitId) => OpenDocument?.Invoke(BlameDocumentFactory.IdFor(repositoryPath, file, commitId)));
 
         if (client is null)

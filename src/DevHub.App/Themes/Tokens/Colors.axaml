@@ -126,6 +126,8 @@
     <SolidColorBrush x:Key="Brush.Diff.Added" Color="{DynamicResource Color.Status.Success}" Opacity="0.16" />
     <SolidColorBrush x:Key="Brush.Diff.Removed" Color="{DynamicResource Color.Status.Error}" Opacity="0.16" />
     <SolidColorBrush x:Key="Brush.Diff.Hunk" Color="{DynamicResource Color.Accent}" Opacity="0.1" />
+    <!-- Side-by-side: the empty half next to an added / removed line (a faint grey, like JetBrains'). -->
+    <SolidColorBrush x:Key="Brush.Diff.Filler" Color="{DynamicResource Color.Text.Secondary}" Opacity="0.08" />
 
     <!-- Commit graph (G5). CommitGraphCell looks these up by index: Brush.Graph.{color % 8}. -->
     <SolidColorBrush x:Key="Brush.Graph.0" Color="{DynamicResource Color.Graph.0}" />

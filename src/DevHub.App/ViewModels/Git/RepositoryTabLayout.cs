@@ -4,9 +4,9 @@ using DevHub.Core.Settings;
 namespace DevHub.ViewModels.Git;
 
 /// <summary>
-/// Panel widths inside repository tabs, dragged with the splitters. One instance is shared by
-/// all repository tabs (owned by <see cref="Documents.RepositoryDocumentFactory"/>), so
-/// switching tabs doesn't make the panels jump. The widths aren't saved yet; the tree / flat choice is.
+/// Panel widths and view choices inside repository tabs. One instance (a DI singleton) is shared
+/// by all repository tabs and diff tabs, so switching tabs doesn't make the panels jump and a
+/// view switch applies everywhere at once. The widths aren't saved yet; the view choices are.
 /// </summary>
 public sealed partial class RepositoryTabLayout : ObservableObject
 {
@@ -16,7 +16,9 @@ public sealed partial class RepositoryTabLayout : ObservableObject
     public RepositoryTabLayout(ISettingsStore? store = null)
     {
         _store = store;
-        _changesAsTree = store?.Load().Git?.ChangesAsTree ?? true;
+        var git = store?.Load().Git;
+        _changesAsTree = git?.ChangesAsTree ?? true;
+        _diffSideBySide = git?.DiffSideBySide ?? false;
     }
 
     /// <summary>Local Changes shows folders (Fork's tree view) instead of a flat list. Saved.</summary>
@@ -24,6 +26,12 @@ public sealed partial class RepositoryTabLayout : ObservableObject
 
     partial void OnChangesAsTreeChanged(bool value) =>
         _store?.Update(s => (s.Git ??= new GitSettings()).ChangesAsTree = value);
+
+    /// <summary>Every diff (Local Changes, commits, stashes, diff tabs) is side by side instead of unified. Saved.</summary>
+    [ObservableProperty] private bool _diffSideBySide;
+
+    partial void OnDiffSideBySideChanged(bool value) =>
+        _store?.Update(s => (s.Git ??= new GitSettings()).DiffSideBySide = value);
 
     /// <summary>The sidebar (header + Local Changes, All Commits, …).</summary>
     [ObservableProperty] private double _sidebarWidth = 240;

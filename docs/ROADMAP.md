@@ -12,9 +12,7 @@ milestones below).
 - [x] UI-0: JetBrains-style front end (see below) — design system + IDE shell,
       built before the Git client so the Git UI is mostly composition. Rules and recipes:
       `docs/UI_GUIDE.md`.
-- [ ] **NEXT — Integrated Git client (in-app, "Fork"-like).** Large; a full git UI
-      (status/stage/commit/diff/branches/history/remotes) built inside the app.
-      Plan it as its own milestone before building.
+- [x] Integrated Git client (in-app, "Fork"-like): milestones G0–G9 below.
 
 ## UI-0 — JetBrains-style front end (Rider New UI look)
 Dark + Light, configurable accent (default #3574F0), Compact mode, Inter UI + JetBrains
@@ -65,6 +63,8 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
       Manager (Settings → GitHub), Publish to GitHub, Clone Repository (your GitHub repositories or a URL)
 - [x] G9.1 Fork-style sidebar tree (Branches / Remotes → origin → folders → branches); Local Changes
       in folders (tree / flat switch, saved)
+- [x] G9.2 Side-by-side diff (layout in Core, tested): one saved switch for every diff; hunks staged in
+      both views, single lines in unified. Fetch from an empty remote says so instead of looking like a no-op
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`
