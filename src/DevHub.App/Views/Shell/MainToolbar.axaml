@@ -10,10 +10,10 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels"
-             xmlns:c="clr-namespace:DevHub.Controls"
-             xmlns:a="clr-namespace:DevHub.Actions"
-             xmlns:gitv="clr-namespace:DevHub.Views.Git"
+             xmlns:vm="using:DevHub.ViewModels"
+             xmlns:c="using:DevHub.Controls"
+             xmlns:a="using:DevHub.Actions"
+             xmlns:gitv="using:DevHub.Views.Git"
              x:Class="DevHub.Views.Shell.MainToolbar"
              x:DataType="vm:MainWindowViewModel">
 

@@ -7,9 +7,9 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
-             xmlns:c="clr-namespace:DevHub.Controls"
-             xmlns:conv="clr-namespace:DevHub.Converters"
+             xmlns:docs="using:DevHub.ViewModels.Documents"
+             xmlns:c="using:DevHub.Controls"
+             xmlns:conv="using:DevHub.Converters"
              x:Class="DevHub.Views.Documents.RepositoryDocumentView"
              x:DataType="docs:RepositoryDocumentViewModel">
 

@@ -37,6 +37,8 @@ public partial class App : Application
             var collection = new ServiceCollection();
             ConfigureServices(collection);
             Services = collection.BuildServiceProvider();
+            // XAML markup extensions ({a:Action …}, in the Sdk and in plugins) read the container from here.
+            AppServices.Current = Services;
 
             // Push the accent into Fluent's keys before any window is created.
             var theme = Services.GetRequiredService<ThemeService>();

@@ -21,7 +21,7 @@ namespace DevHub.Services;
 public sealed class ThemeService(ISettingsStore store) : IThemeService
 {
     private static readonly Uri CompactSizesUri =
-        new("avares://DevHub.App/Themes/Tokens/Sizes.Compact.axaml");
+        new("avares://DevHub.Sdk/Themes/Tokens/Sizes.Compact.axaml");
 
     /// <summary>The loaded Sizes.Compact dictionary while Compact is on, else null.</summary>
     private IResourceProvider? _compactSizes;

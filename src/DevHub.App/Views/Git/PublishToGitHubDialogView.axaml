@@ -1,8 +1,8 @@
 <!-- Publish to GitHub: account (when several), name (+ where it will be), description, private, remote name. -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Git"
+             xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Git.PublishToGitHubDialogView"
              x:DataType="vm:PublishToGitHubDialogViewModel">
     <StackPanel Margin="{DynamicResource Padding.Dialog}" Spacing="{DynamicResource Spacing}">

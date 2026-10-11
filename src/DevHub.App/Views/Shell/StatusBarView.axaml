@@ -5,9 +5,9 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Shell"
-             xmlns:a="clr-namespace:DevHub.Actions"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Shell"
+             xmlns:a="using:DevHub.Actions"
+             xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Shell.StatusBarView"
              x:DataType="vm:StatusBarViewModel">
 

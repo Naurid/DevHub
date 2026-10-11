@@ -35,9 +35,14 @@ DevHub.sln   Directory.Build.props (net10.0, Nullable, ImplicitUsings for every 
 src/
   DevHub.Sdk.Core/        base for everything, NO Avalonia: settings store (shell sections +
                           one section per plugin, ISettingsSection), FuzzyMatcher, Formatting
-  DevHub.App/             Avalonia UI (MVVM). For now still holds the plugins' UI too (moves out in P2–P4)
+  DevHub.Sdk/             Avalonia building blocks for the shell and every plugin UI: base classes
+                          (ViewModelBase, DocumentViewModelBase, ToolWindowViewModelBase,
+                          DialogViewModelBase, SettingsPageViewModelBase), action system, service
+                          interfaces, Controls/, Themes/ (tokens), Assets/Icons/
+  DevHub.App/             the shell exe (window, managers, menus, Settings, Find Action). For now it
+                          also holds the plugins' UI (moves into plugin projects in P4)
     Views/  ViewModels/  (Documents/, ToolWindows/, Dialogs/, Shell/, Git/ in both)
-    Services/ (dialogs, pickers, theme, status)   Actions/   Controls/   Themes/
+    Services/ (dialog/theme implementations, feature services)   Actions/ (ids, keymap, menu, providers)
 plugins/                  each plugin = X.Core (logic, NO Avalonia, tested) + later X (UI)
   DevHub.Projects.Core/   repository scanning, language detection, Open With (ProjectsSettings)
   DevHub.Git.Core/        GitRunner, GitRepositoryClient, parsers, graph/diff layout (GitSettings)
@@ -55,10 +60,11 @@ docs/
   GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G9)
 ```
 
-**Dependency direction:** `App → Sdk.Core + plugin .Core projects`; a plugin's `.Core` →
+**Dependency direction:** `App → Sdk (→ Sdk.Core) + plugin .Core projects`; a plugin's `.Core` →
 `Sdk.Core` (+ another plugin's `.Core` only for a declared hard dependency, e.g. GitHub →
 Git); tests → the project they test. **`Sdk.Core` never knows about a plugin, and nothing
-references `App`.** All logic that can be tested without a window lives in a `.Core`
+references `App`; `Sdk` never references `App` or a plugin** (the shell may set the
+base classes' host-only `internal` members via `InternalsVisibleTo`). All logic that can be tested without a window lives in a `.Core`
 project (the "Core" in the rules below means "a `.Core` project"). If you catch yourself
 writing file I/O, path math, or string templating in a ViewModel, move it to a Core
 service and inject it.
@@ -97,17 +103,18 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
 
 ## App rules (MVVM + UI) — details in `docs/UI_GUIDE.md` and the `avalonia-mvvm` skill
 - ViewModels never reference `Views`, `Window`, `TopLevel`, `Application` or Avalonia
-  controls; dialogs/pickers/theme/status go through interfaces in `App/Services`
+  controls; dialogs/pickers/theme/status go through interfaces in the Sdk's `Services/`
   (`IDialogService`, `IThemeService`, `IStatusService`). Code-behind = `InitializeComponent()` only.
-- Compiled bindings everywhere (`x:DataType` on every view).
+- Compiled bindings everywhere (`x:DataType` on every view). XAML namespaces use `using:`
+  (`xmlns:c="using:DevHub.Controls"`): `clr-namespace:` without `;assembly=` can't see the Sdk.
 - All disk/process work is `async`; never `.Result`/`.Wait()` on the UI thread.
 - Every `event`/`+=` subscription has a matching `-=` on the paired lifecycle
   hook; use `event` rather than public delegate fields.
 - **No hex colors, pixel sizes or font names in views**: use the tokens in
-  `Themes/Tokens/` via `DynamicResource` (`Brush.*`, `Size.*`, `Spacing.*`, `Padding.*`,
+  `Themes/Tokens/` (in DevHub.Sdk) via `DynamicResource` (`Brush.*`, `Size.*`, `Spacing.*`, `Padding.*`,
   `Radius.*`) and the text classes (`header`, `secondary`, `small`, `code`). Match the
   token type to the property (a number in `Padding` compiles but crashes at runtime).
-- Use the components in `Controls/` (`ToolWindowFrame`, `ActionButton`, `EmptyState`,
+- Use the components in the Sdk's `Controls/` (`ToolWindowFrame`, `ActionButton`, `EmptyState`,
   `SettingsRow`, …) before building new ones.
 - User operations are **actions** (`Actions/`: `AppAction` + an `IActionProvider`), so
   they appear in menus, Find Action (Ctrl+Shift+A) and shortcuts. New screens are

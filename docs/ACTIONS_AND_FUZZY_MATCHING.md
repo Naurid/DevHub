@@ -1,6 +1,6 @@
 # Actions and fuzzy matching
 
-How DevHub's action system (`src/DevHub.App/Actions/`) and the fuzzy matcher
+How DevHub's action system (`src/DevHub.Sdk/Actions/` + the shell's `src/DevHub.App/Actions/`) and the fuzzy matcher
 (`src/DevHub.Sdk.Core/Search/FuzzyMatcher.cs`) work, why they're built this way, and how to
 extend them. Written for UI-0 step 5; steps 6 (menus/toolbar), 9 (keymap settings) and
 10 (Find Action) build on both.
@@ -212,14 +212,14 @@ whether a group turned out empty.
 ### Using actions from XAML
 
 XAML can't receive constructor injection, so three **markup extensions** look things up
-in the DI container (`App.Services`) instead. A markup extension is a small class that XAML
+in the DI container (`AppServices.Current`, set by the app at startup) instead. A markup extension is a small class that XAML
 calls while loading: writing `{a:Action View.ToggleTheme}` constructs
 `ActionExtension("View.ToggleTheme")` and uses whatever its `ProvideValue` returns.
 
 Declare the prefix once per file:
 
 ```xml
-xmlns:a="clr-namespace:DevHub.Actions"
+xmlns:a="using:DevHub.Actions"
 ```
 
 | Extension | Returns | Example |

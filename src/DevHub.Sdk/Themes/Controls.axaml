@@ -10,7 +10,7 @@
 -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="clr-namespace:DevHub.Controls">
+        xmlns:c="using:DevHub.Controls">
 
     <!-- ===== DevHub controls ===== -->
     <!-- Icons default to the 16px token; set Width/Height locally for e.g. 20px stripe icons. -->

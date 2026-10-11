@@ -1,6 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DevHub"
+             xmlns:local="using:DevHub"
              x:Class="DevHub.App"
              RequestedThemeVariant="Light">
 
@@ -13,7 +13,7 @@
       <ResourceDictionary>
         <!-- Design system (UI-0): tokens + Fluent key mapping. -->
         <ResourceDictionary.MergedDictionaries>
-            <ResourceInclude Source="avares://DevHub.App/Themes/DevHubTheme.axaml" />
+            <ResourceInclude Source="avares://DevHub.Sdk/Themes/DevHubTheme.axaml" />
         </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </Application.Resources>
@@ -22,6 +22,6 @@
         <!-- Colors come from Themes/FluentMapping.axaml, accent from ThemeService. -->
         <FluentTheme />
         <!-- Sizes + text variants on top of Fluent's controls. -->
-        <StyleInclude Source="avares://DevHub.App/Themes/Controls.axaml" />
+        <StyleInclude Source="avares://DevHub.Sdk/Themes/Controls.axaml" />
     </Application.Styles>
 </Application>

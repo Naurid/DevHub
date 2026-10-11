@@ -72,9 +72,9 @@ Plugins, first-run presets, restart to apply). Design and decisions: `docs/PLUGI
 Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 - [x] P1. Core split: `Directory.Build.props`; Sdk.Core, Projects.Core (+ Repositories,
       LanguageToolChoice), Git.Core, GitHub.Core; tests split + TestKit; settings sections + migration (tested)
-- [ ] **NEXT — P2. `DevHub.Sdk`:** base classes, Controls, Themes, action contracts, service interfaces; ViewLocator,
-      Icon and avares URIs work across assemblies
-- [ ] P3. Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
+- [x] P2. `DevHub.Sdk`: base classes, Controls, Themes, action contracts, service interfaces; ViewLocator,
+      Icon and avares URIs work across assemblies (XAML uses `using:` namespaces)
+- [ ] **NEXT — P3.** Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
       metadata, settings-page list, title/status-bar widgets, Welcome placement, tool-window order;
       no `ActiveRepository` in the shell
 - [ ] P4. Move Projects, Git, GitHub into plugin assemblies; soft hooks `IProjectOpener`, `IRemoteHostProvider`;

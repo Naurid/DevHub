@@ -9,8 +9,9 @@ namespace DevHub.Actions;
 // uses whatever ProvideValue returns. Declare the prefix with
 // xmlns:a="clr-namespace:DevHub.Actions".
 //
-// They read App.Services (the DI container) because XAML can't constructor-inject. It is null
-// in the XAML previewer, so they return null / empty there instead of crashing.
+// They read AppServices.Current (the DI container, set by the app at startup) because XAML
+// can't constructor-inject. It is null in the XAML previewer, so they return null / empty
+// there instead of crashing.
 
 /// <summary><c>&lt;c:ActionButton Action="{a:Action Repositories.Rescan}" /&gt;</c></summary>
 public sealed class ActionExtension(string id) : MarkupExtension
@@ -21,8 +22,8 @@ public sealed class ActionExtension(string id) : MarkupExtension
     public override object ProvideValue(IServiceProvider serviceProvider) =>
         (object?)Registry?.Get(Id) ?? AvaloniaProperty.UnsetValue;
 
-    internal static ActionRegistry? Registry =>
-        (App.Services as IServiceProvider)?.GetService<ActionRegistry>();
+    /// <summary>The app's action registry, or null in the XAML previewer.</summary>
+    public static ActionRegistry? Registry => AppServices.Current?.GetService<ActionRegistry>();
 }
 
 /// <summary>
@@ -61,13 +62,6 @@ public sealed class ActionCommandExtension(string id) : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider) =>
         (object?)ActionExtension.Registry?.Get(Id).Command ?? AvaloniaProperty.UnsetValue;
-}
-
-/// <summary>The main menu's top-level items (see <see cref="MainMenu"/>): <c>ItemsSource="{a:MainMenu}"</c>.</summary>
-public sealed class MainMenuExtension : MarkupExtension
-{
-    public override object ProvideValue(IServiceProvider serviceProvider) =>
-        ActionExtension.Registry is { } registry ? MainMenu.Build(registry) : Array.Empty<object>();
 }
 
 /// <summary>

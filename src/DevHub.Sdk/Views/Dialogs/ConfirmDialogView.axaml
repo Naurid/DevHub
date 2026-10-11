@@ -1,8 +1,8 @@
 <!-- Confirmation or message: icon (warning when destructive, else info), what will happen, which items. -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Dialogs"
+             xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Dialogs.ConfirmDialogView"
              x:DataType="vm:ConfirmDialogViewModel">
     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing.Large}"

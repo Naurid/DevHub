@@ -6,8 +6,8 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Shell"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Shell"
+             xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Shell.FindActionView"
              x:DataType="vm:FindActionViewModel">
 

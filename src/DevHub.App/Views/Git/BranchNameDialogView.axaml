@@ -1,8 +1,8 @@
 <!-- Branch name for New Branch / Rename: the field, git's objection (if any), and "check out". -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Git"
+             xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Git.BranchNameDialogView"
              x:DataType="vm:BranchNameDialogViewModel">
     <StackPanel Margin="{DynamicResource Padding.Dialog}" Spacing="{DynamicResource Spacing}">

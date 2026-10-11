@@ -8,7 +8,7 @@
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:c="clr-namespace:DevHub.Controls">
+                    xmlns:c="using:DevHub.Controls">
 
     <ControlTheme x:Key="{x:Type c:SplitterThumb}" TargetType="c:SplitterThumb">
         <Setter Property="Background" Value="Transparent" />

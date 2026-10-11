@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:DevHub.ViewModels.Dialogs.Settings"
-             xmlns:c="clr-namespace:DevHub.Controls"
+             xmlns:vm="using:DevHub.ViewModels.Dialogs.Settings"
+             xmlns:c="using:DevHub.Controls"
              xmlns:proj="clr-namespace:DevHub.Projects.Core;assembly=DevHub.Projects.Core"
              x:Class="DevHub.Views.Dialogs.Settings.OpenWithSettingsPageView"
              x:DataType="vm:OpenWithSettingsPageViewModel">

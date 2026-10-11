@@ -26,13 +26,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Icons are loaded at runtime via avares://DevHub.App/Assets/Icons/... -->
-        <AvaloniaResource Include="Assets\**\*.svg" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <!-- Until P2–P4 the plugins' UI still lives in this project, so it references their logic directly. -->
+        <!-- The shell builds on the Sdk (base classes, actions, design system; icons live there too). -->
+        <ProjectReference Include="..\DevHub.Sdk\DevHub.Sdk.csproj" />
         <ProjectReference Include="..\DevHub.Sdk.Core\DevHub.Sdk.Core.csproj" />
+        <!-- Until P4 the plugins' UI still lives in this project, so it references their logic directly. -->
         <ProjectReference Include="..\..\plugins\DevHub.Projects.Core\DevHub.Projects.Core.csproj" />
         <ProjectReference Include="..\..\plugins\DevHub.Git.Core\DevHub.Git.Core.csproj" />
         <ProjectReference Include="..\..\plugins\DevHub.GitHub.Core\DevHub.GitHub.Core.csproj" />

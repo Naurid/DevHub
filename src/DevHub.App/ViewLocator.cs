@@ -9,6 +9,8 @@ namespace DevHub;
 /// Resolves a View for a given ViewModel by naming convention:
 /// <c>DevHub.ViewModels.Documents.TemplatesViewModel</c> → <c>DevHub.Views.Documents.TemplatesView</c>.
 /// Avalonia asks this template to build the control whenever a ViewModel is set as content.
+/// The View is looked up in the ViewModel's own assembly, so a plugin (or DevHub.Sdk, e.g. the
+/// confirm dialog) keeps each View next to its ViewModel.
 /// </summary>
 public class ViewLocator : IDataTemplate
 {
@@ -17,8 +19,10 @@ public class ViewLocator : IDataTemplate
         if (param is null)
             return new TextBlock { Text = "null" };
 
-        var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var type = Type.GetType(name);
+        var vmType = param.GetType();
+        var name = vmType.FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
+        // Type.GetType(name) would only search this assembly (and the core library).
+        var type = vmType.Assembly.GetType(name);
 
         if (type is null)
             return new TextBlock { Text = $"View not found: {name}" };

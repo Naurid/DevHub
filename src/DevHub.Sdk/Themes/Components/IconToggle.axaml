@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:c="clr-namespace:DevHub.Controls">
+                    xmlns:c="using:DevHub.Controls">
 
     <!--
       A small, flat on/off button showing just its content (an icon), for toolbars and tree rows:

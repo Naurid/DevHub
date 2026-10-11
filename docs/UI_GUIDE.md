@@ -2,7 +2,7 @@
 
 How the DevHub window is built (the JetBrains "New UI" look from roadmap milestone UI-0),
 the rules every view follows, and step-by-step recipes for adding things. Read this before
-changing anything under `src/DevHub.App`.
+changing anything under `src/DevHub.App` or `src/DevHub.Sdk` (or, later, a plugin's UI project).
 
 Related: [`ACTIONS_AND_FUZZY_MATCHING.md`](ACTIONS_AND_FUZZY_MATCHING.md) explains actions
 and Find Action in depth. The UI Gallery (Debug builds: ☰ → View → UI Gallery) shows every
@@ -51,9 +51,12 @@ token and component live; check changes there in Dark, Light and Compact.
 
 ## 2. Where things are
 
+The UI is split in two (plugin architecture, `docs/PLUGINS.md`): **DevHub.Sdk** holds what
+every UI part builds on, **DevHub.App** is the shell (and, until P4, the plugins' screens).
+Namespaces are the same in both (`DevHub.Controls`, `DevHub.Actions`, `DevHub.ViewModels…`).
+
 ```
-src/DevHub.App/
-  App.axaml(.cs)        theme includes, DI registrations, startup (keymap, save on close)
+src/DevHub.Sdk/                   shared by the shell and every plugin
   Themes/
     Tokens/             Colors.axaml (Dark+Light), Sizes.axaml (+ Sizes.Compact.axaml), Fonts.axaml
     DevHubTheme.axaml   merges the tokens, FluentMapping and component themes
@@ -61,17 +64,34 @@ src/DevHub.App/
     Controls.axaml      Styles: sizes for stock controls, text classes, shell styles
     Components/*.axaml  ControlThemes for our controls
   Controls/             our controls (Icon, ActionButton, ToolWindowFrame, …) + IconKind
-  Actions/              actions, registry, keymap, menus, XAML helpers; Providers/
-  Services/             IDialogService, IThemeService, IStatusService (+ implementations)
+  Converters/           value converters used in views
+  Actions/              AppAction, IActionProvider, ActionRegistry, MenuBuilder, {a:…} XAML helpers
+  Services/             IDialogService, IThemeService, IStatusService (interfaces only)
+  ViewModels/           ViewModelBase; DocumentViewModelBase + IDocumentFactory;
+                        ToolWindowViewModelBase; DialogViewModelBase + ConfirmDialogViewModel;
+                        SettingsPageViewModelBase
+  Views/Dialogs/        ConfirmDialogView
+  Assets/Icons/         JetBrains expui SVGs (light + _dark) + NOTICE.md / LICENSE-2.0.txt
+  AppServices.cs        the DI container for XAML markup extensions (set by the app)
+
+src/DevHub.App/                   the shell
+  App.axaml(.cs)        theme includes, DI registrations, startup (keymap, save on close)
+  ViewLocator.cs        XxxViewModel → XxxView, looked up in the ViewModel's own assembly
+  Actions/              ActionIds, Keymap, MainMenu (+ {a:MainMenu}); Providers/
+  Services/             DialogService, ThemeService (+ feature services until P4)
   ViewModels/
     Documents/          editor tabs (DocumentManager + one VM per document)
     ToolWindows/        docked panels (ToolWindowManager + one VM per tool window)
-    Dialogs/            DialogViewModelBase, Settings/ (dialog + pages)
+    Dialogs/            Settings/ (dialog + pages)
     Shell/              status bar, Find Action
-  Views/                same folders as ViewModels; ViewLocator maps XxxViewModel → XxxView
-  Assets/Icons/         JetBrains expui SVGs (light + _dark) + NOTICE.md / LICENSE-2.0.txt
+  Views/                same folders as ViewModels
+  Controls/             shell / feature controls (DevHubLogo, CommitGraphCell, Avatar)
   Assets/Logo/          app icon / logo
 ```
+
+**XAML namespaces: use `using:`, not `clr-namespace:`** (`xmlns:c="using:DevHub.Controls"`).
+`clr-namespace:X` without `;assembly=` only looks in the view's own assembly, so it can't
+find the Sdk's types from the app (or a plugin); `using:` searches every referenced assembly.
 
 The window, top to bottom: **title bar** (`Views/Shell/MainToolbar`: logo, ☰ main menu,
 breadcrumb, toolbar, window buttons), the **work area** (stripes at the edges, tool-window
@@ -160,7 +180,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `IconToggle` / `FoldArrow` (themes) | a small flat on/off icon button (e.g. "show folders"); a ▸ / ▾ fold arrow for custom tree rows | `<ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"><c:Icon Kind="folder" /></ToggleButton>` |
 
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
-template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" />`
+template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.App/Views/Git/FileChangeStyles.axaml" /> (the assembly name in the URI is the one the file lives in)`
 in the view's `Styles`, then `ItemTemplate="{StaticResource FileRow}"`.
 A commit's (or stash's) message + files + diff is one reusable view: put a
 `CommitDetailsViewModel` in a `ContentControl` and the ViewLocator shows `CommitDetailsView`
@@ -177,7 +197,7 @@ already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use th
 
 ### Add an icon
 1. Copy `x.svg` and `x_dark.svg` from intellij-community `platform/icons/src/expui/…` (same
-   pinned commit as in `Assets/Icons/NOTICE.md`) into `Assets/Icons/`.
+   pinned commit as in `Assets/Icons/NOTICE.md`) into `src/DevHub.Sdk/Assets/Icons/` (an icon only one plugin uses can live in that plugin; see `Icon.Kind`).
 2. Add a constant to `Controls/IconKind.cs` (and to `IconKind.All`).
 3. Add a row to the table in `Assets/Icons/NOTICE.md` (license requirement).
 

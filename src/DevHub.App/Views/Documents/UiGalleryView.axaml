@@ -4,9 +4,9 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:docs="clr-namespace:DevHub.ViewModels.Documents"
-             xmlns:c="clr-namespace:DevHub.Controls"
-             xmlns:a="clr-namespace:DevHub.Actions"
+             xmlns:docs="using:DevHub.ViewModels.Documents"
+             xmlns:c="using:DevHub.Controls"
+             xmlns:a="using:DevHub.Actions"
              x:Class="DevHub.Views.Documents.UiGalleryView"
              x:DataType="docs:UiGalleryViewModel">
 

@@ -19,7 +19,10 @@ menus, pages or shortcuts. Decisions confirmed on 2026-10-11:
 - **Timing:** now, before M1. Templates will be written as a plugin from the start.
 - **First run:** presets ("Git client", "Project templates", "Everything") above a checklist.
 
-Status: **design agreed; P1 (Core split + plugin settings sections) done.** Progress is tracked in `docs/ROADMAP.md` (milestone P).
+Status: **design agreed; P1 (Core split + plugin settings sections) and P2 (`DevHub.Sdk`) done.**
+P2 notes: namespaces didn't change (`DevHub.Controls` etc. now span Sdk + App); XAML uses
+`using:` namespaces; the shell sets the base classes' host-only members through
+`InternalsVisibleTo("DevHub.App")`; markup extensions get the container from `AppServices.Current`. Progress is tracked in `docs/ROADMAP.md` (milestone P).
 Once P6 lands, this file becomes the reference for the contract plus a recipe for writing a plugin.
 
 ## Target solution layout

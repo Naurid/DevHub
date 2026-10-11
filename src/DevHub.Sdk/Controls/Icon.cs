@@ -6,8 +6,10 @@ namespace DevHub.Controls;
 
 /// <summary>
 /// A JetBrains "expui" icon by name: <c>&lt;c:Icon Kind="folder" /&gt;</c>.
-/// Loads <c>Assets/Icons/{Kind}.svg</c>, or <c>{Kind}_dark.svg</c> when the element's
-/// theme is Dark, and swaps automatically when the theme changes.
+/// Loads <c>Assets/Icons/{Kind}.svg</c> from DevHub.Sdk, or <c>{Kind}_dark.svg</c> when the
+/// element's theme is Dark, and swaps automatically when the theme changes. A plugin's own
+/// icon is given as a full URI without the extension, e.g.
+/// <c>Kind="avares://DevHub.Git/Assets/Icons/branch"</c> (the same <c>_dark</c> rule applies).
 /// Size comes from the <c>Size.Icon</c> token (see Themes/Controls.axaml).
 /// </summary>
 /// <remarks>
@@ -17,7 +19,7 @@ namespace DevHub.Controls;
 /// </remarks>
 public class Icon : SvgControl
 {
-    private const string IconFolder = "avares://DevHub.App/Assets/Icons/";
+    private const string IconFolder = "avares://DevHub.Sdk/Assets/Icons/";
 
     /// <summary>
     /// CSS applied to the SVG while disabled. Needed because Svg.Skia draws straight to
@@ -30,7 +32,10 @@ public class Icon : SvgControl
     public static readonly StyledProperty<string?> KindProperty =
         AvaloniaProperty.Register<Icon, string?>(nameof(Kind));
 
-    /// <summary>File name without extension or theme suffix, e.g. "folder". See <see cref="IconKind"/>.</summary>
+    /// <summary>
+    /// File name without extension or theme suffix, e.g. "folder" (see <see cref="IconKind"/>),
+    /// or a full "avares://…" path without extension for an icon shipped by a plugin.
+    /// </summary>
     public string? Kind
     {
         get => GetValue(KindProperty);
@@ -83,6 +88,7 @@ public class Icon : SvgControl
         }
 
         var suffix = ActualThemeVariant == ThemeVariant.Dark ? "_dark" : "";
-        Path = $"{IconFolder}{Kind}{suffix}.svg";
+        var path = Kind.StartsWith("avares://", StringComparison.Ordinal) ? Kind : IconFolder + Kind;
+        Path = $"{path}{suffix}.svg";
     }
 }

@@ -27,8 +27,12 @@ Directory.Build.props        shared project settings (net10.0, nullable, implici
 src/
   DevHub.Sdk.Core/           the base, no UI: settings store (shell sections + one section per
                              plugin), fuzzy matching, formatting helpers
-  DevHub.App/                the Avalonia app (MVVM). Right now it still contains the UI of
-                             Projects, Git and GitHub; those move into plugin projects in P2–P4.
+  DevHub.Sdk/                the UI base every screen builds on: base classes for ViewModels,
+                             editor tabs, tool windows, dialogs and settings pages; the action
+                             system; service interfaces; the design system (tokens, controls, icons)
+  DevHub.App/                the shell (main window, tabs, tool windows, menus, Settings, Find
+                             Action). Right now it still contains the UI of Projects, Git and
+                             GitHub; those move into plugin projects in P4.
 
 plugins/                     one folder per plugin part; logic lives in X.Core (no UI, tested)
   DevHub.Projects.Core/      repository scanning, language detection, "Open With" tools
@@ -48,14 +52,15 @@ docs/                        design docs and guides (see below)
 What each project may reference:
 
 ```
-DevHub.App ──► DevHub.Sdk.Core
+DevHub.App ──► DevHub.Sdk ──► DevHub.Sdk.Core
      │
      └──────► DevHub.Projects.Core ──► DevHub.Sdk.Core
      └──────► DevHub.Git.Core ───────► DevHub.Sdk.Core
      └──────► DevHub.GitHub.Core ────► DevHub.Git.Core, DevHub.Sdk.Core
 ```
 
-`DevHub.Sdk.Core` never knows about a plugin, and nothing references `DevHub.App`.
+`DevHub.Sdk` and `DevHub.Sdk.Core` never know about a plugin, and nothing references
+`DevHub.App`.
 
 ## Build, test, run
 
