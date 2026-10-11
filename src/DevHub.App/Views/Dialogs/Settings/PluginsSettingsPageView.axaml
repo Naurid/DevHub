@@ -1,0 +1,23 @@
+<!-- Settings → Plugins: the restart banner (when the choice differs from what's loaded), then the checklist. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.Dialogs.Settings"
+             x:Class="DevHub.Views.Dialogs.Settings.PluginsSettingsPageView"
+             x:DataType="vm:PluginsSettingsPageViewModel">
+    <StackPanel Spacing="{DynamicResource Spacing.Large}">
+        <TextBlock Classes="secondary" TextWrapping="Wrap"
+                   Text="Switch on what you use. A plugin's menus, tabs, tool windows and shortcuts only exist while it's on. Plugins load when DevHub starts." />
+
+        <Border Padding="{DynamicResource Padding.Banner}" CornerRadius="{DynamicResource Radius.Control}"
+                Background="{DynamicResource Brush.Status.Warning.Subtle}" IsVisible="{Binding RestartNeeded}">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                <TextBlock Text="Your changes take effect when DevHub restarts. Open tabs and tool windows come back."
+                           TextWrapping="Wrap" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Restart Now" Command="{Binding RestartNowCommand}" />
+            </Grid>
+        </Border>
+
+        <!-- PluginChoiceViewModel → PluginChoiceView through the ViewLocator. -->
+        <ContentControl Content="{Binding Choice}" />
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,47 @@
+<!--
+  The plugin checklist (Settings → Plugins and the first-run picker): a note when a click also
+  switched other plugins, then one row per plugin under small category headers.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.Plugins"
+             x:Class="DevHub.Views.Plugins.PluginChoiceView"
+             x:DataType="vm:PluginChoiceViewModel">
+    <StackPanel Spacing="{DynamicResource Spacing}">
+        <Border Padding="{DynamicResource Padding.Banner}" CornerRadius="{DynamicResource Radius.Control}"
+                Background="{DynamicResource Brush.Accent.Subtle}"
+                IsVisible="{Binding Note, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding Note}" TextWrapping="Wrap" />
+        </Border>
+
+        <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="{DynamicResource Spacing}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:PluginRowViewModel">
+                    <StackPanel Spacing="{DynamicResource Spacing.Small}">
+                        <TextBlock Classes="small secondary" Text="{Binding CategoryHeader}"
+                                   Margin="{DynamicResource Margin.BlockBelow}"
+                                   IsVisible="{Binding CategoryHeader, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+                            <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Top"
+                                      AutomationProperties.Name="{Binding Name}" />
+                            <StackPanel Grid.Column="1" Spacing="{DynamicResource Spacing.Small}">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                <TextBlock Classes="secondary" Text="{Binding Description}" TextWrapping="Wrap" />
+                                <TextBlock Classes="small secondary" Text="{Binding RequiresText}"
+                                           IsVisible="{Binding RequiresText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" Classes="small" Text="{Binding StatusText}" VerticalAlignment="Top"
+                                       Classes.secondary="{Binding !HasProblem}" TextWrapping="Wrap"
+                                       MaxWidth="{DynamicResource Size.StatusTaskStep}" />
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

@@ -20,7 +20,15 @@ menus, pages or shortcuts. Decisions confirmed on 2026-10-11:
 - **First run:** presets ("Git client", "Project templates", "Everything") above a checklist.
 
 Status: **P1 (Core split + plugin settings sections), P2 (`DevHub.Sdk`), P3 (plugin contract +
-extension points) and P4 (plugins in their own assemblies) done.**
+extension points), P4 (plugins in their own assemblies) and P5 (Plugins page + first run) done.**
+P5 as built: `PluginSelection` (Sdk.Core, tested) keeps a choice consistent (on → its
+requirements on; off → its dependents off) and knows the presets, which each plugin declares in
+`PluginInfo.Presets` ("Git client", "Project templates"; plus "Everything"). The shell's
+`PluginChoiceViewModel` is the checklist used by Settings → Plugins (state per plugin: on / off /
+after a restart / couldn't load and why; Restart Now) and by the first-run picker, shown over the
+main window while `EnabledPlugins` is unset (a narrower choice restarts DevHub; closing it keeps
+everything). `IAppRestarter` starts a new process and shuts down normally (layout saved);
+File → Restart DevHub.
 P4 as built: `plugins/DevHub.{Projects,Git,GitHub,Templates}` UI projects, each with its plugin
 class and `[assembly: DevHubPlugin]`; `PluginInfo.Order` keeps Projects → Git → GitHub →
 Templates in lists and menus. The app references them with `Aliases="plugins"` (shipped, never

@@ -11,6 +11,7 @@ using DevHub.Services;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Dialogs.Settings;
 using DevHub.ViewModels.Documents;
+using DevHub.ViewModels.Plugins;
 using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
@@ -96,6 +97,25 @@ public partial class App : Application
             if (plugins.Summary() is { } summary)
                 Services.GetRequiredService<IStatusService>().Show(summary);
 
+            // First start (no plugin choice saved yet): ask what to use, over the main window.
+            if (store.Load().EnabledPlugins is null)
+            {
+                async void AskOnce(object? sender, EventArgs e)
+                {
+                    mainWindow.Opened -= AskOnce;
+                    try
+                    {
+                        await AskForPluginsAsync(plugins, store);
+                    }
+                    catch (Exception ex)
+                    {
+                        // An event handler can't pass this on: say it, and keep the app running.
+                        Services.GetRequiredService<IStatusService>().Show("Couldn't save the plugin choice: " + ex.Message);
+                    }
+                }
+                mainWindow.Opened += AskOnce;
+            }
+
             desktop.MainWindow = mainWindow;
         }
 
@@ -103,8 +123,26 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// The shell's own services: window, tabs, tool-window frame, menus, Settings, Find Action.
-    /// Every feature registers itself in its plugin (Plugins/FeaturePlugins.cs).
+    /// The first-run picker. Its choice is saved; if it differs from what loaded (everything, on a
+    /// first start), DevHub restarts with it. Closing it with the window's X keeps everything (and
+    /// saves that, so it isn't asked again; Settings → Plugins changes it later).
+    /// </summary>
+    private static async Task AskForPluginsAsync(PluginHost plugins, ISettingsStore store)
+    {
+        var picker = new FirstRunViewModel(plugins, store);
+        if (!await Services.GetRequiredService<IDialogService>().ShowDialogAsync(picker))
+        {
+            var all = plugins.Loaded.Select(p => p.Info.Id).ToList();
+            store.Update(s => s.EnabledPlugins = all);
+            return;
+        }
+        if (picker.Choice.RestartNeeded)
+            Services.GetRequiredService<IAppRestarter>().Restart();
+    }
+
+    /// <summary>
+    /// The shell's own services: window, tabs, tool-window frame, menus, Settings, Find Action,
+    /// the Plugins page. Every feature registers itself in its plugin class (plugins/DevHub.*).
     /// </summary>
     private static void ConfigureServices(IServiceCollection services, ISettingsStore store, PluginHost plugins)
     {
@@ -136,6 +174,8 @@ public partial class App : Application
         // Dialogs: transient = a fresh instance every time one is requested, so each opening
         // of Settings starts from the saved values. The Func is a tiny factory for the action.
         services.AddTransient<SettingsPageViewModelBase, AppearanceSettingsPageViewModel>();
+        services.AddTransient<SettingsPageViewModelBase, PluginsSettingsPageViewModel>();
+        services.AddSingleton<IAppRestarter, AppRestarter>();
         services.AddTransient<SettingsDialogViewModel>();
         services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
         services.AddTransient<FindActionViewModel>();
@@ -151,6 +191,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, DocumentActionProvider>();
         services.AddSingleton<IActionProvider, SettingsActionProvider>();
         services.AddSingleton<IActionProvider, FindActionProvider>();
+        services.AddSingleton<IActionProvider, RestartActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

@@ -22,5 +22,13 @@ public sealed record PluginInfo(string Id, string Name, string Description, IRea
     /// </summary>
     public int Order { get; init; } = 1000;
 
+    /// <summary>
+    /// The first-run presets this plugin belongs to ("Git client", "Project templates"). The
+    /// picker offers every preset any plugin names, plus "Everything"; choosing one switches on
+    /// exactly its plugins (and their requirements). Lets the shell offer presets without knowing
+    /// any plugin.
+    /// </summary>
+    public IReadOnlyList<string> Presets { get; init; } = [];
+
     public override string ToString() => Id;
 }

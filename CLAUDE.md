@@ -75,7 +75,9 @@ service and inject it.
 e.g. `plugins/DevHub.Git/GitPlugin.cs`, marked `[assembly: DevHubPlugin(…)]`: Projects, Git,
 GitHub → Git, Templates → Projects). A plugin's own design tokens go in its `Themes/*.axaml`,
 returned from `IPlugin.Resources`; its views' `avares://` URIs name its own assembly.
-Git → GitHub-style features go through Git's `IRemoteHost` (GitHub implements it).
+Git → GitHub-style features go through Git's `IRemoteHost` (GitHub implements it). A plugin
+names the first-run presets it belongs to in `PluginInfo.Presets`; users switch plugins in
+Settings → Plugins (applied after a restart).
 **Projects and Git must never depend on each other** (either direction); they link through the
 `DevHub.Integration` interfaces in the Sdk (`IProjectOpener`, `IProjectFileEditor`,
 `IProjectFolders`), and each has a fallback when the other is off. A plugin registers everything it adds in its `ConfigureServices`; the shell's

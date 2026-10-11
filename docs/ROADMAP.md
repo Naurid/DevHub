@@ -84,8 +84,10 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
       with its plugin class and ids; Git's tokens as plugin resources; `IDocumentService` (Sdk) instead of
       the shell's DocumentManager; Git's `IRemoteHost` implemented by GitHub (Publish, avatar, Clone list);
       the app ships the plugins without using their types (`Aliases="plugins"`)
-- [ ] **NEXT — P5.** Settings → Plugins page, first-run presets + checklist, skipped-plugin notes
-- [ ] P6. Docs: PLUGINS.md as reference + recipe, CLAUDE.md, UI_GUIDE §5, skills
+- [x] P5. Settings → Plugins page (switches, requirements kept consistent, what changes after a restart,
+      why a plugin couldn't load, Restart Now), first-run picker (presets declared by the plugins +
+      checklist), File → Restart DevHub; selection rules in Sdk.Core (`PluginSelection`, tested)
+- [ ] **NEXT — P6.** Docs: PLUGINS.md as reference + recipe, CLAUDE.md, UI_GUIDE §5, skills
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`

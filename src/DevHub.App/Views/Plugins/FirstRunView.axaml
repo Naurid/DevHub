@@ -1,0 +1,39 @@
+<!--
+  First start: what DevHub is for, preset buttons (from the plugins' Presets, plus Everything),
+  and the checklist to fine-tune. The preset matching the current choice is highlighted.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.Plugins"
+             x:Class="DevHub.Views.Plugins.FirstRunView"
+             x:DataType="vm:FirstRunViewModel">
+    <ScrollViewer Padding="{DynamicResource Padding.Dialog}">
+        <StackPanel Spacing="{DynamicResource Spacing.Large}">
+            <StackPanel Spacing="{DynamicResource Spacing.Small}">
+                <TextBlock Classes="header" Text="What do you need DevHub for?" />
+                <TextBlock Classes="secondary" TextWrapping="Wrap"
+                           Text="DevHub is built from plugins. Pick a starting point, or tick exactly what you want. You can change this any time in Settings → Plugins." />
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding Choice.Presets}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemSpacing="{DynamicResource Spacing}" LineSpacing="{DynamicResource Spacing}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Button Content="{Binding}" CommandParameter="{Binding}"
+                                Command="{Binding $parent[ItemsControl].((vm:FirstRunViewModel)DataContext).Choice.ApplyPresetCommand}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Classes="small secondary"
+                       Text="{Binding Choice.MatchingPreset, StringFormat='Preset: {0}', TargetNullValue='Your own choice'}" />
+
+            <!-- PluginChoiceViewModel → PluginChoiceView through the ViewLocator. -->
+            <ContentControl Content="{Binding Choice}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
