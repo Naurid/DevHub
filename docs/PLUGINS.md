@@ -1,200 +1,254 @@
-# DevHub plugin architecture: design + migration plan
+# DevHub plugins
 
-## Context
-The user wants DevHub to be built **entirely from plugins**, so each dev gets an app shaped to
-their needs. A dev who only wants a Git client should get a shell plus Git, with no template
-menus, pages or shortcuts. Decisions confirmed on 2026-10-11:
-- **Authors:** only first-party plugins for now, but with a real contract shaped so other devs
-  can write plugins later.
-- **Distribution:** one install that ships every plugin. Plugins are switched on and off in
-  Settings → Plugins, plus a first-run picker. A disabled plugin is **not loaded at all**.
-- **Switching** needs a restart ("Restart to apply"). DI is built once at startup with the
-  enabled plugins.
-- **Dependencies:** hard dependencies are declared (GitHub requires Git). Soft integrations go
-  through optional hook interfaces (e.g. "Open in Git" in Projects appears only when Git is on).
-- **Base shell:** bare. Window, title bar, status bar, editor tabs, tool-window frame,
-  Settings (Appearance + Plugins), Find Action and Welcome. Even Projects is a plugin.
-- **Code layout:** two projects per plugin: `X.Core` (logic, no Avalonia, unit-tested) and
-  `X` (views, ViewModels, actions).
-- **Timing:** now, before M1. Templates will be written as a plugin from the start.
-- **First run:** presets ("Git client", "Project templates", "Everything") above a checklist.
+DevHub is a **bare shell plus plugins**. Every feature (Projects, Git, GitHub, Templates, …) is
+a plugin the user switches on or off, so each developer gets an app with only what they use: a
+Git-only setup has no template menus, tabs, tool windows or shortcuts at all.
 
-Status: **P1 (Core split + plugin settings sections), P2 (`DevHub.Sdk`), P3 (plugin contract +
-extension points), P4 (plugins in their own assemblies) and P5 (Plugins page + first run) done.**
-P5 as built: `PluginSelection` (Sdk.Core, tested) keeps a choice consistent (on → its
-requirements on; off → its dependents off) and knows the presets, which each plugin declares in
-`PluginInfo.Presets` ("Git client", "Project templates"; plus "Everything"). The shell's
-`PluginChoiceViewModel` is the checklist used by Settings → Plugins (state per plugin: on / off /
-after a restart / couldn't load and why; Restart Now) and by the first-run picker, shown over the
-main window while `EnabledPlugins` is unset (a narrower choice restarts DevHub; closing it keeps
-everything). `IAppRestarter` starts a new process and shuts down normally (layout saved);
-File → Restart DevHub.
-P4 as built: `plugins/DevHub.{Projects,Git,GitHub,Templates}` UI projects, each with its plugin
-class and `[assembly: DevHubPlugin]`; `PluginInfo.Order` keeps Projects → Git → GitHub →
-Templates in lists and menus. The app references them with `Aliases="plugins"` (shipped, never
-used). Plugins reach the editor area through `IDocumentService` (Sdk). Git defines `IRemoteHost`
-(Publish, your identity / avatar, accounts + repositories for Clone); GitHub implements it with
-`GitHubRemoteHost`, so the Git assembly never references GitHub. Per-plugin action ids
-(`GitActionIds`, `ProjectsActionIds`). Git's tokens and the branch-widget style moved to the Git
-plugin (`Themes/GitTokens.axaml`, `BranchWidgetView`); the Avatar control moved to the Sdk. The
-Templates placeholder pages became the Templates plugin rather than being deleted. Debug builds
-print the found / loaded plugins to stdout at startup.
-P3 as built: `PluginInfo` / `PluginResolver` in Sdk.Core (tested); `IPlugin`, `PluginContext`,
-`[DevHubPlugin]`, `TitleBarWidgetViewModelBase` / `StatusBarWidgetViewModelBase` in the Sdk;
-`PluginHost` in the app scans `DevHub*.dll`, resolves against `AppSettings.EnabledPlugins` (null =
-all) before DI is built, and shows a status note for plugins that couldn't load. Placement is
-action metadata (`Menu`/`MenuOrder`, `ToolbarOrder`, `WelcomeOrder`; documents via
-`Navigation`, tool windows via `Order`). `{a:Action id}` hides its control when the id's plugin is
-off. Git owns `ActiveRepositoryService` (the shell only has `DocumentViewModelBase.ContextPath`).
-Debug builds validate all DI registrations at startup.
-P2 notes: namespaces didn't change (`DevHub.Controls` etc. now span Sdk + App); XAML uses
-`using:` namespaces; the shell sets the base classes' host-only members through
-`InternalsVisibleTo("DevHub.App")`; markup extensions get the container from `AppServices.Current`. Progress is tracked in `docs/ROADMAP.md` (milestone P).
-Once P6 lands, this file becomes the reference for the contract plus a recipe for writing a plugin.
+This file is the reference: how plugins are found and loaded (§2), the contract (§3), where a
+plugin can contribute (§4), its settings (§5), how plugins link up (§6), a step-by-step recipe
+for writing one (§7) and how to test it (§8). Background and history are in §9.
 
-## Target solution layout
+Related: `docs/UI_GUIDE.md` (rules and recipes for views, actions, tabs, tool windows, settings
+pages), `docs/ACTIONS_AND_FUZZY_MATCHING.md` (actions, menus, shortcuts), `CLAUDE.md` (rules).
+
+---
+
+## 1. Layout and what may reference what
+
 ```
 src/
-  DevHub.Sdk.Core/        no Avalonia: plugin manifest model + PluginResolver, settings store
-                          (typed sections), FuzzyMatcher, Formatting (PathTree, RelativeTime)
-  DevHub.Sdk/             Avalonia: what every plugin builds against: IPlugin, ViewModelBase,
-                          DocumentViewModelBase/IDocumentFactory, ToolWindowViewModelBase,
-                          DialogViewModelBase, SettingsPageViewModelBase, AppAction/IActionProvider,
-                          IDialogService/IStatusService/IThemeService, Controls, Themes + tokens,
-                          shared icons, contribution interfaces (below)
-  DevHub.App/             the shell exe: MainWindow, title/status bar, DocumentManager,
-                          ToolWindowManager, ActionRegistry/Keymap/MainMenu, Find Action, Settings
-                          dialog, Appearance page, Plugins page, first-run, PluginHost (loader)
+  DevHub.Sdk.Core/      no UI: PluginInfo, PluginResolver, PluginSelection, settings store
+  DevHub.Sdk/           what every plugin UI builds on: IPlugin, base classes, extension points,
+                        Integration/ (hooks between independent plugins), design system
+  DevHub.App/           the shell: window, tabs, tool-window frame, menus, Settings, Find Action,
+                        PluginHost, Plugins page, first-run picker
 plugins/
-  DevHub.Projects.Core/   Projects + Repositories (merged: they form a cycle), LanguageToolChoice
-  DevHub.Projects/        Projects tool window, Open With page, ExternalEditor, TerminalLauncher
-  DevHub.Git.Core/        today's Core/Git
-  DevHub.Git/             repository/diff/blame tabs, Git Console, Git actions, branch widget
-  DevHub.GitHub.Core/     today's Core/GitHub
-  DevHub.GitHub/          GitHub settings page, GitHubSession, Avatar, Publish/Clone-from-GitHub hooks
-  (later) DevHub.Templates.Core / DevHub.Templates   ← M1–M9 land here
+  DevHub.<Name>/        a plugin's UI: <Name>Plugin.cs, Actions/, ViewModels/, Views/, Themes/
+  DevHub.<Name>.Core/   its logic: no Avalonia, unit-tested (optional for a UI-only plugin)
 tests/
-  DevHub.TestKit/         TempGitRepo, [GitFact] (shared by Git + GitHub tests)
-  DevHub.Sdk.Core.Tests, DevHub.Projects.Core.Tests, DevHub.Git.Core.Tests, DevHub.GitHub.Core.Tests
-Directory.Build.props     net10.0, Nullable, ImplicitUsings in one place
+  DevHub.<Name>.Core.Tests/
 ```
-Dependency rule: plugins → Sdk (→ Sdk.Core) and → their own `.Core`, and → another plugin's
-`.Core`/UI only when it's a **declared hard dependency**. The shell (App) references
-Sdk, plus every plugin only so they get copied into the output. It never uses a plugin's types.
 
-## The plugin contract (DevHub.Sdk)
+| Project | May reference |
+|---|---|
+| `DevHub.<Name>.Core` | `DevHub.Sdk.Core` (+ a required plugin's `.Core`) |
+| `DevHub.<Name>` | `DevHub.Sdk`, its own `.Core` (+ a required plugin's projects) |
+| `DevHub.App` | `DevHub.Sdk`; the plugins only with `Aliases="plugins"` (shipped, never used) |
+| `DevHub.Sdk`, `DevHub.Sdk.Core` | no plugin, never the app |
+
+A plugin references another plugin **only if it declares it in `Requires`** (GitHub → Git).
+Everything else links through hooks (§6). Projects and Git never reference each other.
+
+## 2. Lifecycle
+
+1. **Discovery.** At startup `PluginHost` (shell) loads every `DevHub*.dll` next to the exe and
+   reads `[assembly: DevHubPlugin(typeof(…))]`. Plugins are sorted by `PluginInfo.Order`, then id.
+   No list of plugins exists anywhere in the shell. (A user plugins folder can join the same scan
+   later, for third-party plugins.)
+2. **Resolution.** `PluginResolver.Resolve(all, AppSettings.EnabledPlugins)`: the switched-on
+   plugins plus their requirements, requirements first. A plugin whose requirement is missing,
+   a circle of requirements and a duplicate id are **skipped with a reason** (status bar at
+   startup, Settings → Plugins). `EnabledPlugins` unset = first start: everything loads and
+   the first-run picker opens.
+3. **Registration.** Each loaded plugin's `ConfigureServices(services, context)` runs, in
+   dependency order, **before the DI container is built**. A switched-off plugin is never called,
+   so none of its services, menu items, tabs, tool windows or shortcuts exist.
+4. **Resources.** Each loaded plugin's `Resources` (resource dictionaries, e.g. its design
+   tokens) are merged into the app's resources before any window opens.
+5. **Validation (Debug).** The container is built with `ValidateOnBuild`: a registration that
+   can't be built (a missing dependency) fails at startup, not on some click. Debug builds also
+   print `DevHub plugins: found …; loaded …` to stdout.
+6. **Changes need a restart.** Settings → Plugins saves `EnabledPlugins`; Restart Now (or
+   File → Restart DevHub) starts a new process and closes this one normally (tabs and tool
+   windows are saved and come back). Tabs of a plugin that's off are kept in the saved layout,
+   skipped while it's off, and reopen when it's back.
+
+## 3. The contract
+
 ```csharp
-[assembly: DevHubPlugin(typeof(GitPlugin))]          // how the host finds it in an assembly
+// plugins/DevHub.Git/GitPlugin.cs
+[assembly: DevHub.Plugins.DevHubPlugin(typeof(DevHub.Plugins.GitPlugin))]
+
+namespace DevHub.Plugins;
 
 public sealed class GitPlugin : IPlugin
 {
-    public PluginInfo Info { get; } = new(
-        Id: "devhub.git", Name: "Git", Description: "Fork-style Git client…",
-        Version: "1.0", Requires: [], Category: "Version control");   // GitHub: Requires: ["devhub.git"]
+    public const string Id = "devhub.git";
 
-    public void ConfigureServices(IServiceCollection services, PluginContext context) { … }
+    public PluginInfo Info { get; } = new(Id, "Git",
+        "A Fork-style Git client: changes, staging per line, commits, history graph, …",
+        Requires: [])                         // GitHub: [GitPlugin.Id]
+    {
+        Category = "Version control",         // grouping on the Plugins page
+        Order = 200,                          // lists, menus, load order among unrelated plugins
+        Presets = ["Git client"],             // first-run presets it belongs to
+    };
+
+    // Optional: dictionaries merged into the app's resources (its own design tokens).
     public IEnumerable<Uri> Resources => [new("avares://DevHub.Git/Themes/GitTokens.axaml")];
+
+    public void ConfigureServices(IServiceCollection services, PluginContext context)
+    {
+        services.AddSingleton<IActionProvider, GitActionProvider>();
+        // … every service and contribution of the plugin (§4)
+    }
 }
 ```
-- **Discovery:** the `PluginHost` scans `DevHub.*.dll` next to the exe for
-  `[DevHubPlugin]`. Later the same scan covers a user plugins folder, which is how
-  third-party plugins arrive. The shell never needs a hardcoded list.
-- **Startup:** load settings, then `PluginResolver.Resolve(all, enabled)`. The resolver
-  adds required plugins, drops plugins whose dependencies are missing (with a reason), and
-  rejects cycles. Each resolved plugin's `ConfigureServices` runs and its `Resources` are
-  merged into the app. Then DI is built. `PluginContext` holds the plugin's settings section
-  and the app data directory.
-- **A plugin contributes only through DI** into these extension points:
 
-| Extension point | Today | Change |
+| Member | Meaning |
+|---|---|
+| `PluginInfo.Id` | Stable, lowercase, dotted (`devhub.git`). Also its settings section key. Never rename. |
+| `Name`, `Description`, `Category` | Shown on the Plugins page and in the first-run picker. |
+| `Requires` | Ids it can't work without; they're switched on with it and load first. |
+| `Order` | Position in lists and the main menu (Projects 100, Git 200, GitHub 300, Templates 400). |
+| `Presets` | First-run presets it belongs to; the picker offers every preset named, plus Everything. |
+| `PluginContext` | `Settings` (the store) and `LoadedPlugins` (ids loading this run). |
+
+The plugin class has a public parameterless constructor and does nothing but describe and
+register: no work, no I/O.
+
+## 4. Extension points
+
+A plugin contributes **only by registering things in DI**; the shell picks up every
+registration of these types.
+
+| To add … | Register | Notes / example |
 |---|---|---|
-| Actions | `IActionProvider` (open) | `AppAction` gains `Menu` ("Git", "File/New", order) and `Placement` flags (Toolbar, Welcome). `MainMenu` builds groups from that, not hardcoded ids. Plugin action ids are prefixed by plugin (`Git.*`). |
-| Documents | `DocumentViewModelBase` / `IDocumentFactory` (open) | unchanged. Tabs from a disabled plugin are kept in the layout but skipped. |
-| Tool windows | `ToolWindowViewModelBase` (open) | add `Order`. Alt+N follows `Order`, not DI order. |
-| Settings pages | hardcoded ctor in `SettingsDialogViewModel` | `IEnumerable<SettingsPageViewModelBase>` + `Order`. |
-| Title bar | branch widget hardcoded in `MainToolbar.axaml` | `ITitleBarWidget` (ViewModel + `Order`), shown through ViewLocator. Git contributes the branch widget. |
-| Status bar | theme/density hardcoded | `IStatusBarWidget`, same pattern (theme/density become shell widgets). |
-| Welcome | hardcoded action list | actions with `Placement.Welcome`. |
-| Theme tokens | feature tokens in shell (`Brush.Diff.*`, `Graph.*`, branch widget sizes) | moved into the plugin's own `Resources` dictionary. Shared tokens stay in Sdk. |
-| Icons | `Icon` hardcodes `avares://DevHub.App/Assets/Icons/` | shared set moves to Sdk. `Icon.Kind` also accepts a full `avares://` URI for icons a plugin ships. |
-| Views | `ViewLocator` uses `Type.GetType(name)` (calling assembly only) | use `vm.GetType().Assembly.GetType(name)`, so views resolve in plugin assemblies. |
-| Settings | one typed `AppSettings` listing every feature | the shell keeps typed shell sections. Plugins get `store.Section<T>(pluginId)` / `UpdateSection<T>`, stored under `"plugins": { "devhub.git": {…} }` as JSON. `[JsonExtensionData]` keeps unknown data (e.g. of disabled plugins). A one-time migration moves `git`, `languageTools` and `repositoryFolders` into their plugin sections (tested). |
+| Actions (menu items, toolbar buttons, Welcome links, shortcuts, Find Action) | `IActionProvider` | Placement is metadata on `AppAction`: `Menu` + `MenuOrder`, `ToolbarOrder`, `WelcomeOrder` (a new hundred = a new group). Ids in the plugin's own ids class. `GitActionProvider` |
+| An editor tab (one instance) | `DocumentViewModelBase` (singleton) | Its "open" action: override `Navigation` (label, shortcut, menu, Welcome). `TemplatesViewModel` |
+| Tabs per item (per repository, per file) | `IDocumentFactory` | Ids `Prefix:` + key; restored at startup. `RepositoryDocumentFactory` |
+| A tool window | the VM as itself + as `ToolWindowViewModelBase` | `Order` (stripes, Alt+N), `WelcomeOrder`. `RepositoriesViewModel` |
+| A Settings page | `SettingsPageViewModelBase` (**transient**) | `Order` in the list. `OpenWithSettingsPageViewModel` |
+| A title-bar widget | `TitleBarWidgetViewModelBase` | `BranchWidgetViewModel` |
+| A status-bar widget | `StatusBarWidgetViewModelBase` | left of theme / density |
+| Design tokens | `IPlugin.Resources` | `Themes/GitTokens.axaml` (Dark + Light `ThemeDictionaries`; no Compact variant yet) |
+| Icons | `Icon Kind="avares://DevHub.Foo/Assets/Icons/x"` | shared icons are in the Sdk (`IconKind`) |
+| A dialog | nothing (open it with `IDialogService`) | its View next to its VM in the plugin |
+| Services for itself / plugins that require it | anything | `GitPlugin.Executable`, `ActiveRepositoryService` |
 
-**Removing the shell → Git links:** `DocumentManager.ActiveRepository` and
-`DocumentViewModelBase.RepositoryPath` become generic. The base exposes `virtual string?
-ContextPath` (the folder a tab is about). The Git plugin owns an `IActiveRepository` service
-that watches `DocumentManager.Active`, so Git actions and the branch widget use that.
+What the shell offers plugins (inject them): `IDialogService`, `IStatusService`, `IThemeService`,
+`ISettingsStore`, `IDocumentService` (active tab, open tabs, open by id). Views and ViewModels
+follow `docs/UI_GUIDE.md`; a View is found next to its ViewModel (same assembly, name
+`…ViewModel` → `…View`), and XAML namespaces are `using:`. An `{a:Action id}` whose plugin is off
+hides its control, so a view may offer another plugin's action by id.
 
-**Dependency graph (decided 2026-10-11):** GitHub → Git is the only hard link between the
-version-control plugins. **Projects and Git don't depend on each other in either direction**;
-each works alone and they link up when both are on. Templates → Projects. (Templates can run
-`git init` as a post-create command, so it doesn't need Git.)
+## 5. Settings
 
-**Optional integrations between independent plugins** meet in the Sdk
-(`src/DevHub.Sdk/Integration/`), which both sides build on: small interfaces that pass only
-paths, never a plugin's own types. The offering plugin registers one; the using plugin takes
-`IEnumerable<T>` (first or none) or an optional `T? x = null` and has a fallback:
+A plugin's settings are a class implementing `ISettingsSection`, stored in settings.json under
+`"plugins": { "<SectionId>": { … } }`:
 
-| Interface | Offered by | Used by | Fallback when the other plugin is off |
+```csharp
+public sealed class GitSettings : ISettingsSection   // in DevHub.Git.Core
+{
+    public static string SectionId => "devhub.git";  // = the plugin id
+    public bool ChangesAsTree { get; set; } = true;
+}
+
+var git = store.LoadSection<GitSettings>();                       // defaults when never saved
+store.UpdateSection<GitSettings>(s => s.ChangesAsTree = value);   // load → change → save
+```
+
+Sections of switched-off (or unknown) plugins are kept untouched when others save. Never add
+plugin fields to `AppSettings` (that's the shell's: window layout, appearance, `EnabledPlugins`).
+
+## 6. Linking plugins
+
+**Hard requirement** (`Requires`): the plugin may use the required plugin's types and services
+directly. GitHub requires Git.
+
+**Optional link between independent plugins:** a small interface in `src/DevHub.Sdk/Integration/`,
+with only plain data (paths) in it. The plugin that offers the feature registers an
+implementation; the one that uses it takes `IEnumerable<T>` (first or none) or `T? x = null`,
+and **always has a fallback**:
+
+| Interface | Offered by | Used by | Without it |
 |---|---|---|---|
-| `IProjectOpener` | Git (repository tab) | Projects: double-click / Enter / Open in DevHub | open in the project's external tool |
-| `IProjectFileEditor` | Projects (Open With per language) | Git: Open in Editor (F4), conflicts | the Windows default app for the file |
-| `IProjectFolders` | Projects (scan folders + rescan) | Git: Clone's default folder, rescan afterwards | Documents, no rescan |
+| `IProjectOpener` | Git (repository tab) | Projects: double-click / Enter | opens the project in its tool |
+| `IProjectFileEditor` | Projects (Open With) | Git: Open in Editor (F4), conflicts | the Windows default app |
+| `IProjectFolders` | Projects (scan folders, rescan) | Git: Clone's folder, rescan after | Documents, no rescan |
 
-Git's own way in without Projects: **Git → Open Repository…** (also on the Welcome view),
-next to Clone. Git's Open Terminal is Git's own service (`TerminalLauncher`).
+**A hook owned by the required plugin:** even with a hard requirement, keep the required plugin
+free of the one that needs it. Git defines `IRemoteHost` (in `DevHub.Git`) and GitHub implements
+it (`GitHubRemoteHost`): Publish, your avatar on your commits, your repositories in Clone. Git
+takes `IRemoteHost? host = null`; without GitHub, Publish isn't offered and Clone takes a URL.
 
-Between a plugin and its declared requirement no hook is needed (GitHub may use Git's types),
-but a hook still keeps the required plugin free of the dependent one:
-`IRemoteHost` (in the Git plugin, implemented by GitHub's `GitHubRemoteHost`) for Publish, the
-Clone-from-account list and your avatar on your commits. Git injects it as `IRemoteHost? = null`:
-without GitHub, Publish isn't offered and Clone works by URL. It's host-neutral (a GitLab
-plugin could implement it too).
+**Between plugins and the shell:** the shell never names a plugin. If the shell would need to
+know a feature, add an extension point instead (§4 grew that way: widgets, placement metadata,
+`ContextPath` on tabs, `IDocumentService`).
 
-## Migration in phases (each ends building, with tests green and the app working the same)
-1. **Core split (pure moves):** add `Directory.Build.props`. Create Sdk.Core,
-   Projects.Core (merging Repositories and taking `LanguageToolChoice`, which removes both
-   cycles), Git.Core and GitHub.Core. Split the tests and move `TempGitRepo` into TestKit.
-   Settings sections + migration, tested.
-2. **Sdk project:** move the base classes, Controls, Themes, Actions contracts and Services
-   interfaces out of App. Fix ViewLocator, `Icon`, and the `avares://DevHub.App/...` URIs
-   that move.
-3. **Open the extension points** while the features are still inside App:
-   - `IPlugin` + `PluginHost` + `PluginResolver` (tested).
-   - Menus from action metadata, settings-page list, title-bar and status-bar widgets,
-     Welcome placement, tool-window `Order`.
-   - Remove `ActiveRepository`.
-   - Wrap each feature in an `IPlugin` class registered by the host.
-   - `App.ConfigureServices` keeps only shell services.
-4. **Move features out**, one assembly pair at a time: Projects, then Git, then GitHub.
-   The Git→GitHub links become `IRemoteHost` (Projects↔Git already go through
-   `DevHub.Integration`, so neither assembly references the other). The placeholder
-   Templates/Generate/Import pages become the Templates plugin (M1 fills it in). UI Gallery
-   stays a DEBUG-only shell page.
-5. **Plugins UI:** a Settings → Plugins page (list, description, requires, on/off, "Restart
-   to apply", turning one off warns about plugins that depend on it), a first-run page
-   with presets + checklist, and a status note when a plugin was skipped (missing dependency).
-6. **Docs:**
-   - New `docs/PLUGINS.md`: the contract, extension points, and a recipe for writing a
-     plugin, with Git as the worked example.
-   - Update the CLAUDE.md layout and rules, `UI_GUIDE.md` §5, and the `avalonia-mvvm` and
-     `template-engine` skills (new paths).
-   - `ROADMAP.md`: a new "P — Plugin architecture" milestone with P1–P6. M1+ then target
-     `DevHub.Templates(.Core)`, and M10's tool catalog becomes a plugin contribution
-     (`ICommandTool`).
+## 7. Recipe: a new plugin
 
-## Verification
-- After every phase: `dotnet build` (0 warnings) and `dotnet test` green, and the app is
-  launched with `DEVHUB_DATA_DIR` set to a scratch folder.
-- New tests:
-  - `PluginResolver`: dependency closure, missing dependency, cycle, disabling a dependency.
-  - Settings migration: an old `settings.json` becomes plugin sections; unknown sections
-    survive a save.
-  - Discovery: finds `[DevHubPlugin]` in test assemblies.
-- Manual, per preset:
-  - **"Git client":** no Templates menu or Welcome links, and no template actions in Find
-    Action. Projects + Git work as today.
-  - **Git off:** no Git menu, branch widget, Git Console or Alt+N slot, and repository
-    tabs are kept but not restored.
-  - **GitHub off:** Git works, and Publish to GitHub and avatars are gone.
-  - **Turn everything on again:** the old tabs and settings come back.
+Example: a `Docker` plugin with a tool window listing containers, an action and a setting.
+Swap in your feature's name. Look at `plugins/DevHub.Projects` for a small real one.
+
+1. **Projects.** Create `plugins/DevHub.Docker.Core/DevHub.Docker.Core.csproj` (logic) and
+   `plugins/DevHub.Docker/DevHub.Docker.csproj` (UI), and a test project:
+   ```xml
+   <!-- DevHub.Docker.csproj (Directory.Build.props supplies net10.0, Nullable, ImplicitUsings) -->
+   <Project Sdk="Microsoft.NET.Sdk">
+       <PropertyGroup>
+           <RootNamespace>DevHub</RootNamespace>
+           <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+       </PropertyGroup>
+       <ItemGroup><PackageReference Include="Avalonia" Version="12.1.3" /></ItemGroup>
+       <ItemGroup>
+           <ProjectReference Include="..\..\src\DevHub.Sdk\DevHub.Sdk.csproj" />
+           <ProjectReference Include="..\DevHub.Docker.Core\DevHub.Docker.Core.csproj" />
+       </ItemGroup>
+   </Project>
+   ```
+   The `.Core` project references `src/DevHub.Sdk.Core` only. Add all three to `DevHub.sln`
+   (`dotnet sln add … --solution-folder plugins` / `tests`), and the UI project to
+   `src/DevHub.App/DevHub.App.csproj` with `Aliases="plugins"` so it ships.
+2. **Logic first, tested.** Put everything that doesn't need a window in `DevHub.Docker.Core`
+   (running `docker`, parsing its output) with tests in `tests/DevHub.Docker.Core.Tests`. Run
+   external tools with `ProcessStartInfo` + `ArgumentList`, never a shell string.
+3. **The plugin class.** `plugins/DevHub.Docker/DockerPlugin.cs` with the attribute, `Info`
+   (id `devhub.docker`, `Category`, `Order`, `Presets`, `Requires` only if truly needed) and
+   `ConfigureServices`.
+4. **Settings (if any).** `DockerSettings : ISettingsSection` (`SectionId => "devhub.docker"`) in
+   the `.Core` project; read with `LoadSection`, change with `UpdateSection`, round-trip test.
+5. **UI.** Follow `docs/UI_GUIDE.md` §5, with the plugin's folders:
+   - tool window: `ViewModels/ToolWindows/ContainersViewModel.cs` + `Views/ToolWindows/ContainersView.axaml`;
+     register it as itself and as `ToolWindowViewModelBase`, set `Order`;
+   - actions: `Actions/DockerActionIds.cs` + `Actions/Providers/DockerActionProvider.cs`, with
+     `Menu = "Docker"` (its own main-menu group) and an order per action;
+   - a Settings page if it has settings (transient `SettingsPageViewModelBase`).
+   Shared tokens and components only (no hex / sizes in views); a token only Docker uses goes in
+   `Themes/DockerTokens.axaml`, returned from `Resources`.
+6. **Links.** Need another plugin's feature? Declare `Requires`, or (if both should stand alone)
+   use / add an `Integration` hook with a fallback (§6).
+7. **Docs.** Add the plugin to the README's plugin list and, if it adds a hook, to §6 here.
+
+## 8. Testing a plugin
+
+- `dotnet build` (0 warnings) and `dotnet test`.
+- **Plugin combinations:** `pwsh tools/plugin-matrix.ps1` (Debug build) starts DevHub with
+  everything, with nothing, and with each plugin alone (add `-Extra "devhub.a,devhub.b"` for
+  more), each in its own scratch data folder, and reports whether it stayed up and what loaded.
+  A plugin that only works next to another one, or a shell that still names a plugin, fails here.
+- **By hand**, with `DEVHUB_DATA_DIR` set to a scratch folder: your plugin alone (its menu, tool
+  window, actions, Find Action entries, Settings page), then switched off in Settings → Plugins
+  (after Restart Now nothing of it is left), then on again (its tabs and settings come back).
+
+## 9. Background
+
+Decided on 2026-10-11. Plugins are first-party for now, with a contract shaped for third parties
+later. One install ships every plugin, and users switch them on and off with a first-run picker
+and Settings → Plugins, applied after a restart. Hard dependencies are declared; optional links
+go through hooks. The shell is bare (even Projects is a plugin). Each plugin has a UI project
+plus a `.Core` project. Later the same day: Projects and Git must not depend on each other in
+either direction.
+
+Built in phases P1–P6 (`docs/ROADMAP.md`, milestone P), each ending with a green build:
+- **P1:** the old `DevHub.Core` split into `Sdk.Core` + one `.Core` per plugin, with settings sections and their migration.
+- **P2:** `DevHub.Sdk`.
+- **P3:** the plugin contract and the extension points.
+- **P4:** the plugins moved into their own assemblies.
+- **P5:** the Plugins page and the first-run picker.
+- **P6:** these docs and `tools/plugin-matrix.ps1`.
+
+Settings files from before P1 are migrated on load.
+
+Known limits: plugin token dictionaries have no Compact variant (keep shrinking tokens in the
+Sdk); plugins are loaded from the app folder only; switching needs a restart.

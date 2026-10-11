@@ -27,8 +27,8 @@ migration notes before guessing. Don't downgrade packages to make old snippets
 compile.
 
 ## Solution layout
-DevHub is being split into a **bare shell + plugins** (milestone P, design in
-`docs/PLUGINS.md`); `README.md` shows the current state. After P4:
+DevHub is a **bare shell + plugins** (milestone P, reference in
+`docs/PLUGINS.md`, complete since P6); `README.md` shows the current state.
 
 ```
 DevHub.sln   Directory.Build.props (net10.0, Nullable, ImplicitUsings for every project)
@@ -48,12 +48,13 @@ plugins/                  each plugin = X (UI: views, ViewModels, actions, its p
   DevHub.Projects/ + .Core   Projects tool window, Open With (ProjectsSettings)
   DevHub.Git/ + .Core        Git client UI, IRemoteHost, Themes/GitTokens.axaml (GitSettings)
   DevHub.GitHub/ + .Core     GitHub account, Publish, GitHubRemoteHost (requires Git)
-  DevHub.Templates/          placeholder pages; (planned) DevHub.Templates.Core = the engine
+  DevHub.Templates/ + .Core  template screens (placeholders until M4); the engine (M1: model, validation, libraries)
 tests/
   DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
   DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
+  DevHub.Templates.Core.Tests/
 docs/
-  PLUGINS.md            plugin architecture: contract, extension points, migration phases
+  PLUGINS.md            plugins: lifecycle, contract, extension points, linking, recipe for a new one
   TEMPLATE_FORMAT.md    the template spec — single source of truth
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
@@ -102,6 +103,8 @@ dotnet build
 dotnet test
 dotnet run --project src/DevHub.App
 ```
+- Plugin or shell changes: also `pwsh tools/plugin-matrix.ps1` (Debug build): starts DevHub with
+  every plugin alone, none and all, and reports what loaded / what crashed.
 - Core changes: verify with `dotnet test` — add or extend tests for every engine
   behavior change (renderer, generator, importer, ignore rules). This is the one
   part of the app where regressions silently corrupt user files.
@@ -191,9 +194,8 @@ background) but may be new to Avalonia/XAML/MVVM and desktop app architecture.
   appears (DataContext, bindings, DI, source generators, staging dirs, ...). Unity
   analogies help (e.g. ViewModel ≈ a plain C# model a MonoBehaviour would read).
 - Keep steps small and runnable — each step ends with something that builds.
-- Ask whether they want to **write it themselves** (you review + hint) or **have
-  you write it** (you explain afterwards) when starting a new roadmap task,
-  unless they already said.
+- **Claude writes all the code** (the user's choice): implement, build, test, then
+  explain the key parts. Ask about requirements and design, not about who writes it.
 - Keep `docs/ROADMAP.md` checkboxes current when a task is completed.
 - Use `/next-step` to pick up where the last session left off.
 

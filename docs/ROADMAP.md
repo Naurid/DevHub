@@ -87,7 +87,9 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 - [x] P5. Settings → Plugins page (switches, requirements kept consistent, what changes after a restart,
       why a plugin couldn't load, Restart Now), first-run picker (presets declared by the plugins +
       checklist), File → Restart DevHub; selection rules in Sdk.Core (`PluginSelection`, tested)
-- [ ] **NEXT — P6.** Docs: PLUGINS.md as reference + recipe, CLAUDE.md, UI_GUIDE §5, skills
+- [x] P6. Docs: `PLUGINS.md` as the reference + "new plugin" recipe; `tools/plugin-matrix.ps1` (start
+      DevHub with every plugin alone / none / all); tabs of a switched-off plugin are kept in the saved
+      layout and come back with it; CLAUDE.md, UI_GUIDE, README, skills
 
 ## M0 — Skeleton
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`
@@ -98,58 +100,64 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 - [x] `dotnet build` and `dotnet test` green; the app opens a dark app-shell window
       (sidebar nav: Templates / Generate / Import / Settings, placeholder pages)
 
-## M1 — Template model & library (Core)
-- [ ] Manifest model classes matching `docs/TEMPLATE_FORMAT.md`
-- [ ] `TemplateLibrary`: resolve library root, list/load/save/delete templates
-- [ ] Manifest validation (ids, variable names, choices, `when` refers to a bool)
-- [ ] Unknown JSON fields round-trip; bad `schemaVersion` rejected
-- [ ] Tests for all of the above
+## M1 — Template model & libraries (Core)
+M1–M9 build the **Templates plugin** to the spec in `docs/TEMPLATE_FORMAT.md` (decided
+2026-10-11): project + item templates, base command + content + steps + post-create, language +
+categories, several libraries + read-only built-ins, staging → editable preview → place. The
+engine goes in a new `plugins/DevHub.Templates.Core` (+ `tests/DevHub.Templates.Core.Tests`),
+the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.Core`.
+- [x] Manifest model (kind, language, categories, variables, rootFolder, baseCommand, steps,
+      postCreate) + JSON load/save: unknown fields round-trip, bad `schemaVersion` refused
+- [x] Manifest validation (ids, variable names/types/choices, `when` names a bool, step fields, kind rules)
+- [x] Libraries: personal (`%APPDATA%/DevHub/templates`), extra folders, read-only built-in; list / load /
+      save / delete / duplicate; same id in two libraries
+- [x] Tests for all of the above (57: serializer, validator, store, libraries)
 
 ## M2 — Placeholder renderer (Core)
-- [ ] Tokenizer: `{{Name}}`, `{{Name:transform}}`, `\{{` escape
+- [ ] **NEXT —** Tokenizer: `{{Name}}`, `{{Name:transform}}`, `\{{` escape
 - [ ] Transforms: pascal/camel/kebab/snake/upper/lower
 - [ ] Built-ins: Year, Date, Author, Guid1..9 (stable per generation)
 - [ ] Unknown tokens pass through verbatim (test with Vue/Jinja/GH Actions samples)
-- [ ] Path segment rendering + validation
+- [ ] Path segment rendering + validation; rendering commands, step paths, rootFolder
 
-## M3 — Project generation (Core)
-- [ ] Binary detection
-- [ ] Generate into staging dir → conflict check → move into target
-- [ ] Path-escape protection
-- [ ] Encoding/BOM/line-ending preservation
-- [ ] Tests using temp directories
+## M3 — Generation pipeline (Core)
+- [ ] Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
+- [ ] Staging + base command (`runIn` root / parent); overlay of `content/` (binary detection, encoding/BOM kept)
+- [ ] Steps engine (createFolder / move / rename / delete, globs, nothing outside the root)
+- [ ] Result tree model for the preview; preview edits → applied + convertible to `steps` ("Save to template")
+- [ ] Conflict check, place into target; item templates applied into an existing folder (incl. moving existing files)
+- [ ] Post-create commands; the "commands that will run" list for the confirmation; tests in temp folders
 
-## M4 — Main UI: browse + generate
-- [ ] Template list (project/file tabs, filter by language/tag, search)
-- [ ] Variable form generated from the manifest (string/bool/choice, validation messages)
-- [ ] Target folder picker (via `IDialogService`)
-- [ ] Generate button, progress + result/error display
+## M4 — Browse + generate UI
+- [ ] Template browser: group by language or category, filter by both + library, search; project / item
+- [ ] Variable form from the manifest (string / bool / choice, validation messages); target folder picker
+- [ ] Confirmation (every command, rendered) → progress → editable preview tree (drag / rename / delete /
+      new folder, Save to template) → place → post-create with live output
 
 ## M5 — Template editor UI
-- [ ] Create/edit/delete template metadata + variables
-- [ ] Content tree view of the template's `content/` folder
-- [ ] Add/rename/delete files and folders; simple text editor for file contents
-- [ ] "Open in Explorer / VS Code" shortcuts
+- [ ] Create / edit / delete: metadata, language, categories, variables, base command, steps, post-create
+- [ ] Content tree of `content/` (add / rename / delete files and folders) + simple text editor
+- [ ] Duplicate (built-ins into a writable library); "Open in Explorer / VS Code"
 
-## M6 — File/script templates
-- [ ] Stamp a file template into a chosen folder (conflict prompt)
-- [ ] Namespace inference (from folder path + nearest `.csproj` RootNamespace)
-- [ ] Starter file templates: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
+## M6 — Item templates
+- [ ] Apply into a chosen folder from the Projects tree / a repository tab / the browser (conflict prompt)
+- [ ] Move rules for existing files, shown in the preview
+- [ ] Namespace inference (folder path + nearest `.csproj` RootNamespace)
+- [ ] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
 
-## M7 — Import from existing folder
+## M7 — Import from an existing folder
 - [ ] Ignore-glob matcher (Core, tested)
 - [ ] Import preview: file tree with ignored items greyed out
 - [ ] Literal → variable replacement with per-file hit counts
-- [ ] Save as new project template
+- [ ] Save as a new template (project or item) in a chosen library
 
-## M8 — Post-create commands
-- [ ] Command runner (Core): ArgumentList, streamed stdout/stderr, cancellation, exit codes
-- [ ] Windows `.cmd` shims (`npm`, `npx`, `yarn`) resolution
-- [ ] Confirmation screen listing exact commands before running
-- [ ] Live output log in the UI
+## M8 — Built-in templates
+- [ ] .NET (console, classlib, solution + add project, Avalonia, xUnit), Unity (`@unity`, installed editors)
+- [ ] Web (Vite React/Vue/Svelte TS, Tauri), Rust (cargo bin/lib), Python (venv layout), Go (go mod)
+- [ ] Each checked against the real tool when installed (skipped otherwise)
 
 ## M9 — Polish
-- [ ] Settings (author name, library location, default target folder)
+- [ ] Settings → Templates (author name, personal library location, extra libraries, default target folder)
 - [ ] Recent generations list
 - [ ] Zip export/import of a template
 - [ ] App icon, publish profile (`dotnet publish` self-contained win-x64)
@@ -157,11 +165,13 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 ## M10 — Natural-language commands (local AI, learning project)
 Goal: type "new unity project called Timber with git" → a structured tool call →
 confirmation screen → same execution path as the UI. See "Natural-language
-commands" in `CLAUDE.md` for the design rules.
+commands" in `CLAUDE.md` for the design rules. With plugins, the tools come from the plugins
+that are switched on: each contributes its commands (an `ICommandTool` extension point in the
+Sdk), so the catalog only offers what's loaded.
 
 ### Stage 0 — plumbing (no ML yet)
-- [ ] Tool catalog in Core: `create_project`, `stamp_file`, `import_folder`,
-      `list_templates`, each with an argument schema derived from the template library
+- [ ] Tool catalog (`ICommandTool` contributions): `create_project`, `stamp_file`, `import_folder`,
+      `list_templates` from the Templates plugin, each with an argument schema derived from the template library
 - [ ] `DevHubCommand` model + `ICommandInterpreter` interface
 - [ ] `CommandValidator`: checks a command against the real library (template exists,
       vars valid) — reused by every interpreter

@@ -28,6 +28,9 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
     private readonly IReadOnlyList<IDocumentFactory> _factories;
     private readonly IStatusService _status;
 
+    /// <summary>Saved tabs of plugins that are switched off: not shown, but saved again (after the open ones).</summary>
+    private readonly List<string> _keptForLater = [];
+
     /// <summary>Every single document that can be opened, in registration order.</summary>
     public IReadOnlyList<DocumentViewModelBase> Available { get; }
 
@@ -141,7 +144,7 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
     {
         var layout = new EditorLayout
         {
-            OpenDocuments = Open.Select(d => d.Id).ToList(),
+            OpenDocuments = Open.Select(d => d.Id).Concat(_keptForLater).ToList(),
             ActiveDocument = Active?.Id,
         };
         _store.Update(s => s.Editor = layout);
@@ -164,6 +167,12 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
             else if (_factories.Any(f => id.StartsWith(f.IdPrefix, StringComparison.Ordinal)))
             {
                 skipped++; // e.g. a repository that was moved or deleted since last time
+            }
+            else
+            {
+                // Nothing here knows this id: its plugin is switched off. Keep it in the saved
+                // layout, so the tab comes back when the plugin is switched on again.
+                _keptForLater.Add(id);
             }
         }
 

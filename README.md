@@ -13,7 +13,7 @@ JetBrains-style UI (Rider "New UI" look, Dark and Light themes). It has:
 - **Templates** (planned): project and file templates with variables, generated into a
   folder, with optional post-create commands.
 
-DevHub is being restructured so that **every feature is a plugin** on a bare shell. Each
+DevHub is built so that **every feature is a plugin** on a bare shell. Each
 developer turns on only what they need, e.g. just Projects + Git for a Git client. The
 design is in [`docs/PLUGINS.md`](docs/PLUGINS.md) and progress is in
 [`docs/ROADMAP.md`](docs/ROADMAP.md) (milestone P).
@@ -40,7 +40,8 @@ plugins/                     each plugin: X (its UI + plugin class) and X.Core (
   DevHub.Git.Core/           running git, parsing its output, diff / graph layout
   DevHub.GitHub/             GitHub account, Publish to GitHub (requires Git)
   DevHub.GitHub.Core/        Git Credential Manager + GitHub API
-  DevHub.Templates/          template pages (placeholders until milestone M1)
+  DevHub.Templates/          template screens (placeholders until M4)
+  DevHub.Templates.Core/     the template engine: model, validation, libraries (more each milestone)
 
 tests/
   DevHub.TestKit/            shared helpers: TempGitRepo (real git in a temp folder), [GitFact]
@@ -78,6 +79,9 @@ dotnet test
 dotnet run --project src/DevHub.App
 ```
 
+After changing a plugin or the shell, `pwsh tools/plugin-matrix.ps1` starts the Debug build with
+every plugin alone, with none and with all, and reports what loaded.
+
 ## Settings
 
 Settings live in `%APPDATA%\DevHub\settings.json`. The shell's own sections (window layout,
@@ -114,7 +118,7 @@ before starting the app.
 
 | File | What it covers |
 |---|---|
-| [`docs/PLUGINS.md`](docs/PLUGINS.md) | Plugin architecture: the contract, extension points, migration phases |
+| [`docs/PLUGINS.md`](docs/PLUGINS.md) | Plugins: how they load, the contract, extension points, linking plugins, recipe for a new one |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Milestones and what's next |
 | [`docs/UI_GUIDE.md`](docs/UI_GUIDE.md) | UI rules, design tokens, components and recipes |
 | [`docs/ACTIONS_AND_FUZZY_MATCHING.md`](docs/ACTIONS_AND_FUZZY_MATCHING.md) | Actions, menus, shortcuts, Find Action |
