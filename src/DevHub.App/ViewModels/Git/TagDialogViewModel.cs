@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 using DevHub.ViewModels.Dialogs;
 
 namespace DevHub.ViewModels.Git;

@@ -1,5 +1,4 @@
-using DevHub.Core.Projects;
-using DevHub.Core.Repositories;
+using DevHub.Projects.Core;
 
 namespace DevHub.Services;
 

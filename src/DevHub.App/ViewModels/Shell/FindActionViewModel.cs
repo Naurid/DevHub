@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Actions;
-using DevHub.Core.Search;
+using DevHub.Sdk.Core.Search;
 
 namespace DevHub.ViewModels.Shell;
 

@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Formatting;
-using DevHub.Core.Git;
-using DevHub.Core.GitHub;
-using DevHub.Core.Search;
+using DevHub.Sdk.Core.Formatting;
+using DevHub.Git.Core;
+using DevHub.GitHub.Core;
+using DevHub.Sdk.Core.Search;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs;
 

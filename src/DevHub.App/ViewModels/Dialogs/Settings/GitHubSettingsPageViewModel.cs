@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.GitHub;
+using DevHub.GitHub.Core;
 using DevHub.Services;
 
 namespace DevHub.ViewModels.Dialogs.Settings;

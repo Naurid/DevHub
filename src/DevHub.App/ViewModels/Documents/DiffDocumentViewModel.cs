@@ -1,6 +1,6 @@
 using Avalonia.Threading;
 using DevHub.Controls;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 using DevHub.Services;
 using DevHub.ViewModels.Git;
 

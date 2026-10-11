@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+      The plugin-independent base every part of DevHub can use: the settings store (shell
+      sections + one section per plugin), FuzzyMatcher, formatting helpers. No Avalonia, ever,
+      and no knowledge of any plugin.
+    -->
+
+</Project>

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using DevHub.Core.Search;
+using DevHub.Sdk.Core.Search;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
 

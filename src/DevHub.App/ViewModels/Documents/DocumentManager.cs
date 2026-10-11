@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Settings;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 
 namespace DevHub.ViewModels.Documents;

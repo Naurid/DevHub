@@ -1,4 +1,4 @@
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 
 namespace DevHub.Services;
 

@@ -1,4 +1,4 @@
-using DevHub.Core.GitHub;
+using DevHub.GitHub.Core;
 using DevHub.ViewModels.Dialogs;
 
 namespace DevHub.Services;
@@ -167,5 +167,5 @@ public sealed class GitHubSession(IDialogService dialogs, IStatusService status,
     }
 
     private static string FirstLine(Exception ex) =>
-        (ex is Core.Git.GitException git && git.StandardError.Trim() is { Length: > 0 } e ? e : ex.Message).Split('\n')[0].Trim();
+        (ex is Git.Core.GitException git && git.StandardError.Trim() is { Length: > 0 } e ? e : ex.Message).Split('\n')[0].Trim();
 }

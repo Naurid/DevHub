@@ -2,7 +2,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 using DevHub.Services;
 using DevHub.ViewModels.Git;
 

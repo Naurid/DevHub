@@ -70,9 +70,9 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
 Every feature becomes a plugin on a bare shell; each dev enables what they need (Settings →
 Plugins, first-run presets, restart to apply). Design and decisions: `docs/PLUGINS.md`.
 Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
-- [ ] **NEXT — P1. Core split:** `Directory.Build.props`; Sdk.Core, Projects.Core (+ Repositories,
+- [x] P1. Core split: `Directory.Build.props`; Sdk.Core, Projects.Core (+ Repositories,
       LanguageToolChoice), Git.Core, GitHub.Core; tests split + TestKit; settings sections + migration (tested)
-- [ ] P2. `DevHub.Sdk`: base classes, Controls, Themes, action contracts, service interfaces; ViewLocator,
+- [ ] **NEXT — P2. `DevHub.Sdk`:** base classes, Controls, Themes, action contracts, service interfaces; ViewLocator,
       Icon and avares URIs work across assemblies
 - [ ] P3. Extension points + `IPlugin` / `PluginHost` / `PluginResolver` (tested); menus from action
       metadata, settings-page list, title/status-bar widgets, Welcome placement, tool-window order;

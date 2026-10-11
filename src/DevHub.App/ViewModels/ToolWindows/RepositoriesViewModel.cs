@@ -2,10 +2,9 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
-using DevHub.Core.Projects;
-using DevHub.Core.Repositories;
-using DevHub.Core.Search;
-using DevHub.Core.Settings;
+using DevHub.Projects.Core;
+using DevHub.Sdk.Core.Search;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels.Documents;
 
@@ -62,7 +61,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
         _store = store;
         _documents = documents;
 
-        foreach (var folder in _store.Load().RepositoryFolders)
+        foreach (var folder in _store.LoadSection<ProjectsSettings>().RepositoryFolders)
             ScanFolders.Add(folder);
         RebuildTree();
 
@@ -73,7 +72,7 @@ public partial class RepositoriesViewModel : ToolWindowViewModelBase
             OnPropertyChanged(nameof(HasFolders));
             RebuildTree();
             var folders = ScanFolders.ToList();
-            _store.Update(s => s.RepositoryFolders = folders);
+            _store.UpdateSection<ProjectsSettings>(s => s.RepositoryFolders = folders);
         };
 
         // Show the repositories of the saved folders straight away (the scan runs on a background

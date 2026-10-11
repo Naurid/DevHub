@@ -275,9 +275,14 @@ For text actions inside a pane header ("Stage All"), use `<Button Classes="flat"
 3. Register transient and add it to `SettingsDialogViewModel`'s constructor and `Pages`.
 
 ### Persist something new
-Add a property (or a small class) to `Core/Settings/AppSettings.cs`, nullable if "never
-saved" must be distinguishable from a default. Save with `store.Update(s => s.Foo = …)`.
-Add a round-trip test in `JsonSettingsStoreTests`. For experiments, run the app with
+**A plugin's setting** (almost everything): add a property to the plugin's settings section
+(a class implementing `ISettingsSection` in its `.Core` project, e.g. `GitSettings`,
+`ProjectsSettings`; create one if the plugin has none). Read with
+`store.LoadSection<GitSettings>()`, save with `store.UpdateSection<GitSettings>(s => s.Foo = …)`,
+and add a round-trip test in that plugin's tests. **A shell setting** (window layout,
+appearance): a property on `AppSettings` in `src/DevHub.Sdk.Core/Settings`, nullable if
+"never saved" must be distinguishable from a default, saved with `store.Update(s => s.Foo = …)`,
+tested in `JsonSettingsStoreTests`. For experiments, run the app with
 `DEVHUB_DATA_DIR` pointing at a scratch folder so your real settings stay untouched.
 
 ---

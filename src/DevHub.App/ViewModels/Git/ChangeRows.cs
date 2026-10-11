@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using DevHub.Core.Formatting;
+using DevHub.Sdk.Core.Formatting;
 
 namespace DevHub.ViewModels.Git;
 

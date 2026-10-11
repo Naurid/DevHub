@@ -1,5 +1,6 @@
-using DevHub.Core.Git;
-using DevHub.Core.Settings;
+using DevHub.Git.Core;
+using DevHub.Projects.Core;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs;
 using DevHub.ViewModels.Documents;
@@ -30,7 +31,7 @@ public sealed class CloneOperations(GitHubSession github, IDialogService dialogs
             return;
         }
 
-        var scanFolders = settings.Load().RepositoryFolders;
+        var scanFolders = settings.LoadSection<ProjectsSettings>().RepositoryFolders;
         var folder = scanFolders.FirstOrDefault(Directory.Exists)
                      ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var dialog = new CloneDialogViewModel(github, dialogs, folder);

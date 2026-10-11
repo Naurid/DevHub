@@ -1,0 +1,11 @@
+<!--
+  Settings shared by every project in the solution (MSBuild picks this file up automatically
+  for every .csproj below this folder). Project files only add what's specific to them.
+-->
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+</Project>

@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Settings;
+using DevHub.Sdk.Core.Settings;
 
 namespace DevHub.ViewModels.ToolWindows;
 

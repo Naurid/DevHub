@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 using DevHub.Services;
 
 namespace DevHub.ViewModels.Git;

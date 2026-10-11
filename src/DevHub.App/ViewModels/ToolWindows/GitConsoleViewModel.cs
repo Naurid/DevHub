@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 
 namespace DevHub.ViewModels.ToolWindows;
 

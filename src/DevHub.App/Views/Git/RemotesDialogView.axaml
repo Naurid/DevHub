@@ -2,7 +2,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:DevHub.ViewModels.Git"
-             xmlns:git="clr-namespace:DevHub.Core.Git;assembly=DevHub.Core"
+             xmlns:git="clr-namespace:DevHub.Git.Core;assembly=DevHub.Git.Core"
              xmlns:c="clr-namespace:DevHub.Controls"
              x:Class="DevHub.Views.Git.RemotesDialogView"
              x:DataType="vm:RemotesDialogViewModel">

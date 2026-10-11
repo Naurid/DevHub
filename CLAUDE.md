@@ -18,7 +18,7 @@ Completely standalone — unrelated to any other project on this machine.
 - CommunityToolkit.Mvvm 8.4.x (`[ObservableProperty]`, `[RelayCommand]` source generators)
 - Microsoft.Extensions.DependencyInjection for composition
 - System.Text.Json for manifests and settings
-- xUnit for `DevHub.Core.Tests`
+- xUnit for the `*.Core.Tests` projects
 
 **Avalonia 12 caution:** most Avalonia examples online (and in model training data)
 target 11.x, and 12 has breaking changes. When you're unsure an API still exists
@@ -26,35 +26,46 @@ or a build error looks like an API change, check docs.avaloniaui.net or the 12.x
 migration notes before guessing. Don't downgrade packages to make old snippets
 compile.
 
-## Solution layout (target — see docs/ROADMAP.md for what exists yet)
+## Solution layout
+DevHub is being split into a **bare shell + plugins** (milestone P, design in
+`docs/PLUGINS.md`); `README.md` shows the current state. After P1:
 
 ```
-DevHub.sln
+DevHub.sln   Directory.Build.props (net10.0, Nullable, ImplicitUsings for every project)
 src/
-  DevHub.Core/          class library — NO Avalonia reference, ever
-    Templates/          manifest model, loading/saving, validation
-    Rendering/          placeholder engine (names + contents)
-    Generation/         project generator, file-template stamper
-    Import/             folder → template importer, ignore globs
-    Commands/           post-create command runner
-    Storage/            template library location, settings
-  DevHub.App/           Avalonia UI (MVVM) — references Core only
-    Views/  ViewModels/  (Documents/, ToolWindows/, Dialogs/, Shell/ in both)
+  DevHub.Sdk.Core/        base for everything, NO Avalonia: settings store (shell sections +
+                          one section per plugin, ISettingsSection), FuzzyMatcher, Formatting
+  DevHub.App/             Avalonia UI (MVVM). For now still holds the plugins' UI too (moves out in P2–P4)
+    Views/  ViewModels/  (Documents/, ToolWindows/, Dialogs/, Shell/, Git/ in both)
     Services/ (dialogs, pickers, theme, status)   Actions/   Controls/   Themes/
+plugins/                  each plugin = X.Core (logic, NO Avalonia, tested) + later X (UI)
+  DevHub.Projects.Core/   repository scanning, language detection, Open With (ProjectsSettings)
+  DevHub.Git.Core/        GitRunner, GitRepositoryClient, parsers, graph/diff layout (GitSettings)
+  DevHub.GitHub.Core/     Git Credential Manager, GitHub API (requires Git)
+  (planned) DevHub.Templates.Core/   template model, renderer, generator, importer, commands
 tests/
-  DevHub.Core.Tests/    xUnit, tests Core only
+  DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
+  DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
 docs/
+  PLUGINS.md            plugin architecture: contract, extension points, migration phases
   TEMPLATE_FORMAT.md    the template spec — single source of truth
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
   ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
-  GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G8)
+  GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G9)
 ```
 
-**Dependency direction: `App → Core`, `Tests → Core`. Nothing references `App`.**
-All logic that can be tested without a window lives in Core. If you catch yourself
-writing file I/O, path math, or string templating in a ViewModel, move it to a
-Core service and inject it.
+**Dependency direction:** `App → Sdk.Core + plugin .Core projects`; a plugin's `.Core` →
+`Sdk.Core` (+ another plugin's `.Core` only for a declared hard dependency, e.g. GitHub →
+Git); tests → the project they test. **`Sdk.Core` never knows about a plugin, and nothing
+references `App`.** All logic that can be tested without a window lives in a `.Core`
+project (the "Core" in the rules below means "a `.Core` project"). If you catch yourself
+writing file I/O, path math, or string templating in a ViewModel, move it to a Core
+service and inject it.
+
+**Plugin settings** live in their own section: a class implementing `ISettingsSection`
+(`SectionId` = plugin id) in the plugin's `.Core`, read with `store.LoadSection<T>()`,
+changed with `store.UpdateSection<T>(s => …)`. Don't add plugin fields to `AppSettings`.
 
 ## Build / run / verify
 ```
@@ -108,7 +119,7 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
   buttons get `AutomationProperties.Name`.
 
 ## Git client rules (details in `docs/GIT_CLIENT_PLAN.md`)
-- Run git **only through `Core/Git/GitRunner`**: `ArgumentList`, no shell string,
+- Run git **only through `GitRunner`** (`plugins/DevHub.Git.Core`): `ArgumentList`, no shell string,
   `GIT_TERMINAL_PROMPT=0`; read-only commands pass `ReadOnly = true` (no optional locks).
 - Parse **only machine-readable output** (`--porcelain=v2`, `-z`, explicit `--format`).
 - **One repository per tab, one `GitRepositoryClient` per repository**; commands always
@@ -118,7 +129,7 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
 - Every command shows up in the Git Console (the runner logs it automatically).
 - Credentials come only from Git Credential Manager: never ask for, store or log a password or token
   (borrow it per API call with `credential fill`, run as `Sensitive`).
-- Core git tests use real git in temp repos (`TempGitRepo`, `[GitFact]`); UI checks use
+- Core git tests use real git in temp repos (`TempGitRepo`, `[GitFact]` from `tests/DevHub.TestKit`); UI checks use
   scratch repositories, never the user's own.
 
 ## Natural-language commands (roadmap M10 — design rules from day one)

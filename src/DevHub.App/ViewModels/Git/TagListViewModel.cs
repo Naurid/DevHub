@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Formatting;
-using DevHub.Core.Git;
-using DevHub.Core.Search;
+using DevHub.Sdk.Core.Formatting;
+using DevHub.Git.Core;
+using DevHub.Sdk.Core.Search;
 
 namespace DevHub.ViewModels.Git;
 

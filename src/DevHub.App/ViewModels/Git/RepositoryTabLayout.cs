@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using DevHub.Core.Settings;
+using DevHub.Git.Core;
+using DevHub.Sdk.Core.Settings;
 
 namespace DevHub.ViewModels.Git;
 
@@ -16,22 +17,22 @@ public sealed partial class RepositoryTabLayout : ObservableObject
     public RepositoryTabLayout(ISettingsStore? store = null)
     {
         _store = store;
-        var git = store?.Load().Git;
-        _changesAsTree = git?.ChangesAsTree ?? true;
-        _diffSideBySide = git?.DiffSideBySide ?? false;
+        var git = store?.LoadSection<GitSettings>() ?? new GitSettings();
+        _changesAsTree = git.ChangesAsTree;
+        _diffSideBySide = git.DiffSideBySide;
     }
 
     /// <summary>Local Changes shows folders (Fork's tree view) instead of a flat list. Saved.</summary>
     [ObservableProperty] private bool _changesAsTree;
 
     partial void OnChangesAsTreeChanged(bool value) =>
-        _store?.Update(s => (s.Git ??= new GitSettings()).ChangesAsTree = value);
+        _store?.UpdateSection<GitSettings>(s => s.ChangesAsTree = value);
 
     /// <summary>Every diff (Local Changes, commits, stashes, diff tabs) is side by side instead of unified. Saved.</summary>
     [ObservableProperty] private bool _diffSideBySide;
 
     partial void OnDiffSideBySideChanged(bool value) =>
-        _store?.Update(s => (s.Git ??= new GitSettings()).DiffSideBySide = value);
+        _store?.UpdateSection<GitSettings>(s => s.DiffSideBySide = value);
 
     /// <summary>The sidebar (header + Local Changes, All Commits, …).</summary>
     [ObservableProperty] private double _sidebarWidth = 240;

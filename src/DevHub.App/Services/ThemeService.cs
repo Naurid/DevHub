@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
-using DevHub.Core.Settings;
+using DevHub.Sdk.Core.Settings;
 
 namespace DevHub.Services;
 

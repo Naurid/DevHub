@@ -1,7 +1,7 @@
 # Actions and fuzzy matching
 
 How DevHub's action system (`src/DevHub.App/Actions/`) and the fuzzy matcher
-(`src/DevHub.Core/Search/FuzzyMatcher.cs`) work, why they're built this way, and how to
+(`src/DevHub.Sdk.Core/Search/FuzzyMatcher.cs`) work, why they're built this way, and how to
 extend them. Written for UI-0 step 5; steps 6 (menus/toolbar), 9 (keymap settings) and
 10 (Find Action) build on both.
 
@@ -303,8 +303,8 @@ name. You'll type `gp` for "Git: Push", `rescan` for "Repositories: Rescan", or 
 
 It also reports **which characters matched**, so the popup can highlight them.
 
-It lives in **Core** (`DevHub.Core.Search`) because it's pure logic: strings in, numbers
-out, no UI. That makes it easy to unit-test (`tests/DevHub.Core.Tests/FuzzyMatcherTests.cs`),
+It lives in **Core** (`DevHub.Sdk.Core.Search`) because it's pure logic: strings in, numbers
+out, no UI. That makes it easy to unit-test (`tests/DevHub.Sdk.Core.Tests/FuzzyMatcherTests.cs`),
 and keeps it reusable, e.g. for filtering templates or repositories later.
 
 ### API

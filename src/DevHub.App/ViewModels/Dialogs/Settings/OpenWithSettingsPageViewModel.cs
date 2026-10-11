@@ -1,5 +1,5 @@
-using DevHub.Core.Projects;
-using DevHub.Core.Settings;
+using DevHub.Projects.Core;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
@@ -23,7 +23,7 @@ public class OpenWithSettingsPageViewModel : SettingsPageViewModelBase
         _store = store;
         var available = tools.GetAvailableTools();
         _availableIds = available.Select(t => t.Id).ToList();
-        var saved = _store.Load().LanguageTools;
+        var saved = _store.LoadSection<ProjectsSettings>().LanguageTools;
 
         LanguageTools = KnownLanguages.All
             .Select(language =>
@@ -48,7 +48,7 @@ public class OpenWithSettingsPageViewModel : SettingsPageViewModelBase
                 overrides[row.LanguageId] = choice; // keep the file to overrides only
         }
 
-        _store.Update(s => s.LanguageTools = overrides);
+        _store.UpdateSection<ProjectsSettings>(s => s.LanguageTools = overrides);
         IsModified = false;
     }
 }

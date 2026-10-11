@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DevHub.Core.Projects;
-using DevHub.Core.Settings;
+using DevHub.Projects.Core;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 
 namespace DevHub.ViewModels.Dialogs.Settings;

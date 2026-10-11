@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using DevHub.Core.Git;
+using DevHub.Git.Core;
 
 namespace DevHub.Controls;
 
