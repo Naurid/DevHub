@@ -114,14 +114,15 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Tests for all of the above (57: serializer, validator, store, libraries)
 
 ## M2 — Placeholder renderer (Core)
-- [ ] **NEXT —** Tokenizer: `{{Name}}`, `{{Name:transform}}`, `\{{` escape
-- [ ] Transforms: pascal/camel/kebab/snake/upper/lower
-- [ ] Built-ins: Year, Date, Author, Guid1..9 (stable per generation)
-- [ ] Unknown tokens pass through verbatim (test with Vue/Jinja/GH Actions samples)
-- [ ] Path segment rendering + validation; rendering commands, step paths, rootFolder
+- [x] Tokenizer: `{{Name}}`, `{{Name:transform}}`, `\{{` escape (one pass: values never re-scanned)
+- [x] Transforms: pascal/camel/kebab/snake/upper/lower (word split on separators + case changes)
+- [x] Built-ins: Year, Date, Author, Guid1..9 (stable per generation)
+- [x] Unknown tokens pass through verbatim (Vue, Jinja, GH Actions, Handlebars, Helm samples)
+- [x] Path segment rendering + validation (Windows names); commands (+ `when`), step paths, rootFolder;
+      entered values checked (required / pattern / choice / bool) — 61 tests
 
 ## M3 — Generation pipeline (Core)
-- [ ] Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
+- [ ] **NEXT —** Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
 - [ ] Staging + base command (`runIn` root / parent); overlay of `content/` (binary detection, encoding/BOM kept)
 - [ ] Steps engine (createFolder / move / rename / delete, globs, nothing outside the root)
 - [ ] Result tree model for the preview; preview edits → applied + convertible to `steps` ("Save to template")
