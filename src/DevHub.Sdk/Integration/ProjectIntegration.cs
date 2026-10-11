@@ -41,3 +41,13 @@ public interface IProjectFolders
     /// <summary>Looks for projects in the folders again.</summary>
     Task RescanAsync();
 }
+
+/// <summary>
+/// Adds files to a folder from an item template: opens the Add Files tab for that folder. Offered by
+/// Templates; used by Projects (right-click a project) and Git (a repository tab). Without it, those
+/// entries don't show.
+/// </summary>
+public interface IAddFilesFromTemplate
+{
+    void Open(string folder);
+}

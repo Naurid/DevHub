@@ -166,6 +166,7 @@ and **always has a fallback**:
 | `IProjectOpener` | Git (repository tab) | Projects: double-click / Enter | opens the project in its tool |
 | `IProjectFileEditor` | Projects (Open With) | Git: Open in Editor (F4), conflicts | the Windows default app |
 | `IProjectFolders` | Projects (scan folders, rescan) | Git: Clone's folder, rescan after | Documents, no rescan |
+| `IAddFilesFromTemplate` | Templates (opens Add Files on a folder) | Projects (right-click a project), Git (repository tab button) | the entries don't show |
 
 **A hook owned by the required plugin:** even with a hard requirement, keep the required plugin
 free of the one that needs it. Git defines `IRemoteHost` (in `DevHub.Git`) and GitHub implements

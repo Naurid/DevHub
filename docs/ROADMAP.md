@@ -144,10 +144,11 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [ ] In-app text editor for content files (chose external editors for now)
 
 ## M6 — Item templates
-- [ ] **NEXT —** Apply into a chosen folder from the Projects tree / a repository tab / the browser (conflict prompt)
-- [ ] Move rules for existing files, shown in the preview
-- [ ] Namespace inference (folder path + nearest `.csproj` RootNamespace)
-- [ ] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
+- [x] Add Files tab (Details → Preview → Done), opened from Projects (right-click), a repository tab, the Templates tab, File menu
+      (hook `IAddFilesFromTemplate` in the Sdk); conflicts with an Overwrite choice each
+- [x] Moves / deletes of existing files spelled out in the preview; only what changes shown (or everything)
+- [x] Namespace inference (nearest `.csproj` RootNamespace or name, `.asmdef` rootNamespace, Unity project; + folders)
+- [x] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
 
 ## M7 — Import from an existing folder
 - [ ] Ignore-glob matcher (Core, tested)
