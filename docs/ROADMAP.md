@@ -137,12 +137,14 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] First built-ins to try it with: Console App (.NET, `dotnet new` + steps + post-create), Empty Project (folders only)
 
 ## M5 — Template editor UI
-- [ ] **NEXT —** Create / edit / delete: metadata, language, categories, variables, base command, steps, post-create
-- [ ] Content tree of `content/` (add / rename / delete files and folders) + simple text editor
-- [ ] Duplicate (built-ins into a writable library); "Open in Explorer / VS Code"
+- [x] Templates tab (library manager: New Template…, Edit, Use in New Project, Duplicate, Delete) + one editor tab per template:
+      General, Variables, Base Command, Steps, Post-create (Save Ctrl+S, Revert, asks before losing changes)
+- [x] Files: tree of `content/` (new file / folder, rename, delete), files edited in your external editor (Open With)
+- [x] template.json section (edit the raw manifest; read-only for built-ins); Duplicate to Personal; Explorer / VS Code
+- [ ] In-app text editor for content files (chose external editors for now)
 
 ## M6 — Item templates
-- [ ] Apply into a chosen folder from the Projects tree / a repository tab / the browser (conflict prompt)
+- [ ] **NEXT —** Apply into a chosen folder from the Projects tree / a repository tab / the browser (conflict prompt)
 - [ ] Move rules for existing files, shown in the preview
 - [ ] Namespace inference (folder path + nearest `.csproj` RootNamespace)
 - [ ] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module

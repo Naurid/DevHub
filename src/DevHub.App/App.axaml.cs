@@ -9,6 +9,7 @@ using DevHub.Plugins;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
+using DevHub.ViewModels.Dialogs;
 using DevHub.ViewModels.Dialogs.Settings;
 using DevHub.ViewModels.Documents;
 using DevHub.ViewModels.Plugins;
@@ -86,9 +87,30 @@ public partial class App : Application
             // Window-wide keyboard shortcuts for every action that has one.
             Keymap.Apply(Services.GetRequiredService<ActionRegistry>(), mainWindow);
 
-            // Remember the open tabs and tool windows (and their sizes) for next launch.
-            mainWindow.Closing += (_, _) =>
+            // Unsaved edits in a tab (a template editor): ask before they're lost. The first close is
+            // cancelled while the question is open; agreeing closes the window again, this time for real.
+            var discardAgreed = false;
+            mainWindow.Closing += async (_, e) =>
             {
+                var documents = Services.GetRequiredService<DocumentManager>();
+                var unsaved = documents.Open.Where(d => d.HasUnsavedChanges).Select(d => d.Title).ToList();
+                if (discardAgreed || unsaved.Count == 0)
+                    return;
+                e.Cancel = true;
+                var discard = await Services.GetRequiredService<IDialogService>().ShowDialogAsync(new ConfirmDialogViewModel(
+                    "Unsaved Changes", "These tabs have changes that aren't saved. Close DevHub and lose them?",
+                    "Discard and Close", unsaved));
+                if (!discard)
+                    return;
+                discardAgreed = true;
+                mainWindow.Close();
+            };
+
+            // Remember the open tabs and tool windows (and their sizes) for next launch.
+            mainWindow.Closing += (_, e) =>
+            {
+                if (e.Cancel)
+                    return;
                 Services.GetRequiredService<DocumentManager>().Save();
                 Services.GetRequiredService<ToolWindowManager>().Save();
             };

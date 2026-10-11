@@ -102,7 +102,14 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
     public void Show<T>() where T : DocumentViewModelBase =>
         Show(Available.OfType<T>().First());
 
-    /// <summary>Closes a tab; the neighbour to its left (or right) becomes active.</summary>
+    /// <summary>Closes a tab after asking it (<see cref="DocumentViewModelBase.ConfirmCloseAsync"/>: unsaved changes).</summary>
+    public async Task CloseAsync(DocumentViewModelBase document)
+    {
+        if (Open.Contains(document) && await document.ConfirmCloseAsync())
+            Close(document);
+    }
+
+    /// <summary>Closes a tab without asking; the neighbour to its left (or right) becomes active.</summary>
     public void Close(DocumentViewModelBase document)
     {
         var index = Open.IndexOf(document);
@@ -123,10 +130,10 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
     }
 
     [RelayCommand]
-    private void CloseActive()
+    private async Task CloseActiveAsync()
     {
         if (Active is not null)
-            Close(Active);
+            await CloseAsync(Active);
     }
 
     /// <summary>Activates the next (+1) or previous (-1) tab, wrapping around.</summary>
@@ -204,7 +211,7 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
 
     private void AttachCommands(DocumentViewModelBase document)
     {
-        document.CloseCommand = new RelayCommand(() => Close(document));
+        document.CloseCommand = new AsyncRelayCommand(() => CloseAsync(document));
         document.OpenDocument = OpenById;
     }
 

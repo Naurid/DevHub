@@ -47,6 +47,19 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// <summary>Has unsaved / uncommitted changes: the tab shows a dot (e.g. a repository with local changes).</summary>
     [ObservableProperty] private bool _isDirty;
 
+    /// <summary>
+    /// Edits that only exist in this tab and are lost when it closes (an editor's unsaved form),
+    /// unlike <see cref="IsDirty"/>, which a repository tab also uses for changes safe on disk.
+    /// Closing the window with such a tab open asks first.
+    /// </summary>
+    public virtual bool HasUnsavedChanges => false;
+
+    /// <summary>
+    /// Asked before the tab closes (its ×, Close Tab). Return false to keep it open, e.g. when the
+    /// user cancels "Discard unsaved changes?".
+    /// </summary>
+    public virtual Task<bool> ConfirmCloseAsync() => Task.FromResult(true);
+
     /// <summary>True for the selected tab. Set by <see cref="DocumentManager"/> only.</summary>
     [ObservableProperty] private bool _isActive;
 

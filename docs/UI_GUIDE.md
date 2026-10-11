@@ -255,7 +255,9 @@ code: `RepositoryDocumentViewModel` + `RepositoryDocumentFactory`.
    `git status` at creation gives every tab its dirty dot.) Set `IsDirty` to show the
    "modified" dot on the tab. A section with its own ViewModel (e.g. `LocalChangesViewModel`)
    is shown through a `ContentControl` (ViewLocator), with a local `DataTemplate` for plain
-   placeholder records.
+   placeholder records. An editor whose edits live only in the tab (the template editor) overrides
+   `HasUnsavedChanges` (closing the window asks) and `ConfirmCloseAsync()` (its × asks
+   "Discard?"); the tab's × and Close Tab go through it.
 2. Factory: implement `IDocumentFactory` (`IdPrefix`, `Create(id)` → the document, or null
    if the item is gone). Register: `services.AddSingleton<IDocumentFactory, FooFactory>();`.
 3. Open it with `documentManager.OpenById(FooFactory.IdFor(item))`: activates the existing tab
@@ -382,6 +384,7 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 | App crashes at startup: `ArgumentException: An item with the same key has already been added. Key: Size.X` | two tokens with the same key (the build doesn't check) | search `Sizes.axaml` for the key before adding one |
 | A `*` column in a list row is empty | the fixed columns are wider than the row; or the ListBox scrolls horizontally, so rows get infinite width | `ScrollViewer.HorizontalScrollBarVisibility="Disabled"` on the list; `MinWidth` on the `*` column (`StaticResource`: a `ColumnDefinition` can't use `DynamicResource`) |
 | Screen readers say "Avalonia.Controls.Grid" | no accessible name; falls back to content type / `ToString()` | `ToString()` / `AutomationProperties.Name` (rule 7) |
+| `Unable to resolve property … on type <the item>` for a binding that's meant for the list (or the IDE flags `DataContext="{Binding X}"`) | on an element that sets `DataContext="{Binding Selected}"` (and/or `x:DataType`), the other bindings of that same element are typed as the new DataContext | set `DataContext` on the element, put `x:DataType` on its child, and put bindings for the outer object (`IsVisible="{Binding HasSelection}"`) on a wrapper around it (template editor's list sections) |
 | App starts (process alive, plugin report printed) but no window ever appears | a document took a service that needs the `DocumentManager` (e.g. Git's `IProjectOpener`, or Projects' `IProjectFolders`, which takes the opener); the manager is built from the documents, so DI resolution never finishes | a document takes such services as a `Func<T?>` factory and calls it when needed (New Project does); `tools/plugin-matrix.ps1` reports "NO WINDOW" |
 | Settings written by one feature lost after another saves | saving a stale `AppSettings` copy | `store.Update` (rule 8) |
 | `Watermark` obsolete warning | renamed in 12 | `PlaceholderText` |
