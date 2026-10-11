@@ -6,15 +6,18 @@ using DevHub.Core.Git;
 namespace DevHub.ViewModels.Git;
 
 /// <summary>
-/// The diff of one changed file, as rows for the view (unified: hunk headers, then context /
-/// removed / added lines with old and new line numbers). Used by the Local Changes diff pane
-/// and by a diff opened as its own editor tab. Side-by-side arrives later.
+/// The diff of one changed file, as rows for the view: unified (<see cref="Rows"/>: hunk headers,
+/// then context / removed / added lines with old and new line numbers) and side by side
+/// (<see cref="SideRows"/>: old on the left, new on the right). Which one shows is
+/// <see cref="RepositoryTabLayout.DiffSideBySide"/>, one switch for every diff. Used by the Local
+/// Changes diff pane, commit / stash details and diff tabs.
 /// </summary>
 /// <remarks>
 /// In Local Changes, parts of the file can be staged / unstaged / discarded (G3.1): a hunk with
 /// the buttons on its header, or the selected lines (click, Ctrl+click, Shift+click) with the
 /// buttons in the pane header or Space. The work is done by the owner (<c>applyPartial</c>),
-/// which runs <see cref="GitRepositoryClient.ApplyPartialAsync"/> and refreshes.
+/// which runs <see cref="GitRepositoryClient.ApplyPartialAsync"/> and refreshes. Side by side,
+/// only whole hunks can be picked (lines are selected in the unified view).
 /// </remarks>
 public partial class DiffViewModel : ViewModelBase
 {
@@ -37,16 +40,19 @@ public partial class DiffViewModel : ViewModelBase
     /// <summary>Where the first change is, so the editor opens there.</summary>
     private int? _firstChangedLine;
 
+    /// <param name="layout">Shared view choices: unified or side by side (the switch in the header).</param>
     /// <param name="client">Git access, or null when git isn't installed.</param>
     /// <param name="openInEditor">Opens the file in the external editor for the repository's language, at a line.</param>
     /// <param name="openInTab">Opens this diff as its own tab; null hides the button (e.g. in that tab).</param>
     /// <param name="applyPartial">Stages / unstages / discards selected lines of the shown diff; null = read-only.</param>
     /// <param name="annotate">Opens a blame tab: file path, commit id (null = the file on disk); null hides Blame.</param>
-    public DiffViewModel(GitRepositoryClient? client, Action<FileChangeViewModel, int?>? openInEditor = null,
+    public DiffViewModel(RepositoryTabLayout layout, GitRepositoryClient? client,
+        Action<FileChangeViewModel, int?>? openInEditor = null,
         Action<FileChangeViewModel>? openInTab = null,
         Func<FileDiff, Func<int, int, bool>, PartialAction, Task>? applyPartial = null,
         Action<string, string?>? annotate = null)
     {
+        Layout = layout;
         _client = client;
         _openInEditor = openInEditor;
         _openInTab = openInTab;
@@ -63,6 +69,10 @@ public partial class DiffViewModel : ViewModelBase
             DiscardLinesCommand.NotifyCanExecuteChanged();
         };
     }
+
+    /// <summary>Shared view choices; the view binds <see cref="RepositoryTabLayout.DiffSideBySide"/> directly,
+    /// so flipping the switch in one diff flips every open diff.</summary>
+    public RepositoryTabLayout Layout { get; }
 
     /// <summary>The file shown, or null (nothing selected).</summary>
     [ObservableProperty]
@@ -85,6 +95,9 @@ public partial class DiffViewModel : ViewModelBase
     private IReadOnlyList<DiffRowViewModel> _rows = [];
 
     public bool HasRows => Rows.Count > 0;
+
+    /// <summary>The same lines side by side (built with <see cref="Rows"/>, so switching views is instant).</summary>
+    [ObservableProperty] private IReadOnlyList<SideBySideRowViewModel> _sideRows = [];
 
     /// <summary>Binary file, folder, no changes, an error, or "cut off" (the only one that comes with lines).</summary>
     [ObservableProperty]
@@ -225,6 +238,7 @@ public partial class DiffViewModel : ViewModelBase
         {
             // Fire-and-forget caller: show the problem in the pane instead of losing it.
             Rows = [];
+            SideRows = [];
             Message = "Couldn't load the diff: " + ex.Message;
         }
     }
@@ -286,13 +300,16 @@ public partial class DiffViewModel : ViewModelBase
         {
             Subtitle = AddedText = RemovedText = Message = null;
             Rows = [];
+            SideRows = [];
             return;
         }
 
         Subtitle = diff.IsRenamed ? $"{side} · renamed from {diff.OldPath}" : side;
         AddedText = diff.AddedCount > 0 ? $"+{diff.AddedCount}" : null;
         RemovedText = diff.RemovedCount > 0 ? $"−{diff.RemovedCount}" : null;
-        Rows = BuildRows(diff);
+        var rows = BuildRows(diff);
+        SideRows = BuildSideRows(diff, rows);
+        Rows = rows;
         Message = diff switch
         {
             { IsDirectory: true } => "New folder, not tracked yet: git lists it as one entry. Its files show up one by one once the folder is staged.",
@@ -322,6 +339,76 @@ public partial class DiffViewModel : ViewModelBase
         }
         return rows;
     }
+
+    /// <param name="rows">The unified rows: a side-by-side hunk header hands its unified header to the hunk commands.</param>
+    private static List<SideBySideRowViewModel> BuildSideRows(FileDiff diff, List<DiffRowViewModel> rows)
+    {
+        var hunkRows = rows.Where(r => r.IsHunk).ToList();
+        return SideBySideLayout.Build(diff)
+            .Select(r => r.IsHunkHeader ? SideBySideRowViewModel.ForHunk(r.Hunk!, hunkRows[r.HunkIndex]) : SideBySideRowViewModel.ForLines(r))
+            .ToList();
+    }
+}
+
+/// <summary>One row of the side-by-side diff: a hunk header across both halves, or an old and a new half.</summary>
+public sealed class SideBySideRowViewModel
+{
+    private SideBySideRowViewModel(DiffSideViewModel left, DiffSideViewModel right)
+    {
+        Left = left;
+        Right = right;
+    }
+
+    /// <summary>The old file's half (removed or context line, or a filler).</summary>
+    public DiffSideViewModel Left { get; }
+
+    /// <summary>The new file's half (added or context line, or a filler).</summary>
+    public DiffSideViewModel Right { get; }
+
+    public bool IsHunk => HunkRow is not null;
+
+    /// <summary>The hunk header text, across both halves.</summary>
+    public string Header { get; private init; } = "";
+
+    /// <summary>The unified row of the same hunk header (the hunk commands' parameter), or null for a line row.</summary>
+    public DiffRowViewModel? HunkRow { get; private init; }
+
+    public static SideBySideRowViewModel ForHunk(DiffHunk hunk, DiffRowViewModel hunkRow) =>
+        new(DiffSideViewModel.Filler, DiffSideViewModel.Filler) { Header = hunk.Header, HunkRow = hunkRow };
+
+    public static SideBySideRowViewModel ForLines(SideBySideRow row) =>
+        new(DiffSideViewModel.For(row.Left, old: true), DiffSideViewModel.For(row.Right, old: false));
+
+    public override string ToString() => IsHunk ? Header : $"{Left.Text} | {Right.Text}";
+}
+
+/// <summary>One half of a side-by-side row: a line number and text, or a filler (no line on this side).</summary>
+public sealed class DiffSideViewModel
+{
+    public static readonly DiffSideViewModel Filler = new() { IsFiller = true };
+
+    public string Number { get; private init; } = "";
+
+    /// <summary>"+", "-" or "" (its own column, as in the unified view).</summary>
+    public string Sign => IsAdded ? "+" : IsRemoved ? "-" : "";
+
+    public string Text { get; private init; } = "";
+    public bool IsAdded { get; private init; }
+    public bool IsRemoved { get; private init; }
+    public bool IsFiller { get; private init; }
+
+    /// <param name="old">The left half: show the old line number.</param>
+    public static DiffSideViewModel For(DiffLine? line, bool old) =>
+        line is null
+            ? Filler
+            : new DiffSideViewModel
+            {
+                Number = (old ? line.OldLineNumber : line.NewLineNumber)?.ToString() ?? "",
+                // TextBlock doesn't do tab stops; 4 spaces keep indentation readable (as in the unified view).
+                Text = line.Text.Replace("\t", "    ", StringComparison.Ordinal),
+                IsAdded = line.Kind == DiffLineKind.Added,
+                IsRemoved = line.Kind == DiffLineKind.Removed,
+            };
 }
 
 /// <summary>One row of the diff view: a hunk header, a line, or a note.</summary>

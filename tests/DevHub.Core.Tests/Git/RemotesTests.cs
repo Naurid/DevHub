@@ -58,6 +58,23 @@ public class RemotesTests
         Assert.DoesNotContain(await repo.Client.GetBranchesAsync(), b => b.IsRemote);
     }
 
+    [GitFact]
+    public async Task Fetching_an_empty_remote_into_a_repository_without_commits_succeeds_with_no_branches()
+    {
+        using var bare = new TempGitRepo(init: false);
+        bare.Run("init", "--bare", "-q", "-b", "main");
+        using var repo = new TempGitRepo();
+        await repo.Client.AddRemoteAsync("origin", bare.Path);
+
+        await repo.Client.FetchAsync();
+
+        Assert.Equal(["origin"], await repo.Client.GetRemotesAsync());
+        Assert.DoesNotContain(await repo.Client.GetBranchesAsync(), b => b.IsRemote);
+        var status = await repo.Client.GetStatusAsync();
+        Assert.Null(status.CommitId);
+        Assert.Null(status.Upstream);
+    }
+
     [GitTheory]
     [InlineData("origin", true)]
     [InlineData("my-fork_2", true)]

@@ -5,4 +5,7 @@ public sealed class GitSettings
 {
     /// <summary>Local Changes shows folders (Fork's tree view) rather than a flat file list.</summary>
     public bool ChangesAsTree { get; set; } = true;
+
+    /// <summary>Diffs show old and new side by side rather than unified (JetBrains' viewer switch).</summary>
+    public bool DiffSideBySide { get; set; }
 }

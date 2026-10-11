@@ -189,7 +189,7 @@ public sealed class SidebarBranchTree(BranchOperations operations)
             var ofRemote = branches.Where(b => b.IsRemote && b.Remote == remote.Name).ToList();
             Fill(node, ofRemote, "remote:" + remote.Name, b => b.Name);
             if (ofRemote.Count == 0)
-                node.Children.Add(new SidebarHintNode("Not fetched yet: Fetch (double-click)", "hint:" + node.Key, fetch));
+                node.Children.Add(new SidebarHintNode("No branches here: Fetch (double-click), or Push if the remote is new.", "hint:" + node.Key, fetch));
             node.Count = ofRemote.Count;
             Open(node, defaultOpen: true);
             remotesGroup.Children.Add(node);

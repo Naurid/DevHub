@@ -59,6 +59,20 @@ public sealed partial class RemoteOperations : ObservableObject
         // Read the status here rather than using the refreshed branch list: the fetch also
         // wakes the file watcher, whose refresh can replace the one RunAsync waited for.
         var s = await _client!.GetStatusAsync();
+
+        // A new, empty remote (e.g. a fresh GitHub repository) has nothing to fetch, and git
+        // says nothing: tell the user, or it looks like Fetch did nothing.
+        var remoteBranches = (await _client.GetBranchesAsync()).Where(b => b.IsRemote).ToList();
+        var empty = (await _client.GetRemotesAsync()).Where(r => remoteBranches.All(b => b.Remote != r)).ToList();
+        if (s.Upstream is null && empty.Count > 0)
+        {
+            var which = empty.Count == 1 ? $"{empty[0]} is empty" : $"{string.Join(", ", empty)} are empty";
+            _status.Show(s.CommitId is null
+                ? $"Fetched: {which} (no branches yet). Make the first commit, then Push to publish it."
+                : $"Fetched: {which} (no branches yet). Push (Ctrl+Shift+K) publishes {s.DisplayBranch}.");
+            return;
+        }
+
         _status.Show(s switch
         {
             { Upstream: null } => "Fetched.",

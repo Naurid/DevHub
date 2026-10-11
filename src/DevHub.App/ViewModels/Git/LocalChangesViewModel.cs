@@ -42,7 +42,7 @@ public partial class LocalChangesViewModel : ViewModelBase
         _dialogs = dialogs;
         _status = status;
         _refresh = refresh;
-        Diff = new DiffViewModel(client, openInEditor, openInTab, ApplyPartialAsync, annotate);
+        Diff = new DiffViewModel(layout, client, openInEditor, openInTab, ApplyPartialAsync, annotate);
         Commit = new CommitViewModel(client, status, () => Staged.Count > 0, refresh, push);
 
         // The selection lists belong to this ViewModel (the ListBoxes fill them), so these

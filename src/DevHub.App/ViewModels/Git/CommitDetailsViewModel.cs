@@ -28,7 +28,7 @@ public partial class CommitDetailsViewModel : ViewModelBase
         Layout = layout;
         _client = client;
         _isStash = forStashes;
-        Diff = new DiffViewModel(client, openInEditor, annotate: annotate);
+        Diff = new DiffViewModel(layout, client, openInEditor, annotate: annotate);
     }
 
     /// <summary>The file list's width (resizable), shared by all repository tabs.</summary>

@@ -133,6 +133,8 @@ public partial class App : Application
         services.AddSingleton<DocumentViewModelBase, UiGalleryViewModel>();
 #endif
         // Instance documents: one tab per repository, created on demand / restored by id.
+        // The layout (panel widths, tree / flat, unified / side-by-side) is shared by all of them.
+        services.AddSingleton(sp => new RepositoryTabLayout(sp.GetRequiredService<ISettingsStore>()));
         services.AddSingleton<IDocumentFactory, RepositoryDocumentFactory>();
         services.AddSingleton<IDocumentFactory, DiffDocumentFactory>();
         services.AddSingleton<IDocumentFactory, BlameDocumentFactory>();
