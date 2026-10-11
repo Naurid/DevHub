@@ -382,6 +382,7 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 | App crashes at startup: `ArgumentException: An item with the same key has already been added. Key: Size.X` | two tokens with the same key (the build doesn't check) | search `Sizes.axaml` for the key before adding one |
 | A `*` column in a list row is empty | the fixed columns are wider than the row; or the ListBox scrolls horizontally, so rows get infinite width | `ScrollViewer.HorizontalScrollBarVisibility="Disabled"` on the list; `MinWidth` on the `*` column (`StaticResource`: a `ColumnDefinition` can't use `DynamicResource`) |
 | Screen readers say "Avalonia.Controls.Grid" | no accessible name; falls back to content type / `ToString()` | `ToString()` / `AutomationProperties.Name` (rule 7) |
+| App starts (process alive, plugin report printed) but no window ever appears | a document took a service that needs the `DocumentManager` (e.g. Git's `IProjectOpener`, or Projects' `IProjectFolders`, which takes the opener); the manager is built from the documents, so DI resolution never finishes | a document takes such services as a `Func<T?>` factory and calls it when needed (New Project does); `tools/plugin-matrix.ps1` reports "NO WINDOW" |
 | Settings written by one feature lost after another saves | saving a stale `AppSettings` copy | `store.Update` (rule 8) |
 | `Watermark` obsolete warning | renamed in 12 | `PlaceholderText` |
 | `Bitmap.Save(stream)` obsolete | new overload | `Save(stream, PngBitmapEncoderOptions.Default)` |

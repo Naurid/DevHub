@@ -130,13 +130,14 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Post-create commands; the "commands that will run" list for the confirmation; tests in temp folders
 
 ## M4 — Browse + generate UI
-- [ ] **NEXT —** Template browser: group by language or category, filter by both + library, search; project / item
-- [ ] Variable form from the manifest (string / bool / choice, validation messages); target folder picker
-- [ ] Confirmation (every command, rendered) → progress → editable preview tree (drag / rename / delete /
+- [x] Template browser: group by language or category, filter by both + library, search; project / item
+- [x] Variable form from the manifest (string / bool / choice, validation messages); target folder picker; Raw
+- [x] Confirmation (every command, rendered) → progress → editable preview tree (rename / move to / delete /
       new folder, Save to template) → place → post-create with live output
+- [x] First built-ins to try it with: Console App (.NET, `dotnet new` + steps + post-create), Empty Project (folders only)
 
 ## M5 — Template editor UI
-- [ ] Create / edit / delete: metadata, language, categories, variables, base command, steps, post-create
+- [ ] **NEXT —** Create / edit / delete: metadata, language, categories, variables, base command, steps, post-create
 - [ ] Content tree of `content/` (add / rename / delete files and folders) + simple text editor
 - [ ] Duplicate (built-ins into a writable library); "Open in Explorer / VS Code"
 
@@ -160,6 +161,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 ## M9 — Polish
 - [ ] Settings → Templates (author name, personal library location, extra libraries, default target folder)
 - [ ] Recent generations list
+- [ ] Preview: drag and drop to move files (Move to… covers it until then), undo of an edit
 - [ ] Zip export/import of a template
 - [ ] App icon, publish profile (`dotnet publish` self-contained win-x64)
 

@@ -38,6 +38,10 @@ function Start-Case([string]$name, $enabled) {
     if ($p.HasExited) {
         Write-Host ("{0,-32} EXITED ({1})" -f $name, $p.ExitCode)
         Get-Content $err -TotalCount 12 | ForEach-Object { Write-Host "    $_" }
+    } elseif ((Get-Process -Id $p.Id).MainWindowHandle -eq 0) {
+        # Alive but no window: startup is stuck (e.g. a DI cycle through the DocumentManager).
+        Write-Host ("{0,-32} NO WINDOW (startup hangs)  {1}" -f $name, ($report -replace "^found [^;]*; ", ""))
+        Stop-Process $p -Confirm:$false
     } else {
         Write-Host ("{0,-32} ok   {1}" -f $name, ($report -replace "^found [^;]*; ", ""))
         Stop-Process $p -Confirm:$false

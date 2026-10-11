@@ -10,8 +10,8 @@ JetBrains-style UI (Rider "New UI" look, Dark and Light themes). It has:
   pull / push, merge / rebase / conflicts, stashes, tags, blame and submodules.
 - **GitHub**: sign in through Git Credential Manager, publish to GitHub, and clone your
   repositories.
-- **Templates** (planned): project and file templates with variables, generated into a
-  folder, with optional post-create commands.
+- **Templates**: New Project from templates (built-in or your own): a base command (`dotnet new`,
+  `cargo new`…), your files on top, rearranged your way in an editable preview, then post-create commands.
 
 DevHub is built so that **every feature is a plugin** on a bare shell. Each
 developer turns on only what they need, e.g. just Projects + Git for a Git client. The
@@ -40,8 +40,8 @@ plugins/                     each plugin: X (its UI + plugin class) and X.Core (
   DevHub.Git.Core/           running git, parsing its output, diff / graph layout
   DevHub.GitHub/             GitHub account, Publish to GitHub (requires Git)
   DevHub.GitHub.Core/        Git Credential Manager + GitHub API
-  DevHub.Templates/          template screens (placeholders until M4)
-  DevHub.Templates.Core/     the template engine: model, validation, libraries (more each milestone)
+  DevHub.Templates/          New Project (template browser + generation), editor and import to come
+  DevHub.Templates.Core/     the template engine: model, libraries, renderer, generation, built-in templates
 
 tests/
   DevHub.TestKit/            shared helpers: TempGitRepo (real git in a temp folder), [GitFact]

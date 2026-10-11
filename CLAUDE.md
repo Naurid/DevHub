@@ -48,7 +48,7 @@ plugins/                  each plugin = X (UI: views, ViewModels, actions, its p
   DevHub.Projects/ + .Core   Projects tool window, Open With (ProjectsSettings)
   DevHub.Git/ + .Core        Git client UI, IRemoteHost, Themes/GitTokens.axaml (GitSettings)
   DevHub.GitHub/ + .Core     GitHub account, Publish, GitHubRemoteHost (requires Git)
-  DevHub.Templates/ + .Core  template screens (placeholders until M4); the engine (M1: model, validation, libraries)
+  DevHub.Templates/ + .Core  New Project (browser + generation flow); the engine (model, renderer, generation, BuiltInTemplates/)
 tests/
   DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
   DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
