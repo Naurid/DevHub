@@ -181,8 +181,130 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
       checks, plugin API version, plugins loaded from `%AppData%\DevHub\plugins`
 - [x] R5 Plugins repo starter (`tools/plugin-repo/`): HelloWorld sample, per-plugin versions (`<id>/vN`),
       publish workflow (release per plugin version + `index.json`)
-- [ ] **NEXT —** You: the one-time GitHub settings, first `v1` tag, Naurid/DevHub-Plugins created from the starter
+- [x] You: the one-time GitHub settings, first `v1` tag, Naurid/DevHub-Plugins created (from the
+      starter for now; PM below moves every plugin into it)
 - [ ] Code signing (Azure Trusted Signing or a certificate) once SmartScreen warnings matter
+
+## PM — Every plugin in DevHub-Plugins; the Sdk on NuGet (before B, D, CI)
+Decided 2026-10-12: DevHub keeps only the shell and the Sdk; **every plugin** (Projects, Git, GitHub,
+Templates, and the new Board, Diagrams, CI) is developed, versioned and released in
+**Naurid/DevHub-Plugins**. The first four are **bundled** in DevHub's installer (offline first run, presets
+as today) and then **update through the marketplace**. The Sdk goes to **nuget.org**. The plugins move
+**with their git history**. Each step leaves both repos building, tested and releasable.
+- [ ] **NEXT —** PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
+      `PluginApi.Version`), pushed to nuget.org by `release.yml` (you: a `NUGET_API_KEY` secret); the
+      plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
+      (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
+- [ ] PM2. Dependencies between marketplace plugins: installing one installs what it `requires` (listed
+      first); removing one others need asks first; loading in `requires` order; a package leaves out the
+      DLLs of the plugins it requires (one copy loads); an updated bundled plugin in `%AppData%\DevHub\plugins`
+      wins over the bundled copy
+- [ ] PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
+      output folders), a `launchSettings.json` in the plugins repo (F5 in Rider debugs a plugin inside
+      DevHub), `tools/plugin-matrix.ps1` moves along and uses those folders
+- [ ] PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the
+      template-engine skill, `GIT_CLIENT_PLAN.md`, `TEMPLATE_FORMAT.md` → merged into DevHub-Plugins next to
+      HelloWorld; Sdk project references → the NuGet package; their CI there runs the moved tests (Windows:
+      real git / dotnet / cargo / go); per-plugin versions from then on (`<id>/vN`, first release tagged `v1`)
+- [ ] PM5. DevHub without plugins: `plugins/`, the plugin tests and the `Aliases="plugins"` references
+      removed; `release.yml` bundles the latest Projects / Git / GitHub / Templates packages from the index
+      (SHA-256 checked); first-run presets still offline; shell integration tests use a small test plugin
+- [ ] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
+      commit/branch decorations (CI marks), branch/commit events, a GitHub API client lent by the GitHub
+      plugin (`IGitHubApi`, no token handed out); UI blocks: a drag-and-drop board/list panel (from
+      `TreeDragDrop`), a Markdown viewer, simple charts (line, bar, pie), a people picker. Plugins in the
+      same repo may reference each other's `.Core` for a declared hard dependency (Board.Git → Git)
+- [ ] PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
+      its own `CLAUDE.md` (the rules that moved with the plugins); this roadmap names each milestone's repo
+
+## B — Board: Jira-style agile planning, stored in the repository (DevHub-Plugins)
+Decided 2026-10-12: the data lives **in the repository** (plain files, versioned and shared through git,
+no server). Fully modular: `DevHub.Board` (+ `.Core`: issues, workflows, boards, backlog, search) and
+optional plugins that require it: `DevHub.Board.Scrum`, `DevHub.Board.Reports`, `DevHub.Board.Timeline`,
+`DevHub.Board.Git`. Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
+- [ ] B0. Plan + decisions: where the files live (a dedicated `devhub/board` branch written with git
+      plumbing, so the board is the same on every checked-out branch — recommended — or `.devhub/board/` in
+      the working tree); one JSON file per issue with a stable id + `board.json` (project key, issue types,
+      workflows, fields, boards); keys like `DEV-12` (collisions across branches detected and renumbered);
+      merge rules; people (git authors + `team.json`)
+- [ ] B1. Core model (tested): issue types (epic, story, task, bug, sub-task) + custom types; fields
+      (summary, Markdown description, status, priority, assignee, reporter, labels, components, fix
+      versions, story points, original / remaining estimate, due date, custom fields); links (blocks,
+      relates to, duplicates, clones), parent / epic; comments, attachments, history (who changed what)
+- [ ] B2. Workflows (tested): statuses in To Do / In Progress / Done categories, allowed transitions,
+      resolutions, a workflow editor. Nothing is fixed: the defaults are a starting preset, every status
+      can be renamed, reordered or deleted
+- [ ] B3. Kanban board with **fully configurable columns**: add, rename, reorder (drag), merge, delete
+      columns right on the board (a new column creates its status; deleting one asks where its issues go;
+      you can remove every default column and start empty); a column can hold several statuses, statuses on
+      no column are listed as "not on the board"; several boards per project (own columns, filter, card
+      layout; presets Kanban / Scrum / Bug triage / empty); swimlanes (none, assignee, epic, priority, a
+      query); WIP limits, quick filters; drag cards between columns (allowed transitions only) and to rank
+- [ ] B4. Issue view (tab + side panel): every field editable, comments, links, sub-tasks, history,
+      attachments; Create Issue (C)
+- [ ] B5. Backlog: ranked list, epics and versions panels, bulk edit, story-point totals
+- [ ] B6. Search: a JQL-like query language (parser + evaluator in Core, tested), saved filters, results as
+      a list or a board
+- [ ] B7. `Board.Scrum`: sprints (create, start with goal and dates, complete with leftovers moved), sprint
+      board, capacity, points per sprint
+- [ ] B8. `Board.Git`: branch from an issue (`feature/DEV-12-short-summary`); issue keys in branches and
+      commits linked both ways (Development panel: branches, commits, pull requests via `IRemoteHost`); smart
+      commits (`DEV-12 #done #comment …`) shown before they apply, never silent; the commit box suggests the
+      current branch's key
+- [ ] B9. `Board.Reports`: burndown / burnup, velocity, cumulative flow, control chart, sprint report, epic
+      progress; dashboards with gadgets (filter results, pie by field, assigned to me)
+- [ ] B10. `Board.Timeline`: roadmap (Gantt) of epics with dates and dependencies; releases (fix versions with
+      dates, release notes from their issues)
+- [ ] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
+- [ ] B12. Actions in Find Action + M10 command tools (create issue, move issue, my open issues)
+
+## D — Diagrams: UML use case, class and activity ("actions") editor (DevHub-Plugins)
+Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
+generation. You provide PDFs with examples and the precise rules before D1. Plugins: `DevHub.Diagrams`
+(+ `.Core`: model, canvas, file format, export) and one per diagram kind through an `IDiagramKind` extension
+point (`Diagrams.UseCase`, `Diagrams.Class`, `Diagrams.Activity`). Diagrams are JSON files in the project
+(`*.devhub-diagram.json`) opened as tabs. Code in DevHub-Plugins; plan in its `docs/DIAGRAMS_PLAN.md`.
+- [ ] D0. Read your PDFs → the elements and notation rules per kind (and confirm "actions" = activity
+      diagrams); canvas built on Avalonia ourselves or a library
+- [ ] D1. Core model (tested): nodes, edges, ports, containers, notes, properties per element kind; file
+      format with a schema version; validation rules from the PDFs
+- [ ] D2. Canvas editor: pan / zoom, grid + snapping, select / multi-select, move, resize, connect
+      (orthogonal or straight routing, edge labels), align / distribute, copy / paste, Undo / Redo, palette,
+      properties panel, minimap
+- [ ] D3. Use case diagrams: actors, use cases, system boundary, association, include / extend /
+      generalization
+- [ ] D4. Class diagrams: classes, interfaces, enums, abstract classes; attributes and operations with
+      visibility and types; association, aggregation, composition, inheritance, realization, dependency,
+      multiplicities
+- [ ] D5. Activity ("actions") diagrams: initial / final nodes, actions, decision / merge, fork / join,
+      swimlanes, object flows, guards
+- [ ] D6. Export: PNG and SVG (diagram or selection), PlantUML and Mermaid text
+- [ ] D7. Board link (when Board is on, through a hook): a use case or action linked to an issue, its status
+      on the shape; "Create story from use case"; the issue lists the diagrams that mention it
+- [ ] D8. Auto layout of a selection (layered, for class and activity diagrams); diagram templates through
+      the Templates plugin
+
+## CI — CI tracker for GitHub Actions (DevHub-Plugins)
+Decided 2026-10-12: **GitHub Actions** first; providers behind `ICiProvider` (GitLab, Azure DevOps later, as
+their own plugins). `DevHub.Ci` (+ `.Core`) needs GitHub on and calls the API through PM6's `IGitHubApi` (the
+account stays in Git Credential Manager). Code in DevHub-Plugins; plan in its `docs/CI_PLAN.md`.
+- [ ] CI0. Plan: API calls and the token scopes they need (`workflow`), polling with ETags and rate limits,
+      which actions are confirmed
+- [ ] CI1. Core (tested with recorded API responses): workflows, runs, jobs, steps, logs, artifacts,
+      annotations
+- [ ] CI2. CI tool window + a tab per repository: runs (workflow, branch, event, status, duration, who) with
+      filters, live while something runs; jobs → steps → logs (search, collapsible groups, errors
+      highlighted); annotations, artifact download, open in the browser
+- [ ] CI3. Re-run (all or failed jobs), cancel, run a workflow (`workflow_dispatch` inputs as a form); each
+      confirmed and logged
+- [ ] CI4. Status everywhere: the current branch's latest run in the status bar, marks next to commits and
+      branches in Git (through a hook), a notification when a watched run ends
+- [ ] CI5. Releases: which run built each release; **Redeploy** (re-run a version's release); **Release next
+      version**: shows the next version (computed in Core: DevHub's `vN` + commits scheme, or semver tags),
+      minor = dispatch the release workflow, major = create and push the `vN` tag, both confirmed; release
+      workflow and version scheme set per repository; DevHub's `release.yml` gets `workflow_dispatch` (minor /
+      major) so the button works for DevHub itself
+- [ ] CI6. Workflow files: list and open `.github/workflows/*.yml`, GitHub's validation errors shown
 
 ## X — Multiplatform (Linux, macOS)
 - [ ] Windows-only bits behind small services: `explorer.exe` (Show in Explorer), `cmd /c` shims and PATHEXT
