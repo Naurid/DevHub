@@ -1,0 +1,44 @@
+<!--
+  Settings → Plugins → Marketplace: what the marketplace sources offer and what's installed from them
+  (Install / Update / Remove, ready after a restart), and the sources themselves.
+-->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.Plugins"
+             xmlns:c="using:DevHub.Controls"
+             x:Class="DevHub.Views.Plugins.MarketplaceView"
+             x:DataType="vm:MarketplaceViewModel">
+    <StackPanel Spacing="{DynamicResource Spacing}">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+            <TextBlock Classes="header" Text="Marketplace" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
+        </Grid>
+        <TextBlock Classes="secondary" TextWrapping="Wrap"
+                   Text="More plugins, made for DevHub. Installing, updating and removing take effect after a restart." />
+        <ProgressBar IsIndeterminate="True" Height="2" MinHeight="2" IsVisible="{Binding IsLoading}" />
+        <TextBlock Text="{Binding Message}" TextWrapping="Wrap"
+                   IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+        <ItemsControl ItemsSource="{Binding Rows}" AutomationProperties.Name="Marketplace plugins">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:MarketplaceRowViewModel">
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}" Margin="{DynamicResource Padding.SettingsRow}">
+                        <StackPanel Spacing="{DynamicResource Spacing.Small}">
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Classes="small secondary" Text="{Binding Description}" TextWrapping="Wrap" />
+                            <TextBlock Classes="small" Text="{Binding StatusText}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="accent" Content="{Binding InstallText}" Command="{Binding InstallCommand}"
+                                IsVisible="{Binding CanInstallNow}" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="Remove" Command="{Binding RemoveCommand}"
+                                IsVisible="{Binding CanRemoveNow}" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <c:SettingsRow Label="Sources" Description="Marketplace indexes, one per line: https URLs, or a local index.json to try your own plugin. The first one wins for a plugin.">
+            <TextBox Classes="code" Text="{Binding Sources}" AcceptsReturn="True" TextWrapping="NoWrap" AutomationProperties.Name="Sources" />
+        </c:SettingsRow>
+    </StackPanel>
+</UserControl>

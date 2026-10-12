@@ -6,6 +6,7 @@ using DevHub.Actions;
 using DevHub.Actions.Providers;
 using DevHub.Controls;
 using DevHub.Plugins;
+using DevHub.Sdk.Core.Plugins.Marketplace;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels;
@@ -40,7 +41,8 @@ public partial class App : Application
 
             // Which plugins load is decided before the container exists: a switched-off plugin
             // registers nothing, so no menu item, tab, tool window or shortcut of it appears.
-            var plugins = PluginHost.Load(store);
+            var dataDir = Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } data ? data : null;
+            var plugins = PluginHost.Load(store, PluginInstaller.DefaultRoot(dataDir));
 #if DEBUG
             // One line for whoever starts the app from a console or script (stdout; a WinExe has no window for it).
             Console.WriteLine("DevHub plugins: found " + string.Join(", ", plugins.Available.Select(p => p.Info.Id))

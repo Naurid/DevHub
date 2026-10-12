@@ -19,5 +19,8 @@
 
         <!-- PluginChoiceViewModel → PluginChoiceView through the ViewLocator. -->
         <ContentControl Content="{Binding Choice}" />
+
+        <!-- MarketplaceViewModel → MarketplaceView. -->
+        <ContentControl Content="{Binding Marketplace}" />
     </StackPanel>
 </UserControl>

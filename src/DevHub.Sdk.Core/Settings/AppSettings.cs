@@ -34,6 +34,12 @@ public sealed class AppSettings
     public List<string>? EnabledPlugins { get; set; }
 
     /// <summary>
+    /// Marketplace indexes (https URLs or local index.json files), first one wins for a plugin id.
+    /// Null = DevHub's own plugin index only (<c>PluginApi.DefaultIndexUrl</c>).
+    /// </summary>
+    public List<string>? PluginSources { get; set; }
+
+    /// <summary>
     /// Plugin id → that plugin's settings, kept as raw JSON. Sections of plugins that are switched
     /// off (or unknown to this version) are kept as they are, so turning a plugin back on finds
     /// its settings again.
