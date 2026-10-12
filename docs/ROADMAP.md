@@ -195,15 +195,17 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       `PluginApi.Version`), pushed to nuget.org by `release.yml` (Trusted Publishing; you: the nuget.org policy + a `NUGET_USER` variable); the
       plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
       (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
-- [ ] PM2. Dependencies between marketplace plugins:
+- [x] PM2. Dependencies between marketplace plugins:
   - [x] PM2a. Installing one installs what it `requires` (listed first, all or nothing; a requirement
         nobody offers, for another plugin API or in a circle stops it); removing one others need asks
         first and removes them too (`InstallPlanner`, tested); loading in `requires` order (`PluginResolver`)
   - [x] PM2b. A package leaves out the DLLs of the plugins it requires (`Pack-Plugin.ps1`); marketplace
         folders load requirements first, so one copy loads, the required plugin's own; the Sdk's assembly
         version is the plugin API version (a plugin built against a newer Sdk loads in an older DevHub)
-  - [ ] **NEXT —** PM2c. An updated bundled plugin in `%AppData%\DevHub\plugins` wins over the bundled copy
-- [ ] PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
+  - [x] PM2c. Bundled plugins are plugin folders in `plugins\` next to the app; an updated copy in
+        `%AppData%\DevHub\plugins` wins while it's newer (`PluginFolders`, tested), only the chosen folder
+        loads; Marketplace page: Bundled / Update to / Back to / Remove Old Copy
+- [ ] **NEXT —** PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
       output folders), a `launchSettings.json` in the plugins repo (F5 in Rider debugs a plugin inside
       DevHub), `tools/plugin-matrix.ps1` moves along and uses those folders
 - [ ] PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the

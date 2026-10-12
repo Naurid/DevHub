@@ -17,12 +17,15 @@ namespace DevHub.Plugins;
 /// Discovery:
 /// <list type="bullet">
 /// <item>Built-in plugins: every <c>DevHub*.dll</c> next to the app.</item>
-/// <item>Marketplace plugins: one folder each under <see cref="MarketplaceRoot"/>
-///       (<c>%AppData%\DevHub\plugins\&lt;id&gt;</c>, with its <c>plugin.json</c>). Pending installs
-///       and removals are applied first (<see cref="PluginInstaller.ApplyPending"/>). Their DLLs load
-///       into the app's own load context; what they need beyond the app's assemblies (Sdk, Avalonia…)
-///       is found in their folder. A plugin made for another plugin API version, or with the id of a
-///       built-in plugin, isn't loaded.</item>
+/// <item>Plugin folders (<c>&lt;id&gt;\plugin.json</c> + DLLs): <b>bundled</b> ones in <c>plugins\</c> next to
+///       the app, and <b>marketplace</b> ones under <see cref="MarketplaceRoot"/>
+///       (<c>%AppData%\DevHub\plugins\&lt;id&gt;</c>). A plugin in both loads from the newer copy
+///       (<see cref="PluginFolders.Choose"/>): a marketplace update replaces the bundled version until
+///       DevHub bundles one at least as new. Pending installs and removals are applied first
+///       (<see cref="PluginInstaller.ApplyPending"/>). Their DLLs load into the app's own load context,
+///       requirements first; what they need beyond the app's assemblies (Sdk, Avalonia…) is found in the
+///       loaded folders. A plugin made for another plugin API version, or with the id of a built-in
+///       plugin, isn't loaded.</item>
 /// </list>
 /// Each assembly is searched for <see cref="DevHubPluginAttribute"/>.
 /// </remarks>
@@ -31,7 +34,7 @@ public sealed class PluginHost
     private static readonly List<string> MarketplaceFolders = [];
 
     private PluginHost(IReadOnlyList<IPlugin> available, PluginResolution resolution, IReadOnlyList<string> problems,
-        IReadOnlySet<string> marketplaceIds, string marketplaceRoot)
+        IReadOnlySet<string> marketplaceIds, IReadOnlyList<PluginPackageInfo> bundled, string marketplaceRoot)
     {
         Available = available;
         // By id: the resolver keeps the first plugin of an id, and so does First.
@@ -40,6 +43,7 @@ public sealed class PluginHost
         Problems = problems;
         MarketplaceIds = marketplaceIds;
         MarketplaceRoot = marketplaceRoot;
+        Bundled = bundled;
     }
 
     /// <summary>Every plugin found, in discovery order.</summary>
@@ -54,8 +58,14 @@ public sealed class PluginHost
     /// <summary>Plugins that couldn't even be loaded or created (a bug in the plugin, a wrong API version…).</summary>
     public IReadOnlyList<string> Problems { get; }
 
-    /// <summary>Ids of the plugins installed from the marketplace (the rest are built in).</summary>
+    /// <summary>Ids of the plugins loaded from the marketplace folder (the rest are built in or bundled).</summary>
     public IReadOnlySet<string> MarketplaceIds { get; }
+
+    /// <summary>
+    /// The bundled plugins (<see cref="PluginFolders.BundledRoot"/>), including those a newer installed copy
+    /// replaces: the Marketplace page compares versions with them.
+    /// </summary>
+    public IReadOnlyList<PluginPackageInfo> Bundled { get; }
 
     /// <summary>Where marketplace plugins are installed.</summary>
     public string MarketplaceRoot { get; }
@@ -68,9 +78,10 @@ public sealed class PluginHost
     {
         var problems = new List<string>(PluginInstaller.ApplyPending(marketplaceRoot));
         var marketplaceIds = new HashSet<string>(StringComparer.Ordinal);
-        var available = Discover(problems, marketplaceRoot, marketplaceIds);
+        var bundled = new List<PluginPackageInfo>();
+        var available = Discover(problems, marketplaceRoot, marketplaceIds, bundled);
         var resolution = PluginResolver.Resolve(available.Select(p => p.Info), store.Load().EnabledPlugins);
-        return new PluginHost(available, resolution, problems, marketplaceIds, marketplaceRoot);
+        return new PluginHost(available, resolution, problems, marketplaceIds, bundled, marketplaceRoot);
     }
 
     /// <summary>Lets every loaded plugin register its services, in dependency order.</summary>
@@ -96,7 +107,7 @@ public sealed class PluginHost
         };
     }
 
-    private static List<IPlugin> Discover(List<string> problems, string marketplaceRoot, HashSet<string> marketplaceIds)
+    private static List<IPlugin> Discover(List<string> problems, string marketplaceRoot, HashSet<string> marketplaceIds, List<PluginPackageInfo> bundled)
     {
         // Built in: the DevHub assemblies next to the app (plugins referenced by the app are copied there).
         foreach (var path in Directory.EnumerateFiles(AppContext.BaseDirectory, "DevHub*.dll"))
@@ -119,20 +130,27 @@ public sealed class PluginHost
         var plugins = Create(builtIn, problems);
         var builtInIds = plugins.Select(p => p.Info.Id).ToHashSet(StringComparer.Ordinal);
 
-        // From the marketplace: one folder per plugin.
-        foreach (var (folder, info) in MarketplacePlugins(marketplaceRoot, problems))
+        // Plugin folders: bundled with DevHub and installed from the marketplace; of a plugin in both, the newer
+        // copy (PluginFolders.Choose). Only the chosen folder's DLLs are loaded. Requirements first (else by
+        // folder name): a required plugin's own DLLs load before a plugin that needs it could bring a copy of
+        // them (LoadFolder skips a DLL whose name is already loaded).
+        var bundledFolders = Compatible(PluginFolders.Scan(PluginFolders.BundledRoot(AppContext.BaseDirectory), bundled: true), problems);
+        var folders = PluginFolders.Choose(bundledFolders, Compatible(PluginFolders.Scan(marketplaceRoot, bundled: false), problems));
+        bundled.AddRange(bundledFolders.Select(f => f.Info)); // also those an update replaces: the Marketplace page shows both versions
+        foreach (var folder in PluginResolver.RequirementsFirst(folders.Chosen, f => f.Info.Id, f => f.Info.Requires))
         {
-            if (builtInIds.Contains(info.Id))
+            if (builtInIds.Contains(folder.Info.Id))
             {
-                problems.Add($"{info.Name} (the built-in plugin {info.Id} is used instead)");
+                problems.Add($"{folder.Info.Name} (the built-in plugin {folder.Info.Id} is used instead)");
                 continue;
             }
-            foreach (var plugin in Create(LoadFolder(folder, problems), problems))
+            foreach (var plugin in Create(LoadFolder(folder.Folder, problems), problems))
             {
                 if (plugins.Any(p => p.Info.Id == plugin.Info.Id))
                     continue;
                 plugins.Add(plugin);
-                marketplaceIds.Add(plugin.Info.Id);
+                if (!folder.Bundled)
+                    marketplaceIds.Add(plugin.Info.Id);
             }
         }
 
@@ -140,30 +158,12 @@ public sealed class PluginHost
         return plugins.OrderBy(p => p.Info.Order).ThenBy(p => p.Info.Id, StringComparer.Ordinal).ToList();
     }
 
-    private sealed record InstalledFolder(string Folder, PluginPackageInfo Info);
-
-    private static IEnumerable<InstalledFolder> MarketplacePlugins(string root, List<string> problems)
+    /// <summary>The folders made for this DevHub's plugin API (an incompatible update never hides a working bundled copy).</summary>
+    private static List<PluginFolder> Compatible(IReadOnlyList<PluginFolder> folders, List<string> problems)
     {
-        if (!Directory.Exists(root))
-            yield break;
-        // Requirements first (else by folder name): a required plugin's own DLLs load before a plugin that
-        // needs it could bring a copy of them (LoadFolder skips a DLL whose name is already loaded).
-        var found = new List<InstalledFolder>();
-        foreach (var folder in Directory.EnumerateDirectories(root).Where(f => Path.GetFileName(f) != ".pending").Order(StringComparer.OrdinalIgnoreCase))
-        {
-            if (PluginInstaller.ReadInfo(folder) is { } info)
-                found.Add(new InstalledFolder(folder, info));
-        }
-        foreach (var plugin in PluginResolver.RequirementsFirst(found, f => f.Info.Id, f => f.Info.Requires))
-        {
-            var info = plugin.Info;
-            if (info.ApiVersion != PluginApi.Version)
-            {
-                problems.Add($"{info.Name} (made for plugin API {info.ApiVersion}; this DevHub has {PluginApi.Version})");
-                continue;
-            }
-            yield return plugin;
-        }
+        foreach (var folder in folders.Where(f => f.Info.ApiVersion != PluginApi.Version))
+            problems.Add($"{folder.Info.Name} (made for plugin API {folder.Info.ApiVersion}; this DevHub has {PluginApi.Version})");
+        return folders.Where(f => f.Info.ApiVersion == PluginApi.Version).ToList();
     }
 
     /// <summary>Loads a marketplace plugin's DLLs (those the app doesn't already have) into the app's context.</summary>

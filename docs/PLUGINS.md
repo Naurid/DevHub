@@ -270,7 +270,16 @@ Marketplace.
 - **Compatibility:** `PluginApi.Version` (Sdk.Core) is the plugin API version. A plugin whose
   `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
   (a removed or changed member they use), and say so in the release notes.
-- **Built-ins win:** a marketplace plugin with a built-in plugin's id isn't loaded.
+- **Bundled plugins and their updates:** a plugin folder in `plugins\` next to DevHub's executable is
+  *bundled* (installed and updated with DevHub; PM5 puts Projects, Git, GitHub and Templates there).
+  When the marketplace folder has the same plugin, the newer version loads and only that folder's DLLs
+  are touched (`PluginFolders.Choose`, Sdk.Core, tested): a marketplace update replaces the bundled
+  copy until a DevHub update bundles a version at least as new. An update made for another plugin API
+  is ignored, so it never hides a working bundled copy. The Marketplace page shows "Bundled 1.2.0",
+  **Update to 1.3.0**, then **Back to 1.2.0** (removes the update) or **Remove Old Copy** (an
+  installed copy older than the bundled one).
+- **Built-ins win:** a plugin folder with the id of a built-in plugin (its DLL next to the app, as
+  in development builds) isn't loaded.
 - **Versions:** each marketplace plugin has its own (major tags `<id>/vN`, +1 minor per change to
   its folder on main); built-in plugins share DevHub's version.
 
