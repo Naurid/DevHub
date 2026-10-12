@@ -23,4 +23,9 @@ public interface IDialogService
     /// <param name="filterName">Display name of the file-type filter (e.g. "Programs").</param>
     /// <param name="patterns">Glob patterns for the filter (e.g. "*.exe").</param>
     Task<string?> PickFileAsync(string title, string filterName, IReadOnlyList<string> patterns);
+
+    /// <summary>Opens a "save as" picker and returns the chosen path, or null if cancelled.</summary>
+    /// <param name="suggestedName">The file name it starts with ("game.zip").</param>
+    /// <param name="extension">The default extension, without the dot ("zip").</param>
+    Task<string?> PickSaveFileAsync(string title, string suggestedName, string filterName, string extension);
 }

@@ -8,3 +8,5 @@ riderModule.iml
 .idea/
 .vs/
 *.user
+# dotnet publish output (src/DevHub.App/Properties/PublishProfiles)
+artifacts/

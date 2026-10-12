@@ -163,11 +163,12 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Each checked against the real tool when installed (npm ones with DEVHUB_NETWORK_TESTS=1; Unity by its command)
 
 ## M9 — Polish
-- [ ] Settings → Templates (author name, personal library location, extra libraries, default target folder)
-- [ ] Recent generations list
-- [ ] Preview: drag and drop to move files (Move to… covers it until then), undo of an edit
-- [ ] Zip export/import of a template
-- [ ] App icon, publish profile (`dotnet publish` self-contained win-x64)
+- [x] Settings → Templates (author name, personal library location, extra libraries, default project folder,
+      project folder rules per language and/or category)
+- [x] Recent projects on New Project's start page (Open / Show)
+- [ ] **NEXT —** Preview: drag and drop to move files (Move to… covers it until then), undo of an edit
+- [x] Zip export/import of a template (Templates tab; zip-slip refused, free id when taken)
+- [x] App icon, publish profile (`dotnet publish src/DevHub.App -p:PublishProfile=win-x64` → artifacts/publish/win-x64)
 
 ## M10 — Natural-language commands (local AI, learning project)
 Goal: type "new unity project called Timber with git" → a structured tool call →

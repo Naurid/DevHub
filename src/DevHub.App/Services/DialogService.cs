@@ -78,4 +78,20 @@ public class DialogService : IDialogService
 
         return files.Count > 0 ? files[0].Path.LocalPath : null;
     }
+
+    public async Task<string?> PickSaveFileAsync(string title, string suggestedName, string filterName, string extension)
+    {
+        if (Owner is not { } owner)
+            return null;
+
+        var file = await owner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = title,
+            SuggestedFileName = suggestedName,
+            DefaultExtension = extension,
+            FileTypeChoices = new[] { new FilePickerFileType(filterName) { Patterns = ["*." + extension] } },
+        });
+
+        return file?.Path.LocalPath;
+    }
 }
