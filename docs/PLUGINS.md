@@ -249,7 +249,7 @@ Marketplace.
   (nuget.org, DevHub's version; `build/SdkPackage.props`), referenced build-only
   (`ExcludeAssets="runtime"`). For a project with a `plugin.json`, the package's build check fails
   when `apiVersion` differs from the Sdk's `PluginApi.Version`. Unreleased Sdk changes: `pwsh
-  build/Pack-Sdk.ps1` → `../local-feed` (docs/RELEASING.md).
+  build/Pack-Sdk.ps1` → `%LocalAppData%\DevHub-local-feed` (docs/RELEASING.md).
 - **Package:** a zip with `plugin.json` (id, name, version, description, category, `apiVersion`,
   requires) and the plugin's own DLLs, never the Sdk or Avalonia (DevHub has those).
 - **Index:** `index.json`, an array of entries (id, name, version, apiVersion, url, sha256, size…).

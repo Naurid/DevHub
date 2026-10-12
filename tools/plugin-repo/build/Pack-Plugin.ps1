@@ -28,7 +28,7 @@ if ($LASTEXITCODE -ne 0) { throw "Build failed: $Folder" }
 # and loads its DLLs first, so they're left out of this package (one copy, the required plugin's own).
 $root = Split-Path $PSScriptRoot
 $folders = @{} # plugin id → folder (a PowerShell hashtable ignores case, like plugin ids)
-foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 1) {
+foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 2 | Where-Object { $_.FullName -notmatch "[\\/](bin|obj)[\\/]" }) {
     $folders[(Get-Content $manifest.FullName -Raw | ConvertFrom-Json).id] = $manifest.Directory.FullName
 }
 $leftOut = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
@@ -52,14 +52,26 @@ while ($queue.Count -gt 0) {
 $info | Add-Member -NotePropertyName version -NotePropertyValue $Version -Force
 $info | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $build "plugin.json") -Encoding utf8
 
-# Only what the plugin brings: its DLLs (DevHub's own assemblies are never copied, see Directory.Build.props;
-# the required plugins' DLLs are left out, see above).
+# Only what the plugin brings: its DLLs and the files it copies to its output, subfolders included (e.g.
+# Templates' BuiltInTemplates\). DevHub's own assemblies are never copied (see Directory.Build.props); the
+# required plugins' DLLs are left out (see above); symbols and .deps.json aren't needed.
 $zip = Join-Path $Out "$($info.id)-$Version.zip"
 Remove-Item $zip -ErrorAction SilentlyContinue
-$files = @(Get-ChildItem $build -File | Where-Object { $_.Extension -in ".dll", ".json" -and $_.Name -notlike "*.deps.json" -and -not $leftOut.Contains($_.Name) })
-$skipped = @(Get-ChildItem $build -Filter *.dll | Where-Object { $leftOut.Contains($_.Name) } | ForEach-Object Name)
+$buildRoot = (Resolve-Path $build).Path
+$files = @(Get-ChildItem $buildRoot -File -Recurse | Where-Object {
+    $_.Extension -ne ".pdb" -and $_.Name -notlike "*.deps.json" -and -not ($_.DirectoryName -eq $buildRoot -and $leftOut.Contains($_.Name)) })
+$skipped = @(Get-ChildItem $buildRoot -Filter *.dll | Where-Object { $leftOut.Contains($_.Name) } | ForEach-Object Name)
 if ($skipped.Count -gt 0) { Write-Host "Left out of $($info.id) (its required plugins bring them): $($skipped -join ', ')" }
-Compress-Archive -Path $files.FullName -DestinationPath $zip
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$archive = [IO.Compression.ZipFile]::Open((Join-Path (Resolve-Path $Out).Path (Split-Path $zip -Leaf)), [IO.Compression.ZipArchiveMode]::Create)
+try {
+    foreach ($file in $files) {
+        $entry = [IO.Path]::GetRelativePath($buildRoot, $file.FullName).Replace('\', '/')
+        [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $file.FullName, $entry)
+    }
+} finally {
+    $archive.Dispose()
+}
 
 [ordered]@{
     id          = $info.id

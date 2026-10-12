@@ -56,7 +56,7 @@ tests/
 .github/                  CI (build, tests, security checks), CodeQL, Dependabot, release (Velopack → GitHub Releases)
 build/Get-Version.ps1     the version from git (vN major tags, +1 minor per push on main)
 build/Pack-Sdk.ps1        DevHub.Sdk + DevHub.Sdk.Core NuGet packages (settings: build/SdkPackage.props);
-                          release.yml pushes them to nuget.org, without -Version → ../local-feed
+                          release.yml pushes them to nuget.org, without -Version → %LocalAppData%\DevHub-local-feed
 tools/
   plugin-matrix.ps1       starts DevHub with each plugin combination
   plugin-repo/            starter for Naurid/DevHub-Plugins (marketplace plugins; its own CI + publish)

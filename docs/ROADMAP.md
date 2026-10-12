@@ -194,7 +194,7 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
 - [x] PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
       `PluginApi.Version`), pushed to nuget.org by `release.yml` (Trusted Publishing; you: the nuget.org policy + a `NUGET_USER` variable); the
       plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
-      (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
+      (`build/Pack-Sdk.ps1` → `%LocalAppData%\DevHub-local-feed`) to try Sdk changes before releasing them
 - [x] PM2. Dependencies between marketplace plugins:
   - [x] PM2a. Installing one installs what it `requires` (listed first, all or nothing; a requirement
         nobody offers, for another plugin API or in a circle stops it); removing one others need asks
@@ -209,11 +209,15 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       output folders; they win and are switched on for the run), a generated `launchSettings.json` in the
       plugins repo (F5 in Rider debugs a plugin inside DevHub, own data folder), `build/Test-Plugins.ps1`
       there (the plugin matrix against those folders; DevHub's `tools/plugin-matrix.ps1` changes in PM5)
-- [ ] **NEXT —** PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the
+- [x] PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the
       template-engine skill, `GIT_CLIENT_PLAN.md`, `TEMPLATE_FORMAT.md` → merged into DevHub-Plugins next to
-      HelloWorld; Sdk project references → the NuGet package; their CI there runs the moved tests (Windows:
-      real git / dotnet / cargo / go); per-plugin versions from then on (`<id>/vN`, first release tagged `v1`)
-- [ ] PM5. DevHub without plugins: `plugins/`, the plugin tests and the `Aliases="plugins"` references
+      HelloWorld, grouped (`plugins/Git/DevHub.Git` + `DevHub.Git.Core`, tests in `tests/`, `DevHub-Plugins.sln`);
+      Sdk project references → the NuGet packages (`Directory.Build.props`: plugin / .Core / test kinds); their
+      CI there runs the moved tests (Windows: real git / dotnet / cargo / go); per-plugin versions (`<id>/vN`,
+      counted over `plugins/<Name>/`); `"publish": false` until PM5 (first release tagged `v1` then); Templates
+      finds BuiltInTemplates next to its own DLL and its package carries them; the local Sdk feed is
+      `%LocalAppData%\DevHub-local-feed`. DevHub still has its copies until PM5.
+- [ ] **NEXT —** PM5. DevHub without plugins: `plugins/`, the plugin tests and the `Aliases="plugins"` references
       removed; `release.yml` bundles the latest Projects / Git / GitHub / Templates packages from the index
       (SHA-256 checked); first-run presets still offline; shell integration tests use a small test plugin
 - [ ] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,

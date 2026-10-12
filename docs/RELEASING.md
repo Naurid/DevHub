@@ -130,7 +130,7 @@ From then on, every release pushes both packages. Until `NUGET_USER` exists, the
 them but skips the push. A version on nuget.org can't be deleted or replaced, only unlisted.
 
 **Try Sdk changes before releasing them:** `pwsh build/Pack-Sdk.ps1` packs the Sdk as
-`<version>-local.<timestamp>` into `../local-feed` (next to this repository). The plugins repo reads
+`<version>-local.<timestamp>` into `%LocalAppData%\DevHub-local-feed` (one per user). The plugins repo reads
 that folder when it exists: build a plugin with `-p:DevHubSdkVersion=<the printed version>`
 (DevHub-Plugins' README).
 

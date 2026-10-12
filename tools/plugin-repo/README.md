@@ -68,10 +68,9 @@ the other plugin with yours and loads its DLLs first, so there's one copy, its o
 
 ## Unreleased Sdk changes (local feed)
 
-To build against Sdk changes that aren't released yet, clone this repository next to DevHub (both in
-the same folder) and, in DevHub, run `pwsh build/Pack-Sdk.ps1`. It packs the Sdk with a version like
-`1.7.0-local.20261012143005` into `local-feed/` beside the two repositories, which this repository's
-build reads whenever that folder exists. Then:
+To build against Sdk changes that aren't released yet, run `pwsh build/Pack-Sdk.ps1` in DevHub. It packs
+the Sdk with a version like `1.7.0-local.20261012143005` into `%LocalAppData%\DevHub-local-feed`, which
+this repository's build reads whenever that folder exists (wherever the two clones are). Then:
 
 ```
 dotnet build plugins/<YourPlugin> -p:DevHubSdkVersion=1.7.0-local.20261012143005

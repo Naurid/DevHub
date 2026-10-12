@@ -22,16 +22,28 @@ if (-not (Test-Path $Exe)) { throw "DevHub not found at $Exe (install it, or pas
 
 # Build every plugin; its build folder (with plugin.json, see Directory.Build.targets) is what DevHub loads.
 $plugins = @()
-foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 1) {
+foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 2 | Where-Object { $_.FullName -notmatch "[\\/](bin|obj)[\\/]" }) {
     $args = @("build", $manifest.Directory.FullName, "-c", "Debug", "--nologo", "-v", "q", "-p:DevHubLaunchSettings=false")
     if ($SdkVersion) { $args += "-p:DevHubSdkVersion=$SdkVersion" }
     dotnet @args | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "Build failed: $($manifest.Directory.Name)" }
     $info = Get-Content $manifest.FullName -Raw | ConvertFrom-Json
     $output = Join-Path $manifest.Directory.FullName "bin\Debug\net10.0"
-    $plugins += [pscustomobject]@{ Id = $info.id; Folder = $output }
+    $plugins += [pscustomobject]@{ Id = $info.id; Folder = $output; Requires = @($info.requires | Where-Object { $_ }) }
 }
 if ($plugins.Count -eq 0) { throw "No plugins in $(Join-Path $root 'plugins')." }
+
+# A plugin "alone": its folder plus those of the plugins it requires that live in this repository.
+function Get-Folders($plugin) {
+    $ids = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $queue = [Collections.Generic.Queue[object]]::new(); $queue.Enqueue($plugin)
+    while ($queue.Count -gt 0) {
+        $next = $queue.Dequeue()
+        if (-not $ids.Add($next.Id)) { continue }
+        foreach ($id in $next.Requires) { $plugins | Where-Object Id -eq $id | ForEach-Object { $queue.Enqueue($_) } }
+    }
+    @($plugins | Where-Object { $ids.Contains($_.Id) } | ForEach-Object Folder)
+}
 
 $scratch = Join-Path $env:TEMP "devhub-plugin-tests"
 $failed = 0
@@ -62,7 +74,7 @@ function Start-Case([string]$name, [string[]]$folders, $enabled) {
     if ($hung) {
         Write-Host ("{0,-36} NO WINDOW (startup hangs)  {1}" -f $name, $report) -ForegroundColor Red
         $script:failed++
-    } elseif ("$report" -match "problems:") {
+    } elseif ("$report" -match "problems:|skipped ") {
         Write-Host ("{0,-36} PROBLEMS  {1}" -f $name, $report) -ForegroundColor Yellow
         $script:failed++
     } else {
@@ -72,7 +84,7 @@ function Start-Case([string]$name, [string[]]$folders, $enabled) {
 
 try {
     Start-Case "all mine" $plugins.Folder @()
-    foreach ($plugin in $plugins) { Start-Case "$($plugin.Id) alone" @($plugin.Folder) @() }
+    foreach ($plugin in $plugins) { Start-Case "$($plugin.Id) alone" (Get-Folders $plugin) @() }
     Start-Case "all mine + every DevHub plugin" $plugins.Folder $null
 } finally {
     Remove-Item Env:DEVHUB_DATA_DIR, Env:DEVHUB_PLUGIN_PATHS -ErrorAction SilentlyContinue
