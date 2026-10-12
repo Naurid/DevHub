@@ -260,6 +260,13 @@ Marketplace.
   what this install had unpacked. Removing a plugin that installed plugins need asks first and removes
   them with it. The logic is `InstallPlanner` (Sdk.Core, tested); load order still comes from
   `PluginResolver`.
+- **One copy of each DLL:** a package leaves out the DLLs of the plugins it requires (the plugins
+  repo's `Pack-Plugin.ps1`), and `PluginHost` loads marketplace folders requirements first
+  (`PluginResolver.RequirementsFirst`), skipping a DLL whose name is already loaded: a required
+  plugin's own DLLs always win over a copy another package brings.
+- **Sdk assembly version = plugin API version** (`N.0.0.0`, `build/SdkPackage.props`); the package and
+  file versions are DevHub's. A plugin built against a newer Sdk with the same plugin API loads in an
+  older DevHub (and in a `0.0.0` development build), as long as it only uses members that DevHub has.
 - **Compatibility:** `PluginApi.Version` (Sdk.Core) is the plugin API version. A plugin whose
   `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
   (a removed or changed member they use), and say so in the release notes.

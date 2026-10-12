@@ -18,6 +18,11 @@
              in one place only: it goes into the tags and, for Sdk.Core, into its buildTransitive props. -->
         <DevHubPluginApiVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../src/DevHub.Sdk.Core/Plugins/Marketplace/Marketplace.cs')), '(?&lt;=const int Version = )\d+'))</DevHubPluginApiVersion>
         <PackageTags>devhub;devhub-plugin;plugin-sdk;devhub-plugin-api-$(DevHubPluginApiVersion)</PackageTags>
+        <!-- The assembly version is the plugin API version (N.0.0.0), not DevHub's: .NET only loads a plugin when
+             the Sdk it was built against has the same or an older assembly version than the one DevHub has, so
+             with DevHub's version a plugin built against Sdk 1.6 wouldn't load in DevHub 1.5 (nor in a 0.0.0
+             development build). The package and file versions stay DevHub's. -->
+        <AssemblyVersion>$(DevHubPluginApiVersion).0.0.0</AssemblyVersion>
 
         <!-- IntelliSense for plugin authors: the XML comments ship in the package (not every public member
              has one, and only the non-obvious parameters get a param tag: no warnings for those).

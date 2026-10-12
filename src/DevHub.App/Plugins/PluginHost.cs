@@ -140,20 +140,29 @@ public sealed class PluginHost
         return plugins.OrderBy(p => p.Info.Order).ThenBy(p => p.Info.Id, StringComparer.Ordinal).ToList();
     }
 
-    private static IEnumerable<(string Folder, PluginPackageInfo Info)> MarketplacePlugins(string root, List<string> problems)
+    private sealed record InstalledFolder(string Folder, PluginPackageInfo Info);
+
+    private static IEnumerable<InstalledFolder> MarketplacePlugins(string root, List<string> problems)
     {
         if (!Directory.Exists(root))
             yield break;
+        // Requirements first (else by folder name): a required plugin's own DLLs load before a plugin that
+        // needs it could bring a copy of them (LoadFolder skips a DLL whose name is already loaded).
+        var found = new List<InstalledFolder>();
         foreach (var folder in Directory.EnumerateDirectories(root).Where(f => Path.GetFileName(f) != ".pending").Order(StringComparer.OrdinalIgnoreCase))
         {
-            if (PluginInstaller.ReadInfo(folder) is not { } info)
-                continue;
+            if (PluginInstaller.ReadInfo(folder) is { } info)
+                found.Add(new InstalledFolder(folder, info));
+        }
+        foreach (var plugin in PluginResolver.RequirementsFirst(found, f => f.Info.Id, f => f.Info.Requires))
+        {
+            var info = plugin.Info;
             if (info.ApiVersion != PluginApi.Version)
             {
                 problems.Add($"{info.Name} (made for plugin API {info.ApiVersion}; this DevHub has {PluginApi.Version})");
                 continue;
             }
-            yield return (folder, info);
+            yield return plugin;
         }
     }
 

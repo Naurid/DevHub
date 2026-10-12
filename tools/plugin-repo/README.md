@@ -37,6 +37,13 @@ in `Directory.Build.props` equal to DevHub's (DevHub provides them at run time).
 plugin.json must match DevHub's plugin API version (`PluginApi.Version`); DevHub refuses plugins
 made for another one, and the build checks it against the Sdk package.
 
+## A plugin that needs another one
+
+List the other plugin's id in `requires` (plugin.json and the plugin class's `PluginInfo`). To use its
+types, reference its project (`<ProjectReference Include="..\OtherPlugin\OtherPlugin.csproj" />`).
+`Pack-Plugin.ps1` leaves the other plugin's DLLs out of your package (it prints which): DevHub installs
+the other plugin with yours and loads its DLLs first, so there's one copy, its own.
+
 ## Unreleased Sdk changes (local feed)
 
 To build against Sdk changes that aren't released yet, clone this repository next to DevHub (both in
