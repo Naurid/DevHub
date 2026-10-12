@@ -59,3 +59,42 @@ Every workflow can only read the repository unless a job asks for more.
 What strangers can do on a public repository: read it, fork it into their own account, and open
 pull requests. Nothing reaches `main` unless you merge it, and their pull requests run the checks
 without access to any secrets.
+
+## Releases (`.github/workflows/release.yml`)
+
+Runs on every push to `main` and on every major tag `vN`. It first runs the whole CI (build,
+tests, security checks); nothing is published if that fails. Then:
+
+1. **Version** from git. If `release/<version>` already exists (e.g. you tagged the commit main
+   was just released from), it stops: nothing to do.
+2. **Publish** a self-contained win-x64 build (`src/DevHub.App/Properties/PublishProfiles/win-x64.pubxml`)
+   stamped with the version.
+3. **Pack** with Velopack (`vpk`, same version as the `Velopack` package in DevHub.App):
+   - `DevHub-win.msi` for new users who want an .msi;
+   - `DevHub-win-Setup.exe`, the same installer as an .exe;
+   - `DevHub-win-Portable.zip`, which runs without installing (no updates);
+   - `DevHub-<version>-full.nupkg`, plus a `-delta` package once a previous release exists: what
+     installed copies download to update;
+   - `RELEASES` / `releases.win.json`: the list the app reads to see what's new.
+4. **GitHub Release** "DevHub <version>", tagged `release/<version>`, with the commit subjects
+   since the last release as notes. The installers are also attached to the workflow run as an
+   artifact.
+
+DevHub installs per user (no admin rights needed), in `%LocalAppData%\DevHub`, so it can update
+itself; settings stay in `%AppData%\DevHub`.
+
+Try it locally (the `vpk` tool as a local install):
+
+```
+dotnet tool install vpk --version 1.2.161 --tool-path .tools
+dotnet publish src/DevHub.App -p:PublishProfile=win-x64 -p:Version=0.0.1
+.tools/vpk pack --packId DevHub --packVersion 0.0.1 --packDir artifacts/publish/win-x64 --mainExe DevHub.App.exe --msi
+```
+
+### Signing (later)
+
+Unsigned installers make Windows SmartScreen say "Windows protected your PC" the first time
+(More info → Run anyway). To sign, add two repository secrets (Settings → Secrets and variables →
+Actions): `SIGNING_PFX_BASE64` (the .pfx certificate, base64) and `SIGNING_PASSWORD`. The release
+workflow signs as soon as they exist; no other change is needed. Azure Trusted Signing works too
+(`vpk pack --azureTrustedSignFile`), with a small change to the pack step.

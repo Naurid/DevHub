@@ -10,3 +10,6 @@ riderModule.iml
 *.user
 # dotnet publish output (src/DevHub.App/Properties/PublishProfiles)
 artifacts/
+# vpk pack output (release.yml; local tries)
+Releases/
+.tools/

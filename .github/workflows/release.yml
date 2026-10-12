@@ -1,0 +1,113 @@
+# Publishes a release (docs/RELEASING.md): on every push to main (minor + 1) and on a major tag vN
+# (N.0.0). Runs the full CI first; nothing is published unless it passes.
+#   1. version from git (build/Get-Version.ps1)   2. dotnet publish (self-contained win-x64)
+#   3. vpk pack: Setup.exe, .msi, full + delta update packages   4. GitHub Release "release/<version>"
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+# One release at a time, in push order (never cancel one half-way).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  VPK_VERSION: "1.2.161" # keep equal to the Velopack package in src/DevHub.App/DevHub.App.csproj
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: ci
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # create the GitHub Release
+    env:
+      HAS_SIGNING: ${{ secrets.SIGNING_PFX_BASE64 != '' }} # a step's if can't read secrets directly
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the version is counted from the history
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Version
+        id: version
+        shell: pwsh
+        run: |
+          $version = pwsh build/Get-Version.ps1
+          $exists = git ls-remote --tags origin "refs/tags/release/$version"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "exists=$([bool]$exists)".ToLower() >> $env:GITHUB_OUTPUT
+          Write-Output "DevHub $version$(if ($exists) { ' (already released: nothing to do)' })"
+
+      - name: Release notes
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        run: |
+          $last = git tag --list "release/*" --sort=-v:refname | Select-Object -First 1
+          $range = if ($last) { "$last..HEAD" } else { "HEAD" }
+          $lines = git log --first-parent --format="- %s" $range | Select-Object -First 50
+          @("## DevHub ${{ steps.version.outputs.version }}", "") + $lines | Set-Content release-notes.md
+
+      - name: Publish (self-contained win-x64)
+        if: steps.version.outputs.exists == 'false'
+        run: dotnet publish src/DevHub.App -p:PublishProfile=win-x64 -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Install vpk
+        if: steps.version.outputs.exists == 'false'
+        run: dotnet tool install --global vpk --version ${{ env.VPK_VERSION }}
+
+      - name: Previous release (for delta updates)
+        if: steps.version.outputs.exists == 'false'
+        continue-on-error: true # the very first release has none
+        run: vpk download github --repoUrl ${{ github.server_url }}/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }} --outputDir Releases
+
+      - name: Signing certificate (only when the secrets exist)
+        if: steps.version.outputs.exists == 'false' && env.HAS_SIGNING == 'true'
+        shell: pwsh
+        env:
+          SIGNING_PFX_BASE64: ${{ secrets.SIGNING_PFX_BASE64 }}
+        run: |
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\signing.pfx", [Convert]::FromBase64String($env:SIGNING_PFX_BASE64))
+          "SIGN_PARAMS=/fd sha256 /tr http://timestamp.digicert.com /td sha256 /f `"$env:RUNNER_TEMP\signing.pfx`" /p `"${{ secrets.SIGNING_PASSWORD }}`"" >> $env:GITHUB_ENV
+
+      - name: Pack (Setup.exe, .msi, update packages)
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        run: |
+          $pack = @(
+            "pack", "--packId", "DevHub", "--packTitle", "DevHub", "--packAuthors", "Naurid",
+            "--packVersion", "${{ steps.version.outputs.version }}",
+            "--packDir", "artifacts/publish/win-x64", "--mainExe", "DevHub.App.exe",
+            "--icon", "src/DevHub.App/Assets/Logo/devhub.ico",
+            "--releaseNotes", "release-notes.md", "--outputDir", "Releases", "--msi")
+          if ($env:SIGN_PARAMS) { $pack += @("--signParams", $env:SIGN_PARAMS) }
+          vpk @pack
+          if ($LASTEXITCODE -ne 0) { throw "vpk pack failed" }
+
+      - name: Publish the GitHub Release
+        if: steps.version.outputs.exists == 'false'
+        run: >
+          vpk upload github --repoUrl ${{ github.server_url }}/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
+          --outputDir Releases --publish --tag release/${{ steps.version.outputs.version }}
+          --releaseName "DevHub ${{ steps.version.outputs.version }}" --targetCommitish ${{ github.sha }}
+
+      - name: Installers as a workflow artifact
+        if: steps.version.outputs.exists == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DevHub-${{ steps.version.outputs.version }}-installers
+          path: |
+            Releases/*.msi
+            Releases/*Setup.exe
