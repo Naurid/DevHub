@@ -2,7 +2,7 @@
 
 How the DevHub window is built (the JetBrains "New UI" look from roadmap milestone UI-0),
 the rules every view follows, and step-by-step recipes for adding things. Read this before
-changing anything under `src/DevHub.App`, `src/DevHub.Sdk` or a plugin's UI project (`plugins/DevHub.*`).
+changing anything under `src/DevHub.App`, `src/DevHub.Sdk` or a plugin's UI project (`plugins/<Name>/DevHub.*` in DevHub-Plugins).
 
 Related: [`ACTIONS_AND_FUZZY_MATCHING.md`](ACTIONS_AND_FUZZY_MATCHING.md) explains actions
 and Find Action in depth. The UI Gallery (Debug builds: ☰ → View → UI Gallery) shows every
@@ -53,7 +53,7 @@ token and component live; check changes there in Dark, Light and Compact.
 
 The UI is split (plugin architecture, `docs/PLUGINS.md`): **DevHub.Sdk** holds what every UI
 part builds on, **DevHub.App** is the shell, and each feature's screens live in its plugin's UI
-project (`plugins/DevHub.Git/`, `plugins/DevHub.Projects/`, …) with the same folder layout
+project (in DevHub-Plugins: `plugins/Git/DevHub.Git/`, `plugins/Projects/DevHub.Projects/`, …) with the same folder layout
 (`Actions/`, `ViewModels/…`, `Views/…`, `Themes/`). Namespaces are the same everywhere
 (`DevHub.Controls`, `DevHub.Actions`, `DevHub.ViewModels.Git…`), whichever assembly a class is in.
 
@@ -90,7 +90,7 @@ src/DevHub.App/                   the shell (no feature code)
   Controls/             DevHubLogo
   Assets/Logo/          app icon / logo
 
-plugins/DevHub.Git/               a plugin UI project (the others look the same)
+plugins/Git/DevHub.Git/           a plugin UI project, in DevHub-Plugins (the others look the same)
   GitPlugin.cs          the IPlugin: its info and every registration
   Actions/              GitActionIds, Providers/GitActionProvider
   ViewModels/  Views/   Git/, Documents/ (repository, diff, blame tabs), ToolWindows/ (Git Console)
@@ -193,7 +193,7 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `TreeDragDrop` | attached property: drag rows of a `TreeView` onto other rows, decided by a ViewModel implementing `ITreeDropHandler` (`CanDrop` / `Drop`); the row under the pointer gets the `dropTarget` class | `<TreeView c:TreeDragDrop.Handler="{Binding}">` + a style for `TreeViewItem.dropTarget /template/ Border#PART_LayoutRoot` |
 | `IconToggle` / `FoldArrow` (themes) | a small flat on/off icon button (e.g. "show folders"); a ▸ / ▾ fold arrow for custom tree rows | `<ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"><c:Icon Kind="folder" /></ToggleButton>` |
 
-Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
+(Git plugin) Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
 template, the `listGroupHeader` strip): `<StyleInclude Source="avares://DevHub.Git/Views/Git/FileChangeStyles.axaml" />` (the assembly name in the URI is the one the file lives in)
 in the view's `Styles`, then `ItemTemplate="{StaticResource FileRow}"`.
 A commit's (or stash's) message + files + diff is one reusable view: put a
@@ -217,7 +217,7 @@ already restyled through `FluentMapping.axaml` and `Controls.axaml`; just use th
 
 ### Add a token
 Shared tokens (used by the shell or several plugins) go in the Sdk's `Themes/Tokens/`. A token
-only one plugin uses goes in that plugin's own dictionary (e.g. `plugins/DevHub.Git/Themes/GitTokens.axaml`,
+only one plugin uses goes in that plugin's own dictionary (e.g. `plugins/Git/DevHub.Git/Themes/GitTokens.axaml` in DevHub-Plugins,
 listed in its `IPlugin.Resources`); colors there also need Dark and Light `ThemeDictionaries`.
 Plugin dictionaries have no Compact variant yet, so a token that must shrink stays in the Sdk.
 1. Add it to `Themes/Tokens/Sizes.axaml` (or `Colors.axaml`, in **both** Dark and Light).
@@ -229,7 +229,7 @@ Short version (full recipe in `ACTIONS_AND_FUZZY_MATCHING.md`):
 1. Id constant ("Area.Verb") in `Actions/ActionIds.cs` (from P4: the plugin's own ids class).
 2. `yield return new AppAction(id, "Text…", someViewModel.SomeCommand) { Category, IconKind, Gesture }`
    in the feature's `IActionProvider`. A new provider is registered in its **plugin's**
-   `ConfigureServices` (e.g. `plugins/DevHub.Git/GitPlugin.cs`); shell actions in `App.axaml.cs`.
+   `ConfigureServices` (e.g. `plugins/Git/DevHub.Git/GitPlugin.cs` in DevHub-Plugins); shell actions in `App.axaml.cs`.
 3. Say where it appears **on the action itself**: `Menu = "Git", MenuOrder = 100` (main-menu
    group; a new hundred starts a new section with a separator), `ToolbarOrder` (title-bar
    toolbar), `WelcomeOrder` (Welcome view). There's no list of ids to edit. In a view:

@@ -1,10 +1,11 @@
 # DevHub — Project Guide
 
-Desktop app for setting up **templates for new projects** (any language/framework:
-a folder hierarchy plus starter files) and **file/script templates** (e.g. a C# class,
-a Unity MonoBehaviour, a Python module) stamped into existing folders. You pick a
-template, fill in variables, and DevHub generates the files and optionally runs
-post-create commands (`git init`, `dotnet restore`, `npm install`, ...).
+A developer workbench for Windows: a **bare shell** (window, tabs, tool windows, menus, Settings, Find
+Action, updates, a plugin marketplace) that **plugins** fill. The plugins live in **Naurid/DevHub-Plugins**
+(on this machine `C:\P\DevHub-Plugins`, with its own `CLAUDE.md`): Projects, Git (a Fork-style client),
+GitHub and Templates (new projects and files from templates), which DevHub bundles in its installer, and
+the new ones (Board, Diagrams, CI). This repository is the shell, the **Sdk** plugins build on (on nuget.org)
+and the docs both repositories follow, including the roadmap.
 
 Completely standalone — unrelated to any other project on this machine.
 
@@ -65,19 +66,20 @@ docs/
   ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
 ```
 
-**Dependency direction:** `App → Sdk (→ Sdk.Core)` (+ the plugins, aliased, only to ship them);
-a plugin's UI project → `Sdk` + its own `.Core`; a plugin's `.Core` → `Sdk.Core`; a plugin may
-reference another plugin's projects only for a declared hard dependency (GitHub → Git); tests →
-the project they test. **`Sdk.Core` never knows about a plugin, and nothing
+**Dependency direction:** `App → Sdk (→ Sdk.Core)`; no plugin anywhere in this repository except the
+test plugin (`tests/DevHub.TestPlugin`, never shipped). In DevHub-Plugins a plugin's UI project → `Sdk` +
+its own `.Core`, a `.Core` → `Sdk.Core`, and a plugin references another plugin's projects only for a
+declared hard dependency (GitHub → Git); tests → the project they test. **`Sdk.Core` never knows about a plugin, and nothing
 references `App`; `Sdk` never references `App` or a plugin** (the shell may set the
 base classes' host-only `internal` members via `InternalsVisibleTo`). All logic that can be tested without a window lives in a `.Core`
 project (the "Core" in the rules below means "a `.Core` project"). If you catch yourself
 writing file I/O, path math, or string templating in a ViewModel, move it to a Core
 service and inject it.
 
-**Features are plugins** (`IPlugin` in DevHub.Sdk; each plugin project has its plugin class,
-e.g. `plugins/DevHub.Git/GitPlugin.cs`, marked `[assembly: DevHubPlugin(…)]`: Projects, Git,
-GitHub → Git, Templates → Projects). A plugin's own design tokens go in its `Themes/*.axaml`,
+**Features are plugins** (`IPlugin` in DevHub.Sdk; each plugin has its plugin class marked
+`[assembly: DevHubPlugin(…)]` and a `plugin.json`: Projects, Git, GitHub → Git, Templates → Projects, in
+DevHub-Plugins). The shell loads them from plugin folders: bundled (`plugins\` next to the app, from
+`build/Get-BundledPlugins.ps1`), installed from the marketplace, or a build folder (`DEVHUB_PLUGIN_PATHS`). A plugin's own design tokens go in its `Themes/*.axaml`,
 returned from `IPlugin.Resources`; its views' `avares://` URIs name its own assembly.
 Git → GitHub-style features go through Git's `IRemoteHost` (GitHub implements it). A plugin
 names the first-run presets it belongs to in `PluginInfo.Presets`; users switch plugins in
@@ -107,29 +109,18 @@ dotnet build
 dotnet test
 dotnet run --project src/DevHub.App
 ```
-- Plugin or shell changes: also `pwsh tools/plugin-matrix.ps1` (Debug build): starts DevHub with
-  every plugin alone, none and all, and reports what loaded / what crashed.
-- Core changes: verify with `dotnet test` — add or extend tests for every engine
-  behavior change (renderer, generator, importer, ignore rules). This is the one
-  part of the app where regressions silently corrupt user files.
+- A Debug build fetches the bundled plugins once into its output (`plugins\`); `dotnet run` then has them.
+  To run plugins you're changing, set `DEVHUB_PLUGIN_PATHS` to their build folders (docs/PLUGINS.md §9).
+- Shell or Sdk changes: also `pwsh tools/plugin-matrix.ps1` (Debug build): starts DevHub with
+  every plugin alone, none and all (the bundled ones + the test plugin), and reports what loaded / what crashed.
+- Sdk changes that plugins will use: `pwsh build/Pack-Sdk.ps1` (local feed) and build DevHub-Plugins against
+  it; a breaking change bumps `PluginApi.Version`. Sdk.Core changes: tests in `tests/DevHub.Sdk.Core.Tests`.
 - UI changes: Claude can build but cannot see the window. Finish UI work with a
   short **manual check list** for the user (what to click, what should appear).
 
-## Core rules (engine correctness — non-negotiable)
-Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
-- **Unknown `{{...}}` tokens pass through untouched.** Templates contain Vue,
-  Handlebars, Jinja, Go templates, GitHub Actions `${{ }}` etc. Only exact
-  declared/built-in variable names are substituted.
-- **Never write outside the target root.** Resolve every rendered path and reject
-  anything that escapes it (`..`, absolute paths, drive letters from variables).
-- **Generate into a staging folder, then move.** A failure mid-generation must not
-  leave a half-written project in the user's chosen folder.
-- **Binary files are copied byte-for-byte**, never rendered.
-- **Never overwrite existing files silently** — detect conflicts first and let the
-  UI ask.
-- **Post-create commands never run without the user seeing them first** (templates
-  can be shared; they're arbitrary code execution). Run via `ProcessStartInfo`
-  with `ArgumentList`, `UseShellExecute = false` — never concatenate a shell string.
+## Plugin-specific rules live with the plugins
+The Git client rules, the template engine's correctness rules and the template scope decisions moved
+to DevHub-Plugins' `CLAUDE.md` with the plugins (PM4/PM7). Changes to a plugin are made there.
 
 ## App rules (MVVM + UI) — details in `docs/UI_GUIDE.md` and the `avalonia-mvvm` skill
 - ViewModels never reference `Views`, `Window`, `TopLevel`, `Application` or Avalonia
@@ -154,20 +145,6 @@ Full details in the `template-engine` skill and `docs/TEMPLATE_FORMAT.md`.
   `AppSettings` copy). Run experiments with `DEVHUB_DATA_DIR` set to a scratch folder.
 - Accessible names: list-item ViewModels override `ToString()`; icon-only/composite
   buttons get `AutomationProperties.Name`.
-
-## Git client rules (details in `docs/GIT_CLIENT_PLAN.md`)
-- Run git **only through `GitRunner`** (`plugins/DevHub.Git.Core`): `ArgumentList`, no shell string,
-  `GIT_TERMINAL_PROMPT=0`; read-only commands pass `ReadOnly = true` (no optional locks).
-- Parse **only machine-readable output** (`--porcelain=v2`, `-z`, explicit `--format`).
-- **One repository per tab, one `GitRepositoryClient` per repository**; commands always
-  name their repository. Git actions act on `DocumentManager.ActiveRepository`.
-- Anything that **changes** a repository happens only on a user action; destructive ones
-  (discard, reset, delete unmerged branch, force push) need a confirmation saying what is lost.
-- Every command shows up in the Git Console (the runner logs it automatically).
-- Credentials come only from Git Credential Manager: never ask for, store or log a password or token
-  (borrow it per API call with `credential fill`, run as `Sensitive`).
-- Core git tests use real git in temp repos (`TempGitRepo`, `[GitFact]` from `tests/DevHub.TestKit`); UI checks use
-  scratch repositories, never the user's own.
 
 ## Natural-language commands (roadmap M10 — design rules from day one)
 A local, user-trained model turns text into a structured tool call; it's a
@@ -200,14 +177,11 @@ background) but may be new to Avalonia/XAML/MVVM and desktop app architecture.
 - Keep steps small and runnable — each step ends with something that builds.
 - **Claude writes all the code** (the user's choice): implement, build, test, then
   explain the key parts. Ask about requirements and design, not about who writes it.
+- Claude **commits its own work on a feature branch** (in either repository); the user merges and pushes.
+  Say in which order when both repositories change (the Sdk is released before plugins that need it).
 - Keep `docs/ROADMAP.md` checkboxes current when a task is completed.
 - Use `/next-step` to pick up where the last session left off.
 
 ## Scope decisions (don't change without asking)
-- Templates are **folder + `template.json` manifest** on disk (not a single-file
-  bundle). Sharing/zip export is a later roadmap item.
-- Template library lives in `%APPDATA%/DevHub/` (resolved via
-  `Environment.SpecialFolder.ApplicationData`); a settings option may override it.
-- No conditional/loop logic in templates for v1 — plain substitution only.
-  Conditionals are a listed future item; don't add a full template language.
 - Windows first, but keep Core path-agnostic (`Path.Combine`, no hard-coded `\`).
+- The shell never names a plugin; anything a feature needs from it becomes an extension point (docs/PLUGINS.md §4).

@@ -13,10 +13,12 @@ JetBrains-style UI (Rider "New UI" look, Dark and Light themes). It has:
 - **Templates**: New Project from templates (built-in or your own): a base command (`dotnet new`,
   `cargo new`…), your files on top, rearranged your way in an editable preview, then post-create commands.
 
-DevHub is built so that **every feature is a plugin** on a bare shell. Each
-developer turns on only what they need, e.g. just Projects + Git for a Git client. The
-design is in [`docs/PLUGINS.md`](docs/PLUGINS.md) and progress is in
-[`docs/ROADMAP.md`](docs/ROADMAP.md) (milestone P).
+**Every feature is a plugin** on a bare shell. Each developer turns on only what they need, e.g. just
+Projects + Git for a Git client, and installs more from the marketplace (Settings → Plugins). The four
+above come with DevHub; all plugins, these included, are developed in
+[Naurid/DevHub-Plugins](https://github.com/Naurid/DevHub-Plugins) against the Sdk on nuget.org
+(`DevHub.Sdk`, `DevHub.Sdk.Core`). This repository is the shell, the Sdk and the docs: the design is in
+[`docs/PLUGINS.md`](docs/PLUGINS.md), progress in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Solution layout
 
@@ -55,22 +57,23 @@ How releases are made: [`docs/RELEASING.md`](docs/RELEASING.md).
 What each project may reference:
 
 ```
-DevHub.App ──────► DevHub.Sdk ──► DevHub.Sdk.Core
- (ships the plugins;  ▲
-  never uses them)    │
-DevHub.Projects ──────┤ + DevHub.Projects.Core
-DevHub.Git ───────────┤ + DevHub.Git.Core
-DevHub.GitHub ────────┤ + DevHub.GitHub.Core + DevHub.Git   (GitHub requires Git)
-DevHub.Templates ─────┘
+DevHub.App ──────► DevHub.Sdk ──► DevHub.Sdk.Core          (this repository)
+                       ▲  (NuGet)
+DevHub.Projects ───────┤ + DevHub.Projects.Core             (DevHub-Plugins)
+DevHub.Git ────────────┤ + DevHub.Git.Core
+DevHub.GitHub ─────────┤ + DevHub.GitHub.Core + DevHub.Git   (GitHub requires Git)
+DevHub.Templates ──────┘ + DevHub.Templates.Core
 ```
 
-`DevHub.Sdk` and `DevHub.Sdk.Core` never know about a plugin, nothing references `DevHub.App`,
-and Projects and Git never reference each other (they link through small interfaces in the Sdk).
+`DevHub.Sdk` and `DevHub.Sdk.Core` never know about a plugin, nothing references `DevHub.App`
+(DevHub loads plugins from plugin folders at startup), and Projects and Git never reference each
+other (they link through small interfaces in the Sdk).
 
 ## Build, test, run
 
-Requirements: the .NET SDK 10.0.x (Avalonia 12's source generators need it), and git ≥ 2.30
-for the Git features and their tests.
+Requirements: the .NET SDK 10.0.x (Avalonia 12's source generators need it), and PowerShell 7
+(`pwsh`) for the build scripts. A Debug build fetches the bundled plugins once (from the
+marketplace index) into its output, so `dotnet run` has them.
 
 ```
 dotnet build
@@ -78,8 +81,9 @@ dotnet test
 dotnet run --project src/DevHub.App
 ```
 
-After changing a plugin or the shell, `pwsh tools/plugin-matrix.ps1` starts the Debug build with
-every plugin alone, with none and with all, and reports what loaded.
+After changing the shell or the Sdk, `pwsh tools/plugin-matrix.ps1` starts the Debug build with
+every plugin alone, with none and with all (the bundled ones and `tests/DevHub.TestPlugin`), and
+reports what loaded. Plugins are built and tested in DevHub-Plugins.
 
 ## Settings
 
@@ -122,6 +126,6 @@ before starting the app.
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Milestones and what's next |
 | [`docs/UI_GUIDE.md`](docs/UI_GUIDE.md) | UI rules, design tokens, components and recipes |
 | [`docs/ACTIONS_AND_FUZZY_MATCHING.md`](docs/ACTIONS_AND_FUZZY_MATCHING.md) | Actions, menus, shortcuts, Find Action |
-| [`docs/GIT_CLIENT_PLAN.md`](docs/GIT_CLIENT_PLAN.md) | The Git client's design and rules |
-| [`docs/TEMPLATE_FORMAT.md`](docs/TEMPLATE_FORMAT.md) | The template format (spec for the Templates plugin) |
+| [`GIT_CLIENT_PLAN.md`](https://github.com/Naurid/DevHub-Plugins/blob/main/docs/GIT_CLIENT_PLAN.md) (DevHub-Plugins) | The Git client's design and rules |
+| [`TEMPLATE_FORMAT.md`](https://github.com/Naurid/DevHub-Plugins/blob/main/docs/TEMPLATE_FORMAT.md) (DevHub-Plugins) | The template format (spec for the Templates plugin) |
 | [`CLAUDE.md`](CLAUDE.md) | Working rules for the codebase (also read by Claude Code) |

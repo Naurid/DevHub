@@ -15,25 +15,30 @@ pages), `docs/ACTIONS_AND_FUZZY_MATCHING.md` (actions, menus, shortcuts), `CLAUD
 
 ## 1. Layout and what may reference what
 
+Two repositories: **DevHub** (this one: the shell and the Sdk) and **DevHub-Plugins** (every plugin,
+DevHub's own included). Plugins build against the Sdk from nuget.org.
+
 ```
-src/
-  DevHub.Sdk.Core/      no UI: PluginInfo, PluginResolver, PluginSelection, settings store
-  DevHub.Sdk/           what every plugin UI builds on: IPlugin, base classes, extension points,
-                        Integration/ (hooks between independent plugins), design system
-  DevHub.App/           the shell: window, tabs, tool-window frame, menus, Settings, Find Action,
-                        PluginHost, Plugins page, first-run picker
-plugins/
-  DevHub.<Name>/        a plugin's UI: <Name>Plugin.cs, Actions/, ViewModels/, Views/, Themes/
-  DevHub.<Name>.Core/   its logic: no Avalonia, unit-tested (optional for a UI-only plugin)
-tests/
-  DevHub.<Name>.Core.Tests/
+DevHub (Naurid/DevHub)
+  src/DevHub.Sdk.Core/      no UI: PluginInfo, PluginResolver, settings store, marketplace, Markdown, charts…
+  src/DevHub.Sdk/           what every plugin UI builds on: IPlugin, base classes, extension points,
+                            Integration/ (hooks between plugins), design system, controls
+  src/DevHub.App/           the shell: window, tabs, tool-window frame, menus, Settings, Find Action,
+                            PluginHost, Plugins page, first-run picker, marketplace
+  tests/DevHub.TestPlugin/  a small plugin for checking the shell (never shipped)
+
+DevHub-Plugins (Naurid/DevHub-Plugins)
+  plugins/<Name>/DevHub.<Name>/       a plugin's UI: plugin.json, <Name>Plugin.cs, Actions/, ViewModels/, Views/, Themes/
+  plugins/<Name>/DevHub.<Name>.Core/  its logic: no Avalonia, unit-tested (optional for a UI-only plugin)
+  plugins/<Name>/                     or one project for a small plugin (HelloWorld)
+  tests/DevHub.<Name>.Core.Tests/
 ```
 
 | Project | May reference |
 |---|---|
 | `DevHub.<Name>.Core` | `DevHub.Sdk.Core` (+ a required plugin's `.Core`) |
 | `DevHub.<Name>` | `DevHub.Sdk`, its own `.Core` (+ a required plugin's projects) |
-| `DevHub.App` | `DevHub.Sdk`; the plugins only with `Aliases="plugins"` (shipped, never used) |
+| `DevHub.App` | `DevHub.Sdk`; never a plugin |
 | `DevHub.Sdk`, `DevHub.Sdk.Core` | no plugin, never the app |
 
 A plugin references another plugin **only if it declares it in `Requires`** (GitHub → Git).
@@ -41,10 +46,12 @@ Everything else links through hooks (§6). Projects and Git never reference each
 
 ## 2. Lifecycle
 
-1. **Discovery.** At startup `PluginHost` (shell) loads every `DevHub*.dll` next to the exe and
-   reads `[assembly: DevHubPlugin(typeof(…))]`. Plugins are sorted by `PluginInfo.Order`, then id.
-   No list of plugins exists anywhere in the shell. (A user plugins folder can join the same scan
-   later, for third-party plugins.)
+1. **Discovery.** At startup `PluginHost` (shell) finds plugin folders (`<id>\plugin.json` + DLLs):
+   bundled ones in `plugins\` next to the exe, installed ones in `%AppData%\DevHub\plugins`, and build
+   folders in `DEVHUB_PLUGIN_PATHS` (§9 says which copy of a plugin wins). It loads them requirements
+   first and reads `[assembly: DevHubPlugin(typeof(…))]` in their DLLs (and in any `DevHub*.dll` next to
+   the exe: none in a release). Plugins are sorted by `PluginInfo.Order`, then id. No list of plugins
+   exists anywhere in the shell.
 2. **Resolution.** `PluginResolver.Resolve(all, AppSettings.EnabledPlugins)`: the switched-on
    plugins plus their requirements, requirements first. A plugin whose requirement is missing,
    a circle of requirements and a duplicate id are **skipped with a reason** (status bar at
@@ -66,7 +73,7 @@ Everything else links through hooks (§6). Projects and Git never reference each
 ## 3. The contract
 
 ```csharp
-// plugins/DevHub.Git/GitPlugin.cs
+// DevHub-Plugins: plugins/Git/DevHub.Git/GitPlugin.cs
 [assembly: DevHub.Plugins.DevHubPlugin(typeof(DevHub.Plugins.GitPlugin))]
 
 namespace DevHub.Plugins;
@@ -196,64 +203,61 @@ For the UI and logic plugins share (all in the UI Gallery, View → UI Gallery i
 
 ## 7. Recipe: a new plugin
 
-Example: a `Docker` plugin with a tool window listing containers, an action and a setting.
-Swap in your feature's name. Look at `plugins/DevHub.Projects` for a small real one.
+Plugins are made in **DevHub-Plugins** (its README has the details). Example: a `Docker` plugin with a tool
+window listing containers, an action and a setting. Swap in your feature's name; `plugins/Projects` is a small
+real one, `plugins/HelloWorld` the smallest.
 
-1. **Projects.** Create `plugins/DevHub.Docker.Core/DevHub.Docker.Core.csproj` (logic) and
-   `plugins/DevHub.Docker/DevHub.Docker.csproj` (UI), and a test project:
+1. **Projects.** `plugins/Docker/DevHub.Docker/DevHub.Docker.csproj` (UI) and
+   `plugins/Docker/DevHub.Docker.Core/DevHub.Docker.Core.csproj` (logic), and `tests/DevHub.Docker.Core.Tests`.
+   The repository's `Directory.Build.props` adds the Sdk packages by project kind (UI, `.Core`, tests), so a
+   project file only names its own `.Core` (and a required plugin's projects):
    ```xml
-   <!-- DevHub.Docker.csproj (Directory.Build.props supplies net10.0, Nullable, ImplicitUsings) -->
+   <!-- DevHub.Docker.csproj -->
    <Project Sdk="Microsoft.NET.Sdk">
-       <PropertyGroup>
-           <RootNamespace>DevHub</RootNamespace>
-           <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-       </PropertyGroup>
-       <ItemGroup><PackageReference Include="Avalonia" Version="12.1.3" /></ItemGroup>
        <ItemGroup>
-           <ProjectReference Include="..\..\src\DevHub.Sdk\DevHub.Sdk.csproj" />
            <ProjectReference Include="..\DevHub.Docker.Core\DevHub.Docker.Core.csproj" />
        </ItemGroup>
    </Project>
    ```
-   The `.Core` project references `src/DevHub.Sdk.Core` only. Add all three to `DevHub.sln`
-   (`dotnet sln add … --solution-folder plugins` / `tests`), and the UI project to
-   `src/DevHub.App/DevHub.App.csproj` with `Aliases="plugins"` so it ships.
-2. **Logic first, tested.** Put everything that doesn't need a window in `DevHub.Docker.Core`
-   (running `docker`, parsing its output) with tests in `tests/DevHub.Docker.Core.Tests`. Run
-   external tools with `ProcessStartInfo` + `ArgumentList`, never a shell string.
-3. **The plugin class.** `plugins/DevHub.Docker/DockerPlugin.cs` with the attribute, `Info`
-   (id `devhub.docker`, `Category`, `Order`, `Presets`, `Requires` only if truly needed) and
-   `ConfigureServices`.
-4. **Settings (if any).** `DockerSettings : ISettingsSection` (`SectionId => "devhub.docker"`) in
-   the `.Core` project; read with `LoadSection`, change with `UpdateSection`, round-trip test.
-5. **UI.** Follow `docs/UI_GUIDE.md` §5, with the plugin's folders:
+   Add them to `DevHub-Plugins.sln`.
+2. **plugin.json** next to the UI project: `id` (`yourname.docker`; DevHub's own are `devhub.*`), `name`,
+   `description`, `category`, `apiVersion` (the Sdk's `PluginApi.Version`; the build checks it), `requires`.
+   No `version`: it's computed from git.
+3. **Logic first, tested.** Everything that doesn't need a window goes in `DevHub.Docker.Core` (running
+   `docker`, parsing its output) with tests. Run external tools with `ProcessStartInfo` + `ArgumentList`,
+   never a shell string.
+4. **The plugin class.** `DockerPlugin.cs` with the attribute, `Info` (the same id, `Category`, `Order`,
+   `Presets`, `Requires` only if truly needed) and `ConfigureServices`.
+5. **Settings (if any).** `DockerSettings : ISettingsSection` (`SectionId` = the plugin id) in the `.Core`
+   project; read with `LoadSection`, change with `UpdateSection`, round-trip test.
+6. **UI.** Follow `docs/UI_GUIDE.md` §5, with the plugin's folders:
    - tool window: `ViewModels/ToolWindows/ContainersViewModel.cs` + `Views/ToolWindows/ContainersView.axaml`;
      register it as itself and as `ToolWindowViewModelBase`, set `Order`;
    - actions: `Actions/DockerActionIds.cs` + `Actions/Providers/DockerActionProvider.cs`, with
      `Menu = "Docker"` (its own main-menu group) and an order per action;
    - a Settings page if it has settings (transient `SettingsPageViewModelBase`).
-   Shared tokens and components only (no hex / sizes in views); a token only Docker uses goes in
-   `Themes/DockerTokens.axaml`, returned from `Resources`.
-6. **Links.** Need another plugin's feature? Declare `Requires`, or (if both should stand alone)
-   use / add an `Integration` hook with a fallback (§6).
-7. **Docs.** Add the plugin to the README's plugin list and, if it adds a hook, to §6 here.
+   Shared tokens and components only (no hex / sizes in views; the Sdk's building blocks, §6); a token only
+   Docker uses goes in `Themes/DockerTokens.axaml`, returned from `Resources`.
+7. **Links.** Need another plugin's feature? Declare `Requires`, or (if both should stand alone) use / add an
+   `Integration` hook with a fallback (§6). A new hook is an Sdk change: made in DevHub, released first.
+8. **Run it:** F5 with the "DevHub" profile (§9, "Developing one"). **Publish it:** push to main; tag
+   `<id>/v1` for 1.0.0.
 
 ## 8. Testing a plugin
 
-- `dotnet build` (0 warnings) and `dotnet test`.
-- **Plugin combinations:** `pwsh tools/plugin-matrix.ps1` (Debug build) starts DevHub with
-  everything, with nothing, and with each plugin alone (add `-Extra "devhub.a,devhub.b"` for
-  more), each in its own scratch data folder, and reports whether it stayed up and what loaded.
-  A plugin that only works next to another one, or a shell that still names a plugin, fails here.
+- `dotnet build` (0 warnings) and `dotnet test` in DevHub-Plugins.
+- **Plugin combinations:** `pwsh build/Test-Plugins.ps1` there starts DevHub with all its plugins, each one
+  alone (with what it requires) and next to DevHub's own, each in its own scratch data folder, and fails when
+  DevHub exits, hangs, reports a problem or skips a plugin. For the shell itself, `tools/plugin-matrix.ps1`
+  here does the same with the bundled plugins and the test plugin.
 - **By hand**, with `DEVHUB_DATA_DIR` set to a scratch folder: your plugin alone (its menu, tool
   window, actions, Find Action entries, Settings page), then switched off in Settings → Plugins
   (after Restart Now nothing of it is left), then on again (its tabs and settings come back).
+## 9. Plugin packages, the marketplace and bundled plugins
 
-## 9. Marketplace plugins (outside this repository)
-
-Plugins can also live outside DevHub: in **Naurid/DevHub-Plugins** (its starter is
-`tools/plugin-repo/` here, with a sample HelloWorld plugin), installed from Settings → Plugins →
-Marketplace.
+Every plugin lives in **Naurid/DevHub-Plugins** and is released there as a package, listed in its marketplace
+index; users install more from Settings → Plugins → Marketplace, and DevHub's installer bundles Projects, Git,
+GitHub and Templates. (`tools/plugin-repo/` here is the starter that repository began from.)
 
 - **Developing one:** `DEVHUB_PLUGIN_PATHS` (`;`-separated) lists folders DevHub loads plugins from:
   a plugin folder (plugin.json next to the DLLs, e.g. a plugin's build output) or a folder of them. A

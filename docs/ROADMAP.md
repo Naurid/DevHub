@@ -3,7 +3,11 @@
 Check boxes as tasks land. Each task should end in something that builds (and,
 for Core, has tests). `/next-step` reads this file to decide what's next.
 
-## Repository workbench (active track)
+**Two repositories.** [DevHub] = Naurid/DevHub (`C:\P\DevHub\DevHub`): the shell, the Sdk, the docs and this
+roadmap. [Plugins] = Naurid/DevHub-Plugins (`C:\P\DevHub-Plugins`): every plugin. Each milestone says where its
+work happens; the plugin milestones done before PM4 were built in DevHub and moved with their history.
+
+## Repository workbench [done; Projects plugin → Plugins]
 A parallel track turning DevHub into a git/project workbench (alongside the template
 milestones below).
 - [x] Repositories page: designate folders, scan for git repos, list them
@@ -14,7 +18,7 @@ milestones below).
       `docs/UI_GUIDE.md`.
 - [x] Integrated Git client (in-app, "Fork"-like): milestones G0–G9 below.
 
-## UI-0 — JetBrains-style front end (Rider New UI look)
+## UI-0 — JetBrains-style front end (Rider New UI look) [DevHub]
 Dark + Light, configurable accent (default #3574F0), Compact mode, Inter UI + JetBrains
 Mono code. Layers: Theme → Components → Actions → Shell → Features. The user writes,
 Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
@@ -33,7 +37,7 @@ Claude reviews. Rules land in `docs/UI_GUIDE.md` (no hex/sizes/fonts in views).
 - [x] 10. Find Action popup (Ctrl+Shift+A)
 - [x] 11. `docs/UI_GUIDE.md` (rules + recipes), CLAUDE.md App-rule update
 
-## G — Integrated Git client (Fork / JetBrains-style)
+## G — Integrated Git client (Fork / JetBrains-style) [done; Git plugin → Plugins]
 Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **git CLI**
 (machine-readable output), **Fork + JetBrains functionality with JetBrains styling**, and
 **one editor tab per repository** (several repos side by side). First release = G0–G4.
@@ -66,7 +70,7 @@ Plan, decisions and rules: `docs/GIT_CLIENT_PLAN.md`. Confirmed 2026-10-09: **gi
 - [x] G9.2 Side-by-side diff (layout in Core, tested): one saved switch for every diff; hunks staged in
       both views, single lines in unified. Fetch from an empty remote says so instead of looking like a no-op
 
-## P — Plugin architecture (active track, before M1)
+## P — Plugin architecture [DevHub]
 Every feature becomes a plugin on a bare shell; each dev enables what they need (Settings →
 Plugins, first-run presets, restart to apply). Design and decisions: `docs/PLUGINS.md`.
 Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
@@ -91,7 +95,7 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
       DevHub with every plugin alone / none / all); tabs of a switched-off plugin are kept in the saved
       layout and come back with it; CLAUDE.md, UI_GUIDE, README, skills
 
-## M0 — Skeleton
+## M0 — Skeleton [DevHub]
 - [x] `git init`, .NET `.gitignore`, `DevHub.sln`
 - [x] `src/DevHub.Core` (net10.0 class library)
 - [x] `src/DevHub.App` (Avalonia 12 app, Fluent theme, compiled bindings on by default)
@@ -100,7 +104,7 @@ Templates (M1–M9) are then built as the `DevHub.Templates(.Core)` plugin.
 - [x] `dotnet build` and `dotnet test` green; the app opens a dark app-shell window
       (sidebar nav: Templates / Generate / Import / Settings, placeholder pages)
 
-## M1 — Template model & libraries (Core)
+## M1 — Template model & libraries (Core) [Templates plugin → Plugins]
 M1–M9 build the **Templates plugin** to the spec in `docs/TEMPLATE_FORMAT.md` (decided
 2026-10-11): project + item templates, base command + content + steps + post-create, language +
 categories, several libraries + read-only built-ins, staging → editable preview → place. The
@@ -113,7 +117,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
       save / delete / duplicate; same id in two libraries
 - [x] Tests for all of the above (57: serializer, validator, store, libraries)
 
-## M2 — Placeholder renderer (Core)
+## M2 — Placeholder renderer (Core) [Templates plugin → Plugins]
 - [x] Tokenizer: `{{Name}}`, `{{Name:transform}}`, `\{{` escape (one pass: values never re-scanned)
 - [x] Transforms: pascal/camel/kebab/snake/upper/lower (word split on separators + case changes)
 - [x] Built-ins: Year, Date, Author, Guid1..9 (stable per generation)
@@ -121,7 +125,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Path segment rendering + validation (Windows names); commands (+ `when`), step paths, rootFolder;
       entered values checked (required / pattern / choice / bool) — 61 tests
 
-## M3 — Generation pipeline (Core)
+## M3 — Generation pipeline (Core) [Templates plugin → Plugins]
 - [x] Command runner: ArgumentList, streamed output, cancellation, exit codes, `.cmd` shims (npm/npx), tool aliases (`@unity`)
 - [x] Staging + base command (`runIn` root / parent); overlay of `content/` (binary detection, encoding/BOM kept)
 - [x] Steps engine (createFolder / move / rename / delete, globs, nothing outside the root)
@@ -129,21 +133,21 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Conflict check, place into target; item templates applied into an existing folder (incl. moving existing files)
 - [x] Post-create commands; the "commands that will run" list for the confirmation; tests in temp folders
 
-## M4 — Browse + generate UI
+## M4 — Browse + generate UI [Templates plugin → Plugins]
 - [x] Template browser: group by language or category, filter by both + library, search; project / item
 - [x] Variable form from the manifest (string / bool / choice, validation messages); target folder picker; Raw
 - [x] Confirmation (every command, rendered) → progress → editable preview tree (rename / move to / delete /
       new folder, Save to template) → place → post-create with live output
 - [x] First built-ins to try it with: Console App (.NET, `dotnet new` + steps + post-create), Empty Project (folders only)
 
-## M5 — Template editor UI
+## M5 — Template editor UI [Templates plugin → Plugins]
 - [x] Templates tab (library manager: New Template…, Edit, Use in New Project, Duplicate, Delete) + one editor tab per template:
       General, Variables, Base Command, Steps, Post-create (Save Ctrl+S, Revert, asks before losing changes)
 - [x] Files: tree of `content/` (new file / folder, rename, delete), files edited in your external editor (Open With)
 - [x] template.json section (edit the raw manifest; read-only for built-ins); Duplicate to Personal; Explorer / VS Code
 - [ ] In-app text editor for content files (chose external editors for now)
 
-## M6 — Item templates
+## M6 — Item templates [Templates plugin → Plugins]
 - [x] Add Files tab (Details → Preview → Done), opened from Projects (right-click), a repository tab, the Templates tab, File menu
       (hook `IAddFilesFromTemplate` in the Sdk); conflicts with an Overwrite choice each
 - [x] Moves / deletes of existing files spelled out in the preview; only what changes shown (or everything)
@@ -151,18 +155,18 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Starter items: C# class, interface, Unity MonoBehaviour, ScriptableObject, Python module
 - [x] Templates tool window (left stripe, Alt+2): the list at hand; double-click / Use starts New Project or Add Files, Edit, New Template
 
-## M7 — Import from an existing folder
+## M7 — Import from an existing folder [Templates plugin → Plugins]
 - [x] Ignore rules, gitignore-style (name anywhere, name/ folders, /path from the top, globs) (Core, tested)
 - [x] Import tab: preview tree with left-out items greyed out and placeholders per file
 - [x] Literal → variable replacement; other spellings of a multi-word literal become transforms; an existing {{Var}} is escaped
 - [x] Save as a new template (project or item) in a chosen library; it opens in the editor
 
-## M8 — Built-in templates
+## M8 — Built-in templates [Templates plugin → Plugins]
 - [x] .NET (console, classlib, solution with tests, add project to solution, Avalonia, xUnit), Unity (`@unity`, newest Hub editor)
 - [x] Web (Vite React/Vue/Svelte TS, Tauri), Rust (cargo bin/lib), Python (src layout + .venv), Go (go mod)
 - [x] Each checked against the real tool when installed (npm ones with DEVHUB_NETWORK_TESTS=1; Unity by its command)
 
-## M9 — Polish
+## M9 — Polish [Templates plugin → Plugins]
 - [x] Settings → Templates (author name, personal library location, extra libraries, default project folder,
       project folder rules per language and/or category)
 - [x] Recent projects on New Project's start page (Open / Show)
@@ -170,7 +174,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Zip export/import of a template (Templates tab; zip-slip refused, free id when taken)
 - [x] App icon, publish profile (`dotnet publish src/DevHub.App -p:PublishProfile=win-x64` → artifacts/publish/win-x64)
 
-## R — Releases, updates, marketplace (docs/RELEASING.md, docs/PLUGINS.md §9)
+## R — Releases, updates, marketplace (docs/RELEASING.md, docs/PLUGINS.md §9) [DevHub + Plugins]
 - [x] R1 CI on every push / PR (build with warnings as errors, tests, vulnerable packages, SBOM, dependency
       review), CodeQL, Dependabot; version from git (`build/Get-Version.ps1`: `vN` major tags, +1 minor per push on main)
 - [x] R2 Release workflow: on main / `vN` → Velopack: Setup.exe, .msi, portable zip, full + delta update
@@ -185,7 +189,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
       starter for now; PM below moves every plugin into it)
 - [ ] Code signing (Azure Trusted Signing or a certificate) once SmartScreen warnings matter
 
-## PM — Every plugin in DevHub-Plugins; the Sdk on NuGet (before B, D, CI)
+## PM — Every plugin in DevHub-Plugins; the Sdk on NuGet (before B, D, CI) [DevHub + Plugins]
 Decided 2026-10-12: DevHub keeps only the shell and the Sdk; **every plugin** (Projects, Git, GitHub,
 Templates, and the new Board, Diagrams, CI) is developed, versioned and released in
 **Naurid/DevHub-Plugins**. The first four are **bundled** in DevHub's installer (offline first run, presets
@@ -238,15 +242,15 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
         commit box) and `IGitDecorator` (marks in All Commits and the branch tree); GitHub offers `IGitHubApi`
         (`SendRawAsync`: api.github.com only, tested); Templates uses the Sdk's `TreeDragDrop`. Checked end to end
         with DevHub's test plugin (`IntegrationProbe`). Needs the Sdk with PM6a: DevHub release first
-- [ ] **NEXT —** PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
+- [x] PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
       its own `CLAUDE.md` (the rules that moved with the plugins); this roadmap names each milestone's repo
 
-## B — Board: Jira-style agile planning, stored in the repository (DevHub-Plugins)
+## B — Board: Jira-style agile planning, stored in the repository [Plugins]
 Decided 2026-10-12: the data lives **in the repository** (plain files, versioned and shared through git,
 no server). Fully modular: `DevHub.Board` (+ `.Core`: issues, workflows, boards, backlog, search) and
 optional plugins that require it: `DevHub.Board.Scrum`, `DevHub.Board.Reports`, `DevHub.Board.Timeline`,
 `DevHub.Board.Git`. Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
-- [ ] B0. Plan + decisions: where the files live (a dedicated `devhub/board` branch written with git
+- [ ] **NEXT —** B0. Plan + decisions: where the files live (a dedicated `devhub/board` branch written with git
       plumbing, so the board is the same on every checked-out branch — recommended — or `.devhub/board/` in
       the working tree); one JSON file per issue with a stable id + `board.json` (project key, issue types,
       workflows, fields, boards); keys like `DEV-12` (collisions across branches detected and renumbered);
@@ -282,7 +286,7 @@ optional plugins that require it: `DevHub.Board.Scrum`, `DevHub.Board.Reports`, 
 - [ ] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
 - [ ] B12. Actions in Find Action + M10 command tools (create issue, move issue, my open issues)
 
-## D — Diagrams: UML use case, class and activity ("actions") editor (DevHub-Plugins)
+## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
 Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
 generation. You provide PDFs with examples and the precise rules before D1. Plugins: `DevHub.Diagrams`
 (+ `.Core`: model, canvas, file format, export) and one per diagram kind through an `IDiagramKind` extension
@@ -308,7 +312,7 @@ point (`Diagrams.UseCase`, `Diagrams.Class`, `Diagrams.Activity`). Diagrams are 
 - [ ] D8. Auto layout of a selection (layered, for class and activity diagrams); diagram templates through
       the Templates plugin
 
-## CI — CI tracker for GitHub Actions (DevHub-Plugins)
+## CI — CI tracker for GitHub Actions [Plugins]
 Decided 2026-10-12: **GitHub Actions** first; providers behind `ICiProvider` (GitLab, Azure DevOps later, as
 their own plugins). `DevHub.Ci` (+ `.Core`) needs GitHub on and calls the API through PM6's `IGitHubApi` (the
 account stays in Git Credential Manager). Code in DevHub-Plugins; plan in its `docs/CI_PLAN.md`.
@@ -330,7 +334,7 @@ account stays in Git Credential Manager). Code in DevHub-Plugins; plan in its `d
       major) so the button works for DevHub itself
 - [ ] CI6. Workflow files: list and open `.github/workflows/*.yml`, GitHub's validation errors shown
 
-## X — Multiplatform (Linux, macOS)
+## X — Multiplatform (Linux, macOS) [DevHub + Plugins]
 - [ ] Windows-only bits behind small services: `explorer.exe` (Show in Explorer), `cmd /c` shims and PATHEXT
       (command runner), Git Credential Manager paths, Unity Hub paths (`@unity`), the `py` launcher, title-bar
       caption buttons, `%AppData%` / `%LocalAppData%` locations
@@ -339,7 +343,7 @@ account stays in Git Credential Manager). Code in DevHub-Plugins; plan in its `d
 - [ ] Packages per OS with Velopack (Linux AppImage, macOS .app / .pkg; signing / notarization on macOS)
 - [ ] Marketplace packages per OS when a plugin has native parts (`os` field in the index)
 
-## M10 — Natural-language commands (local AI, learning project)
+## M10 — Natural-language commands (local AI, learning project) [DevHub: command bar, catalog; Plugins: their tools]
 Goal: type "new unity project called Timber with git" → a structured tool call →
 confirmation screen → same execution path as the UI. See "Natural-language
 commands" in `CLAUDE.md` for the design rules. With plugins, the tools come from the plugins
