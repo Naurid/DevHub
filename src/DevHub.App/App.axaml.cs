@@ -42,13 +42,19 @@ public partial class App : Application
             // Which plugins load is decided before the container exists: a switched-off plugin
             // registers nothing, so no menu item, tab, tool window or shortcut of it appears.
             var dataDir = Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } data ? data : null;
-            var plugins = PluginHost.Load(store, PluginInstaller.DefaultRoot(dataDir));
-#if DEBUG
-            // One line for whoever starts the app from a console or script (stdout; a WinExe has no window for it).
+            // DEVHUB_PLUGIN_PATHS (optional): plugin build folders to load while developing them (docs/PLUGINS.md).
+            var developmentPaths = PluginFolders.ParsePaths(Environment.GetEnvironmentVariable(PluginFolders.DevelopmentPathsVariable));
+            var plugins = PluginHost.Load(store, PluginInstaller.DefaultRoot(dataDir), developmentPaths);
+            // One line for whoever starts the app from a console or script (stdout; a WinExe has no window for it):
+            // always in Debug builds, and in an installed DevHub when it's started to develop plugins.
+#if !DEBUG
+            if (developmentPaths.Count > 0)
+#endif
             Console.WriteLine("DevHub plugins: found " + string.Join(", ", plugins.Available.Select(p => p.Info.Id))
                               + "; loaded " + string.Join(", ", plugins.Loaded.Select(p => p.Info.Id))
-                              + (plugins.Skipped.Count > 0 ? "; skipped " + string.Join(", ", plugins.Skipped.Select(s => s.Plugin.Id)) : ""));
-#endif
+                              + (plugins.Skipped.Count > 0 ? "; skipped " + string.Join(", ", plugins.Skipped.Select(s => s.Plugin.Id)) : "")
+                              + (plugins.DevelopmentIds.Count > 0 ? "; in development " + string.Join(", ", plugins.DevelopmentIds) : "")
+                              + (plugins.Problems.Count > 0 ? "; problems: " + string.Join(" | ", plugins.Problems) : ""));
 
             var collection = new ServiceCollection();
             ConfigureServices(collection, store, plugins);

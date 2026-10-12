@@ -205,10 +205,11 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
   - [x] PM2c. Bundled plugins are plugin folders in `plugins\` next to the app; an updated copy in
         `%AppData%\DevHub\plugins` wins while it's newer (`PluginFolders`, tested), only the chosen folder
         loads; Marketplace page: Bundled / Update to / Back to / Remove Old Copy
-- [ ] **NEXT —** PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
-      output folders), a `launchSettings.json` in the plugins repo (F5 in Rider debugs a plugin inside
-      DevHub), `tools/plugin-matrix.ps1` moves along and uses those folders
-- [ ] PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the
+- [x] PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
+      output folders; they win and are switched on for the run), a generated `launchSettings.json` in the
+      plugins repo (F5 in Rider debugs a plugin inside DevHub, own data folder), `build/Test-Plugins.ps1`
+      there (the plugin matrix against those folders; DevHub's `tools/plugin-matrix.ps1` changes in PM5)
+- [ ] **NEXT —** PM4. Move with history (`git filter-repo`): `plugins/`, their tests, `tests/DevHub.TestKit`, the
       template-engine skill, `GIT_CLIENT_PLAN.md`, `TEMPLATE_FORMAT.md` → merged into DevHub-Plugins next to
       HelloWorld; Sdk project references → the NuGet package; their CI there runs the moved tests (Windows:
       real git / dotnet / cargo / go); per-plugin versions from then on (`<id>/vN`, first release tagged `v1`)

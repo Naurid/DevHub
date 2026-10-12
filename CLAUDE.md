@@ -99,7 +99,8 @@ Settings → Plugins (applied after a restart).
   optional `T? x = null` parameter, always with a fallback;
 - Debug builds validate every DI registration at startup (`ValidateOnBuild`), so a missing
   dependency shows up immediately. Try plugin combinations with `enabledPlugins` in a scratch
-  `DEVHUB_DATA_DIR` settings file.
+  `DEVHUB_DATA_DIR` settings file; load a plugin straight from its build folder with
+  `DEVHUB_PLUGIN_PATHS` (docs/PLUGINS.md §9).
 
 **Plugin settings** live in their own section: a class implementing `ISettingsSection`
 (`SectionId` = plugin id) in the plugin's `.Core`, read with `store.LoadSection<T>()`,

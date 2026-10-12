@@ -11,8 +11,10 @@ plugins/<Name>/          one plugin: <Name>.csproj, plugin.json, its plugin clas
 build/Get-PluginVersion.ps1   a plugin's version, from git
 build/Pack-Plugin.ps1    builds one plugin and packs <id>-<version>.zip (plugin.json + its DLLs)
 build/Publish-Plugins.ps1     CI: releases the plugins whose version changed and updates the index
+build/Test-Plugins.ps1   starts DevHub with every plugin together and each one alone, reports what loaded
 .github/workflows/       ci.yml (build, vulnerable packages), publish.yml (releases + index)
 Directory.Build.props    shared settings: the Sdk packages (NuGet), Avalonia / CommunityToolkit / DI build-only
+Directory.Build.targets  after a build: plugin.json next to the DLLs, Properties/launchSettings.json (F5)
 ```
 
 ## Writing a plugin
@@ -25,12 +27,32 @@ Directory.Build.props    shared settings: the Sdk packages (NuGet), Avalonia / C
 2. Build: `dotnet build plugins/<YourPlugin>`. The Sdk comes from nuget.org (`DevHub.Sdk`,
    `DevHub.Sdk.Core`): the newest release by default. DevHub's plugin guide (docs/PLUGINS.md in DevHub)
    explains the extension points (tool windows, documents, actions, settings pages…).
-3. Try it in DevHub before publishing:
+3. Run it in DevHub: **F5** (see below). Before publishing, `pwsh build/Test-Plugins.ps1`.
+4. To try the real install path too (package, marketplace, restart):
    - `pwsh build/Pack-Plugin.ps1 -Folder plugins/<YourPlugin> -Version 0.0.1`;
    - write an `index.json` with one entry whose `url` is the zip's `file:///…` path and `sha256` its
      hash (the script prints both);
    - add that index.json's path to DevHub's Settings → Plugins → Marketplace → Sources, Refresh,
      Install, and restart.
+
+## Run and debug in DevHub
+
+Every build of a plugin makes its build output (`bin/Debug/net10.0`) a plugin folder (plugin.json next
+to the DLLs) and writes `Properties/launchSettings.json` with a **DevHub** profile. In Rider or Visual
+Studio, pick that profile and press **F5** (or Run): your installed DevHub starts with your plugin loaded
+from the build output, breakpoints work, and nothing needs packing or installing. Stop, change, F5 again.
+
+- It's DevHub's `DEVHUB_PLUGIN_PATHS` (build folders to load plugins from, `;`-separated): a plugin
+  there wins over any installed or bundled copy and is switched on for that run.
+- It uses its own settings folder, `.devhub-data/` at the top of this repository (`DEVHUB_DATA_DIR`), so
+  your everyday DevHub settings aren't touched. Delete it to start fresh.
+- DevHub is expected at `%LocalAppData%\DevHub\current\DevHub.App.exe` (where its installer puts it).
+  Elsewhere, e.g. a DevHub you build yourself: `dotnet build -p:DevHubExe=<path to DevHub.App.exe>`.
+- `launchSettings.json` holds your paths, so it isn't committed; any build recreates it.
+
+`pwsh build/Test-Plugins.ps1` (`-Exe <DevHub.App.exe>` for another DevHub) starts DevHub with all your
+plugins together, each one alone, and next to every DevHub plugin, and fails when DevHub exits, hangs
+or reports a plugin it couldn't load.
 
 Keep the versions of Avalonia, CommunityToolkit.Mvvm and Microsoft.Extensions.DependencyInjection
 in `Directory.Build.props` equal to DevHub's (DevHub provides them at run time). `apiVersion` in

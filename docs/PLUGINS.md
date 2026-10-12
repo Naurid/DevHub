@@ -238,6 +238,13 @@ Plugins can also live outside DevHub: in **Naurid/DevHub-Plugins** (its starter 
 `tools/plugin-repo/` here, with a sample HelloWorld plugin), installed from Settings → Plugins →
 Marketplace.
 
+- **Developing one:** `DEVHUB_PLUGIN_PATHS` (`;`-separated) lists folders DevHub loads plugins from:
+  a plugin folder (plugin.json next to the DLLs, e.g. a plugin's build output) or a folder of them. A
+  plugin there wins over any bundled or installed copy and is switched on for that run (settings
+  unchanged); a path that doesn't exist or holds no plugin is reported. The plugins repo's build writes
+  a `launchSettings.json` that starts the installed DevHub this way (F5 debugs a plugin inside DevHub),
+  and its `build/Test-Plugins.ps1` runs the plugin matrix against those folders. With the variable set,
+  even a Release DevHub prints its `DevHub plugins: …` line (with problems) to stdout.
 - **Sdk:** a marketplace plugin builds against the NuGet packages `DevHub.Sdk` + `DevHub.Sdk.Core`
   (nuget.org, DevHub's version; `build/SdkPackage.props`), referenced build-only
   (`ExcludeAssets="runtime"`). For a project with a `plugin.json`, the package's build check fails

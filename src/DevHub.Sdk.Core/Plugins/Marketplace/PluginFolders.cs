@@ -36,6 +36,57 @@ public static class PluginFolders
         return found;
     }
 
+    /// <summary>The environment variable listing plugin folders to load while developing them (<see cref="ScanPaths"/>).</summary>
+    public const string DevelopmentPathsVariable = "DEVHUB_PLUGIN_PATHS";
+
+    /// <summary>"C:\a\bin\Debug\net10.0;C:\b\out" → the paths (separated by ';' on Windows, ':' elsewhere; blanks dropped).</summary>
+    public static IReadOnlyList<string> ParsePaths(string? value) =>
+        (value ?? "").Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    /// <summary>
+    /// Plugin folders to develop with: each path is a plugin folder (a plugin.json in it, e.g. a plugin's build
+    /// output), or a folder whose subfolders are. Relative paths are relative to the current directory. A path
+    /// that doesn't exist or holds no plugin is reported in <paramref name="problems"/>.
+    /// </summary>
+    public static IReadOnlyList<PluginFolder> ScanPaths(IEnumerable<string> paths, List<string> problems)
+    {
+        var found = new List<PluginFolder>();
+        foreach (var path in paths.Select(Path.GetFullPath))
+        {
+            if (!Directory.Exists(path))
+            {
+                problems.Add($"Plugin path not found: {path}");
+                continue;
+            }
+            var here = PluginInstaller.ReadInfo(path) is { } info && !string.IsNullOrWhiteSpace(info.Id)
+                ? [new PluginFolder(path, info, Bundled: false)]
+                : Scan(path, bundled: false);
+            if (here.Count == 0)
+                problems.Add($"No plugin.json in {path} (nor in its folders)");
+            found.AddRange(here);
+        }
+        return found;
+    }
+
+    /// <summary>
+    /// Development folders (<see cref="ScanPaths"/>) win over every other copy of their plugin, whatever the
+    /// versions (a build output has none): they replace it, in its place; the others follow. The first one of an id counts.
+    /// </summary>
+    public static IReadOnlyList<PluginFolder> WithDevelopment(IReadOnlyList<PluginFolder> chosen, IReadOnlyList<PluginFolder> development)
+    {
+        var result = chosen.ToList();
+        var taken = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var folder in development.Where(f => taken.Add(f.Info.Id)))
+        {
+            var index = result.FindIndex(c => c.Info.Id.Equals(folder.Info.Id, StringComparison.OrdinalIgnoreCase));
+            if (index >= 0)
+                result[index] = folder;
+            else
+                result.Add(folder);
+        }
+        return result;
+    }
+
     /// <summary>
     /// One folder per plugin id: an installed copy wins when its version is newer than the bundled one; otherwise
     /// the bundled copy (also on a tie). Ids compare without case. Bundled folders keep their order, then installed ones.
