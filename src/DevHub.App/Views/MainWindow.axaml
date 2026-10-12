@@ -27,6 +27,7 @@
             <c:ActionButton Classes="stripe" Classes.active="{Binding IsOpen}"
                             IconKind="{Binding IconKind}"
                             ToolTip.Tip="{Binding ToolTip}"
+                            AutomationProperties.Name="{Binding Title}"
                             Command="{Binding ToggleCommand}"
                             Margin="0,2" />
         </DataTemplate>

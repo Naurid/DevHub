@@ -103,6 +103,17 @@ jobs:
           --outputDir Releases --publish --tag release/${{ steps.version.outputs.version }}
           --releaseName "DevHub ${{ steps.version.outputs.version }}" --targetCommitish ${{ github.sha }}
 
+      - name: Sdk for plugins (DevHub-Sdk-<version>.zip on the release)
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # What a plugin builds against (tools/plugin-repo/build/Get-Sdk.ps1 downloads it).
+          $zip = "Releases/DevHub-Sdk-${{ steps.version.outputs.version }}.zip"
+          Compress-Archive -Path artifacts/publish/win-x64/DevHub.Sdk.dll, artifacts/publish/win-x64/DevHub.Sdk.Core.dll -DestinationPath $zip
+          gh release upload "release/${{ steps.version.outputs.version }}" $zip --repo ${{ github.repository }}
+
       - name: Installers as a workflow artifact
         if: steps.version.outputs.exists == 'false'
         uses: actions/upload-artifact@v4

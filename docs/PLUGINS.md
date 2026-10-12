@@ -232,7 +232,30 @@ Swap in your feature's name. Look at `plugins/DevHub.Projects` for a small real 
   window, actions, Find Action entries, Settings page), then switched off in Settings → Plugins
   (after Restart Now nothing of it is left), then on again (its tabs and settings come back).
 
-## 9. Background
+## 9. Marketplace plugins (outside this repository)
+
+Plugins can also live outside DevHub: in **Naurid/DevHub-Plugins** (its starter is
+`tools/plugin-repo/` here, with a sample HelloWorld plugin), installed from Settings → Plugins →
+Marketplace.
+
+- **Package:** a zip with `plugin.json` (id, name, version, description, category, `apiVersion`,
+  requires) and the plugin's own DLLs, never the Sdk or Avalonia (DevHub has those).
+- **Index:** `index.json`, an array of entries (id, name, version, apiVersion, url, sha256, size…).
+  DevHub reads the sources in `AppSettings.PluginSources`, by default `PluginApi.DefaultIndexUrl`
+  (the "index" release of DevHub-Plugins). A source may also be a local index.json, whose URLs may
+  be `file:///` (to try your own plugin).
+- **Install, update, remove:** `PluginInstaller` (Sdk.Core). Downloads are checked against the
+  SHA-256, extraction refuses entries outside the plugin folder, and changes wait in
+  `%AppData%\DevHub\plugins\.pending` until the next start. Then `PluginHost` moves them into place,
+  loads `plugins\<id>\*.dll`, and switches the plugin on.
+- **Compatibility:** `PluginApi.Version` (Sdk.Core) is the plugin API version. A plugin whose
+  `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
+  (a removed or changed member they use), and say so in the release notes.
+- **Built-ins win:** a marketplace plugin with a built-in plugin's id isn't loaded.
+- **Versions:** each marketplace plugin has its own (major tags `<id>/vN`, +1 minor per change to
+  its folder on main); built-in plugins share DevHub's version.
+
+## 10. Background
 
 Decided on 2026-10-11. Plugins are first-party for now, with a contract shaped for third parties
 later. One install ships every plugin, and users switch them on and off with a first-run picker

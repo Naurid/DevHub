@@ -15,7 +15,7 @@ public static class PluginApi
     public const int Version = 1;
 
     /// <summary>The marketplace index DevHub reads when no other source is set (docs/PLUGINS.md).</summary>
-    public const string DefaultIndexUrl = "https://raw.githubusercontent.com/Naurid/DevHub-Plugins/main/index.json";
+    public const string DefaultIndexUrl = "https://github.com/Naurid/DevHub-Plugins/releases/download/index/index.json";
 }
 
 /// <summary>

@@ -96,7 +96,7 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         if (row.Offered is not { } entry)
             return;
         var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel($"Install {entry.Name}",
-            $"{entry.Name} {entry.Version} comes from {new Uri(entry.Url).Host}. A plugin is a program: it runs inside DevHub with your permissions. Install it only if you trust where it comes from. It's ready after a restart.",
+            $"{entry.Name} {entry.Version} comes from {Origin(entry.Url)}. A plugin is a program: it runs inside DevHub with your permissions. Install it only if you trust where it comes from. It's ready after a restart.",
             row.HasUpdate ? "Update" : "Install", [entry.Url], destructive: false));
         if (!ok)
             return;
@@ -118,6 +118,10 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         Message = $"{entry.Name} {entry.Version} is ready: restart DevHub to use it.";
         Pending();
     }
+
+    /// <summary>"github.com", or "this computer (C:\plugins\x.zip)" for a local index file.</summary>
+    private static string Origin(string url) =>
+        new Uri(url) is { IsFile: true } file ? $"this computer ({file.LocalPath})" : new Uri(url).Host;
 
     private void Remove(MarketplaceRowViewModel row)
     {
