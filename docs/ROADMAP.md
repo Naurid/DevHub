@@ -223,7 +223,7 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       build fetches them once); first-run presets still offline; the shell is checked with a small test plugin
       (`tests/DevHub.TestPlugin`, in `tools/plugin-matrix.ps1`). Release order: DevHub with the pinned Sdk →
       the plugins' `v1` in DevHub-Plugins → DevHub with PM5
-- [ ] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
+- [x] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
       commit/branch decorations (CI marks), branch/commit events, a GitHub API client lent by the GitHub
       plugin (`IGitHubApi`, no token handed out); UI blocks: a drag-and-drop board/list panel (from
       `TreeDragDrop`), a Markdown viewer, simple charts (line, bar, pie), a people picker. Plugins in the
@@ -233,10 +233,12 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
         `Charts` (`ChartData`, `ChartMath`), `People` (`Person`, `PeopleSearch`), `Collections/ListMoves` (all
         tested); controls `MarkdownView`, `LineChart` / `BarChart` / `PieChart` (`Brush.Chart.1…6`),
         `ItemsDragDrop`, `TreeDragDrop` (moved from Templates), `PeoplePicker`; all in the UI Gallery; docs
-  - [ ] **NEXT —** PM6b (DevHub-Plugins). Git offers `IRepositoryEvents` and uses `ICommitMessageSuggester` /
-        `IGitDecorator`; GitHub offers `IGitHubApi`; Templates uses the Sdk's `TreeDragDrop` (needs the Sdk
-        with PM6a: DevHub release first)
-- [ ] PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
+  - [x] PM6b (DevHub-Plugins). Git offers `IRepositoryEvents` (the client's `OperationCompleted`, tested; branch
+        changes from each tab's status refresh) and uses `ICommitMessageSuggester` (Suggested… / Use above the
+        commit box) and `IGitDecorator` (marks in All Commits and the branch tree); GitHub offers `IGitHubApi`
+        (`SendRawAsync`: api.github.com only, tested); Templates uses the Sdk's `TreeDragDrop`. Checked end to end
+        with DevHub's test plugin (`IntegrationProbe`). Needs the Sdk with PM6a: DevHub release first
+- [ ] **NEXT —** PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
       its own `CLAUDE.md` (the rules that moved with the plugins); this roadmap names each milestone's repo
 
 ## B — Board: Jira-style agile planning, stored in the repository (DevHub-Plugins)
