@@ -98,3 +98,29 @@ Unsigned installers make Windows SmartScreen say "Windows protected your PC" the
 Actions): `SIGNING_PFX_BASE64` (the .pfx certificate, base64) and `SIGNING_PASSWORD`. The release
 workflow signs as soon as they exist; no other change is needed. Azure Trusted Signing works too
 (`vpk pack --azureTrustedSignFile`), with a small change to the pack step.
+
+## Updates inside DevHub
+
+- An installed DevHub checks GitHub Releases quietly about 5 seconds after it starts (Settings →
+  Updates turns this off). Nothing changes until the user clicks.
+- If there's a newer version, the status bar says **"DevHub 1.6.0 is available — Update and
+  restart"**. Clicking it downloads the update (a small delta when possible, with progress in the
+  status bar), closes DevHub the normal way (open tabs saved, unsaved template edits asked
+  about), swaps the version and starts the new one.
+- **Settings → Updates** shows the version, Check Now, Update and Restart, Release Notes, and the
+  startup-check toggle. **Help → Check for Updates** does the check from the menu or Find Action.
+- A development build (`dotnet run`, version `0.0.0-dev`) and the portable zip never update; they
+  say so.
+
+### Rehearse an update locally (before trusting a real release)
+
+1. Build and pack version 0.0.1 into a folder, and install it: run its `Setup.exe` (this installs
+   DevHub for your Windows user; uninstall later in Settings → Apps).
+2. Pack 0.0.2 into the **same** output folder.
+3. Start the installed DevHub with `DEVHUB_UPDATE_SOURCE` set to that folder (instead of GitHub):
+
+   ```
+   $env:DEVHUB_UPDATE_SOURCE = "C:\path\to\Releases"; & "$env:LOCALAPPDATA\DevHub\current\DevHub.App.exe"
+   ```
+
+4. The status bar offers 0.0.2; Update and restart; DevHub comes back as 0.0.2 (Settings → Updates).

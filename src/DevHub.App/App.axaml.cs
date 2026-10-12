@@ -138,10 +138,21 @@ public partial class App : Application
                 mainWindow.Opened += AskOnce;
             }
 
+            // A newer DevHub? Asked quietly a few seconds after start (Settings → Updates); the status bar
+            // offers it, nothing installs without a click.
+            if (store.Load().Updates?.CheckOnStartup ?? true)
+                _ = CheckForUpdatesSoonAsync(Services.GetRequiredService<UpdateService>());
+
             desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task CheckForUpdatesSoonAsync(UpdateService updates)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(5)); // not while the window is still coming up
+        await updates.CheckAsync(); // never throws: a failed check just isn't news
     }
 
     /// <summary>
@@ -197,6 +208,11 @@ public partial class App : Application
         // of Settings starts from the saved values. The Func is a tiny factory for the action.
         services.AddTransient<SettingsPageViewModelBase, AppearanceSettingsPageViewModel>();
         services.AddTransient<SettingsPageViewModelBase, PluginsSettingsPageViewModel>();
+        services.AddTransient<SettingsPageViewModelBase, UpdatesSettingsPageViewModel>();
+
+        // DevHub's own updates (GitHub Releases, Velopack): the service, its status-bar note.
+        services.AddSingleton<UpdateService>();
+        services.AddSingleton<StatusBarWidgetViewModelBase, UpdateWidgetViewModel>();
         services.AddSingleton<IAppRestarter, AppRestarter>();
         services.AddTransient<SettingsDialogViewModel>();
         services.AddSingleton<Func<SettingsDialogViewModel>>(sp => () => sp.GetRequiredService<SettingsDialogViewModel>());
@@ -214,6 +230,7 @@ public partial class App : Application
         services.AddSingleton<IActionProvider, SettingsActionProvider>();
         services.AddSingleton<IActionProvider, FindActionProvider>();
         services.AddSingleton<IActionProvider, RestartActionProvider>();
+        services.AddSingleton<IActionProvider, UpdateActionProvider>();
         services.AddSingleton<ActionRegistry>();
     }
 }

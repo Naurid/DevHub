@@ -21,6 +21,9 @@ public sealed class AppSettings
     /// <summary>Theme, accent and density; null until first changed (the app keeps its built-in look).</summary>
     public AppearanceSettings? Appearance { get; set; }
 
+    /// <summary>Settings → Updates; null = never changed (check on startup).</summary>
+    public UpdateSettings? Updates { get; set; }
+
     /// <summary>Open editor tabs from the last session; null until the first save.</summary>
     public EditorLayout? Editor { get; set; }
 

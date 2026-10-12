@@ -1,0 +1,15 @@
+<!-- Status bar: "DevHub 1.6.0 is available — Update and restart" (only when an update was found). -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.Shell"
+             x:Class="DevHub.Views.Shell.UpdateWidgetView"
+             x:DataType="vm:UpdateWidgetViewModel">
+    <Button Classes="statusWidget" IsVisible="{Binding Updates.HasUpdate}" IsEnabled="{Binding !Updates.IsBusy}"
+            Command="{Binding UpdateCommand}"
+            ToolTip.Tip="Download the new version, close DevHub (open tabs are kept) and start the new one"
+            Foreground="{DynamicResource Brush.Accent}">
+        <TextBlock>
+            <Run Text="DevHub" /><Run Text=" " /><Run Text="{Binding Updates.AvailableVersion}" /><Run Text=" is available — Update and restart" />
+        </TextBlock>
+    </Button>
+</UserControl>

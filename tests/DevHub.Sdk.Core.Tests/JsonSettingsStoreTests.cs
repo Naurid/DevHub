@@ -40,6 +40,19 @@ public class JsonSettingsStoreTests
     // ----- Shell sections -----
 
     [Fact]
+    public void Updates_check_on_startup_by_default_and_round_trips()
+    {
+        using var dir = new TempDir();
+        var store = new JsonSettingsStore(dir.Path);
+        Assert.Null(store.Load().Updates); // never changed: the app treats it as "check on startup"
+
+        store.Update(s => s.Updates = new UpdateSettings { CheckOnStartup = false });
+
+        Assert.False(new JsonSettingsStore(dir.Path).Load().Updates!.CheckOnStartup);
+        Assert.True(new UpdateSettings().CheckOnStartup);
+    }
+
+    [Fact]
     public void Tool_window_layout_is_null_until_saved()
     {
         using var dir = new TempDir();
