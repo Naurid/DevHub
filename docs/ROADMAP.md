@@ -166,7 +166,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Settings → Templates (author name, personal library location, extra libraries, default project folder,
       project folder rules per language and/or category)
 - [x] Recent projects on New Project's start page (Open / Show)
-- [ ] **NEXT —** Preview: drag and drop to move files (Move to… covers it until then), undo of an edit
+- [x] Preview: drag and drop to move files and folders (onto a folder, a file = its folder, empty space = the top), Undo (Ctrl+Z)
 - [x] Zip export/import of a template (Templates tab; zip-slip refused, free id when taken)
 - [x] App icon, publish profile (`dotnet publish src/DevHub.App -p:PublishProfile=win-x64` → artifacts/publish/win-x64)
 
