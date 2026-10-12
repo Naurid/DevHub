@@ -74,7 +74,8 @@ jobs:
           path: sbom
 
   dependency-review:
-    if: github.event_name == 'pull_request'
+    # Needs a public repository (or GitHub Advanced Security): skipped while the repo is private.
+    if: github.event_name == 'pull_request' && !github.event.repository.private
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
