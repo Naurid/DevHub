@@ -181,7 +181,7 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
       checks, plugin API version, plugins loaded from `%AppData%\DevHub\plugins`
 - [x] R5 Plugins repo starter (`tools/plugin-repo/`): HelloWorld sample, per-plugin versions (`<id>/vN`),
       publish workflow (release per plugin version + `index.json`)
-- [ ] **NEXT —** You: the one-time GitHub settings, first `v1` tag, Naurid/DevHub-Plugins created (from the
+- [x] You: the one-time GitHub settings, first `v1` tag, Naurid/DevHub-Plugins created (from the
       starter for now; PM below moves every plugin into it)
 - [ ] Code signing (Azure Trusted Signing or a certificate) once SmartScreen warnings matter
 
@@ -191,7 +191,7 @@ Templates, and the new Board, Diagrams, CI) is developed, versioned and released
 **Naurid/DevHub-Plugins**. The first four are **bundled** in DevHub's installer (offline first run, presets
 as today) and then **update through the marketplace**. The Sdk goes to **nuget.org**. The plugins move
 **with their git history**. Each step leaves both repos building, tested and releasable.
-- [ ] PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
+- [ ] **NEXT —** PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
       `PluginApi.Version`), pushed to nuget.org by `release.yml` (you: a `NUGET_API_KEY` secret); the
       plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
       (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
