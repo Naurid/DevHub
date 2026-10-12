@@ -19,5 +19,6 @@
         <ResourceInclude Source="avares://DevHub.Sdk/Themes/Components/Badge.axaml" />
         <ResourceInclude Source="avares://DevHub.Sdk/Themes/Components/SplitterThumb.axaml" />
         <ResourceInclude Source="avares://DevHub.Sdk/Themes/Components/IconToggle.axaml" />
+        <ResourceInclude Source="avares://DevHub.Sdk/Themes/Components/PeoplePicker.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -186,7 +186,11 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `FocusRequest` | attached property: focus this element whenever a bound number goes up (ViewModel asks for focus) | `<TextBox c:FocusRequest.Token="{Binding Commit.FocusRequest}" />` |
 | `CommitGraphCell` | one row of the commit graph, drawn in code from a Core `GraphRow` (colors `Brush.Graph.0…7`) | `<c:CommitGraphCell Row="{Binding Graph}" Lanes="{Binding GraphLanes}" LaneWidth="{DynamicResource Size.GraphLane}" />` |
 | `Avatar` | a round account picture (bytes from a ViewModel), or the name's first letter on the accent color | `<c:Avatar ImageData="{Binding Avatar.Image}" Text="{Binding Author}" Width="{DynamicResource Size.AvatarSmall}" Height="{DynamicResource Size.AvatarSmall}" />` |
-| `TreeDragDrop` (Templates plugin) | attached property: drag rows of a `TreeView` onto other rows, decided by a ViewModel implementing `ITreeDropHandler` (`CanDrop` / `Drop`); the row under the pointer gets the `dropTarget` class | `<TreeView c:TreeDragDrop.Handler="{Binding}">` + a style for `TreeViewItem.dropTarget /template/ Border#PART_LayoutRoot` |
+| `ItemsDragDrop` | attached property: drag items of any `ItemsControl` to reorder them or move them between lists (a board: cards between columns, columns along the board), decided by a ViewModel implementing `IItemsDropHandler`; nested lists stay apart; an accent line shows where it lands; `ListMoves.Move` does the move | `<ItemsControl ItemsSource="{Binding Cards}" c:ItemsDragDrop.Handler="{Binding …}" c:ItemsDragDrop.List="{Binding}" />` (`c:ItemsDragDrop.Orientation="Horizontal"` for a row) |
+| `MarkdownView` | Markdown (headings, emphasis, code, quotes, task lists, links) as selectable text; links only http(s) / mailto | `<c:MarkdownView Markdown="{Binding Description}" />` |
+| `LineChart` / `BarChart` / `PieChart` | charts from a Core `ChartData` (labels + series), colors `Brush.Chart.1…6`, legend, value tooltips, `EmptyText` | `<c:LineChart Data="{Binding Burndown}" Height="200" />`, `<c:PieChart Data="{Binding ByStatus}" IsDonut="True" />` |
+| `PeoplePicker` | picks people (`Person`) by fuzzy search; chips with ×; ↓ ↑ Enter, Backspace, Escape; `AllowMultiple="False"` for one | `<c:PeoplePicker People="{Binding Team}" SelectedPeople="{Binding Assignees}" />` |
+| `TreeDragDrop` | attached property: drag rows of a `TreeView` onto other rows, decided by a ViewModel implementing `ITreeDropHandler` (`CanDrop` / `Drop`); the row under the pointer gets the `dropTarget` class | `<TreeView c:TreeDragDrop.Handler="{Binding}">` + a style for `TreeViewItem.dropTarget /template/ Border#PART_LayoutRoot` |
 | `IconToggle` / `FoldArrow` (themes) | a small flat on/off icon button (e.g. "show folders"); a ▸ / ▾ fold arrow for custom tree rows | `<ToggleButton Theme="{StaticResource IconToggle}" IsChecked="{Binding ChangesAsTree}"><c:Icon Kind="folder" /></ToggleButton>` |
 
 Git file lists share `Views/Git/FileChangeStyles.axaml` (change colors, the `FileRow` item
@@ -393,6 +397,8 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 | `Svg` is "a namespace but used like a type" | package namespace clash | `using SvgControl = Avalonia.Svg.Skia.Svg;` |
 | Settings ignore the `APPDATA` variable | `GetFolderPath` asks Windows directly | `DEVHUB_DATA_DIR` override |
 | Fuzzy search too loose ("rider" matched Appearance) | matching one long keyword string lets letters scatter | match title and each keyword separately |
+| App crashes at startup: `ControlTemplate styles cannot contain multiple template selectors` | a ControlTheme style like `^ /template/ TextBox /template/ Border` (the build doesn't check) | style the inner control inside the template (its `Resources` / `Styles`) |
+| A TextBox inside a composite control keeps its own focus border | Fluent reads `TextControlBorderBrushFocused` (and friends) as resources, which win over style setters | override those resources on that TextBox (`PeoplePicker.axaml`) |
 
 ---
 

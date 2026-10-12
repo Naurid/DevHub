@@ -223,11 +223,19 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       build fetches them once); first-run presets still offline; the shell is checked with a small test plugin
       (`tests/DevHub.TestPlugin`, in `tools/plugin-matrix.ps1`). Release order: DevHub with the pinned Sdk →
       the plugins' `v1` in DevHub-Plugins → DevHub with PM5
-- [ ] **NEXT —** PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
+- [ ] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
       commit/branch decorations (CI marks), branch/commit events, a GitHub API client lent by the GitHub
       plugin (`IGitHubApi`, no token handed out); UI blocks: a drag-and-drop board/list panel (from
       `TreeDragDrop`), a Markdown viewer, simple charts (line, bar, pie), a people picker. Plugins in the
       same repo may reference each other's `.Core` for a declared hard dependency (Board.Git → Git)
+  - [x] PM6a (DevHub). The contracts (`Integration/GitIntegration.cs`: `IRepositoryEvents`,
+        `ICommitMessageSuggester`, `IGitDecorator`; `GitHubIntegration.cs`: `IGitHubApi`); Sdk.Core `Markdown`,
+        `Charts` (`ChartData`, `ChartMath`), `People` (`Person`, `PeopleSearch`), `Collections/ListMoves` (all
+        tested); controls `MarkdownView`, `LineChart` / `BarChart` / `PieChart` (`Brush.Chart.1…6`),
+        `ItemsDragDrop`, `TreeDragDrop` (moved from Templates), `PeoplePicker`; all in the UI Gallery; docs
+  - [ ] **NEXT —** PM6b (DevHub-Plugins). Git offers `IRepositoryEvents` and uses `ICommitMessageSuggester` /
+        `IGitDecorator`; GitHub offers `IGitHubApi`; Templates uses the Sdk's `TreeDragDrop` (needs the Sdk
+        with PM6a: DevHub release first)
 - [ ] PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
       its own `CLAUDE.md` (the rules that moved with the plugins); this roadmap names each milestone's repo
 

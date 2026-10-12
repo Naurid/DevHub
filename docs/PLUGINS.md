@@ -154,7 +154,9 @@ plugin fields to `AppSettings` (that's the shell's: window layout, appearance, `
 ## 6. Linking plugins
 
 **Hard requirement** (`Requires`): the plugin may use the required plugin's types and services
-directly. GitHub requires Git.
+directly, and reference its projects: its `.Core` for logic (Board.Git → Git.Core), its UI project only
+for UI it builds on. Only plugins in the same repository (DevHub-Plugins) do that; the required plugin's
+package brings its DLLs (§9, one copy). GitHub requires Git.
 
 **Optional link between independent plugins:** a small interface in `src/DevHub.Sdk/Integration/`,
 with only plain data (paths) in it. The plugin that offers the feature registers an
@@ -167,6 +169,10 @@ and **always has a fallback**:
 | `IProjectFileEditor` | Projects (Open With) | Git: Open in Editor (F4), conflicts | the Windows default app |
 | `IProjectFolders` | Projects (scan folders, rescan) | Git: Clone's folder, rescan after | Documents, no rescan |
 | `IAddFilesFromTemplate` | Templates (opens Add Files on a folder) | Projects (right-click a project), Git (repository tab button) | the entries don't show |
+| `IRepositoryEvents` (`GitIntegration.cs`) | Git: branch changed, committed, pushed, fetched | Board.Git, CI (react to a push or a new branch) | nothing happens on those events |
+| `ICommitMessageSuggester` | any plugin (Board.Git: `DEV-12: ` from the branch name) | Git's commit box: offered when the message is empty | no suggestion |
+| `IGitDecorator` | any plugin (CI: ✓ / ✗ / ● per commit and branch) | Git's commit list, commit details, branch tree | no marks |
+| `IGitHubApi` (`GitHubIntegration.cs`) | GitHub: REST calls as the signed-in user (the token stays inside GitHub; ETags, rate limit fields) | CI (runs, releases), Board (GitHub Issues import) | the feature asks you to sign in to GitHub |
 
 **A hook owned by the required plugin:** even with a hard requirement, keep the required plugin
 free of the one that needs it. Git defines `IRemoteHost` (in `DevHub.Git`) and GitHub implements
@@ -176,6 +182,17 @@ takes `IRemoteHost? host = null`; without GitHub, Publish isn't offered and Clon
 **Between plugins and the shell:** the shell never names a plugin. If the shell would need to
 know a feature, add an extension point instead (§4 grew that way: widgets, placement metadata,
 `ContextPath` on tabs, `IDocumentService`).
+
+### Building blocks in the Sdk
+
+For the UI and logic plugins share (all in the UI Gallery, View → UI Gallery in a Debug build):
+
+| What | Where | Use |
+|---|---|---|
+| Markdown | `Sdk.Core/Formatting/Markdown.cs` (parser, tested) + `c:MarkdownView` | issue text, comments, release notes; only http(s)/mailto links |
+| Charts | `Sdk.Core/Charts` (`ChartData`, `ChartMath`, tested) + `c:LineChart`, `c:BarChart`, `c:PieChart` | burndown, velocity, shares; a plugin's .Core builds the `ChartData` |
+| Lists you drag | `c:ItemsDragDrop` (+ `IItemsDropHandler`) and `Sdk.Core/Collections/ListMoves` (tested) | a board: cards between columns, columns along it; `c:TreeDragDrop` for trees |
+| People | `Sdk.Core/People` (`Person`, `PeopleSearch`, tested) + `c:PeoplePicker` | assignees, reviewers |
 
 ## 7. Recipe: a new plugin
 

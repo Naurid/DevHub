@@ -368,6 +368,83 @@
                 </Grid>
             </Border>
 
+            <!-- Building blocks for plugins (DevHub.Sdk): Markdown, charts, a drag-and-drop board, a people picker. -->
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Markdown (c:MarkdownView)" />
+                    <c:MarkdownView Markdown="{Binding SampleMarkdown}" MaxWidth="720" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Charts (c:LineChart, c:BarChart, c:PieChart)" />
+                    <TextBlock Classes="secondary" Text="Hover for values. Colors: Brush.Chart.1…6." />
+                    <UniformGrid Columns="2" Rows="2">
+                        <c:LineChart Data="{Binding Burndown}" Height="220" Margin="0,0,12,12" />
+                        <c:BarChart Data="{Binding Velocity}" Height="220" Margin="0,0,0,12" />
+                        <c:PieChart Data="{Binding ByStatus}" Height="200" Margin="0,0,12,0" IsDonut="True" />
+                        <c:BarChart Data="{Binding NoData}" Height="200" EmptyText="No sprints yet" />
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="Board (c:ItemsDragDrop)" />
+                    <TextBlock Classes="secondary" Text="Drag cards between columns, or a column by its title along the board." />
+                    <ItemsControl ItemsSource="{Binding Columns}" c:ItemsDragDrop.Handler="{Binding}" c:ItemsDragDrop.Orientation="Horizontal"
+                                  AutomationProperties.Name="Sample board">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="docs:GalleryColumn">
+                                <Border Width="200" Background="{DynamicResource Brush.Bg.Editor}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                                        CornerRadius="{DynamicResource Radius.Control}" Padding="{DynamicResource Padding.Banner}">
+                                    <StackPanel Spacing="{DynamicResource Spacing}">
+                                        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                            <c:Badge Content="{Binding Cards.Count}" />
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Cards}" MinHeight="40"
+                                                      c:ItemsDragDrop.Handler="{Binding $parent[UserControl].DataContext}"
+                                                      c:ItemsDragDrop.List="{Binding}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="{DynamicResource Spacing.Small}" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="docs:GalleryCard">
+                                                    <Border Background="{DynamicResource Brush.Bg.Panel}" BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
+                                                            CornerRadius="{DynamicResource Radius.Control}" Padding="{DynamicResource Padding.Banner}">
+                                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="section">
+                <StackPanel Spacing="{DynamicResource Spacing}">
+                    <TextBlock Classes="header" Text="People (c:PeoplePicker)" />
+                    <c:SettingsRow Label="Assignees" Description="Several people: type, ↓ / ↑ and Enter, Backspace removes the last.">
+                        <c:PeoplePicker People="{Binding Team}" SelectedPeople="{Binding Assignees}" Width="360" />
+                    </c:SettingsRow>
+                    <c:SettingsRow Label="Reviewer" Description="One person (AllowMultiple False): picking replaces.">
+                        <c:PeoplePicker People="{Binding Team}" SelectedPeople="{Binding Reviewer}" AllowMultiple="False" Placeholder="Pick a reviewer…" Width="360" />
+                    </c:SettingsRow>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

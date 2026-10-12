@@ -41,6 +41,14 @@
             <Color x:Key="Color.Status.Error">#DB5C5C</Color>
             <Color x:Key="Color.Status.Warning">#F2C55C</Color>
             <Color x:Key="Color.Status.Success">#5FAD65</Color>
+
+            <!-- Chart series, in order (LineChart, BarChart, PieChart): distinct in hue and readable on Bg.Editor. -->
+            <Color x:Key="Color.Chart.1">#548AF7</Color>
+            <Color x:Key="Color.Chart.2">#5FB865</Color>
+            <Color x:Key="Color.Chart.3">#E8B04B</Color>
+            <Color x:Key="Color.Chart.4">#E06C75</Color>
+            <Color x:Key="Color.Chart.5">#B07CE8</Color>
+            <Color x:Key="Color.Chart.6">#3FB5BA</Color>
         </ResourceDictionary>
 
         <!-- Rider "New UI" Light: same keys, different values. Every key in
@@ -65,6 +73,14 @@
             <Color x:Key="Color.Status.Error">#E55765</Color>
             <Color x:Key="Color.Status.Warning">#E2A53A</Color>
             <Color x:Key="Color.Status.Success">#208A3C</Color>
+
+            <!-- Chart series, in order: distinct in hue and readable on white. -->
+            <Color x:Key="Color.Chart.1">#3574F0</Color>
+            <Color x:Key="Color.Chart.2">#208A3C</Color>
+            <Color x:Key="Color.Chart.3">#C98A12</Color>
+            <Color x:Key="Color.Chart.4">#D6455A</Color>
+            <Color x:Key="Color.Chart.5">#8C55D1</Color>
+            <Color x:Key="Color.Chart.6">#16858B</Color>
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>
@@ -97,6 +113,14 @@
 
     <!-- Subtle tints (badge/banner backgrounds): the same color at low opacity, so they
          work on both Dark and Light without separate values. -->
+    <!-- Chart series colors, in order. -->
+    <SolidColorBrush x:Key="Brush.Chart.1" Color="{DynamicResource Color.Chart.1}" />
+    <SolidColorBrush x:Key="Brush.Chart.2" Color="{DynamicResource Color.Chart.2}" />
+    <SolidColorBrush x:Key="Brush.Chart.3" Color="{DynamicResource Color.Chart.3}" />
+    <SolidColorBrush x:Key="Brush.Chart.4" Color="{DynamicResource Color.Chart.4}" />
+    <SolidColorBrush x:Key="Brush.Chart.5" Color="{DynamicResource Color.Chart.5}" />
+    <SolidColorBrush x:Key="Brush.Chart.6" Color="{DynamicResource Color.Chart.6}" />
+
     <SolidColorBrush x:Key="Brush.Accent.Subtle" Color="{DynamicResource Color.Accent}" Opacity="0.2" />
     <SolidColorBrush x:Key="Brush.Status.Error.Subtle" Color="{DynamicResource Color.Status.Error}" Opacity="0.2" />
     <SolidColorBrush x:Key="Brush.Status.Warning.Subtle" Color="{DynamicResource Color.Status.Warning}" Opacity="0.25" />
