@@ -1,0 +1,90 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:DevHub.Controls"
+                    xmlns:p="using:DevHub.Sdk.Core.People">
+
+    <!-- PeoplePicker: chips of the picked people, then the search box; the matches drop down under it. -->
+    <ControlTheme x:Key="{x:Type c:PeoplePicker}" TargetType="c:PeoplePicker">
+        <Setter Property="Background" Value="{DynamicResource Brush.Bg.Editor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Control}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Radius.Control}" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_Frame" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <WrapPanel>
+                            <ItemsControl ItemsSource="{TemplateBinding SelectedPeople}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="p:Person">
+                                        <Border Classes="chip" Background="{DynamicResource Brush.Bg.SelectionInactive}" CornerRadius="{DynamicResource Radius.Badge}"
+                                                Padding="2,2,4,2" Margin="0,2,4,2">
+                                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}">
+                                                <c:Avatar Text="{Binding Initials}" Width="18" Height="18" />
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                                <c:ActionButton IconKind="close" Width="18" Height="18"
+                                                                Command="{Binding $parent[c:PeoplePicker].RemoveCommand}" CommandParameter="{Binding}"
+                                                                ToolTip.Tip="Remove" AutomationProperties.Name="{Binding Name, StringFormat='Remove {0}'}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBox Name="PART_Query" Text="{Binding $parent[c:PeoplePicker].Query, Mode=TwoWay}"
+                                     PlaceholderText="{TemplateBinding Placeholder}" MinWidth="120"
+                                     BorderThickness="0" Background="Transparent" Padding="2,4" FocusAdorner="{x:Null}"
+                                     AutomationProperties.Name="{TemplateBinding Placeholder}">
+                                <!-- Part of the frame: no border or background of its own in any state (the frame shows focus).
+                                     Fluent's text box reads these resources, so they're replaced for this box only. -->
+                                <TextBox.Resources>
+                                    <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
+                                    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
+                                    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
+                                    <SolidColorBrush x:Key="TextControlBackground" Color="Transparent" />
+                                    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent" />
+                                    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent" />
+                                </TextBox.Resources>
+                            </TextBox>
+                        </WrapPanel>
+                    </Border>
+                    <Popup Name="PART_Popup" PlacementTarget="{Binding #PART_Frame}" Placement="BottomEdgeAlignedLeft"
+                           IsOpen="{Binding $parent[c:PeoplePicker].IsListOpen, Mode=TwoWay}" IsLightDismissEnabled="True">
+                        <Border Background="{DynamicResource Brush.Bg.Popup}" BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius.Popup}" Padding="{DynamicResource Padding.Popup}" MinWidth="240">
+                            <ListBox Name="PART_Matches" ItemsSource="{Binding $parent[c:PeoplePicker].Matches}" Background="Transparent"
+                                     AutomationProperties.Name="Matching people">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="p:Person">
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing}" Background="Transparent">
+                                            <c:Avatar Text="{Binding Initials}" Width="22" Height="22" />
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" />
+                                                <TextBlock Classes="small secondary" Text="{Binding Id}" />
+                                            </StackPanel>
+                                            <Button Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" Padding="0"
+                                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Focusable="False"
+                                                    Command="{Binding $parent[c:PeoplePicker].PickCommand}" CommandParameter="{Binding}"
+                                                    AutomationProperties.Name="{Binding Name, StringFormat='Pick {0}'}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:focus-within /template/ Border#PART_Frame">
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

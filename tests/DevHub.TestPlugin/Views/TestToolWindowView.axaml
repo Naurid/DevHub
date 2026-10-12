@@ -1,0 +1,14 @@
+<!-- The test plugin's tool window: DevHub's ToolWindowFrame, tokens and controls, like a real plugin. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DevHub.ViewModels.ToolWindows"
+             xmlns:c="using:DevHub.Controls"
+             x:Class="DevHub.Views.ToolWindows.TestToolWindowView"
+             x:DataType="vm:TestToolWindowViewModel">
+    <c:ToolWindowFrame Header="{Binding Title}">
+        <StackPanel Margin="{DynamicResource Padding.Dialog}" Spacing="{DynamicResource Spacing}">
+            <TextBlock Text="{Binding Text}" />
+            <Button Content="Click" Command="{Binding ClickCommand}" HorizontalAlignment="Left" />
+        </StackPanel>
+    </c:ToolWindowFrame>
+</UserControl>

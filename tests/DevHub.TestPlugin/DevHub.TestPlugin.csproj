@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+      A small plugin for checking the shell without DevHub's real plugins (they live in Naurid/DevHub-Plugins and
+      come from its marketplace index): one tool window and one action. It builds with the solution, so an Sdk
+      change that breaks plugins fails here first, and tools/plugin-matrix.ps1 loads it from its build folder
+      (DEVHUB_PLUGIN_PATHS). Never referenced by the app, never shipped.
+    -->
+
+    <PropertyGroup>
+        <RootNamespace>DevHub</RootNamespace>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="12.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Its build output is a plugin folder: plugin.json next to the DLL. -->
+        <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\DevHub.Sdk\DevHub.Sdk.csproj" />
+    </ItemGroup>
+
+</Project>

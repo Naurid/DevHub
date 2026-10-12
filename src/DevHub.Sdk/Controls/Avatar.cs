@@ -90,9 +90,10 @@ public class Avatar : Control
         }
 
         context.DrawEllipse(Brush("Brush.Accent", Brushes.SteelBlue), null, rect.Center, size / 2, size / 2);
-        var letter = string.IsNullOrEmpty(Text) ? "?" : Text[..1].ToUpperInvariant();
+        // A name or login shows its first letter; two letters (a Person's Initials, "AL") show both.
+        var letter = string.IsNullOrEmpty(Text) ? "?" : Text.Length <= 2 ? Text.ToUpperInvariant() : Text[..1].ToUpperInvariant();
         var text = new FormattedText(letter, System.Globalization.CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
-            Typeface.Default, size * 0.5, Brush("Brush.Text.OnAccent", Brushes.White));
+            Typeface.Default, size * (letter.Length > 1 ? 0.4 : 0.5), Brush("Brush.Text.OnAccent", Brushes.White));
         context.DrawText(text, new Point(rect.Center.X - text.Width / 2, rect.Center.Y - text.Height / 2));
     }
 

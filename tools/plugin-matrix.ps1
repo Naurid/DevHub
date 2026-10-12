@@ -1,13 +1,16 @@
 <#
   Starts DevHub once per plugin selection and reports whether it stays up and which plugins it
-  loaded. Use it after changing a plugin or the shell: a plugin that only works next to another
-  one, or a shell that still names a plugin, shows up here.
+  loaded. Use it after changing the shell: a shell that still names a plugin, or that breaks a plugin,
+  shows up here. (Plugins have their own matrix: build/Test-Plugins.ps1 in Naurid/DevHub-Plugins.)
+
+  Plugins: the test plugin (tests/DevHub.TestPlugin, loaded from its build folder through DEVHUB_PLUGIN_PATHS,
+  so always on) and the bundled ones a Debug build fetched into bin\Debug\net10.0\plugins (build/Get-BundledPlugins.ps1).
 
   Needs the Debug build (it validates every DI registration at startup and prints
   "DevHub plugins: found …; loaded …" to stdout). Each run gets its own scratch DEVHUB_DATA_DIR
   under %TEMP%, with a repository tab (this repo) and a Templates tab open, so their views load.
 
-  Cases: everything (first start: the picker opens), nothing, each plugin alone, plus -Extra.
+  Cases: everything (first start: the picker opens), nothing but the test plugin, each plugin alone, plus -Extra.
     pwsh tools/plugin-matrix.ps1
     pwsh tools/plugin-matrix.ps1 -Extra "devhub.projects,devhub.git"
 #>
@@ -20,6 +23,9 @@ param(
 $repo = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $root = Join-Path $env:TEMP "devhub-plugin-matrix"
 if (-not (Test-Path $Exe)) { throw "Build first (dotnet build): $Exe not found." }
+$testPlugin = Join-Path $repo "tests\DevHub.TestPlugin\bin\Debug\net10.0"
+if (-not (Test-Path (Join-Path $testPlugin "plugin.json"))) { throw "Build first (dotnet build): the test plugin isn't in $testPlugin." }
+$env:DEVHUB_PLUGIN_PATHS = $testPlugin
 
 function Start-Case([string]$name, $enabled) {
     $dir = Join-Path $root ($name -replace '[^A-Za-z0-9+.]', '_')
@@ -54,6 +60,6 @@ $report = Start-Case "everything (first start)" $null
 $ids = if ("$report" -match "found ([^;]*);") { $Matches[1] -split ",\s*" | Where-Object { $_ } } else { @() }
 Write-Host "installed: $($ids -join ', ')"
 
-Start-Case "none" @() | Out-Null
+Start-Case "none (test plugin only)" @() | Out-Null
 foreach ($id in $ids) { Start-Case "$id alone" @($id) | Out-Null }
 foreach ($combo in $Extra) { Start-Case $combo ($combo -split ",\s*") | Out-Null }
