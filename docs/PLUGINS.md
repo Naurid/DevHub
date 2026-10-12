@@ -278,7 +278,8 @@ Marketplace.
   `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
   (a removed or changed member they use), and say so in the release notes.
 - **Bundled plugins and their updates:** a plugin folder in `plugins\` next to DevHub's executable is
-  *bundled* (installed and updated with DevHub; PM5 puts Projects, Git, GitHub and Templates there).
+  *bundled* (installed and updated with DevHub: Projects, Git, GitHub and Templates, fetched from the index by
+  `build/Get-BundledPlugins.ps1` in `release.yml`; a Debug build fetches them once into its output).
   When the marketplace folder has the same plugin, the newer version loads and only that folder's DLLs
   are touched (`PluginFolders.Choose`, Sdk.Core, tested): a marketplace update replaces the bundled
   copy until a DevHub update bundles a version at least as new. An update made for another plugin API

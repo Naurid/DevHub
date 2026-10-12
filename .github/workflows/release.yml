@@ -1,6 +1,6 @@
 # Publishes a release (docs/RELEASING.md): on every push to main (minor + 1) and on a major tag vN
 # (N.0.0). Runs the full CI first; nothing is published unless it passes.
-#   1. version from git (build/Get-Version.ps1)   2. dotnet publish (self-contained win-x64)
+#   1. version from git (build/Get-Version.ps1)   2. dotnet publish (self-contained win-x64) + the bundled plugins
 #   3. vpk pack: Setup.exe, .msi, full + delta update packages   4. the Sdk on nuget.org (DevHub.Sdk, DevHub.Sdk.Core)
 #   5. GitHub Release "release/<version>"
 name: Release
@@ -76,6 +76,13 @@ jobs:
         if: steps.version.outputs.exists == 'false'
         run: dotnet publish src/DevHub.App -p:PublishProfile=win-x64 -p:Version=${{ steps.version.outputs.version }}
 
+      # The plugins DevHub bundles (build/bundled-plugins.json), from Naurid/DevHub-Plugins' marketplace index, into
+      # plugins\ next to the app: in the installer, so a first start works offline; they update through the marketplace.
+      - name: Bundled plugins
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        run: pwsh build/Get-BundledPlugins.ps1 -Out artifacts/publish/win-x64/plugins
+
       - name: Install vpk
         if: steps.version.outputs.exists == 'false'
         run: dotnet tool install --global vpk --version ${{ env.VPK_VERSION }}
@@ -142,17 +149,6 @@ jobs:
           vpk upload github --repoUrl ${{ github.server_url }}/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
           --outputDir Releases --publish --tag release/${{ steps.version.outputs.version }}
           --releaseName "DevHub ${{ steps.version.outputs.version }}" --targetCommitish ${{ github.sha }}
-
-      - name: Sdk for plugins (DevHub-Sdk-<version>.zip on the release)
-        if: steps.version.outputs.exists == 'false'
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # The Sdk as DLLs, for DevHub-Plugins builds made before they used the NuGet packages (drop in PM4).
-          $zip = "Releases/DevHub-Sdk-${{ steps.version.outputs.version }}.zip"
-          Compress-Archive -Path artifacts/publish/win-x64/DevHub.Sdk.dll, artifacts/publish/win-x64/DevHub.Sdk.Core.dll -DestinationPath $zip
-          gh release upload "release/${{ steps.version.outputs.version }}" $zip --repo ${{ github.repository }}
 
       - name: Installers as a workflow artifact
         if: steps.version.outputs.exists == 'false'

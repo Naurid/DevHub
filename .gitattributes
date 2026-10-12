@@ -1,3 +1,0 @@
-# Built-in templates are copied into people's projects exactly as written (line endings included),
-# so git must never convert them: checked out byte for byte as committed, on every machine and in CI.
-plugins/DevHub.Templates.Core/BuiltInTemplates/** -text

@@ -42,32 +42,27 @@ src/
                           action system, service interfaces, Integration/ (cross-plugin hooks),
                           Controls/ (incl. Avatar), Themes/ (shared tokens), Assets/Icons/
   DevHub.App/             the shell exe only: window, DocumentManager, ToolWindowManager, menus,
-                          Settings, Find Action, PluginHost. References the plugins only to ship
-                          them (alias "plugins": their types are off-limits here)
-plugins/                  each plugin = X (UI: views, ViewModels, actions, its plugin class) + X.Core
-  DevHub.Projects/ + .Core   Projects tool window, Open With (ProjectsSettings)
-  DevHub.Git/ + .Core        Git client UI, IRemoteHost, Themes/GitTokens.axaml (GitSettings)
-  DevHub.GitHub/ + .Core     GitHub account, Publish, GitHubRemoteHost (requires Git)
-  DevHub.Templates/ + .Core  New Project (browser + generation flow); the engine (model, renderer, generation, BuiltInTemplates/)
+                          Settings, Find Action, PluginHost. References no plugin: the plugins
+                          (Projects, Git, GitHub, Templates and the rest) live in Naurid/DevHub-Plugins
+                          (C:\P\DevHub-Plugins); DevHub bundles four of them from its marketplace index
 tests/
-  DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
-  DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
-  DevHub.Templates.Core.Tests/
+  DevHub.Sdk.Core.Tests/
+  DevHub.TestPlugin/      a small plugin (tool window + action) for checking the shell; never shipped
 .github/                  CI (build, tests, security checks), CodeQL, Dependabot, release (Velopack → GitHub Releases)
 build/Get-Version.ps1     the version from git (vN major tags, +1 minor per push on main)
 build/Pack-Sdk.ps1        DevHub.Sdk + DevHub.Sdk.Core NuGet packages (settings: build/SdkPackage.props);
                           release.yml pushes them to nuget.org, without -Version → %LocalAppData%\DevHub-local-feed
+build/Get-BundledPlugins.ps1   the bundled plugins (build/bundled-plugins.json) from the marketplace index into
+                          plugins\ next to the app (release.yml; a Debug build fetches them once)
 tools/
-  plugin-matrix.ps1       starts DevHub with each plugin combination
+  plugin-matrix.ps1       starts DevHub with each plugin combination (bundled ones + the test plugin)
   plugin-repo/            starter for Naurid/DevHub-Plugins (marketplace plugins; its own CI + publish)
 docs/
   RELEASING.md          versions, CI, releases, in-app updates, the one-time GitHub settings
   PLUGINS.md            plugins: lifecycle, contract, extension points, linking, recipe, marketplace
-  TEMPLATE_FORMAT.md    the template spec — single source of truth
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
   ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
-  GIT_CLIENT_PLAN.md    plan + rules for the integrated Git client (milestones G0–G9)
 ```
 
 **Dependency direction:** `App → Sdk (→ Sdk.Core)` (+ the plugins, aliased, only to ship them);

@@ -77,6 +77,12 @@ tests, security checks); nothing is published if that fails. Then:
    was just released from), it stops: nothing to do.
 2. **Publish** a self-contained win-x64 build (`src/DevHub.App/Properties/PublishProfiles/win-x64.pubxml`)
    stamped with the version.
+   **Bundled plugins:** `build/Get-BundledPlugins.ps1` puts the plugins in `build/bundled-plugins.json`
+   (Projects, Git, GitHub, Templates, and what they require) into `plugins\` next to the app: the newest
+   version of each in Naurid/DevHub-Plugins' marketplace index, made for this DevHub's plugin API, SHA-256
+   checked. The release fails if one is missing or made for another plugin API. So a change that needs
+   new plugin versions is released in DevHub-Plugins first; DevHub's next release bundles them (and
+   installed copies get them from the marketplace before that).
 3. **Pack** with Velopack (`vpk`, same version as the `Velopack` package in DevHub.App):
    - `DevHub-win.msi` for new users who want an .msi;
    - `DevHub-win-Setup.exe`, the same installer as an .exe;

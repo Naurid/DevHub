@@ -1,0 +1,8 @@
+{
+  "id": "devhub.test-plugin",
+  "name": "Test Plugin",
+  "description": "Checks the shell: a tool window and an action (tests/DevHub.TestPlugin, never shipped).",
+  "category": "Tests",
+  "apiVersion": 1,
+  "requires": []
+}

@@ -33,27 +33,14 @@ src/
   DevHub.App/                the shell only (main window, tabs, tool windows, menus, Settings, Find
                              Action, finding and loading plugins)
 
-plugins/                     each plugin: X (its UI + plugin class) and X.Core (logic, no UI, tested)
-  DevHub.Projects/           the Projects tool window, Open With settings
-  DevHub.Projects.Core/      repository scanning, language detection, "Open With" tools
-  DevHub.Git/                the Git client UI, its own design tokens (Themes/GitTokens.axaml)
-  DevHub.Git.Core/           running git, parsing its output, diff / graph layout
-  DevHub.GitHub/             GitHub account, Publish to GitHub (requires Git)
-  DevHub.GitHub.Core/        Git Credential Manager + GitHub API
-  DevHub.Templates/          New Project (template browser + generation), editor and import to come
-  DevHub.Templates.Core/     the template engine: model, libraries, renderer, generation, built-in templates
-
 tests/
-  DevHub.TestKit/            shared helpers: TempGitRepo (real git in a temp folder), [GitFact]
   DevHub.Sdk.Core.Tests/
-  DevHub.Projects.Core.Tests/
-  DevHub.Git.Core.Tests/     uses real git; skipped automatically when git isn't installed
-  DevHub.GitHub.Core.Tests/
-  DevHub.Templates.Core.Tests/
+  DevHub.TestPlugin/         a small plugin (tool window + action) to check the shell with; never shipped
 
 .github/                     CI and security checks, CodeQL, Dependabot, the release workflow
 build/Get-Version.ps1        DevHub's version from git (docs/RELEASING.md)
 build/Pack-Sdk.ps1           the Sdk as NuGet packages for plugins (nuget.org on release, or a local feed)
+build/Get-BundledPlugins.ps1 the bundled plugins (build/bundled-plugins.json) from the marketplace index
 tools/plugin-repo/           starter for the marketplace plugins repository (Naurid/DevHub-Plugins)
 docs/                        design docs and guides (see below)
 ```

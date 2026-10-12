@@ -217,10 +217,13 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       counted over `plugins/<Name>/`); `"publish": false` until PM5 (first release tagged `v1` then); Templates
       finds BuiltInTemplates next to its own DLL and its package carries them; the local Sdk feed is
       `%LocalAppData%\DevHub-local-feed`. DevHub still has its copies until PM5.
-- [ ] **NEXT —** PM5. DevHub without plugins: `plugins/`, the plugin tests and the `Aliases="plugins"` references
+- [x] PM5. DevHub without plugins: `plugins/`, the plugin tests and the `Aliases="plugins"` references
       removed; `release.yml` bundles the latest Projects / Git / GitHub / Templates packages from the index
-      (SHA-256 checked); first-run presets still offline; shell integration tests use a small test plugin
-- [ ] PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
+      (`build/Get-BundledPlugins.ps1` + `build/bundled-plugins.json`, SHA-256 checked, all or nothing; a Debug
+      build fetches them once); first-run presets still offline; the shell is checked with a small test plugin
+      (`tests/DevHub.TestPlugin`, in `tools/plugin-matrix.ps1`). Release order: DevHub with the pinned Sdk →
+      the plugins' `v1` in DevHub-Plugins → DevHub with PM5
+- [ ] **NEXT —** PM6. Shared pieces for the new plugins, in the Sdk: hooks for commit-message suggestions,
       commit/branch decorations (CI marks), branch/commit events, a GitHub API client lent by the GitHub
       plugin (`IGitHubApi`, no token handed out); UI blocks: a drag-and-drop board/list panel (from
       `TreeDragDrop`), a Markdown viewer, simple charts (line, bar, pie), a people picker. Plugins in the

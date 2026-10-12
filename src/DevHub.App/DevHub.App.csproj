@@ -33,16 +33,22 @@
         <ProjectReference Include="..\DevHub.Sdk.Core\DevHub.Sdk.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <!--
-          The plugins that ship with DevHub: referenced only so they're built and copied next to the
-          app, where PluginHost finds them. The "plugins" alias keeps their types out of the shell's
-          code (they'd need `extern alias plugins;`, which the shell must never use): the shell
-          knows plugins only through IPlugin and the extension points.
-        -->
-        <ProjectReference Include="..\..\plugins\DevHub.Projects\DevHub.Projects.csproj" Aliases="plugins" />
-        <ProjectReference Include="..\..\plugins\DevHub.Git\DevHub.Git.csproj" Aliases="plugins" />
-        <ProjectReference Include="..\..\plugins\DevHub.GitHub\DevHub.GitHub.csproj" Aliases="plugins" />
-        <ProjectReference Include="..\..\plugins\DevHub.Templates\DevHub.Templates.csproj" Aliases="plugins" />
-    </ItemGroup>
+    <!--
+      The plugins DevHub bundles (Projects, Git, GitHub, Templates) live in Naurid/DevHub-Plugins: they come from
+      its marketplace index (build/Get-BundledPlugins.ps1, build/bundled-plugins.json), into plugins\ next to the
+      app, where PluginHost finds them; release.yml puts them in the installer. A Debug build fetches them once
+      into its output, so `dotnet run` has them (run the script again to update them); offline it warns and
+      DevHub starts without them. -p:DevHubBundledPlugins=false skips it (e.g. when you load plugins from their
+      build folders with DEVHUB_PLUGIN_PATHS).
+    -->
+    <Target Name="FetchBundledPlugins" AfterTargets="Build"
+            Condition="'$(Configuration)' == 'Debug' And '$(DevHubBundledPlugins)' != 'false' And !Exists('$(OutDir)plugins') And '$(CI)' != 'true' And '$(GITHUB_ACTIONS)' != 'true'">
+        <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildThisFileDirectory)..\..\build\Get-BundledPlugins.ps1&quot; -Out &quot;$(OutDir)plugins&quot;"
+              IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true">
+            <Output TaskParameter="ExitCode" PropertyName="_BundledPluginsExit" />
+        </Exec>
+        <!-- Not a warning: a build without network (or with warnings as errors) still works; DevHub just starts without them. -->
+        <Message Condition="'$(_BundledPluginsExit)' != '0'" Importance="high"
+                 Text="DevHub: the bundled plugins couldn't be fetched (see above); DevHub starts without them. Build again when online, or run build/Get-BundledPlugins.ps1." />
+    </Target>
 </Project>
