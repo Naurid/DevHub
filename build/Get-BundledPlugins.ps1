@@ -23,7 +23,8 @@ $source = Get-Content (Join-Path $root "src/DevHub.Sdk.Core/Plugins/Marketplace/
 $api = [int][regex]::Match($source, '(?<=const int Version = )\d+').Value
 if ($api -le 0) { throw "PluginApi.Version not found in Marketplace.cs." }
 
-$entries = @(if ($Index -match '^https://') { Invoke-RestMethod $Index } else { Get-Content $Index -Raw | ConvertFrom-Json })
+# One entry per item: Invoke-RestMethod hands a JSON array over as a single object (ConvertFrom-Json unrolls it), so unroll it here.
+$entries = @($(if ($Index -match '^https://') { Invoke-RestMethod $Index } else { Get-Content $Index -Raw | ConvertFrom-Json }) | ForEach-Object { $_ })
 
 # The listed plugins and, recursively, what they require.
 $wanted = [Collections.Generic.List[object]]::new()
