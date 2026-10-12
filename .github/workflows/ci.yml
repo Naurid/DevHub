@@ -1,13 +1,13 @@
-# Build, tests and security checks for every push and pull request (docs/RELEASING.md).
+# Build, tests and security checks (docs/RELEASING.md): on pull requests, inside every release
+# (release.yml calls this before it publishes, so a push to main runs it once, not twice), and on
+# demand for any branch (Actions → CI → Run workflow).
 # Windows: the tests run real cmd / git / dotnet commands.
 name: CI
 
 on:
-  push:
-    branches: ["**"]
-    tags-ignore: ["**"]
   pull_request:
-  workflow_call: # release.yml runs the same checks before it publishes
+  workflow_call:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,6 +15,11 @@ permissions:
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # cached below, so restore takes seconds
 
 jobs:
   build-and-test:
@@ -26,6 +31,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/Directory.Build.props', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
 
       - name: Restore
         run: dotnet restore DevHub.sln
@@ -62,7 +74,8 @@ jobs:
           path: sbom
 
   dependency-review:
-    if: github.event_name == 'pull_request'
+    # Needs a public repository (or GitHub Advanced Security): skipped while the repo is private.
+    if: github.event_name == 'pull_request' && !github.event.repository.private
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

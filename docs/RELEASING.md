@@ -25,8 +25,15 @@ The first time, tag the commit you want as 1.0.0: `git tag v1 && git push origin
 
 | Workflow | When | What |
 |---|---|---|
-| `ci.yml` | every push and pull request | restore, build with warnings as errors, tests (results as an artifact), vulnerable NuGet packages (fails on any), SBOM (CycloneDX, artifact); on pull requests also GitHub's dependency review |
-| `codeql.yml` | pull requests, pushes to `main`, Mondays | CodeQL security analysis of the C# code; findings appear under Security → Code scanning |
+| `ci.yml` | pull requests; inside every release (a push to `main`); on demand (Actions → CI → Run workflow, for a branch without a pull request) | restore (NuGet packages cached between runs), build with warnings as errors, tests (results as an artifact), vulnerable NuGet packages (fails on any), SBOM (CycloneDX, artifact); on pull requests also GitHub's dependency review |
+| `codeql.yml` | pull requests, Mondays (the baseline on `main`), on demand | CodeQL security analysis of the C# code (`security-extended` queries, no build, on Linux: a few minutes); findings appear under Security → Code scanning |
+
+Dependency review and CodeQL need a public repository (or the paid GitHub Advanced Security): while
+the repo is private they are skipped (shown as "skipped", which counts as passing).
+
+Typical times: CI 5–8 minutes (Windows runners, and the tests run real git / dotnet / cargo / go),
+CodeQL 3–6, a release about 10 in total. A branch push alone runs nothing: open a pull request
+(a draft is fine) or use Run workflow.
 | `dependabot.yml` | weekly | pull requests that update NuGet packages and the workflows' actions |
 
 Every workflow can only read the repository unless a job asks for more.

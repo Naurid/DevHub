@@ -1,23 +1,31 @@
 # CodeQL: static analysis of the C# code for security problems (docs/RELEASING.md).
+# build-mode none reads the source without compiling it, so it runs on a (fast) Linux runner in a
+# few minutes. The weekly run on main is the baseline pull requests are compared with.
 name: CodeQL
 
 on:
-  push:
-    branches: [main]
   pull_request:
   schedule:
     - cron: "17 4 * * 1" # Mondays
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
-    runs-on: windows-latest
-    timeout-minutes: 45
+    # Code scanning needs a public repository (or GitHub Advanced Security): skipped while the repo is private.
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
-      security-events: write
+      actions: read # the action reads its own workflow run (fails with "Resource not accessible by integration" without it)
+      security-events: write # upload the results
     steps:
       - uses: actions/checkout@v4
 
@@ -28,10 +36,7 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: csharp
-          build-mode: manual
-          queries: security-and-quality
-
-      - name: Build
-        run: dotnet build DevHub.sln -c Release
+          build-mode: none
+          queries: security-extended
 
       - uses: github/codeql-action/analyze@v3

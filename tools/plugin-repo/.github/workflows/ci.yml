@@ -1,15 +1,18 @@
 # Builds every plugin against DevHub's latest Sdk, and checks the packages for known vulnerabilities.
+# Runs on pull requests, inside publish.yml (so a push to main runs it once), and on demand.
 name: CI
 
 on:
-  push:
-    branches: ["**"]
-    tags-ignore: ["**"]
   pull_request:
   workflow_call:
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -44,7 +47,8 @@ jobs:
           }
 
   dependency-review:
-    if: github.event_name == 'pull_request'
+    # Needs a public repository (or GitHub Advanced Security): skipped while the repo is private.
+    if: github.event_name == 'pull_request' && !github.event.repository.private
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

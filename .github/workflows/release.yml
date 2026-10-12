@@ -19,6 +19,9 @@ concurrency:
 
 env:
   VPK_VERSION: "1.2.161" # keep equal to the Velopack package in src/DevHub.App/DevHub.App.csproj
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # shares CI's cache
 
 jobs:
   ci:
@@ -40,6 +43,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/Directory.Build.props', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
 
       - name: Version
         id: version
