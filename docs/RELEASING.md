@@ -59,7 +59,8 @@ Every workflow can only read the repository unless a job asks for more.
    - Fork pull request workflows: **Require approval for first-time contributors**.
    - Untick "Allow GitHub Actions to create and approve pull requests".
 5. **Settings → Code security:**
-   - turn on Dependabot alerts, Dependabot security updates, and secret scanning with push
+   - turn on the Dependency graph (dependency review in CI fails without it), Dependabot alerts,
+     Dependabot security updates, and secret scanning with push
      protection;
    - leave CodeQL "default setup" off, since `codeql.yml` does it.
 
