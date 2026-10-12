@@ -195,10 +195,12 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
       `PluginApi.Version`), pushed to nuget.org by `release.yml` (Trusted Publishing; you: the nuget.org policy + a `NUGET_USER` variable); the
       plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
       (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
-- [ ] **NEXT —** PM2. Dependencies between marketplace plugins: installing one installs what it `requires` (listed
-      first); removing one others need asks first; loading in `requires` order; a package leaves out the
-      DLLs of the plugins it requires (one copy loads); an updated bundled plugin in `%AppData%\DevHub\plugins`
-      wins over the bundled copy
+- [ ] PM2. Dependencies between marketplace plugins:
+  - [x] PM2a. Installing one installs what it `requires` (listed first, all or nothing; a requirement
+        nobody offers, for another plugin API or in a circle stops it); removing one others need asks
+        first and removes them too (`InstallPlanner`, tested); loading in `requires` order (`PluginResolver`)
+  - [ ] **NEXT —** PM2b. A package leaves out the DLLs of the plugins it requires (one copy loads)
+  - [ ] PM2c. An updated bundled plugin in `%AppData%\DevHub\plugins` wins over the bundled copy
 - [ ] PM3. Plugin development against an installed DevHub: `DEVHUB_PLUGIN_PATHS` (load plugins from build
       output folders), a `launchSettings.json` in the plugins repo (F5 in Rider debugs a plugin inside
       DevHub), `tools/plugin-matrix.ps1` moves along and uses those folders

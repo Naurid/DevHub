@@ -253,6 +253,13 @@ Marketplace.
   SHA-256, extraction refuses entries outside the plugin folder, and changes wait in
   `%AppData%\DevHub\plugins\.pending` until the next start. Then `PluginHost` moves them into place,
   loads `plugins\<id>\*.dll`, and switches the plugin on.
+- **Requirements:** installing a plugin installs what its `requires` lists and isn't there yet (built in,
+  installed or waiting for the restart), requirements of requirements included, each before the plugin
+  that needs it; the confirmation lists them all. A requirement no source offers, one made for another
+  plugin API, or a circle stops the install before anything is downloaded, and a failure half-way drops
+  what this install had unpacked. Removing a plugin that installed plugins need asks first and removes
+  them with it. The logic is `InstallPlanner` (Sdk.Core, tested); load order still comes from
+  `PluginResolver`.
 - **Compatibility:** `PluginApi.Version` (Sdk.Core) is the plugin API version. A plugin whose
   `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
   (a removed or changed member they use), and say so in the release notes.
