@@ -238,11 +238,18 @@ Plugins can also live outside DevHub: in **Naurid/DevHub-Plugins** (its starter 
 `tools/plugin-repo/` here, with a sample HelloWorld plugin), installed from Settings → Plugins →
 Marketplace.
 
+- **Developing one:** `DEVHUB_PLUGIN_PATHS` (`;`-separated) lists folders DevHub loads plugins from:
+  a plugin folder (plugin.json next to the DLLs, e.g. a plugin's build output) or a folder of them. A
+  plugin there wins over any bundled or installed copy and is switched on for that run (settings
+  unchanged); a path that doesn't exist or holds no plugin is reported. The plugins repo's build writes
+  a `launchSettings.json` that starts the installed DevHub this way (F5 debugs a plugin inside DevHub),
+  and its `build/Test-Plugins.ps1` runs the plugin matrix against those folders. With the variable set,
+  even a Release DevHub prints its `DevHub plugins: …` line (with problems) to stdout.
 - **Sdk:** a marketplace plugin builds against the NuGet packages `DevHub.Sdk` + `DevHub.Sdk.Core`
   (nuget.org, DevHub's version; `build/SdkPackage.props`), referenced build-only
   (`ExcludeAssets="runtime"`). For a project with a `plugin.json`, the package's build check fails
   when `apiVersion` differs from the Sdk's `PluginApi.Version`. Unreleased Sdk changes: `pwsh
-  build/Pack-Sdk.ps1` → `../local-feed` (docs/RELEASING.md).
+  build/Pack-Sdk.ps1` → `%LocalAppData%\DevHub-local-feed` (docs/RELEASING.md).
 - **Package:** a zip with `plugin.json` (id, name, version, description, category, `apiVersion`,
   requires) and the plugin's own DLLs, never the Sdk or Avalonia (DevHub has those).
 - **Index:** `index.json`, an array of entries (id, name, version, apiVersion, url, sha256, size…).
@@ -253,10 +260,33 @@ Marketplace.
   SHA-256, extraction refuses entries outside the plugin folder, and changes wait in
   `%AppData%\DevHub\plugins\.pending` until the next start. Then `PluginHost` moves them into place,
   loads `plugins\<id>\*.dll`, and switches the plugin on.
+- **Requirements:** installing a plugin installs what its `requires` lists and isn't there yet (built in,
+  installed or waiting for the restart), requirements of requirements included, each before the plugin
+  that needs it; the confirmation lists them all. A requirement no source offers, one made for another
+  plugin API, or a circle stops the install before anything is downloaded, and a failure half-way drops
+  what this install had unpacked. Removing a plugin that installed plugins need asks first and removes
+  them with it. The logic is `InstallPlanner` (Sdk.Core, tested); load order still comes from
+  `PluginResolver`.
+- **One copy of each DLL:** a package leaves out the DLLs of the plugins it requires (the plugins
+  repo's `Pack-Plugin.ps1`), and `PluginHost` loads marketplace folders requirements first
+  (`PluginResolver.RequirementsFirst`), skipping a DLL whose name is already loaded: a required
+  plugin's own DLLs always win over a copy another package brings.
+- **Sdk assembly version = plugin API version** (`N.0.0.0`, `build/SdkPackage.props`); the package and
+  file versions are DevHub's. A plugin built against a newer Sdk with the same plugin API loads in an
+  older DevHub (and in a `0.0.0` development build), as long as it only uses members that DevHub has.
 - **Compatibility:** `PluginApi.Version` (Sdk.Core) is the plugin API version. A plugin whose
   `apiVersion` differs isn't installed or loaded. **Bump it when a change to the Sdk breaks plugins**
   (a removed or changed member they use), and say so in the release notes.
-- **Built-ins win:** a marketplace plugin with a built-in plugin's id isn't loaded.
+- **Bundled plugins and their updates:** a plugin folder in `plugins\` next to DevHub's executable is
+  *bundled* (installed and updated with DevHub; PM5 puts Projects, Git, GitHub and Templates there).
+  When the marketplace folder has the same plugin, the newer version loads and only that folder's DLLs
+  are touched (`PluginFolders.Choose`, Sdk.Core, tested): a marketplace update replaces the bundled
+  copy until a DevHub update bundles a version at least as new. An update made for another plugin API
+  is ignored, so it never hides a working bundled copy. The Marketplace page shows "Bundled 1.2.0",
+  **Update to 1.3.0**, then **Back to 1.2.0** (removes the update) or **Remove Old Copy** (an
+  installed copy older than the bundled one).
+- **Built-ins win:** a plugin folder with the id of a built-in plugin (its DLL next to the app, as
+  in development builds) isn't loaded.
 - **Versions:** each marketplace plugin has its own (major tags `<id>/vN`, +1 minor per change to
   its folder on main); built-in plugins share DevHub's version.
 

@@ -4,7 +4,7 @@
 
   Without -Version it's a local build to try Sdk changes in plugins before releasing them: the version is
   the one git gives this commit plus "-local.<timestamp>" (every pack is new, so NuGet never reuses a
-  cached copy), and the packages go to ../local-feed (next to this repository), which the plugins repo
+  cached copy), and the packages go to %LocalAppData%\DevHub-local-feed (one per user, wherever the repositories are), which the plugins repo
   reads when it exists.
 
     pwsh build/Pack-Sdk.ps1                       # local feed, e.g. 1.7.0-local.20261012143005
@@ -12,7 +12,7 @@
 #>
 param(
     [string]$Version,
-    [string]$Out = (Join-Path $PSScriptRoot "../../local-feed")
+    [string]$Out = (Join-Path $env:LOCALAPPDATA "DevHub-local-feed")
 )
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot

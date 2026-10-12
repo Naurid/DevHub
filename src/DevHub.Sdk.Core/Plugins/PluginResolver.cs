@@ -91,6 +91,29 @@ public static class PluginResolver
     }
 
     /// <summary>
+    /// Puts every item after the items it requires, otherwise keeping the given order; used to load marketplace
+    /// plugin folders requirements first, so a required plugin's own DLLs are the ones that load (a later folder's
+    /// copy of a DLL with the same name is skipped). Requirements that aren't in the list don't hold anything back;
+    /// items that require each other in a circle come last, in their given order. Ids compare without case.
+    /// </summary>
+    public static IReadOnlyList<T> RequirementsFirst<T>(IEnumerable<T> items, Func<T, string> id, Func<T, IEnumerable<string>?> requires)
+        where T : class
+    {
+        var remaining = items.ToList();
+        var listed = remaining.Select(id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var placed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var ordered = new List<T>();
+        while (remaining.FirstOrDefault(item => (requires(item) ?? []).All(r => placed.Contains(r) || !listed.Contains(r))) is { } next
+               && remaining.Remove(next))
+        {
+            ordered.Add(next);
+            placed.Add(id(next));
+        }
+        ordered.AddRange(remaining);
+        return ordered;
+    }
+
+    /// <summary>
     /// The plugins that need <paramref name="pluginId"/>, directly or indirectly: what stops working
     /// when it's switched off (the Plugins page warns about these).
     /// </summary>

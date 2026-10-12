@@ -113,4 +113,35 @@ public class PluginResolverTests
         Assert.Equal(["github"], Ids(PluginResolver.Dependents(All, "git")));
         Assert.Empty(PluginResolver.Dependents(All, "github"));
     }
+
+    private static string[] RequirementsFirst(params PluginInfo[] plugins) =>
+        Ids(PluginResolver.RequirementsFirst(plugins, p => p.Id, p => p.Requires));
+
+    [Fact]
+    public void Requirements_first_moves_a_requirement_before_the_plugins_that_need_it()
+    {
+        // Alphabetical folders: "a-github" would load before "b-git", whose DLLs it carries a copy of.
+        Assert.Equal(["b-git", "a-github"], RequirementsFirst(P("a-github", "b-git"), P("b-git")));
+        Assert.Equal(["projects", "git", "github"], RequirementsFirst(GitHub, Git, Projects));
+    }
+
+    [Fact]
+    public void Requirements_first_keeps_the_given_order_otherwise()
+    {
+        Assert.Equal(["x", "y", "z"], RequirementsFirst(P("x"), P("y"), P("z")));
+        Assert.Equal(["projects", "templates", "git"], RequirementsFirst(Projects, Templates, Git));
+    }
+
+    [Fact]
+    public void Requirements_first_ignores_requirements_not_in_the_list_and_compares_ids_without_case()
+    {
+        // "devhub.git" is built in (not a folder): nothing to wait for.
+        Assert.Equal(["a", "b"], RequirementsFirst(P("a", "devhub.git"), P("b", "A")));
+    }
+
+    [Fact]
+    public void Requirements_first_puts_a_circle_last()
+    {
+        Assert.Equal(["c", "a", "b"], RequirementsFirst(P("a", "b"), P("b", "a"), P("c")));
+    }
 }

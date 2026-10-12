@@ -30,7 +30,7 @@
                         </StackPanel>
                         <Button Grid.Column="1" Classes="accent" Content="{Binding InstallText}" Command="{Binding InstallCommand}"
                                 IsVisible="{Binding CanInstallNow}" VerticalAlignment="Center" />
-                        <Button Grid.Column="2" Content="Remove" Command="{Binding RemoveCommand}"
+                        <Button Grid.Column="2" Content="{Binding RemoveText}" Command="{Binding RemoveCommand}"
                                 IsVisible="{Binding CanRemoveNow}" VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>

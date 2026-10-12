@@ -23,11 +23,16 @@ if ($LASTEXITCODE -eq 0) {
 }
 
 $published = 0
-foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 1) {
+foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.json -Recurse -Depth 2 | Where-Object { $_.FullName -notmatch "[\\/](bin|obj)[\\/]" }) {
     $folder = $manifest.Directory.FullName
     $relative = [IO.Path]::GetRelativePath($root, $folder).Replace('\', '/')
     $version = & (Join-Path $PSScriptRoot "Get-PluginVersion.ps1") -Folder $relative
-    $id = (Get-Content $manifest.FullName -Raw | ConvertFrom-Json).id
+    $manifestInfo = Get-Content $manifest.FullName -Raw | ConvertFrom-Json
+    $id = $manifestInfo.id
+    if ($manifestInfo.publish -eq $false) {
+        Write-Output "$id ${version}: not published (""publish"": false in plugin.json)"
+        continue
+    }
     $tag = "$id-$version"
     if (git ls-remote --tags origin "refs/tags/$tag") {
         Write-Output "$id ${version}: already published"

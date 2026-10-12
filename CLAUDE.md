@@ -56,7 +56,7 @@ tests/
 .github/                  CI (build, tests, security checks), CodeQL, Dependabot, release (Velopack → GitHub Releases)
 build/Get-Version.ps1     the version from git (vN major tags, +1 minor per push on main)
 build/Pack-Sdk.ps1        DevHub.Sdk + DevHub.Sdk.Core NuGet packages (settings: build/SdkPackage.props);
-                          release.yml pushes them to nuget.org, without -Version → ../local-feed
+                          release.yml pushes them to nuget.org, without -Version → %LocalAppData%\DevHub-local-feed
 tools/
   plugin-matrix.ps1       starts DevHub with each plugin combination
   plugin-repo/            starter for Naurid/DevHub-Plugins (marketplace plugins; its own CI + publish)
@@ -99,7 +99,8 @@ Settings → Plugins (applied after a restart).
   optional `T? x = null` parameter, always with a fallback;
 - Debug builds validate every DI registration at startup (`ValidateOnBuild`), so a missing
   dependency shows up immediately. Try plugin combinations with `enabledPlugins` in a scratch
-  `DEVHUB_DATA_DIR` settings file.
+  `DEVHUB_DATA_DIR` settings file; load a plugin straight from its build folder with
+  `DEVHUB_PLUGIN_PATHS` (docs/PLUGINS.md §9).
 
 **Plugin settings** live in their own section: a class implementing `ISettingsSection`
 (`SectionId` = plugin id) in the plugin's `.Core`, read with `store.LoadSection<T>()`,
