@@ -158,9 +158,9 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Save as a new template (project or item) in a chosen library; it opens in the editor
 
 ## M8 — Built-in templates
-- [ ] **NEXT —** .NET (console, classlib, solution + add project, Avalonia, xUnit), Unity (`@unity`, installed editors)
-- [ ] Web (Vite React/Vue/Svelte TS, Tauri), Rust (cargo bin/lib), Python (venv layout), Go (go mod)
-- [ ] Each checked against the real tool when installed (skipped otherwise)
+- [x] .NET (console, classlib, solution with tests, add project to solution, Avalonia, xUnit), Unity (`@unity`, newest Hub editor)
+- [x] Web (Vite React/Vue/Svelte TS, Tauri), Rust (cargo bin/lib), Python (src layout + .venv), Go (go mod)
+- [x] Each checked against the real tool when installed (npm ones with DEVHUB_NETWORK_TESTS=1; Unity by its command)
 
 ## M9 — Polish
 - [ ] Settings → Templates (author name, personal library location, extra libraries, default target folder)
