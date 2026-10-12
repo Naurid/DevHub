@@ -1,0 +1,16 @@
+# Keeps NuGet packages and the workflows' actions up to date (weekly pull requests).
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      avalonia:
+        patterns: ["Avalonia*"]
+      test:
+        patterns: ["xunit*", "Microsoft.NET.Test.Sdk"]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

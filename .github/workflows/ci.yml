@@ -1,0 +1,70 @@
+# Build, tests and security checks for every push and pull request (docs/RELEASING.md).
+# Windows: the tests run real cmd / git / dotnet commands.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore DevHub.sln
+
+      - name: Build (warnings are errors)
+        run: dotnet build DevHub.sln --no-restore -c Release -warnaserror
+
+      - name: Test
+        run: dotnet test DevHub.sln --no-build -c Release --logger trx --results-directory test-results
+
+      - name: Test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Vulnerable packages
+        shell: pwsh
+        run: |
+          $report = dotnet list DevHub.sln package --vulnerable --include-transitive 2>&1 | Out-String
+          Write-Output $report
+          if ($report -match "has the following vulnerable packages") { throw "Vulnerable NuGet packages (see above)." }
+
+      - name: SBOM (CycloneDX)
+        shell: pwsh
+        run: |
+          dotnet tool install --global CycloneDX
+          dotnet-CycloneDX DevHub.sln --output sbom --filename devhub-sbom.json --json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
