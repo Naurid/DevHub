@@ -49,9 +49,20 @@ tests/
   DevHub.Projects.Core.Tests/
   DevHub.Git.Core.Tests/     uses real git; skipped automatically when git isn't installed
   DevHub.GitHub.Core.Tests/
+  DevHub.Templates.Core.Tests/
 
+.github/                     CI and security checks, CodeQL, Dependabot, the release workflow
+build/Get-Version.ps1        DevHub's version from git (docs/RELEASING.md)
+tools/plugin-repo/           starter for the marketplace plugins repository (Naurid/DevHub-Plugins)
 docs/                        design docs and guides (see below)
 ```
+
+## Getting DevHub
+
+Releases are on GitHub (Naurid/DevHub → Releases): `DevHub-win.msi` or `DevHub-win-Setup.exe`
+installs it for your Windows user, no admin rights needed. An installed DevHub offers new versions
+itself ("Update and restart" in the status bar). More plugins: Settings → Plugins → Marketplace.
+How releases are made: [`docs/RELEASING.md`](docs/RELEASING.md).
 
 What each project may reference:
 
@@ -118,7 +129,8 @@ before starting the app.
 
 | File | What it covers |
 |---|---|
-| [`docs/PLUGINS.md`](docs/PLUGINS.md) | Plugins: how they load, the contract, extension points, linking plugins, recipe for a new one |
+| [`docs/PLUGINS.md`](docs/PLUGINS.md) | Plugins: how they load, the contract, extension points, linking plugins, recipe for a new one, the marketplace |
+| [`docs/RELEASING.md`](docs/RELEASING.md) | Versions, CI and security checks, releases (.msi), in-app updates, GitHub settings |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Milestones and what's next |
 | [`docs/UI_GUIDE.md`](docs/UI_GUIDE.md) | UI rules, design tokens, components and recipes |
 | [`docs/ACTIONS_AND_FUZZY_MATCHING.md`](docs/ACTIONS_AND_FUZZY_MATCHING.md) | Actions, menus, shortcuts, Find Action |

@@ -170,6 +170,29 @@ the screens in `plugins/DevHub.Templates`. "Core" below means `DevHub.Templates.
 - [x] Zip export/import of a template (Templates tab; zip-slip refused, free id when taken)
 - [x] App icon, publish profile (`dotnet publish src/DevHub.App -p:PublishProfile=win-x64` → artifacts/publish/win-x64)
 
+## R — Releases, updates, marketplace (docs/RELEASING.md, docs/PLUGINS.md §9)
+- [x] R1 CI on every push / PR (build with warnings as errors, tests, vulnerable packages, SBOM, dependency
+      review), CodeQL, Dependabot; version from git (`build/Get-Version.ps1`: `vN` major tags, +1 minor per push on main)
+- [x] R2 Release workflow: on main / `vN` → Velopack: Setup.exe, .msi, portable zip, full + delta update
+      packages, GitHub Release `release/<version>` (+ `DevHub-Sdk-<version>.zip` for plugins); signing ready (secrets)
+- [x] R3 In-app updates: quiet check after start, "Update and restart" in the status bar, Settings → Updates,
+      Help → Check for Updates (`DEVHUB_UPDATE_SOURCE` to rehearse locally)
+- [x] R4 Marketplace in DevHub: index sources, install / update / remove after a restart, SHA-256 + zip-slip
+      checks, plugin API version, plugins loaded from `%AppData%\DevHub\plugins`
+- [x] R5 Plugins repo starter (`tools/plugin-repo/`): HelloWorld sample, per-plugin versions (`<id>/vN`),
+      publish workflow (release per plugin version + `index.json`)
+- [ ] **NEXT —** You: the one-time GitHub settings, first `v1` tag, Naurid/DevHub-Plugins created from the starter
+- [ ] Code signing (Azure Trusted Signing or a certificate) once SmartScreen warnings matter
+
+## X — Multiplatform (Linux, macOS)
+- [ ] Windows-only bits behind small services: `explorer.exe` (Show in Explorer), `cmd /c` shims and PATHEXT
+      (command runner), Git Credential Manager paths, Unity Hub paths (`@unity`), the `py` launcher, title-bar
+      caption buttons, `%AppData%` / `%LocalAppData%` locations
+- [ ] Tests that run on each OS (the `.cmd` fake tools become per-OS scripts; path assumptions)
+- [ ] CI matrix: windows-latest, ubuntu-latest, macos-latest
+- [ ] Packages per OS with Velopack (Linux AppImage, macOS .app / .pkg; signing / notarization on macOS)
+- [ ] Marketplace packages per OS when a plugin has native parts (`os` field in the index)
+
 ## M10 — Natural-language commands (local AI, learning project)
 Goal: type "new unity project called Timber with git" → a structured tool call →
 confirmation screen → same execution path as the UI. See "Natural-language

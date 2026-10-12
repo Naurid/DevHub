@@ -53,8 +53,14 @@ tests/
   DevHub.TestKit/         TempGitRepo, [GitFact]/[GitTheory] (shared helpers, not a test project)
   DevHub.Sdk.Core.Tests/  DevHub.Projects.Core.Tests/  DevHub.Git.Core.Tests/  DevHub.GitHub.Core.Tests/
   DevHub.Templates.Core.Tests/
+.github/                  CI (build, tests, security checks), CodeQL, Dependabot, release (Velopack → GitHub Releases)
+build/Get-Version.ps1     the version from git (vN major tags, +1 minor per push on main)
+tools/
+  plugin-matrix.ps1       starts DevHub with each plugin combination
+  plugin-repo/            starter for Naurid/DevHub-Plugins (marketplace plugins; its own CI + publish)
 docs/
-  PLUGINS.md            plugins: lifecycle, contract, extension points, linking, recipe for a new one
+  RELEASING.md          versions, CI, releases, in-app updates, the one-time GitHub settings
+  PLUGINS.md            plugins: lifecycle, contract, extension points, linking, recipe, marketplace
   TEMPLATE_FORMAT.md    the template spec — single source of truth
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
