@@ -7,7 +7,7 @@ release build, and the GitHub settings that keep it safe.
 
 DevHub's version is **N.M.0**, worked out from git by `build/Get-Version.ps1`:
 
-- **N (major)** is the highest *major tag* `vN` reachable from the commit: `v1`, `v2`… Only you
+- **N (major)** is the highest *major tag* reachable from the commit: `v1`, `v2`… (`v2.0` and `v2.0.0` work too). Only you
   create these (a protected tag rule).
 - **M (minor)** is the number of commits on `main`'s own line since that tag: each push to `main`
   and each merged pull request counts as one. The tagged commit itself is `N.0.0`.
