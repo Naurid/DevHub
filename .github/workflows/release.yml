@@ -129,9 +129,12 @@ jobs:
         env:
           NUGET_API_KEY: ${{ steps.nuget.outputs.NUGET_API_KEY }}
         run: |
-          # The .snupkg symbol packages next to them are pushed along.
-          dotnet nuget push "artifacts/nuget/*.nupkg" --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-          if ($LASTEXITCODE -ne 0) { throw "dotnet nuget push failed" }
+          # One file at a time, by full path (dotnet nuget push doesn't expand "artifacts/nuget/*.nupkg").
+          # The .snupkg symbol package next to each one is pushed along.
+          foreach ($package in Get-ChildItem artifacts/nuget -Filter *.nupkg) {
+            dotnet nuget push $package.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { throw "dotnet nuget push failed: $($package.Name)" }
+          }
 
       - name: Publish the GitHub Release
         if: steps.version.outputs.exists == 'false'
