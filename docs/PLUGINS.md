@@ -238,6 +238,11 @@ Plugins can also live outside DevHub: in **Naurid/DevHub-Plugins** (its starter 
 `tools/plugin-repo/` here, with a sample HelloWorld plugin), installed from Settings → Plugins →
 Marketplace.
 
+- **Sdk:** a marketplace plugin builds against the NuGet packages `DevHub.Sdk` + `DevHub.Sdk.Core`
+  (nuget.org, DevHub's version; `build/SdkPackage.props`), referenced build-only
+  (`ExcludeAssets="runtime"`). For a project with a `plugin.json`, the package's build check fails
+  when `apiVersion` differs from the Sdk's `PluginApi.Version`. Unreleased Sdk changes: `pwsh
+  build/Pack-Sdk.ps1` → `../local-feed` (docs/RELEASING.md).
 - **Package:** a zip with `plugin.json` (id, name, version, description, category, `apiVersion`,
   requires) and the plugin's own DLLs, never the Sdk or Avalonia (DevHub has those).
 - **Index:** `index.json`, an array of entries (id, name, version, apiVersion, url, sha256, size…).

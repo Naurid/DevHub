@@ -53,6 +53,7 @@ tests/
 
 .github/                     CI and security checks, CodeQL, Dependabot, the release workflow
 build/Get-Version.ps1        DevHub's version from git (docs/RELEASING.md)
+build/Pack-Sdk.ps1           the Sdk as NuGet packages for plugins (nuget.org on release, or a local feed)
 tools/plugin-repo/           starter for the marketplace plugins repository (Naurid/DevHub-Plugins)
 docs/                        design docs and guides (see below)
 ```

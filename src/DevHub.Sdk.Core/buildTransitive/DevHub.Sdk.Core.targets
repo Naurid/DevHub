@@ -1,0 +1,16 @@
+<!--
+  Shipped in the DevHub.Sdk.Core package (buildTransitive/), imported into every project that references it.
+  A plugin project (plugin.json next to the .csproj) fails to build when plugin.json's apiVersion isn't the
+  plugin API version of the Sdk it builds against: DevHub would refuse to install or load it.
+-->
+<Project>
+    <Target Name="CheckDevHubPluginApiVersion" BeforeTargets="CoreCompile"
+            Condition="Exists('$(MSBuildProjectDirectory)\plugin.json') And '$(DevHubPluginApiVersion)' != ''">
+        <PropertyGroup>
+            <_DevHubPluginJsonApi>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\plugin.json')), '(?&lt;="apiVersion"\s*:\s*)\d+'))</_DevHubPluginJsonApi>
+        </PropertyGroup>
+        <Error Condition="'$(_DevHubPluginJsonApi)' != '$(DevHubPluginApiVersion)'"
+               File="$(MSBuildProjectDirectory)\plugin.json"
+               Text="plugin.json has apiVersion '$(_DevHubPluginJsonApi)', but this DevHub Sdk is plugin API $(DevHubPluginApiVersion). Set &quot;apiVersion&quot;: $(DevHubPluginApiVersion) (and check the DevHub release notes for what changed)." />
+    </Target>
+</Project>

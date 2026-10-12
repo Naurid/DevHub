@@ -39,10 +39,10 @@ public abstract partial class ToolWindowViewModelBase : ViewModelBase
     /// <summary>Position of its show/hide action in the Welcome view; null = not there.</summary>
     public virtual int? WelcomeOrder => null;
 
-    /// <summary>Whether it's currently shown. Set by <see cref="ToolWindowManager"/> only.</summary>
+    /// <summary>Whether it's currently shown. Set by <c>ToolWindowManager</c> (the shell) only.</summary>
     [ObservableProperty] private bool _isOpen;
 
-    /// <summary>Shows/hides this tool window. Assigned by <see cref="ToolWindowManager"/>.</summary>
+    /// <summary>Shows/hides this tool window. Assigned by <c>ToolWindowManager</c> (the shell).</summary>
     public ICommand? ToggleCommand { get; internal set; }
 
     /// <summary>Stripe tooltip, e.g. "Repositories (Alt+1)". The shortcut part is filled in by the action provider.</summary>

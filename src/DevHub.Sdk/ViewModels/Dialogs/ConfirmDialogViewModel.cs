@@ -10,6 +10,11 @@ public sealed class ConfirmDialogViewModel : DialogViewModelBase
     /// <summary>How many items the list shows before "and N more".</summary>
     public const int MaxListedItems = 8;
 
+    /// <param name="title">Dialog title.</param>
+    /// <param name="message">What happens, in a sentence or two.</param>
+    /// <param name="okText">The OK button's label: the action ("Discard").</param>
+    /// <param name="items">The affected items, if any (the first <see cref="MaxListedItems"/> are listed).</param>
+    /// <param name="destructive">True: the OK button is red.</param>
     /// <param name="showCancel">False: a message to acknowledge (e.g. "Push rejected" with git's output as the items).</param>
     public ConfirmDialogViewModel(string title, string message, string okText,
         IReadOnlyList<string>? items = null, bool destructive = true, bool showCancel = true)

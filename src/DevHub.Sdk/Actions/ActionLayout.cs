@@ -8,6 +8,7 @@ namespace DevHub.Actions;
 /// </summary>
 public static class ActionLayout
 {
+    /// <param name="actions">The actions to arrange.</param>
     /// <param name="order">The order to use; actions where it's null are left out.</param>
     public static IReadOnlyList<AppAction?> Arrange(IEnumerable<AppAction> actions, Func<AppAction, int?> order)
     {

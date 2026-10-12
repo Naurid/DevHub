@@ -5,10 +5,15 @@
       for ViewModels, documents, tool windows, dialogs and settings pages; the action system
       (AppAction, IActionProvider, ActionRegistry, {a:Action} markup); the service interfaces
       (dialogs, status, theme); the design system (Themes/, Controls/, Assets/Icons/).
-      It never references the app or any plugin.
+      It never references the app or any plugin. Published as a NuGet package for plugins
+      (build/SdkPackage.props).
     -->
 
+    <Import Project="..\..\build\SdkPackage.props" />
+
     <PropertyGroup>
+        <Description>DevHub plugin Sdk: IPlugin, base classes for ViewModels, documents, tool windows, dialogs and settings pages, actions, services, integration hooks and the design system (Avalonia) DevHub plugins build on.</Description>
+        <PackageTags>$(PackageTags);avalonia</PackageTags>
         <RootNamespace>DevHub</RootNamespace>
         <!-- MVVM: compiled bindings everywhere (needs x:DataType on each view). -->
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>

@@ -10,5 +10,7 @@
         <!-- A local build is 0.0.0-dev; the release workflow passes the real one (-p:Version=N.M.0, docs/RELEASING.md). -->
         <VersionPrefix>0.0.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
+        <!-- Only the Sdk is a NuGet package (build/SdkPackage.props turns it on for DevHub.Sdk and DevHub.Sdk.Core). -->
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 </Project>

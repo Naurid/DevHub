@@ -8,25 +8,24 @@ plugins that changed.
 
 ```
 plugins/<Name>/          one plugin: <Name>.csproj, plugin.json, its plugin class, ViewModels/, Views/
-build/Get-Sdk.ps1        DevHub's Sdk (what plugins build against) from DevHub's latest release, into .sdk/
 build/Get-PluginVersion.ps1   a plugin's version, from git
 build/Pack-Plugin.ps1    builds one plugin and packs <id>-<version>.zip (plugin.json + its DLLs)
 build/Publish-Plugins.ps1     CI: releases the plugins whose version changed and updates the index
 .github/workflows/       ci.yml (build, vulnerable packages), publish.yml (releases + index)
-Directory.Build.props    shared settings: the Sdk reference, Avalonia / CommunityToolkit / DI build-only
+Directory.Build.props    shared settings: the Sdk packages (NuGet), Avalonia / CommunityToolkit / DI build-only
 ```
 
 ## Writing a plugin
 
-1. `pwsh build/Get-Sdk.ps1` once (and after DevHub releases, to build against the newest Sdk).
-2. Copy `plugins/HelloWorld` to `plugins/<YourPlugin>` and rename:
+1. Copy `plugins/HelloWorld` to `plugins/<YourPlugin>` and rename:
    - the `.csproj`;
    - `plugin.json`: a new `id` (lowercase, `yourname.plugin-name`), name, description, category.
      Leave out `version`, which is computed;
    - the plugin class: its `PluginInfo` id must equal plugin.json's.
-3. Build: `dotnet build plugins/<YourPlugin>`. DevHub's plugin guide (docs/PLUGINS.md in DevHub)
+2. Build: `dotnet build plugins/<YourPlugin>`. The Sdk comes from nuget.org (`DevHub.Sdk`,
+   `DevHub.Sdk.Core`): the newest release by default. DevHub's plugin guide (docs/PLUGINS.md in DevHub)
    explains the extension points (tool windows, documents, actions, settings pages…).
-4. Try it in DevHub before publishing:
+3. Try it in DevHub before publishing:
    - `pwsh build/Pack-Plugin.ps1 -Folder plugins/<YourPlugin> -Version 0.0.1`;
    - write an `index.json` with one entry whose `url` is the zip's `file:///…` path and `sha256` its
      hash (the script prints both);
@@ -36,7 +35,21 @@ Directory.Build.props    shared settings: the Sdk reference, Avalonia / Communit
 Keep the versions of Avalonia, CommunityToolkit.Mvvm and Microsoft.Extensions.DependencyInjection
 in `Directory.Build.props` equal to DevHub's (DevHub provides them at run time). `apiVersion` in
 plugin.json must match DevHub's plugin API version (`PluginApi.Version`); DevHub refuses plugins
-made for another one.
+made for another one, and the build checks it against the Sdk package.
+
+## Unreleased Sdk changes (local feed)
+
+To build against Sdk changes that aren't released yet, clone this repository next to DevHub (both in
+the same folder) and, in DevHub, run `pwsh build/Pack-Sdk.ps1`. It packs the Sdk with a version like
+`1.7.0-local.20261012143005` into `local-feed/` beside the two repositories, which this repository's
+build reads whenever that folder exists. Then:
+
+```
+dotnet build plugins/<YourPlugin> -p:DevHubSdkVersion=1.7.0-local.20261012143005
+```
+
+(`-p:DevHubSdkVersion=*-*` takes the newest one, local packs included; `-p:DevHubLocalFeed=<folder>`
+reads another folder.) Without the property the build goes back to the newest release.
 
 ## Versions (each plugin has its own)
 

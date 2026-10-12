@@ -84,7 +84,10 @@ tests, security checks); nothing is published if that fails. Then:
    - `DevHub-<version>-full.nupkg`, plus a `-delta` package once a previous release exists: what
      installed copies download to update;
    - `RELEASES` / `releases.win.json`: the list the app reads to see what's new.
-4. **GitHub Release** "DevHub <version>", tagged `release/<version>`, with the commit subjects
+4. **Sdk packages** `DevHub.Sdk` and `DevHub.Sdk.Core` (with `.snupkg` symbols), with the same
+   version, pushed to **nuget.org** with Trusted Publishing once it is set up (see below). Plugins
+   build against them.
+5. **GitHub Release** "DevHub <version>", tagged `release/<version>`, with the commit subjects
    since the last release as notes. The installers are also attached to the workflow run as an
    artifact.
 
@@ -98,6 +101,38 @@ dotnet tool install vpk --version 1.2.161 --tool-path .tools
 dotnet publish src/DevHub.App -p:PublishProfile=win-x64 -p:Version=0.0.1
 .tools/vpk pack --packId DevHub --packVersion 0.0.1 --packDir artifacts/publish/win-x64 --mainExe DevHub.App.exe --msi
 ```
+
+### The Sdk on nuget.org
+
+Plugins (in Naurid/DevHub-Plugins and anyone else's) reference the Sdk as NuGet packages. Their
+version is DevHub's, and `PluginApi.Version` is written into them (the `devhub-plugin-api-N` tag,
+and a build check against the plugin's `plugin.json`). Packaging settings are in
+`build/SdkPackage.props`; `build/Pack-Sdk.ps1` packs both.
+
+The release pushes them with **Trusted Publishing**: no API key is stored anywhere. The job asks
+GitHub for a signed token saying "this is Naurid/DevHub, workflow release.yml", nuget.org checks it
+against your policy and hands back an API key that lasts one hour (`NuGet/login` in `release.yml`).
+
+One-time setup (yours):
+
+1. Sign in to **nuget.org** (a Microsoft account) and choose the profile name the packages are
+   published under.
+2. Your name → **Trusted Publishing → Add**: owner yourself; Repository Owner `Naurid`, Repository
+   `DevHub`, Workflow File `release.yml` (the file name only), Environment empty.
+3. In GitHub, **Settings → Secrets and variables → Actions → Variables → New repository variable**:
+   `NUGET_USER` = your nuget.org profile name (not your email). It's not a secret: the policy is
+   what protects publishing.
+4. Publish within **7 days** (any push to `main`): while the repository is private, the policy starts
+   out temporarily active, and the first successful publish locks it to this repository for good.
+   If the 7 days pass, restart the window on the policy's page.
+
+From then on, every release pushes both packages. Until `NUGET_USER` exists, the release still packs
+them but skips the push. A version on nuget.org can't be deleted or replaced, only unlisted.
+
+**Try Sdk changes before releasing them:** `pwsh build/Pack-Sdk.ps1` packs the Sdk as
+`<version>-local.<timestamp>` into `../local-feed` (next to this repository). The plugins repo reads
+that folder when it exists: build a plugin with `-p:DevHubSdkVersion=<the printed version>`
+(DevHub-Plugins' README).
 
 ### Signing (later)
 

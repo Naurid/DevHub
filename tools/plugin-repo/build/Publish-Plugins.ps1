@@ -3,7 +3,7 @@
   for each plugins/<Folder>/plugin.json, the version comes from git (Get-PluginVersion.ps1). If the
   release "<id>-<version>" doesn't exist yet, the plugin is built and packed, released with its zip,
   and its entry in the marketplace index (index.json on the "index" release) is replaced.
-  Needs GH_TOKEN (contents: write) and the DevHub Sdk in .sdk/ (Get-Sdk.ps1).
+  Needs GH_TOKEN (contents: write); the DevHub Sdk comes from nuget.org (Directory.Build.props).
 #>
 param([string]$Repository = $env:GITHUB_REPOSITORY)
 $ErrorActionPreference = "Stop"
@@ -34,7 +34,7 @@ foreach ($manifest in Get-ChildItem (Join-Path $root "plugins") -Filter plugin.j
         continue
     }
 
-    $package = & (Join-Path $PSScriptRoot "Pack-Plugin.ps1") -Folder $relative -Version $version -Out $out -SdkDir (Join-Path $root ".sdk/") |
+    $package = & (Join-Path $PSScriptRoot "Pack-Plugin.ps1") -Folder $relative -Version $version -Out $out |
         Select-Object -Last 1 | ConvertFrom-Json
     gh release create $tag $package.file --repo $Repository --title "$($package.name) $version" --target $env:GITHUB_SHA `
         --notes "$($package.name) $version for DevHub (plugin API $($package.apiVersion))." --latest=false

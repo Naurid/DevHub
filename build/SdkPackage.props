@@ -1,0 +1,36 @@
+<!--
+  NuGet packaging shared by DevHub.Sdk and DevHub.Sdk.Core (imported by both .csproj files): what plugins
+  build against, published to nuget.org by .github/workflows/release.yml with DevHub's version.
+  build/Pack-Sdk.ps1 packs both (to a local feed by default, to try Sdk changes before releasing them).
+-->
+<Project>
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <Authors>Naurid</Authors>
+        <Copyright>© Naurid</Copyright>
+        <PackageProjectUrl>https://github.com/Naurid/DevHub</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Naurid/DevHub</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>devhub-256.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <!-- The plugin API version (PluginApi.Version in Sdk.Core), read from the source so it's written
+             in one place only: it goes into the tags and, for Sdk.Core, into its buildTransitive props. -->
+        <DevHubPluginApiVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../src/DevHub.Sdk.Core/Plugins/Marketplace/Marketplace.cs')), '(?&lt;=const int Version = )\d+'))</DevHubPluginApiVersion>
+        <PackageTags>devhub;devhub-plugin;plugin-sdk;devhub-plugin-api-$(DevHubPluginApiVersion)</PackageTags>
+
+        <!-- IntelliSense for plugin authors: the XML comments ship in the package (not every public member
+             has one, and only the non-obvious parameters get a param tag: no warnings for those).
+             Symbols (.snupkg) let a plugin step into the Sdk. -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)sdk-package/README.md" Pack="true" PackagePath="/" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)../src/DevHub.App/Assets/Logo/devhub-256.png" Pack="true" PackagePath="/" Visible="false" />
+    </ItemGroup>
+</Project>

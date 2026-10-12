@@ -5,7 +5,7 @@ namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// Something opened as a tab in the editor area (the center of the window), like a file in
-/// Rider: Templates, New Project (Generate), Import, Settings… The <see cref="DocumentManager"/>
+/// Rider: Templates, New Project (Generate), Import, Settings… The <c>DocumentManager</c> (the shell)
 /// owns the tab list; the ViewLocator turns the active ViewModel into its View.
 /// </summary>
 /// <remarks>
@@ -60,7 +60,7 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     /// </summary>
     public virtual Task<bool> ConfirmCloseAsync() => Task.FromResult(true);
 
-    /// <summary>True for the selected tab. Set by <see cref="DocumentManager"/> only.</summary>
+    /// <summary>True for the selected tab. Set by <c>DocumentManager</c> (the shell) only.</summary>
     [ObservableProperty] private bool _isActive;
 
     // The generated "changed" hook can only be implemented in this class (partial methods
@@ -72,13 +72,13 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     {
     }
 
-    /// <summary>Closes this tab (the × on the tab). Assigned by <see cref="DocumentManager"/>.</summary>
+    /// <summary>Closes this tab (the × on the tab). Assigned by <c>DocumentManager</c> (the shell).</summary>
     public ICommand? CloseCommand { get; internal set; }
 
     /// <summary>
     /// Opens another document by id, e.g. a diff tab from a repository tab (same as
-    /// <see cref="DocumentManager.OpenById"/>; documents can't take the manager itself, it's
-    /// built from them). Assigned by <see cref="DocumentManager"/>.
+    /// <c>DocumentManager.OpenById</c> (the shell); documents can't take the manager itself, it's
+    /// built from them). Assigned by <c>DocumentManager</c> (the shell).
     /// </summary>
     public Func<string, bool>? OpenDocument { get; internal set; }
 

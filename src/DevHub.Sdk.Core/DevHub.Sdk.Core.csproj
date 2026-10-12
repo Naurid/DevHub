@@ -3,7 +3,35 @@
     <!--
       The plugin-independent base every part of DevHub can use: the settings store (shell
       sections + one section per plugin), FuzzyMatcher, formatting helpers. No Avalonia, ever,
-      and no knowledge of any plugin.
+      and no knowledge of any plugin. Published as a NuGet package for plugins (build/SdkPackage.props).
     -->
+
+    <Import Project="..\..\build\SdkPackage.props" />
+
+    <PropertyGroup>
+        <Description>DevHub plugin Sdk, no UI: the plugin model, settings sections, marketplace types and helpers DevHub plugins build on.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- For plugin projects: DevHubPluginApiVersion (generated at pack time) and the plugin.json check. -->
+        <None Include="buildTransitive\DevHub.Sdk.Core.targets" Pack="true" PackagePath="buildTransitive\" />
+    </ItemGroup>
+
+    <!-- buildTransitive/DevHub.Sdk.Core.props: the plugin API version this package was made with. -->
+    <PropertyGroup>
+        <BeforePack>$(BeforePack);WritePluginApiProps</BeforePack>
+    </PropertyGroup>
+
+    <Target Name="WritePluginApiProps">
+        <PropertyGroup>
+            <_PluginApiProps>$(IntermediateOutputPath)DevHub.Sdk.Core.props</_PluginApiProps>
+        </PropertyGroup>
+        <Error Condition="'$(DevHubPluginApiVersion)' == ''" Text="PluginApi.Version not found in Plugins/Marketplace/Marketplace.cs (build/SdkPackage.props reads it)." />
+        <WriteLinesToFile File="$(_PluginApiProps)" Overwrite="true" WriteOnlyWhenDifferent="true"
+                          Lines="&lt;Project&gt;;  &lt;PropertyGroup&gt;;    &lt;DevHubPluginApiVersion&gt;$(DevHubPluginApiVersion)&lt;/DevHubPluginApiVersion&gt;;  &lt;/PropertyGroup&gt;;&lt;/Project&gt;" />
+        <ItemGroup>
+            <None Include="$(_PluginApiProps)" Pack="true" PackagePath="buildTransitive\" />
+        </ItemGroup>
+    </Target>
 
 </Project>

@@ -2,7 +2,7 @@ namespace DevHub.ViewModels.Documents;
 
 /// <summary>
 /// Creates documents that can be open many times, each with its own id, e.g. one tab per
-/// repository ("Repository:C:\P\DevHub"). The <see cref="DocumentManager"/> asks the factory whose
+/// repository ("Repository:C:\P\DevHub"). The <c>DocumentManager</c> (the shell) asks the factory whose
 /// <see cref="IdPrefix"/> matches an id, both when opening and when restoring tabs at startup.
 /// Register in DI as <c>services.AddSingleton&lt;IDocumentFactory, XyzFactory&gt;()</c>.
 /// </summary>

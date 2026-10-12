@@ -1,7 +1,8 @@
 # Publishes a release (docs/RELEASING.md): on every push to main (minor + 1) and on a major tag vN
 # (N.0.0). Runs the full CI first; nothing is published unless it passes.
 #   1. version from git (build/Get-Version.ps1)   2. dotnet publish (self-contained win-x64)
-#   3. vpk pack: Setup.exe, .msi, full + delta update packages   4. GitHub Release "release/<version>"
+#   3. vpk pack: Setup.exe, .msi, full + delta update packages   4. the Sdk on nuget.org (DevHub.Sdk, DevHub.Sdk.Core)
+#   5. GitHub Release "release/<version>"
 name: Release
 
 on:
@@ -33,6 +34,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write # create the GitHub Release
+      id-token: write # nuget.org Trusted Publishing: GitHub's OIDC token is traded for a 1-hour API key
     env:
       HAS_SIGNING: ${{ secrets.SIGNING_PFX_BASE64 != '' }} # a step's if can't read secrets directly
     steps:
@@ -106,6 +108,31 @@ jobs:
           vpk @pack
           if ($LASTEXITCODE -ne 0) { throw "vpk pack failed" }
 
+      - name: Sdk NuGet packages (DevHub.Sdk, DevHub.Sdk.Core)
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        run: pwsh build/Pack-Sdk.ps1 -Version ${{ steps.version.outputs.version }} -Out artifacts/nuget
+
+      # nuget.org Trusted Publishing (docs/RELEASING.md): no stored key. Only when the repository
+      # variable NUGET_USER (your nuget.org profile name) exists; the nuget.org policy names this file.
+      - name: nuget.org login (Trusted Publishing)
+        id: nuget
+        if: steps.version.outputs.exists == 'false' && vars.NUGET_USER != ''
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      # Before the GitHub Release: if this fails, a re-run starts again (a pushed version is skipped).
+      - name: Push the Sdk to nuget.org
+        if: steps.version.outputs.exists == 'false' && vars.NUGET_USER != ''
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.nuget.outputs.NUGET_API_KEY }}
+        run: |
+          # The .snupkg symbol packages next to them are pushed along.
+          dotnet nuget push "artifacts/nuget/*.nupkg" --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+          if ($LASTEXITCODE -ne 0) { throw "dotnet nuget push failed" }
+
       - name: Publish the GitHub Release
         if: steps.version.outputs.exists == 'false'
         run: >
@@ -119,7 +146,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # What a plugin builds against (tools/plugin-repo/build/Get-Sdk.ps1 downloads it).
+          # The Sdk as DLLs, for DevHub-Plugins builds made before they used the NuGet packages (drop in PM4).
           $zip = "Releases/DevHub-Sdk-${{ steps.version.outputs.version }}.zip"
           Compress-Archive -Path artifacts/publish/win-x64/DevHub.Sdk.dll, artifacts/publish/win-x64/DevHub.Sdk.Core.dll -DestinationPath $zip
           gh release upload "release/${{ steps.version.outputs.version }}" $zip --repo ${{ github.repository }}

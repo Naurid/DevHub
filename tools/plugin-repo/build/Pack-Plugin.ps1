@@ -3,13 +3,13 @@
   (with the version filled in) and the plugin's own DLLs. Prints the package's details as JSON (id,
   name, version, file, sha256, size), which publish.yml turns into the index entry.
 
-    pwsh build/Pack-Plugin.ps1 -Folder plugins/HelloWorld [-Version 1.2.0] [-Out out] [-SdkDir <path>]
+    pwsh build/Pack-Plugin.ps1 -Folder plugins/HelloWorld [-Version 1.2.0] [-Out out] [-SdkVersion <DevHub Sdk version>]
 #>
 param(
     [Parameter(Mandatory)] [string]$Folder,
     [string]$Version,
     [string]$Out = "out",
-    [string]$SdkDir
+    [string]$SdkVersion
 )
 $ErrorActionPreference = "Stop"
 
@@ -19,7 +19,7 @@ $build = Join-Path $Out "build/$($info.id)"
 Remove-Item -Recurse -Force $build -ErrorAction SilentlyContinue
 
 $args = @("build", $Folder, "-c", "Release", "-o", $build, "-p:Version=$Version", "--nologo")
-if ($SdkDir) { $args += "-p:DevHubSdkDir=$SdkDir" }
+if ($SdkVersion) { $args += "-p:DevHubSdkVersion=$SdkVersion" }
 dotnet @args
 if ($LASTEXITCODE -ne 0) { throw "Build failed: $Folder" }
 

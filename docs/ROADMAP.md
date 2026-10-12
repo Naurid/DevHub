@@ -191,11 +191,11 @@ Templates, and the new Board, Diagrams, CI) is developed, versioned and released
 **Naurid/DevHub-Plugins**. The first four are **bundled** in DevHub's installer (offline first run, presets
 as today) and then **update through the marketplace**. The Sdk goes to **nuget.org**. The plugins move
 **with their git history**. Each step leaves both repos building, tested and releasable.
-- [ ] **NEXT —** PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
-      `PluginApi.Version`), pushed to nuget.org by `release.yml` (you: a `NUGET_API_KEY` secret); the
+- [x] PM1. Sdk as NuGet packages: `DevHub.Sdk` + `DevHub.Sdk.Core` packed with DevHub's version (and
+      `PluginApi.Version`), pushed to nuget.org by `release.yml` (Trusted Publishing; you: the nuget.org policy + a `NUGET_USER` variable); the
       plugins repo uses a `PackageReference` instead of the Sdk zip; a local feed folder
       (`dotnet pack -o ../local-feed`) to try Sdk changes before releasing them
-- [ ] PM2. Dependencies between marketplace plugins: installing one installs what it `requires` (listed
+- [ ] **NEXT —** PM2. Dependencies between marketplace plugins: installing one installs what it `requires` (listed
       first); removing one others need asks first; loading in `requires` order; a package leaves out the
       DLLs of the plugins it requires (one copy loads); an updated bundled plugin in `%AppData%\DevHub\plugins`
       wins over the bundled copy
