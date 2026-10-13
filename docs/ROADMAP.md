@@ -275,9 +275,9 @@ Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
 - [x] B5. Backlog: ranked list, epics panel, bulk edit, story-point totals
 - [x] B6. Search: a JQL-like query language (parser + evaluator in Core, tested), saved filters, results as
       a list or a board
-- [ ] B7. `Board.Scrum`: sprints (create, start with goal and dates, complete with leftovers moved), sprint
+- [x] B7. `Board.Scrum`: sprints (create, start with goal and dates, complete with leftovers moved), sprint
       board, capacity, points per sprint — first usable version with B1–B5
-- [ ] B8. `Board.Git`: the `devhub/board` branch store (New Board on the branch, Move board…, Push / Pull board);
+- [x] B8. `Board.Git`: the `devhub/board` branch store (New Board on the branch, Move board…, Push / Pull board);
       branch from an issue (`feature/DEV-12-short-summary`); issue keys in branches and commits linked both
       ways (Development section: branches, commits, pull requests via `IRemoteHost`); smart commits
       (`DEV-12 #done #comment …`) shown before they apply, never silent; the commit box suggests the current
