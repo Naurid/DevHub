@@ -282,9 +282,9 @@ Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
       ways (Development section: branches, commits, pull requests via `IRemoteHost`); smart commits
       (`DEV-12 #done #comment …`) shown before they apply, never silent; the commit box suggests the current
       branch's key
-- [ ] B9. `Board.Reports`: burndown / burnup, velocity, cumulative flow, control chart, sprint report, epic
+- [x] B9. `Board.Reports`: burndown / burnup, velocity, cumulative flow, control chart, sprint report, epic
       progress; dashboards with gadgets (filter results, pie by field, assigned to me)
-- [ ] B10. `Board.Timeline`: roadmap (Gantt) of epics with dates and dependencies; releases (fix versions with
+- [x] B10. `Board.Timeline`: roadmap (Gantt) of epics with dates and dependencies; releases (fix versions with
       dates, release notes from their issues)
 - [ ] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
 - [ ] B12. Actions in Find Action + M10 command tools (create issue, move issue, my open issues)
