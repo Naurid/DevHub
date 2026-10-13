@@ -38,7 +38,7 @@ jobs:
     env:
       HAS_SIGNING: ${{ secrets.SIGNING_PFX_BASE64 != '' }} # a step's if can't read secrets directly
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # the version is counted from the history
 
