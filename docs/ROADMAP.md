@@ -245,20 +245,21 @@ as today) and then **update through the marketplace**. The Sdk goes to **nuget.o
 - [x] PM7. Docs: DevHub's `CLAUDE.md`, `README.md`, `PLUGINS.md`, `RELEASING.md`; DevHub-Plugins' README +
       its own `CLAUDE.md` (the rules that moved with the plugins); this roadmap names each milestone's repo
 
-## B — Board: Jira-style agile planning, stored in the repository [Plugins]
-Decided 2026-10-12: the data lives **in the repository** (plain files, versioned and shared through git,
-no server). Fully modular: `DevHub.Board` (+ `.Core`: issues, workflows, boards, backlog, search) and
-optional plugins that require it: `DevHub.Board.Scrum`, `DevHub.Board.Reports`, `DevHub.Board.Timeline`,
-`DevHub.Board.Git`. Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
-- [ ] **NEXT —** B0. Plan + decisions: where the files live (a dedicated `devhub/board` branch written with git
-      plumbing, so the board is the same on every checked-out branch — recommended — or `.devhub/board/` in
-      the working tree); one JSON file per issue with a stable id + `board.json` (project key, issue types,
-      workflows, fields, boards); keys like `DEV-12` (collisions across branches detected and renumbered);
-      merge rules; people (git authors + `team.json`)
-- [ ] B1. Core model (tested): issue types (epic, story, task, bug, sub-task) + custom types; fields
-      (summary, Markdown description, status, priority, assignee, reporter, labels, components, fix
-      versions, story points, original / remaining estimate, due date, custom fields); links (blocks,
-      relates to, duplicates, clones), parent / epic; comments, attachments, history (who changed what)
+## B — Board: Jira-style agile planning, no server [Plugins]
+Decided 2026-10-12/13: a board is plain JSON files, **no server and no git needed**. Storage sits behind
+`IBoardStore`: `Board` keeps a board in a folder (`%APPDATA%/DevHub/boards/<key>` or any folder you pick);
+`Board.Git` adds a repository's `devhub/board` branch (written with git plumbing, never checked out, the same on
+every code branch). One user for now; multi-user (merges, key renumbering) later. Fully modular: `DevHub.Board`
+(+ `.Core`, requires nothing), `Board.Scrum`, `Board.Git` (→ Board + Git), `Board.Reports`, `Board.Timeline`.
+Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
+- [x] B0. Plan + decisions (`docs/BOARD_PLAN.md`): stores (folder; `devhub/board` branch in Board.Git), one JSON
+      file per issue with a stable id + `board.json`, keys like `DEV-12`, LexoRank-style ranks, a change log per
+      issue (history without git), story points + time tracking, build order
+- [ ] B1. Core model + folder store (tested): issue types (epic, story, task, bug, sub-task) + custom types; fields
+      (summary, Markdown description, status, priority, assignee, reporter, labels, components, fix versions,
+      story points, original / remaining estimate + work log, due date, custom fields); links (blocks, relates
+      to, duplicates, clones), parent / epic; comments, attachments, history; `IBoardStore` + the folder store
+      (compare-and-swap writes, outside changes); operations as plain argument objects
 - [ ] B2. Workflows (tested): statuses in To Do / In Progress / Done categories, allowed transitions,
       resolutions, a workflow editor. Nothing is fixed: the defaults are a starting preset, every status
       can be renamed, reordered or deleted
@@ -266,19 +267,21 @@ optional plugins that require it: `DevHub.Board.Scrum`, `DevHub.Board.Reports`, 
       columns right on the board (a new column creates its status; deleting one asks where its issues go;
       you can remove every default column and start empty); a column can hold several statuses, statuses on
       no column are listed as "not on the board"; several boards per project (own columns, filter, card
-      layout; presets Kanban / Scrum / Bug triage / empty); swimlanes (none, assignee, epic, priority, a
-      query); WIP limits, quick filters; drag cards between columns (allowed transitions only) and to rank
-- [ ] B4. Issue view (tab + side panel): every field editable, comments, links, sub-tasks, history,
-      attachments; Create Issue (C)
-- [ ] B5. Backlog: ranked list, epics and versions panels, bulk edit, story-point totals
+      layout; presets Kanban / Scrum / Bug triage / empty); swimlanes (none, assignee, epic, priority);
+      WIP limits, quick filters; drag cards between columns (allowed transitions only) and to rank; New Board
+      (where it's kept), recent boards
+- [ ] B4. Issue view (tab + side panel): every field editable, comments, links, sub-tasks, time tracking (log
+      work), history, attachments; Create Issue (C)
+- [ ] B5. Backlog: ranked list, epics panel, bulk edit, story-point totals
 - [ ] B6. Search: a JQL-like query language (parser + evaluator in Core, tested), saved filters, results as
       a list or a board
 - [ ] B7. `Board.Scrum`: sprints (create, start with goal and dates, complete with leftovers moved), sprint
-      board, capacity, points per sprint
-- [ ] B8. `Board.Git`: branch from an issue (`feature/DEV-12-short-summary`); issue keys in branches and
-      commits linked both ways (Development panel: branches, commits, pull requests via `IRemoteHost`); smart
-      commits (`DEV-12 #done #comment …`) shown before they apply, never silent; the commit box suggests the
-      current branch's key
+      board, capacity, points per sprint — first usable version with B1–B5
+- [ ] B8. `Board.Git`: the `devhub/board` branch store (New Board on the branch, Move board…, Push / Pull board);
+      branch from an issue (`feature/DEV-12-short-summary`); issue keys in branches and commits linked both
+      ways (Development section: branches, commits, pull requests via `IRemoteHost`); smart commits
+      (`DEV-12 #done #comment …`) shown before they apply, never silent; the commit box suggests the current
+      branch's key
 - [ ] B9. `Board.Reports`: burndown / burnup, velocity, cumulative flow, control chart, sprint report, epic
       progress; dashboards with gadgets (filter results, pie by field, assigned to me)
 - [ ] B10. `Board.Timeline`: roadmap (Gantt) of epics with dates and dependencies; releases (fix versions with
