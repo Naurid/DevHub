@@ -255,25 +255,25 @@ Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
 - [x] B0. Plan + decisions (`docs/BOARD_PLAN.md`): stores (folder; `devhub/board` branch in Board.Git), one JSON
       file per issue with a stable id + `board.json`, keys like `DEV-12`, LexoRank-style ranks, a change log per
       issue (history without git), story points + time tracking, build order
-- [ ] B1. Core model + folder store (tested): issue types (epic, story, task, bug, sub-task) + custom types; fields
+- [x] B1. Core model + folder store (tested): issue types (epic, story, task, bug, sub-task) + custom types; fields
       (summary, Markdown description, status, priority, assignee, reporter, labels, components, fix versions,
       story points, original / remaining estimate + work log, due date, custom fields); links (blocks, relates
       to, duplicates, clones), parent / epic; comments, attachments, history; `IBoardStore` + the folder store
       (compare-and-swap writes, outside changes); operations as plain argument objects
-- [ ] B2. Workflows (tested): statuses in To Do / In Progress / Done categories, allowed transitions,
+- [x] B2. Workflows (tested): statuses in To Do / In Progress / Done categories, allowed transitions,
       resolutions, a workflow editor. Nothing is fixed: the defaults are a starting preset, every status
       can be renamed, reordered or deleted
-- [ ] B3. Kanban board with **fully configurable columns**: add, rename, reorder (drag), merge, delete
+- [x] B3. Kanban board with **fully configurable columns**: add, rename, reorder (drag), merge, delete
       columns right on the board (a new column creates its status; deleting one asks where its issues go;
       you can remove every default column and start empty); a column can hold several statuses, statuses on
       no column are listed as "not on the board"; several boards per project (own columns, filter, card
       layout; presets Kanban / Scrum / Bug triage / empty); swimlanes (none, assignee, epic, priority);
       WIP limits, quick filters; drag cards between columns (allowed transitions only) and to rank; New Board
       (where it's kept), recent boards
-- [ ] B4. Issue view (tab + side panel): every field editable, comments, links, sub-tasks, time tracking (log
+- [x] B4. Issue view (tab + side panel): every field editable, comments, links, sub-tasks, time tracking (log
       work), history, attachments; Create Issue (C)
-- [ ] B5. Backlog: ranked list, epics panel, bulk edit, story-point totals
-- [ ] B6. Search: a JQL-like query language (parser + evaluator in Core, tested), saved filters, results as
+- [x] B5. Backlog: ranked list, epics panel, bulk edit, story-point totals
+- [x] B6. Search: a JQL-like query language (parser + evaluator in Core, tested), saved filters, results as
       a list or a board
 - [ ] B7. `Board.Scrum`: sprints (create, start with goal and dates, complete with leftovers moved), sprint
       board, capacity, points per sprint — first usable version with B1–B5
