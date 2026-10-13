@@ -286,8 +286,8 @@ Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
       progress; dashboards with gadgets (filter results, pie by field, assigned to me)
 - [x] B10. `Board.Timeline`: roadmap (Gantt) of epics with dates and dependencies; releases (fix versions with
       dates, release notes from their issues)
-- [ ] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
-- [ ] B12. Actions in Find Action + M10 command tools (create issue, move issue, my open issues)
+- [x] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
+- [x] B12. Actions in Find Action (Go to Issue, My Open Issues, Create Issue, Backlog, Search…). M10 command tools (create issue, move issue, my open issues) are left for M10
 
 ## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
 Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
