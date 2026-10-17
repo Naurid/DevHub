@@ -154,7 +154,7 @@ public sealed class PluginHost
         {
             if (builtInIds.Contains(folder.Info.Id))
             {
-                problems.Add($"{folder.Info.Name} (the built-in plugin {folder.Info.Id} is used instead)");
+                problems.Add(L.T($"{folder.Info.Name} (the built-in plugin {folder.Info.Id} is used instead)"));
                 continue;
             }
             foreach (var plugin in Create(LoadFolder(folder.Folder, problems), problems))
@@ -177,7 +177,7 @@ public sealed class PluginHost
     private static List<PluginFolder> Compatible(IReadOnlyList<PluginFolder> folders, List<string> problems)
     {
         foreach (var folder in folders.Where(f => f.Info.ApiVersion != PluginApi.Version))
-            problems.Add($"{folder.Info.Name} (made for plugin API {folder.Info.ApiVersion}; this DevHub has {PluginApi.Version})");
+            problems.Add(L.T($"{folder.Info.Name} (made for plugin API {folder.Info.ApiVersion}; this DevHub has {PluginApi.Version})"));
         return folders.Where(f => f.Info.ApiVersion == PluginApi.Version).ToList();
     }
 
@@ -239,7 +239,7 @@ public sealed class PluginHost
             }
             catch (Exception ex) when (ex is FileNotFoundException or TypeLoadException or FileLoadException)
             {
-                problems.Add(assembly.GetName().Name ?? "a plugin");
+                problems.Add(assembly.GetName().Name ?? L.T("a plugin"));
                 continue;
             }
             foreach (var attribute in attributes)

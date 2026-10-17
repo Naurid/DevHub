@@ -1,3 +1,5 @@
+using DevHub.Sdk.Core.Localization;
+
 namespace DevHub.Sdk.Core.Plugins.Marketplace;
 
 /// <summary>A plugin folder: its plugin.json, and whether it came with DevHub (bundled) or was installed.</summary>
@@ -55,14 +57,14 @@ public static class PluginFolders
         {
             if (!Directory.Exists(path))
             {
-                problems.Add($"Plugin path not found: {path}");
+                problems.Add(L.T($"Plugin path not found: {path}"));
                 continue;
             }
             var here = PluginInstaller.ReadInfo(path) is { } info && !string.IsNullOrWhiteSpace(info.Id)
                 ? [new PluginFolder(path, info, Bundled: false)]
                 : Scan(path, bundled: false);
             if (here.Count == 0)
-                problems.Add($"No plugin.json in {path} (nor in its folders)");
+                problems.Add(L.T($"No plugin.json in {path} (nor in its folders)"));
             found.AddRange(here);
         }
         return found;

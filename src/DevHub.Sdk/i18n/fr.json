@@ -4,5 +4,9 @@
   "Search": "Rechercher",
   "Remove": "Supprimer",
   "Matching people": "Personnes correspondantes",
-  "Clear (Esc)": "Effacer (Échap)"
+  "Clear (Esc)": "Effacer (Échap)",
+  "Remove {0}": "Retirer {0}",
+  "Pick {0}": "Choisir {0}",
+  "{0} code": "code {0}",
+  "and {0} more": "et {0} de plus"
 }

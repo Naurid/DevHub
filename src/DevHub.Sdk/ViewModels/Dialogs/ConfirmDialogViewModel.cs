@@ -1,3 +1,5 @@
+using DevHub.Sdk.Core.Localization;
+
 namespace DevHub.ViewModels.Dialogs;
 
 /// <summary>
@@ -27,7 +29,7 @@ public sealed class ConfirmDialogViewModel : DialogViewModelBase
 
         items ??= [];
         Items = items.Take(MaxListedItems).ToList();
-        MoreText = items.Count > MaxListedItems ? $"and {items.Count - MaxListedItems} more" : null;
+        MoreText = items.Count > MaxListedItems ? L.T($"and {items.Count - MaxListedItems} more") : null;
     }
 
     public override string Title { get; }

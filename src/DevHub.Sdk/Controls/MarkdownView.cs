@@ -4,6 +4,7 @@ using Avalonia.Controls.Documents;
 using Avalonia.Layout;
 using Avalonia.Media;
 using DevHub.Sdk.Core.Formatting;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Controls;
 
@@ -106,7 +107,7 @@ public class MarkdownView : StackPanel
         Token(border, Border.CornerRadiusProperty, "Radius.Control");
         Token(border, Border.PaddingProperty, "Padding.Banner");
         if (code.Language is { } language)
-            AutomationPropertiesName(border, $"{language} code");
+            AutomationPropertiesName(border, L.T($"{language} code"));
         return border;
     }
 

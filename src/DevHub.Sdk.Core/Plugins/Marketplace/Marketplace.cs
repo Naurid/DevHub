@@ -263,7 +263,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                problems.Add($"Couldn't remove the plugin {id}: {ex.Message}");
+                problems.Add(L.T($"Couldn't remove the plugin {id}: {ex.Message}"));
             }
         }
         foreach (var folder in Directory.EnumerateDirectories(pending))
@@ -278,7 +278,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                problems.Add($"Couldn't install the plugin {id}: {ex.Message}");
+                problems.Add(L.T($"Couldn't install the plugin {id}: {ex.Message}"));
             }
         }
         return problems;

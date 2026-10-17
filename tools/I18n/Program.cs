@@ -27,6 +27,12 @@ foreach (var project in projects)
 {
     switch (command)
     {
+        case "list-loose":
+            CSharp.Loose = true;
+            goto case "list";
+        case "wrap-loose":
+            CSharp.Loose = true;
+            goto case "wrap";
         case "list":
             foreach (var c in CSharp.Candidates(project))
                 Console.WriteLine($"{c.Id}\t{c.Text}\t{c.Context}");
@@ -43,6 +49,15 @@ foreach (var project in projects)
             break;
         case "check":
             failed |= !Keys.Check(project);
+            break;
+        case "export":
+            Keys.Export(project);
+            break;
+        case "import":
+            Keys.Import(project, args[2]);
+            break;
+        case "add":
+            Keys.Add(project, args[2]);
             break;
         default:
             Console.Error.WriteLine($"unknown command {command}");
@@ -83,7 +98,7 @@ static class CSharp
         "GetEnvironmentVariable", "Combine", "GetFullPath", "Join", "IsMatch", "Match", "Matches", "Regex", "GetProperty", "TryGetProperty",
         "TryGetValue", "ContainsKey", "GetValueOrDefault", "WriteLine", "Write", "Assert", "Fail", "Run", "Start", "ParseExact", "TryParseExact",
         "Parse", "TryParse", "ToString", "nameof", "GetManifestResourceStream", "Load", "CreateUri", "Uri", "AddArgument", "Arguments",
-        "Process", "Command", "Register", "RegisterAttached", "RegisterDirect", "GetResourceObservable", "FindResource", "TryFindResource", "Token", "RunGit", "Git", "GitAsync", "RunAsync", "ReadAsync", "Set", "Get", "Remove", "Add",
+        "Process", "Command", "Has", "Register", "RegisterAttached", "RegisterDirect", "GetResourceObservable", "FindResource", "TryFindResource", "Token", "RunGit", "Git", "GitAsync", "RunAsync", "ReadAsync", "Set", "Get", "Remove", "Add",
     ];
 
     // Members whose strings are ids or names the code matches on (menus group by Menu, translated where they're shown).
@@ -140,8 +155,13 @@ static class CSharp
         }
     }
 
+    // "list-loose" / "wrap-loose": also short and lowercase text ("1 issue", $"{n} days"), and strings given to Add.
+    public static bool Loose;
+
     private static bool LooksLikeText(string value, bool interpolated)
     {
+        if (Loose)
+            return value.Contains(' ') && Regex.IsMatch(value, @"[A-Za-z]{3,}") && !value.Contains(":://") && !Regex.IsMatch(value.Trim(), @"^[#-]");
         var text = value.Trim();
         if (!text.Any(char.IsLetter) || text.StartsWith('#') || text.StartsWith('-') || text.Contains("://")
             || Regex.IsMatch(text, @"^[\w.\-/\\:]+$") && !Regex.IsMatch(text, @"^[A-Z][a-z]+$") && !text.EndsWith('…'))
@@ -179,7 +199,7 @@ static class CSharp
                     };
                     if (name.Item1 == "L" && name.Item2 is "T" or "F" && IsDirectArgument(node, invocation))
                         return true;   // translated already
-                    if (CodeCalls.Contains(name.Item2) && IsDirectArgument(node, invocation))
+                    if (CodeCalls.Contains(name.Item2) && !(Loose && name.Item2 is "Add" or "Insert") && IsDirectArgument(node, invocation))
                         return true;
                     break;
                 case ObjectCreationExpressionSyntax creation when IsDirectArgument(node, creation):
@@ -263,7 +283,7 @@ static class CSharp
         foreach (var part in s.Contents)
         {
             if (part is InterpolatedStringTextSyntax t)
-                key.Append(t.TextToken.ValueText.Replace("{", "{{").Replace("}", "}}"));
+                key.Append(t.TextToken.ValueText.Replace("{{", "{").Replace("}}", "}").Replace("{", "{{").Replace("}", "}}"));
             else if (part is InterpolationSyntax i)
             {
                 key.Append('{').Append(index++);
@@ -344,6 +364,53 @@ static class Keys
             ? JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(FilePath(project))) ?? []
             : [];
 
+    // For translating many keys at once: "export" prints the keys still without French as "number<TAB>English"
+    // (newlines as \n), "import" reads "number<TAB>French" lines back into the file. Numbers are positions in fr.json.
+    public static void Export(string project)
+    {
+        var entries = Read(project).ToList();
+        for (var i = 0; i < entries.Count; i++)
+            if (entries[i].Value.Length == 0)
+                Console.WriteLine($"{i}\t{entries[i].Key.Replace("\n", "\\n").Replace("\t", "\\t")}");
+    }
+
+    public static void Import(string project, string file)
+    {
+        var entries = Read(project).ToList();
+        var changed = 0;
+        foreach (var line in File.ReadAllLines(file))
+        {
+            var tab = line.IndexOf('\t');
+            if (tab < 1 || !int.TryParse(line[..tab], out var i) || i < 0 || i >= entries.Count)
+                continue;
+            entries[i] = new(entries[i].Key, line[(tab + 1)..].Replace("\\n", "\n").Replace("\\t", "\t"));
+            changed++;
+        }
+        var map = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var (k, v) in entries)
+            map[k] = v;
+        File.WriteAllText(FilePath(project), JsonSerializer.Serialize(map, Json).Replace("\r\n", "\n") + "\n");
+        Console.WriteLine($"{Files.Rel(project)}: {changed} translations imported");
+    }
+
+    // Keys the code doesn't show through L.T literals (plugin names, menus, categories): "English<TAB>French" lines.
+    public static void Add(string project, string file)
+    {
+        var map = Read(project);
+        var added = 0;
+        foreach (var line in File.ReadAllLines(file))
+        {
+            var parts = line.Split('\t');
+            if (parts.Length != 2 || parts[0].Length == 0)
+                continue;
+            map[parts[0].Replace("\\n", "\n")] = parts[1].Replace("\\n", "\n");
+            added++;
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(FilePath(project))!);
+        File.WriteAllText(FilePath(project), JsonSerializer.Serialize(map, Json).Replace("\r\n", "\n") + "\n");
+        Console.WriteLine($"{Files.Rel(project)}: {added} keys added");
+    }
+
     public static void Update(string project)
     {
         var keys = Collect(project);
@@ -352,7 +419,7 @@ static class Keys
         var existing = Read(project);
         var merged = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var (k, v) in existing)
-            merged[k] = v;   // kept even when unused: names translated where they're shown (plugin names, menus) are added by hand
+            merged[k] = Edges(k, v);   // kept even when unused: names translated where they're shown (plugin names, menus) are added by hand
         foreach (var k in keys)
             merged.TryAdd(k, "");
         Directory.CreateDirectory(Path.GetDirectoryName(FilePath(project))!);
@@ -373,9 +440,18 @@ static class Keys
         var broken = french.Where(p => p.Value.Length > 0 && Holes(p.Key) != Holes(p.Value)).ToList();
         foreach (var (k, v) in broken)
             Console.WriteLine($"{Files.Rel(project)}: \"{v}\" doesn't have the values of \"{k}\"");
-        return missing.Count == 0 && broken.Count == 0;
+        // Text glued to other text ("Saved: " + name) keeps its spaces at the edges.
+        var edges = french.Where(p => p.Value.Length > 0 && Edges(p.Key, p.Value) != p.Value).ToList();
+        foreach (var (k, v) in edges)
+            Console.WriteLine($"{Files.Rel(project)}: \"{v}\" doesn't start or end with the spaces of \"{k}\" (run keys)");
+        return missing.Count == 0 && broken.Count == 0 && edges.Count == 0;
     }
 
+    // The translation with the same spaces at its start and end as the English text.
+    private static string Edges(string english, string french) =>
+        french.Length == 0 ? french
+            : new string(' ', english.Length - english.TrimStart(' ').Length) + french.Trim(' ') + new string(' ', english.Length - english.TrimEnd(' ').Length);
+
     private static string Holes(string format) =>
-        string.Join(",", Regex.Matches(format.Replace("{{", "").Replace("}}", ""), @"\{(\d+)").Select(m => m.Groups[1].Value).Order());
+        string.Join(",", Regex.Matches(format.Replace("{{", "").Replace("}}", ""), @"\{(\d+)").Select(m => m.Groups[1].Value).Distinct().Order());
 }

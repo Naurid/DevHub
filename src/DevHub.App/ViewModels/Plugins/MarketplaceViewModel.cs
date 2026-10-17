@@ -175,7 +175,7 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
     private static string Names(IReadOnlyList<IndexEntry> entries) => Names(entries.Select(e => e.Name).ToList());
 
     private static string Names(IReadOnlyList<string> names) =>
-        names.Count <= 1 ? string.Concat(names) : string.Join(", ", names.Take(names.Count - 1)) + " and " + names[^1];
+        names.Count <= 1 ? string.Concat(names) : string.Join(", ", names.Take(names.Count - 1)) + L.T(" and ") + names[^1];
 
     /// <summary>"github.com", or "this computer (C:\plugins\x.zip)" for a local index file.</summary>
     private static string Origin(string url) =>

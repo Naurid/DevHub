@@ -314,7 +314,7 @@ assembly embeds its `i18n/fr.json`. New boards get French names (statuses, types
 French; existing boards keep theirs.
 - [x] L1. Sdk: `L` (Sdk.Core), `{l:T}` (Sdk), the Language setting, French dates and numbers; tools/I18n (wrap, keys,
       check; CI checks every text has its French); the shell in French
-- [ ] L2. Plugins in French: Board (and Scrum, Reports, Timeline, Risks, Git), Charts, Git, GitHub, Projects, Templates;
+- [x] L2. Plugins in French: Board (and Scrum, Reports, Timeline, Risks, Git), Charts, Git, GitHub, Projects, Templates;
       new boards with French names
 
 ## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]

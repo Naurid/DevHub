@@ -33,7 +33,7 @@
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                                                 <c:ActionButton IconKind="close" Width="18" Height="18"
                                                                 Command="{Binding $parent[c:PeoplePicker].RemoveCommand}" CommandParameter="{Binding}"
-                                                                ToolTip.Tip="{l:T 'Remove'}" AutomationProperties.Name="{Binding Name, StringFormat='Remove {0}'}" />
+                                                                ToolTip.Tip="{l:T 'Remove'}" AutomationProperties.Name="{Binding Name, StringFormat={l:T 'Remove {0}'}}" />
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -73,7 +73,7 @@
                                             <Button Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" Padding="0"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Focusable="False"
                                                     Command="{Binding $parent[c:PeoplePicker].PickCommand}" CommandParameter="{Binding}"
-                                                    AutomationProperties.Name="{Binding Name, StringFormat='Pick {0}'}" />
+                                                    AutomationProperties.Name="{Binding Name, StringFormat={l:T 'Pick {0}'}}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

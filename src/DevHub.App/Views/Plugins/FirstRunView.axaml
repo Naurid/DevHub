@@ -16,22 +16,22 @@
                            Text="{l:T 'DevHub is built from plugins. Pick a starting point, or tick exactly what you want. You can change this any time in Settings → Plugins.'}" />
             </StackPanel>
 
-            <ItemsControl ItemsSource="{Binding Choice.Presets}">
+            <ItemsControl ItemsSource="{Binding Choice.PresetButtons}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel ItemSpacing="{DynamicResource Spacing}" LineSpacing="{DynamicResource Spacing}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="x:String">
-                        <Button Content="{Binding}" CommandParameter="{Binding}"
+                    <DataTemplate x:DataType="vm:NamedPreset">
+                        <Button Content="{Binding Text}" CommandParameter="{Binding Id}"
                                 Command="{Binding $parent[ItemsControl].((vm:FirstRunViewModel)DataContext).Choice.ApplyPresetCommand}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
             <TextBlock Classes="small secondary"
-                       Text="{Binding Choice.MatchingPreset, StringFormat='Preset: {0}', TargetNullValue='Your own choice'}" />
+                       Text="{Binding Choice.MatchingPresetText}" />
 
             <!-- PluginChoiceViewModel → PluginChoiceView through the ViewLocator. -->
             <ContentControl Content="{Binding Choice}" />

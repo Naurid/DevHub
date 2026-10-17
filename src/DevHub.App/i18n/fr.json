@@ -172,5 +172,12 @@
   "Navigate": "Navigation",
   "Editor": "Éditeur",
   "Tool Windows": "Fenêtres d'outils",
-  "General": "Général"
+  "General": "Général",
+  "Preset: {0}": "Modèle de départ : {0}",
+  "Your own choice": "Votre propre choix",
+  "Everything": "Tout",
+  "{0} (the built-in plugin {1} is used instead)": "{0} (le plugin fourni {1} est utilisé à la place)",
+  "{0} (made for plugin API {1}; this DevHub has {2})": "{0} (fait pour l'API de plugins {1} ; ce DevHub a la {2})",
+  "a plugin": "un plugin",
+  " and ": " et "
 }

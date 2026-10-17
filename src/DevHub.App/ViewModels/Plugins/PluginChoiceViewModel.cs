@@ -45,8 +45,14 @@ public sealed partial class PluginChoiceViewModel : ViewModelBase
     /// <summary>"Git client", "Project templates", …, "Everything".</summary>
     public IReadOnlyList<string> Presets { get; }
 
+    /// <summary>The presets as buttons: the name shown (translated) and the one applied.</summary>
+    public IReadOnlyList<NamedPreset> PresetButtons => [.. Presets.Select(p => new NamedPreset(p, L.T(p)))];
+
     /// <summary>The preset the current choice matches exactly, or null (a custom choice).</summary>
     public string? MatchingPreset => _selection.MatchingPreset;
+
+    /// <summary>"Preset: Git client", or "Your own choice".</summary>
+    public string MatchingPresetText => MatchingPreset is { } p ? L.T($"Preset: {L.T(p)}") : L.T("Your own choice");
 
     /// <summary>What a click also changed ("GitHub was switched off too: it needs Git."), or null.</summary>
     [ObservableProperty] private string? _note;
@@ -97,6 +103,7 @@ public sealed partial class PluginChoiceViewModel : ViewModelBase
             row.IsEnabled = _selection.IsEnabled(row.Info.Id);
         _syncing = false;
         OnPropertyChanged(nameof(MatchingPreset));
+        OnPropertyChanged(nameof(MatchingPresetText));
         OnPropertyChanged(nameof(RestartNeeded));
         Changed?.Invoke(this, EventArgs.Empty);
     }
@@ -166,4 +173,10 @@ public sealed partial class PluginRowViewModel : ObservableObject
     public bool HasProblem => IsEnabled && !IsLoaded && SkipReason is not null;
 
     public override string ToString() => Name;
+}
+
+/// <summary>A preset button: <see cref="Id"/> is the preset's (English) name, <see cref="Text"/> what the button shows.</summary>
+public sealed record NamedPreset(string Id, string Text)
+{
+    public override string ToString() => Text;
 }

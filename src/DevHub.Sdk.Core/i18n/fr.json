@@ -33,5 +33,9 @@
   "Another plugin already uses the id \"{0}\".": "Un autre plugin utilise déjà l'identifiant « {0} ».",
   "Requires \"{0}\", which isn't installed.": "Nécessite « {0} », qui n'est pas installé.",
   "Requires {0}, which couldn't be loaded.": "Nécessite {0}, qui n'a pas pu être chargé.",
-  "Its requirements form a circle (": "Ses prérequis forment une boucle ("
+  "Its requirements form a circle (": "Ses prérequis forment une boucle (",
+  "Couldn't remove the plugin {0}: {1}": "Impossible de retirer le plugin {0} : {1}",
+  "Couldn't install the plugin {0}: {1}": "Impossible d'installer le plugin {0} : {1}",
+  "Plugin path not found: {0}": "Chemin de plugin introuvable : {0}",
+  "No plugin.json in {0} (nor in its folders)": "Pas de plugin.json dans {0} (ni dans ses dossiers)"
 }
