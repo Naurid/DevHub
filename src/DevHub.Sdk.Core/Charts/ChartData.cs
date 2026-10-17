@@ -76,6 +76,9 @@ public sealed record ChartData(IReadOnlyList<string> Labels, IReadOnlyList<Chart
     /// <summary>A gauge's full scale (the first value out of this); null = 100.</summary>
     public double? Max { get; init; }
 
+    /// <summary>A heatmap colored green → amber → red by value (a risk matrix) instead of shades of one color.</summary>
+    public bool TrafficColors { get; init; }
+
     /// <summary>A value with <see cref="ValueSuffix"/>, short ("1.2k pts").</summary>
     public string Format(double value) => ChartMath.Short(value) + ValueSuffix;
 

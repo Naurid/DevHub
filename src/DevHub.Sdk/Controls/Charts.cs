@@ -853,7 +853,7 @@ public class HeatmapChart : ChartBase
     private IBrush CellBrush(double fraction)
     {
         fraction = Math.Clamp(fraction, 0, 1);
-        if (Colors == HeatmapColors.Traffic)
+        if (Colors == HeatmapColors.Traffic || Current.TrafficColors)
         {
             var (from, to, t) = fraction < 0.5
                 ? (Resource("Brush.Status.Success", Brushes.Green), Resource("Brush.Status.Warning", Brushes.Orange), fraction * 2)
