@@ -12,6 +12,8 @@ namespace DevHub.Controls;
 /// </summary>
 public static class ChartImage
 {
+    private const double Margin = 16;
+
     /// <summary>The PNG bytes of <paramref name="data"/> drawn as <paramref name="kind"/>, <paramref name="width"/> ×
     /// <paramref name="height"/> device-independent pixels at <paramref name="scale"/> (2 = sharp when printed).</summary>
     public static byte[] Png(ChartKind kind, ChartData data, double width = 900, double height = 500, ThemeVariant? theme = null,
@@ -32,13 +34,13 @@ public static class ChartImage
         chart.ShowTitle = true;
         chart.Data = data;
         var size = new Size(width, height);
-        // Space around the chart: a background color from the theme, set after the theme so the lookup uses it.
-        chart.Background = Background(chart.ExportTheme);
-        chart.Measure(size);
-        chart.Arrange(new Rect(size));
+        // A margin in the theme's background color around the chart, so text doesn't touch the image's edges.
+        var frame = new Avalonia.Controls.Border { Background = Background(chart.ExportTheme), Padding = new Thickness(Margin), Child = chart };
+        frame.Measure(size);
+        frame.Arrange(new Rect(size));
 
         var bitmap = new RenderTargetBitmap(new PixelSize((int)Math.Ceiling(width * scale), (int)Math.Ceiling(height * scale)), new Vector(96 * scale, 96 * scale));
-        bitmap.Render(chart);
+        bitmap.Render(frame);
         return bitmap;
     }
 
