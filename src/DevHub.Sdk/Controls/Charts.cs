@@ -307,7 +307,8 @@ public abstract class AxisChart : ChartBase
         var brush = StrongTextBrush;
         context.DrawLine(new Pen(brush, 1, new DashStyle([5, 3], 0)), new Point(Plot.Left, y), new Point(Plot.Right, y));
         var text = Text($"{reference.Name} {data.Format(reference.Value)}", brush);
-        context.DrawText(text, new Point(Plot.Right - text.Width - 2, y - text.Height - 1));
+        // At the left end: value labels sit at the right of the last bars and points.
+        context.DrawText(text, new Point(Plot.Left + 2, y - text.Height - 1));
     }
 
     protected abstract void RenderValues(DrawingContext context, ChartData data);
