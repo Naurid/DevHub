@@ -838,8 +838,15 @@ public class HeatmapChart : ChartBase
         for (var c = 0; c < cols; c++)
         {
             var text = Text(data.Labels[c]);
+            // Narrow cells: the label ends in "…" (its whole width centred) instead of being cut at both ends.
+            if (text.Width > cw - 4)
+            {
+                text.MaxTextWidth = Math.Max(1, cw - 4);
+                text.MaxLineCount = 1;
+                text.Trimming = TextTrimming.CharacterEllipsis;
+            }
             using (context.PushClip(new Rect(_grid.Left + c * cw, _grid.Bottom, cw, labelHeight + Gap)))
-                context.DrawText(text, new Point(_grid.Left + (c + 0.5) * cw - text.Width / 2, _grid.Bottom + Gap / 2));
+                context.DrawText(text, new Point(_grid.Left + (c + 0.5) * cw - Math.Min(text.Width, cw - 4) / 2, _grid.Bottom + Gap / 2));
         }
         if (xTitle is not null)
             context.DrawText(xTitle, new Point(_grid.Center.X - xTitle.Width / 2, _grid.Bottom + labelHeight + Gap));

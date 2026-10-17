@@ -57,10 +57,33 @@ public sealed class LocalizationTests : IDisposable
     }
 
     [Fact]
+    public void Each_assembly_keeps_its_own_words_for_the_same_english()
+    {
+        L.Add([new("Low", "Basse")], "DevHub.Board");
+        L.Add([new("Low", "Faible")], "DevHub.Board.Risks");
+        Assert.Equal("Basse", L.T("Low", "DevHub.Board"));
+        Assert.Equal("Faible", L.T("Low", "devhub.board.risks"));   // avares:// addresses lowercase the name
+        Assert.Equal("Faible", L.T("Low", "DevHub.Charts"));        // not its own text: all files together, last wins
+    }
+
+    [Fact]
+    public void Csharp_text_is_looked_up_in_the_calling_assembly_first()
+    {
+        var me = typeof(LocalizationTests).Assembly.GetName().Name;
+        L.Add([new("Committed", "Commité"), new("{0} committed", "{0} commités")], me);
+        L.Add([new("Committed", "Engagé"), new("{0} committed", "{0} engagés")], "DevHub.Board.Reports");
+        Assert.Equal("Commité", L.T("Committed"));
+        var n = 2;
+        Assert.Equal("2 commités", L.T($"{n} committed"));
+        Assert.Equal("2 commités", L.F("{0} committed", n));
+    }
+
+    [Fact]
     public void An_assembly_brings_its_own_translations()
     {
         // Sdk.Core embeds i18n/fr.json.
-        Assert.Equal("hier", RelativeTime.Format(DateTimeOffset.Now.AddDays(-1).AddHours(-1), DateTimeOffset.Now));
+        var noon = new DateTimeOffset(2026, 10, 17, 12, 0, 0, DateTimeOffset.Now.Offset);   // not "now": past midnight, -25 h is two days back
+        Assert.Equal("hier", RelativeTime.Format(noon.AddDays(-1).AddHours(-1), noon));
         Assert.Equal("Barres empilées", L.T("Stacked bars"));
     }
 }

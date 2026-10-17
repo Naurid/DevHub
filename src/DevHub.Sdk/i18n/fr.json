@@ -5,8 +5,10 @@
   "Remove": "Supprimer",
   "Matching people": "Personnes correspondantes",
   "Clear (Esc)": "Effacer (Échap)",
-  "Remove {0}": "Retirer {0}",
+  "Remove {0} from the selection": "Retirer {0} de la sélection",
   "Pick {0}": "Choisir {0}",
   "{0} code": "Code {0}",
-  "and {0} more": "et {0} autres"
+  "and {0} more": "et {0} autres",
+  "More": "Plus",
+  "Side panel": "Panneau latéral"
 }

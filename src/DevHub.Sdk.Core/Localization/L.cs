@@ -16,6 +16,11 @@ namespace DevHub.Sdk.Core.Localization;
 /// whose name ends in <c>i18n.fr.json</c>, a JSON object of English → French. In a project:
 /// <c>&lt;EmbeddedResource Include="i18n\fr.json" /&gt;</c>. XAML uses <c>{l:T 'Apply'}</c> (DevHub.Sdk).
 /// </para>
+/// <para>
+/// Each assembly's own file comes first for its own text: "Low" can be « Basse » (a priority, Board) and « Faible »
+/// (a risk level, Board.Risks), "Committed" « Commité » in Git and « Engagé » in the sprint reports. Text an assembly
+/// doesn't translate itself (a value handed over by another one) is looked up in all the files together.
+/// </para>
 /// The language is chosen once at startup (<see cref="Use"/>); changing it in Settings applies after a restart.
 /// </summary>
 public static class L
@@ -28,6 +33,9 @@ public static class L
     public static IReadOnlyList<(string Code, string Name)> Languages { get; } = [(English, "English"), (French, "Français")];
 
     private static readonly ConcurrentDictionary<string, string> Strings = new(StringComparer.Ordinal);
+    // Assembly name (as in avares:// addresses, which lowercase it) → that assembly's own translations.
+    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> Own = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<Assembly, string> Names = new();
     private static readonly HashSet<string> LoadedAssemblies = new(StringComparer.Ordinal);
     private static readonly Lock Gate = new();
 
@@ -47,6 +55,7 @@ public static class L
         {
             Language = code;
             Strings.Clear();
+            Own.Clear();
             LoadedAssemblies.Clear();
             if (code != English)
             {
@@ -72,27 +81,57 @@ public static class L
         _ => CultureInfo.InstalledUICulture.TwoLetterISOLanguageName == French ? French : English,
     };
 
-    /// <summary>The translation of <paramref name="english"/>, or the English text when there's none.</summary>
+    /// <summary>
+    /// The translation of <paramref name="english"/> (the calling assembly's own first), or the English text when
+    /// there's none. Not inlined, so the calling assembly is the one that wrote the text.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static string T(string english) =>
-        Language == English || english.Length == 0 ? english : Strings.TryGetValue(english, out var text) ? text : english;
+        Language == English || english.Length == 0 ? english : Lookup(english, NameOf(Assembly.GetCallingAssembly()));
+
+    /// <summary>The translation of <paramref name="english"/>, the named assembly's own first (XAML: {l:T}).</summary>
+    public static string T(string english, string? assembly) =>
+        Language == English || english.Length == 0 ? english : Lookup(english, assembly);
 
     /// <summary>
     /// The translation of an interpolated text: <c>L.T($"{n} issues")</c> is looked up as "{0} issues", then filled in
     /// (with the format and alignment each value had).
     /// </summary>
-    public static string T(ref Text text) => text.Format();
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static string T(ref Text text) =>
+        text.Format(Language == English ? null : NameOf(Assembly.GetCallingAssembly()));
 
     /// <summary>The translation of a format ("{0} issues"), filled in with <paramref name="values"/>.</summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static string F(string englishFormat, params object?[] values) =>
-        string.Format(CultureInfo.CurrentCulture, T(englishFormat), values);
+        string.Format(CultureInfo.CurrentCulture,
+            Language == English ? englishFormat : Lookup(englishFormat, NameOf(Assembly.GetCallingAssembly())), values);
 
-    /// <summary>Adds translations (English → this language); later ones win. For tests and tools.</summary>
-    public static void Add(IEnumerable<KeyValuePair<string, string>> translations)
+    /// <summary>
+    /// Adds translations (English → this language); later ones win. With <paramref name="assembly"/>, they are also
+    /// that assembly's own. For tests and tools.
+    /// </summary>
+    public static void Add(IEnumerable<KeyValuePair<string, string>> translations, string? assembly = null)
     {
+        var own = assembly is null ? null : Own.GetOrAdd(assembly, _ => new ConcurrentDictionary<string, string>(StringComparer.Ordinal));
         foreach (var (english, text) in translations)
-            if (text.Length > 0)
-                Strings[english] = text;
+        {
+            if (text.Length == 0)
+                continue;
+            Strings[english] = text;
+            if (own is not null)
+                own[english] = text;
+        }
     }
+
+    private static string Lookup(string english, string? assembly)
+    {
+        if (assembly is not null && Own.TryGetValue(assembly, out var own) && own.TryGetValue(english, out var mine))
+            return mine;
+        return Strings.TryGetValue(english, out var text) ? text : english;
+    }
+
+    private static string NameOf(Assembly assembly) => Names.GetOrAdd(assembly, a => a.GetName().Name ?? "");
 
     private static void OnAssemblyLoad(object? sender, AssemblyLoadEventArgs e)
     {
@@ -119,7 +158,7 @@ public static class L
             {
                 using var stream = assembly.GetManifestResourceStream(resource);
                 if (stream is not null && JsonSerializer.Deserialize<Dictionary<string, string>>(stream) is { } translations)
-                    Add(translations);
+                    Add(translations, NameOf(assembly));
             }
             catch (JsonException)
             {
@@ -163,6 +202,10 @@ public static class L
             _values.Add(value);
         }
 
-        internal readonly string Format() => string.Format(CultureInfo.CurrentCulture, T(_format.ToString()), [.. _values]);
+        internal readonly string Format(string? assembly)
+        {
+            var format = _format.ToString();
+            return string.Format(CultureInfo.CurrentCulture, assembly is null ? format : Lookup(format, assembly), [.. _values]);
+        }
     }
 }

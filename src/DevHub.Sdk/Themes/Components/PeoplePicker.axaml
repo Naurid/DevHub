@@ -33,7 +33,7 @@
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                                                 <c:ActionButton IconKind="close" Width="18" Height="18"
                                                                 Command="{Binding $parent[c:PeoplePicker].RemoveCommand}" CommandParameter="{Binding}"
-                                                                ToolTip.Tip="{l:T 'Remove'}" AutomationProperties.Name="{Binding Name, StringFormat={l:T 'Remove {0}'}}" />
+                                                                ToolTip.Tip="{l:T 'Remove'}" AutomationProperties.Name="{Binding Name, StringFormat={l:T 'Remove {0} from the selection'}}" />
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>

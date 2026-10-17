@@ -36,6 +36,9 @@
     <!-- A running operation in the status bar: its progress bar and the step text. -->
     <x:Double x:Key="Size.StatusProgress">120</x:Double>
     <x:Double x:Key="Size.StatusTaskStep">240</x:Double>
+    <!-- Title bar breadcrumb: the active tab's name ends in "…" past this width; space around its ›. -->
+    <x:Double x:Key="Size.BreadcrumbTitleMax">220</x:Double>
+    <Thickness x:Key="Margin.Breadcrumb">4,0</Thickness>
     <!-- Avatar control: an account (Settings → GitHub) and a small one in list rows (All Commits). -->
     <x:Double x:Key="Size.Avatar">32</x:Double>
     <x:Double x:Key="Size.AvatarSmall">16</x:Double>
@@ -88,6 +91,8 @@
     <!-- Inside popups (Find Action). A Thickness: Padding/Margin need one, not a Spacing.* double
          (DynamicResource types are only checked at runtime; a double here crashed the app). -->
     <Thickness x:Key="Padding.Popup">4</Thickness>
+    <!-- A panel drawn over the content (SidePane folded open): a soft shadow on its open edge. -->
+    <BoxShadows x:Key="Shadow.Overlay">0 0 16 0 #50000000</BoxShadows>
     <!-- Space below a block in a document (e.g. the repository header). -->
     <Thickness x:Key="Margin.BlockBelow">0,0,0,12</Thickness>
     <!-- Keeps the last item of a tree/list row (language, count badge) off the panel's edge. -->

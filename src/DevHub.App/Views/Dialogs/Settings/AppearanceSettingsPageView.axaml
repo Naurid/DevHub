@@ -39,9 +39,9 @@
     </UserControl.Styles>
 
     <StackPanel>
-        <c:SettingsRow Label="{l:T 'Language'}" Description="{l:T 'Applies after a restart (File → Restart DevHub).'}">
+        <c:SettingsRow Label="{l:T 'Display language'}" Description="{l:T 'Applies after a restart (File → Restart DevHub).'}">
             <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="200"
-                      AutomationProperties.Name="{l:T 'Language'}">
+                      AutomationProperties.Name="{l:T 'Display language'}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:LanguageOption">
                         <TextBlock Text="{Binding Name}" />

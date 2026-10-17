@@ -49,6 +49,8 @@ token and component live; check changes there in Dark, Light and Compact.
 11. **All text the user reads is translated** (§5 "Translate text"): `{l:T 'Apply'}` in XAML,
    `L.T("Apply")` / `L.T($"{count} issues")` in C#, with the French in the project's `i18n/fr.json`.
    Ids, file names, settings values and anything the code compares stay plain strings.
+12. **Every screen works from 800 px wide** (§6 "Narrow windows"): nothing cut off, nothing drawn over something
+   else, no text squeezed to one letter per line. Side panels are a `SidePane`, rows of buttons an `OverflowPanel`.
 
 ---
 
@@ -183,6 +185,8 @@ Our controls (`Controls/*.cs`, looks in `Themes/Components/`). The UI Gallery sh
 | `SettingsRow` | label (+ description) column and an editor | `<c:SettingsRow Label="Theme" Description="…"><ComboBox …/></c:SettingsRow>` |
 | `Badge` | small pill; classes `accent`, `success`, `warning`, `error` | `<c:Badge Classes="success" Content="clean" />` |
 | `SplitterThumb` | drag handle resizing a bound size | used by the tool-window slots |
+| `SidePane` | a side panel beside the content: docked with a splitter while both fit (`PaneWidth` two-way, the content keeps `MinContentWidth`), else folded into a rail button (`PaneIcon`, `PaneTitle`) that opens it over the content; Escape, a click on the content or a pick in it closes it; `IsRight` for a right panel; a hidden pane (`IsVisible` false) gives the content all the width | `<c:SidePane PaneWidth="{Binding Layout.SidebarWidth}" MinPaneWidth="200" MinContentWidth="600" PaneIcon="vcs" PaneTitle="{l:T 'Repository sidebar'}"><c:SidePane.Pane>…</c:SidePane.Pane>…content…</c:SidePane>` |
+| `OverflowPanel` | one row that never wraps or clips: what doesn't fit goes into a menu at its end. As a tab strip's `ItemsPanel` the selected tab stays and « More ▾ » picks the others; around buttons (or a `Toolbar`'s items) « ⋯ » runs them (named by text, accessible name or tooltip) | `<c:OverflowPanel HorizontalAlignment="Right"><Button …/>…</c:OverflowPanel>`, `<ItemsPanelTemplate><c:OverflowPanel /></ItemsPanelTemplate>` |
 | `DevHubLogo` | the logo, accent-colored | `<c:DevHubLogo Width="32" Height="32" />` |
 | `FocusOnLoad` | attached property: focus this element when it appears | `<TextBox c:FocusOnLoad.IsEnabled="True" />` |
 | `DoubleTap` | attached property: run a command on double-click (rows in trees/lists) | `<Grid Background="Transparent" c:DoubleTap.Command="{Binding OpenCommand}" />` |
@@ -339,7 +343,10 @@ text is the key, so untranslated text simply stays English (`L` in `DevHub.Sdk.C
    (`count == 1 ? L.T("1 issue") : L.T($"{count} issues")`), never sentences glued from pieces: French word order differs.
 3. Names used as keys stay English and are translated where they're shown: an action's `Menu` and
    `Category` (`AppAction.CategoryText`), a plugin's name and description; add their French by hand.
-4. `dotnet run --project tools/I18n -- keys <project>` adds the new keys to `<project>/i18n/fr.json` (embedded by
+4. Each assembly's own `fr.json` comes first for its own text (C# by the calling assembly, XAML by the file's
+   `avares://` address), so the same English can mean different things in two plugins ("Low": « Basse » priority,
+   « Faible » risk level). Text handed over from another assembly is looked up in all the files together.
+5. `dotnet run --project tools/I18n -- keys <project>` adds the new keys to `<project>/i18n/fr.json` (embedded by
    `Directory.Build.props`); fill in the French, then `-- check src` (CI runs it) fails on anything missing.
    `list` / `wrap` / `xaml` wrap existing text in bulk (tools/I18n/README.md).
 
@@ -365,6 +372,17 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 - **Input + button** (path + Browse…): `Grid ColumnDefinitions="*,Auto"`, not a fixed-width
   TextBox; fixed widths get cropped in narrow places.
 - **Vertical lists of controls:** `StackPanel Spacing="{DynamicResource Spacing}"`.
+- **Narrow windows** (rule 12). Check every screen at 800 px wide, in English and French (French is about 20% longer).
+  - A panel beside the content (a list, a sidebar, a details panel) is a `SidePane`, never a fixed `Width` docked
+    in a `DockPanel`: that squeezes the content to nothing (a diff with one letter per line).
+  - A row of buttons is an `OverflowPanel` in a `*` column or the rest of a `DockPanel`. An `Auto` column (or a
+    horizontal `StackPanel`) measures with unlimited width, so its buttons never give way and slide under their
+    neighbours. Dock the parts that must stay first (a name with a `MaxWidth` and `TextTrimming`), the
+    `OverflowPanel` next, and what can be cut (a subtitle) last.
+  - Headers that change shape use container queries: `Container.Name="boardHeader" Container.Sizing="Width"` on
+    the header and `<ContainerQuery Name="boardHeader" Query="max-width:720">` styles in the view (smaller search
+    box, Create becomes +). The property they set must not be set on the element itself.
+  - A centred column of text uses `MaxWidth`, not `Width`, so a narrow area wraps it instead of cutting it.
 - **Comma selectors** in styles (`Selector="TextBox, ComboBox"`) are typed as the controls'
   common base class, so properties that only one has fail to compile. Write one style per type.
 - **Thicknesses can't contain a resource:** `Margin="0,0,{DynamicResource X},0"` is invalid.
@@ -423,6 +441,7 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 - [ ] No hex / pixel / font values in the view; tokens via `DynamicResource`, right types.
 - [ ] Looks right in **Dark**, **Light** and **Compact** (UI Gallery switches, or Settings).
 - [ ] Long names trim, empty lists show an `EmptyState`.
+- [ ] Works at **800 px wide**, in English and French: side panels fold, button rows overflow, nothing cut.
 - [ ] User operations are actions (menu / Find Action / shortcut).
 - [ ] Icon-only buttons and list items have accessible names.
 - [ ] Ran the app and used the feature; no errors in the output.

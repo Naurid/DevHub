@@ -22,17 +22,18 @@
         </Style>
     </UserControl.Styles>
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="{DynamicResource Size.WelcomeWidth}" Spacing="{DynamicResource Spacing.Large}">
+    <!-- MaxWidth, not Width: a narrow editor area gets a narrower column (the subtitle wraps) instead of cut text. -->
+    <StackPanel VerticalAlignment="Center" Margin="{DynamicResource Padding.Dialog}"
+                MaxWidth="{DynamicResource Size.WelcomeWidth}" Spacing="{DynamicResource Spacing.Large}">
 
-        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Large}" HorizontalAlignment="Center">
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing.Large}">
             <c:DevHubLogo Width="{DynamicResource Size.WelcomeLogo}" Height="{DynamicResource Size.WelcomeLogo}"
                           LineThickness="3" />
-            <StackPanel VerticalAlignment="Center" Spacing="{DynamicResource Spacing.Small}">
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="{DynamicResource Spacing.Small}">
                 <TextBlock Classes="header" Text="{l:T 'Welcome to DevHub'}" />
-                <TextBlock Classes="secondary" Text="{l:T 'Your developer workbench, built from the plugins you choose.'}" />
+                <TextBlock Classes="secondary" Text="{l:T 'Your developer workbench, built from the plugins you choose.'}" TextWrapping="Wrap" />
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
         <!-- Every action with a WelcomeOrder, from the shell and the loaded plugins. -->
         <ItemsControl ItemsSource="{a:WelcomeActions}">

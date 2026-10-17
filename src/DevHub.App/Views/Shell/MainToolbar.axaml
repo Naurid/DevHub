@@ -17,16 +17,25 @@
              x:Class="DevHub.Views.Shell.MainToolbar"
              x:DataType="vm:MainWindowViewModel">
 
+    <UserControl.Styles>
+        <ContainerQuery Name="titleBar" Query="max-width:900">
+            <Style Selector=":is(Control).appName">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </ContainerQuery>
+    </UserControl.Styles>
+
     <Border Height="{DynamicResource Size.ToolbarHeight}"
             Background="{DynamicResource Brush.Bg.Panel}"
             BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1"
             Padding="{DynamicResource Padding.Toolbar}"
+            Container.Name="titleBar" Container.Sizing="Width"
             WindowDecorationProperties.ElementRole="TitleBar">
-        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
-              ColumnSpacing="{DynamicResource Spacing}">
-
+        <!-- Docked so a narrow window shrinks the breadcrumb first ("…", then clipped), and the toolbar's
+             buttons go into a ⋯ menu only when even they don't fit; nothing slides under min/max/close. -->
+        <DockPanel>
             <!-- Logo + main menu (☰). -->
-            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="{DynamicResource Spacing}"
                         VerticalAlignment="Center">
                 <c:DevHubLogo Width="{DynamicResource Size.StripeIcon}"
                               Height="{DynamicResource Size.StripeIcon}"
@@ -39,27 +48,18 @@
                 </c:ActionButton>
             </StackPanel>
 
-            <!-- "Where am I": app name › active tab (or Welcome). Not interactive, so it stays draggable. -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
-                        VerticalAlignment="Center">
-                <TextBlock Text="{l:T 'DevHub'}" FontWeight="SemiBold" VerticalAlignment="Center" />
-                <c:Icon Kind="chevronRight" VerticalAlignment="Center" />
-                <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" VerticalAlignment="Center" />
-                <!-- Widgets from plugins (e.g. Git's branch widget), shown through the ViewLocator. -->
-                <ItemsControl ItemsSource="{Binding TitleBarWidgets}" VerticalAlignment="Center">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </StackPanel>
-
-            <!-- Column 2 (*) is empty: the big draggable area. -->
+            <!-- Keeps our buttons out from under the window's min/max/close buttons, which
+                 Avalonia draws on top of this corner. -->
+            <Border DockPanel.Dock="Right" Width="{DynamicResource Size.CaptionButtonsReserve}" />
 
             <!-- Main toolbar: every action with a ToolbarOrder (from the shell and the loaded plugins). -->
-            <c:Toolbar Grid.Column="3" WindowDecorationProperties.ElementRole="User"
-                       ItemsSource="{a:ToolbarActions}">
+            <c:Toolbar DockPanel.Dock="Right" WindowDecorationProperties.ElementRole="User"
+                       Margin="{DynamicResource Margin.InnerLeft}" ItemsSource="{a:ToolbarActions}">
+                <c:Toolbar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <c:OverflowPanel Spacing="{DynamicResource Spacing.Toolbar}" />
+                    </ItemsPanelTemplate>
+                </c:Toolbar.ItemsPanel>
                 <c:Toolbar.DataTemplates>
                     <DataTemplate DataType="a:AppAction">
                         <c:ActionButton Action="{Binding}" />
@@ -70,9 +70,27 @@
                 </c:Toolbar.DataTemplates>
             </c:Toolbar>
 
-            <!-- Keeps our buttons out from under the window's min/max/close buttons, which
-                 Avalonia draws on top of this corner. -->
-            <Border Grid.Column="4" Width="{DynamicResource Size.CaptionButtonsReserve}" />
-        </Grid>
+            <!-- "Where am I": app name › active tab (or Welcome), then plugins' widgets (Git's branch). Not
+                 interactive, so it stays draggable; the space to its right is the big draggable area. -->
+            <DockPanel Margin="{DynamicResource Margin.InnerLeft}" ClipToBounds="True">
+                <TextBlock DockPanel.Dock="Left" Classes="appName" Text="{l:T 'DevHub'}" FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <c:Icon DockPanel.Dock="Left" Classes="appName" Kind="chevronRight" VerticalAlignment="Center"
+                        Margin="{DynamicResource Margin.Breadcrumb}" />
+                <TextBlock DockPanel.Dock="Left" Classes="secondary" Text="{Binding Documents.ActiveTitle}"
+                           MaxWidth="{DynamicResource Size.BreadcrumbTitleMax}" TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center" />
+                <!-- Widgets from plugins (e.g. Git's branch widget), shown through the ViewLocator. A DockPanel (each
+                     widget docked left), not a StackPanel, so the last one gets the width that's left and can shrink. -->
+                <ItemsControl ItemsSource="{Binding TitleBarWidgets}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                              Margin="{DynamicResource Margin.InnerLeft}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel LastChildFill="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </DockPanel>
+        </DockPanel>
     </Border>
 </UserControl>

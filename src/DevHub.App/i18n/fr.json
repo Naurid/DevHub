@@ -124,7 +124,7 @@
   "Cancelling…": "Annulation…",
   "Cancel": "Annuler",
   "Apply": "Appliquer",
-  "Language": "Langue",
+  "Display language": "Langue de l'interface",
   "Applies after a restart (File → Restart DevHub).": "S'applique au prochain démarrage (Fichier → Redémarrer DevHub).",
   "Theme": "Thème",
   "Sync with Windows follows the Windows light/dark setting.": "«\u00A0Selon Windows\u00A0» suit le réglage clair/sombre de Windows.",

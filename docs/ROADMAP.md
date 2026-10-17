@@ -316,6 +316,16 @@ French; existing boards keep theirs.
       check; CI checks every text has its French); the shell in French
 - [x] L2. Plugins in French: Board (and Scrum, Reports, Timeline, Risks, Git), Charts, Git, GitHub, Projects, Templates;
       new boards with French names
+- [x] L3. Each assembly's translations first for its own text (the same English can differ per plugin)
+
+## RW — Responsive layout [DevHub + Plugins]
+Decided 2026-10-18: every screen works from 800 px wide. Side panels fold into a rail and open over the content;
+rows of tabs and buttons put what doesn't fit into a « More » menu; headers shrink through container queries.
+- [x] RW1. Sdk: `SidePane`, `OverflowPanel`, `Shadow.Overlay`; the title bar (breadcrumb shrinks, toolbar
+      overflows), Welcome wraps; heatmap labels end in "…"
+- [x] RW2. Plugins: repository tab (sidebar, changes list, diff and sidebar headers), commit details, board header
+      (pages, search, Create) and issue panel, backlog epics, reports, risks, releases, chart maker, Templates screens
+      and editor lists, project settings
 
 ## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
 Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
