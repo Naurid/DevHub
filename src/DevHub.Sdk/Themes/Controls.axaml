@@ -232,6 +232,13 @@
     <Style Selector="TextBlock.secondary">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}" />
     </Style>
+
+    <!-- Date pickers mark today in their drop-down calendar. Avalonia 12's CalendarDatePicker registers
+         IsTodayHighlighted without a default (false), although its docs say true. -->
+    <Style Selector="CalendarDatePicker">
+        <Setter Property="IsTodayHighlighted" Value="True" />
+    </Style>
+
     <Style Selector="TextBlock.small">
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}" />
     </Style>
