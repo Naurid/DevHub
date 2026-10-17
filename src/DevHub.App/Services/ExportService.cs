@@ -39,8 +39,11 @@ public sealed class ExportService(IDialogService dialogs, IStatusService status)
     {
         if (_window?.Clipboard is not { } clipboard)
             return;
-        using var bitmap = ChartImage.Render(kind, data);
+        // The clipboard reads the bitmap when something pastes (not now): it must stay alive, and flushing writes it
+        // out at once so it's still there after DevHub closes.
+        var bitmap = new Avalonia.Media.Imaging.Bitmap(new MemoryStream(ChartImage.Png(kind, data)));
         await clipboard.SetBitmapAsync(bitmap);
+        await clipboard.FlushAsync();
         status.Show("Chart copied: paste it into your document");
     }
 
