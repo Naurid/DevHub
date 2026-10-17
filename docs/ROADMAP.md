@@ -289,6 +289,24 @@ Code in DevHub-Plugins `plugins/Board*/`; plan in its `docs/BOARD_PLAN.md`.
 - [x] B11. Import / export: Jira CSV import, CSV / JSON export, GitHub Issues import (through GitHub)
 - [x] B12. Actions in Find Action (Go to Issue, My Open Issues, Create Issue, Backlog, Search…). M10 command tools (create issue, move issue, my open issues) are left for M10
 
+## BS — Board for Scrum projects (a course's agile project dossier) [DevHub + Plugins]
+Decided 2026-10-17: the Board supports everything a Scrum project dossier needs (backlog quality, sprint planning with
+capacity, Definition of Done, three velocity scenarios, KPIs, risks, retrospectives, a scope change) as working tools
+used in real time: no simulated clock, no report generation; charts and tables export for the report. Charts became an
+Sdk library any plugin uses, with a chart maker for your own data.
+- [x] BS1. Acceptance criteria on issues, a Definition of Done per project (Off / Ask / Strict when moving to Done),
+      team roles, Business value and Rank by Business value, criteria in Create Issue, search and CSV
+- [x] BS2. Sprint capacity from each person's available days and a focus factor (suggested from points per focused
+      day); a Retrospectives page (went well, to improve, problems, actions with owners and issues, follow-up)
+- [x] BS3. Sdk charts: area, stacked, horizontal bars, combo, scatter, heatmap, gauge; dashed / dotted lines, markers,
+      value labels, bands, reference lines, axis titles; `c:Chart Kind`; `IExportService` (PNG, copy image, CSV, copy
+      table); drag and drop shows the dragged item
+- [x] BS4. Reports: release forecast (pessimistic / neutral / optimistic, a planned ramp-up, delivery dates against a
+      target), baselines, scope change, sprint plans, commitment reliability, throughput, capacity and load, lead time,
+      WIP, defects; a chart type per report; export
+- [x] BS5. Board.Risks: a risk register with a probability × impact matrix, owners, mitigation and contingency
+- [x] BS6. Charts plugin: the chart maker (paste a table, any chart type and style, save and export); reports open in it
+
 ## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
 Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
 generation. You provide PDFs with examples and the precise rules before D1. Plugins: `DevHub.Diagrams`
