@@ -91,6 +91,7 @@ public partial class App : Application
 
             // The dialog service needs a TopLevel to drive pickers; hand it the window.
             Services.GetRequiredService<DialogService>().Attach(mainWindow);
+            Services.GetRequiredService<ExportService>().Attach(mainWindow);
 
             // Window-wide keyboard shortcuts for every action that has one.
             Keymap.Apply(Services.GetRequiredService<ActionRegistry>(), mainWindow);
@@ -192,6 +193,8 @@ public partial class App : Application
         // and as the interface (what ViewModels depend on).
         services.AddSingleton<DialogService>();
         services.AddSingleton<IDialogService>(sp => sp.GetRequiredService<DialogService>());
+        services.AddSingleton<ExportService>();
+        services.AddSingleton<IExportService>(sp => sp.GetRequiredService<ExportService>());
         services.AddSingleton<ThemeService>();
         services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());
 

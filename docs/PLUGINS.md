@@ -197,7 +197,8 @@ For the UI and logic plugins share (all in the UI Gallery, View → UI Gallery i
 | What | Where | Use |
 |---|---|---|
 | Markdown | `Sdk.Core/Formatting/Markdown.cs` (parser, tested) + `c:MarkdownView` | issue text, comments, release notes; only http(s)/mailto links |
-| Charts | `Sdk.Core/Charts` (`ChartData`, `ChartMath`, tested) + `c:LineChart`, `c:BarChart`, `c:PieChart` | burndown, velocity, shares; a plugin's .Core builds the `ChartData` |
+| Charts | `Sdk.Core/Charts` (`ChartData` with series styles, bands, reference lines, axis titles; `ChartKind`, `ChartKinds.Fitting`, `ChartMath` incl. `Histogram`; tested) + `c:Chart Kind=…` (any kind) or `c:LineChart`, `c:AreaChart`, `c:BarChart`, `c:ComboChart`, `c:HorizontalBarChart`, `c:ScatterChart`, `c:HeatmapChart`, `c:GaugeChart`, `c:PieChart` | burndown, velocity, forecasts with ranges, risk matrices, shares; a plugin's .Core builds the `ChartData` |
+| Export | `IExportService` (PNG / copy image of any chart through `c:ChartImage`, CSV / copy as cells of a `Sdk.Core/Tables/TableData`) | report charts and tables into documents |
 | Lists you drag | `c:ItemsDragDrop` (+ `IItemsDropHandler`) and `Sdk.Core/Collections/ListMoves` (tested) | a board: cards between columns, columns along it; `c:TreeDragDrop` for trees |
 | People | `Sdk.Core/People` (`Person`, `PeopleSearch`, tested) + `c:PeoplePicker` | assignees, reviewers |
 
