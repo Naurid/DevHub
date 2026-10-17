@@ -28,8 +28,9 @@
             <Color x:Key="Color.Bg.Selection">#2E436E</Color>
             <Color x:Key="Color.Bg.SelectionInactive">#43454A</Color>
 
-            <Color x:Key="Color.Border">#1E1F22</Color>
-            <!-- A line between two areas on the editor color (Color.Border would vanish there in Dark). -->
+            <!-- Lighter than both backgrounds (Bg.Editor, Bg.Panel), so the edges between areas show in Dark too. -->
+            <Color x:Key="Color.Border">#393B40</Color>
+            <!-- A line between two areas on the editor color. -->
             <Color x:Key="Color.Separator">#393B40</Color>
             <Color x:Key="Color.Border.Control">#4E5157</Color>
 
