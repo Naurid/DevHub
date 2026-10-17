@@ -33,7 +33,8 @@ public interface IItemsDropHandler
 ///   … each column: &lt;ItemsControl ItemsSource="{Binding Cards}" c:ItemsDragDrop.Handler="{Binding $parent[ItemsControl;1].DataContext}" /&gt;
 /// </code>
 /// A drag starts when the pointer moves a few pixels with the left button down on an item (not in a text box); a line in
-/// the accent color shows where it would go, and only where the handler allows it. Nested lists stay apart: pressing a card
+/// the accent color shows where it would go, and only where the handler allows it; the item itself follows the pointer
+/// (a tilted copy) and stays faded in its place until the drop. Nested lists stay apart: pressing a card
 /// drags the card, not its column. Items travel in-process only (never files from outside).
 /// </summary>
 public static class ItemsDragDrop
@@ -59,8 +60,10 @@ public static class ItemsDragDrop
     private static Point _pressedAt;
     private static ItemsControl? _pressedList;
     private static object? _pressedItem;
+    private static Control? _pressedContainer;
     private static Control? _marked;
     private static InsertionLine? _line;
+    private static DragGhost? _ghost;
 
     static ItemsDragDrop()
     {
@@ -136,6 +139,7 @@ public static class ItemsDragDrop
         _pressedAt = e.GetPosition(list);
         _pressedList = list;
         _pressedItem = item;
+        _pressedContainer = container;
     }
 
     private static async void OnMoved(object? sender, PointerEventArgs e)
@@ -151,11 +155,21 @@ public static class ItemsDragDrop
         if (Math.Abs(delta.X) < StartDistance && Math.Abs(delta.Y) < StartDistance)
             return;
 
+        var container = _pressedContainer;
         Clear(); // one drag per press
         var data = new DataTransfer();
         data.Add(DataTransferItem.Create(ItemFormat, new Payload(item, ListOf(list))));
-        await DragDrop.DoDragDropAsync(pressed, data, DragDropEffects.Move);
-        Mark(null, false, Orientation.Vertical);
+        _ghost = container is null ? null : DragGhost.Start(container, pressed, e);
+        try
+        {
+            await DragDrop.DoDragDropAsync(pressed, data, DragDropEffects.Move);
+        }
+        finally
+        {
+            _ghost?.Stop();
+            _ghost = null;
+            Mark(null, false, Orientation.Vertical);
+        }
     }
 
     private static void OnReleased(object? sender, PointerReleasedEventArgs e) => Clear();
@@ -236,6 +250,114 @@ public static class ItemsDragDrop
         _pressed = null;
         _pressedList = null;
         _pressedItem = null;
+        _pressedContainer = null;
+    }
+
+    /// <summary>
+    /// What you see while dragging: the item follows the pointer over the whole window (slightly tilted, a little
+    /// see-through), while a veil in the colour behind it fades the item in its place until the drop. The moving copy is
+    /// a <see cref="VisualBrush"/> of the item, so it's drawn live at the screen's scaling.
+    /// </summary>
+    private sealed class DragGhost
+    {
+        private const double VeilOpacity = 0.65;
+        private const double GhostOpacity = 0.97;
+        private const double TiltDegrees = 2;
+
+        private readonly TopLevel _top;
+        private readonly bool _topAllowedDrop;
+        private readonly Canvas _layer;
+        private readonly Border _ghost;
+        private readonly Border _veil;
+        private readonly Point _grab;
+
+        private DragGhost(Control item, TopLevel top, Canvas layer, Point grab, Point pointer)
+        {
+            _top = top;
+            _layer = layer;
+            _grab = grab;
+            _topAllowedDrop = DragDrop.GetAllowDrop(top);
+            var size = item.Bounds.Size;
+            _veil = new Border
+            {
+                Width = size.Width,
+                Height = size.Height,
+                Background = BackgroundBehind(item),
+                Opacity = VeilOpacity,
+                IsHitTestVisible = false,
+            };
+            if (item.TranslatePoint(new Point(0, 0), layer) is { } at)
+            {
+                Canvas.SetLeft(_veil, at.X);
+                Canvas.SetTop(_veil, at.Y);
+            }
+            _ghost = new Border
+            {
+                Width = size.Width,
+                Height = size.Height,
+                Background = new VisualBrush(item) { Stretch = Stretch.None, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top },
+                Opacity = GhostOpacity,
+                IsHitTestVisible = false,
+                RenderTransform = new RotateTransform(TiltDegrees),
+            };
+            Place(pointer);
+            layer.Children.Add(_veil);
+            layer.Children.Add(_ghost);
+
+            // Drag events only reach drop targets: the window becomes one for the drag (refusing drops itself), so the
+            // copy follows the pointer between lists too.
+            DragDrop.SetAllowDrop(top, true);
+            top.AddHandler(DragDrop.DragOverEvent, OnDragOver, RoutingStrategies.Bubble, handledEventsToo: true);
+            top.AddHandler(DragDrop.DragEnterEvent, OnDragOver, RoutingStrategies.Bubble, handledEventsToo: true);
+        }
+
+        public static DragGhost? Start(Control item, PointerPressedEventArgs pressed, PointerEventArgs moved)
+        {
+            if (TopLevel.GetTopLevel(item) is not { } top || OverlayLayer.GetOverlayLayer(item) is not { } layer
+                || item.Bounds.Width < 1 || item.Bounds.Height < 1)
+                return null;
+            return new DragGhost(item, top, layer, pressed.GetPosition(item), moved.GetPosition(layer));
+        }
+
+        // The first background behind the item (its column, list or page), so the veil fades it into what's around it.
+        private static IBrush BackgroundBehind(Control item)
+        {
+            for (var visual = item.GetVisualParent(); visual is not null; visual = visual.GetVisualParent())
+            {
+                var brush = visual switch
+                {
+                    Panel panel => panel.Background,
+                    Border border => border.Background,
+                    TemplatedControl control => control.Background,
+                    _ => null,
+                };
+                if (brush is ISolidColorBrush { Color.A: > 0 })
+                    return brush;
+            }
+            return item.TryFindResource("Brush.Bg.Editor", item.ActualThemeVariant, out var value) && value is IBrush fallback ? fallback : Brushes.White;
+        }
+
+        private void OnDragOver(object? sender, DragEventArgs e)
+        {
+            Place(e.GetPosition(_layer));
+            if (!e.Handled)
+                e.DragEffects = DragDropEffects.None; // over the window itself: no drop here
+        }
+
+        private void Place(Point pointer)
+        {
+            Canvas.SetLeft(_ghost, pointer.X - _grab.X);
+            Canvas.SetTop(_ghost, pointer.Y - _grab.Y);
+        }
+
+        public void Stop()
+        {
+            _top.RemoveHandler(DragDrop.DragOverEvent, OnDragOver);
+            _top.RemoveHandler(DragDrop.DragEnterEvent, OnDragOver);
+            DragDrop.SetAllowDrop(_top, _topAllowedDrop);
+            _layer.Children.Remove(_ghost);
+            _layer.Children.Remove(_veil);
+        }
     }
 
     /// <summary>A 2-pixel line in the accent color on one edge of an item (or a frame around an empty list).</summary>
