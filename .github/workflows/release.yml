@@ -152,7 +152,7 @@ jobs:
 
       - name: Installers as a workflow artifact
         if: steps.version.outputs.exists == 'false'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: DevHub-${{ steps.version.outputs.version }}-installers
           path: |
