@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs.Settings;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -15,7 +16,7 @@ public sealed class SettingsActionProvider(IDialogService dialogs, Func<Settings
 {
     public IEnumerable<AppAction> GetActions()
     {
-        yield return new AppAction(ActionIds.OpenSettings, "Settings…",
+        yield return new AppAction(ActionIds.OpenSettings, L.T("Settings…"),
             new AsyncRelayCommand(() => dialogs.ShowDialogAsync(createDialog())))
         {
             Category = "File",
@@ -25,7 +26,7 @@ public sealed class SettingsActionProvider(IDialogService dialogs, Func<Settings
             MenuOrder = 900,
             ToolbarOrder = 201,
             WelcomeOrder = 900,
-            Description = "Appearance, plugins and the preferences of each plugin.",
+            Description = L.T("Appearance, plugins and the preferences of each plugin."),
         };
     }
 }

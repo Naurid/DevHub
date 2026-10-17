@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions;
 
@@ -35,8 +36,11 @@ public sealed class AppAction
     /// <summary>What runs. Its CanExecute decides whether the action is enabled.</summary>
     public ICommand Command { get; }
 
-    /// <summary>Group shown in Find Action, e.g. "Repositories".</summary>
+    /// <summary>Group shown in Find Action, e.g. "Repositories" (English; shown translated: <see cref="CategoryText"/>).</summary>
     public string? Category { get; init; }
+
+    /// <summary>The category in the user's language.</summary>
+    public string? CategoryText => Category is null ? null : L.T(Category);
 
     /// <summary>Optional icon; one of <c>DevHub.Controls.IconKind</c>.</summary>
     public string? IconKind { get; init; }
@@ -67,7 +71,7 @@ public sealed class AppAction
     public int? WelcomeOrder { get; init; }
 
     /// <summary>"Category: Text", or just Text. What Find Action lists and searches.</summary>
-    public string DisplayName => Category is null ? Text : $"{Category}: {Text}";
+    public string DisplayName => Category is null ? Text : $"{CategoryText}: {Text}";
 
     /// <summary>Tooltip text: the label plus the shortcut, e.g. "Rescan (F5)".</summary>
     public string ToolTip => Gesture is null ? Text : $"{Text} ({Gesture})";

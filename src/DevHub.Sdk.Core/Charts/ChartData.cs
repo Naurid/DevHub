@@ -1,3 +1,5 @@
+using DevHub.Sdk.Core.Localization;
+
 namespace DevHub.Sdk.Core.Charts;
 
 /// <summary>One named series of values, one per label of its <see cref="ChartData"/> (null: no value there, a gap).</summary>
@@ -162,19 +164,19 @@ public static class ChartKinds
 {
     public static string Name(ChartKind kind) => kind switch
     {
-        ChartKind.Line => "Line",
-        ChartKind.Area => "Area",
-        ChartKind.StackedArea => "Stacked area",
-        ChartKind.Bar => "Bars",
-        ChartKind.StackedBar => "Stacked bars",
-        ChartKind.HorizontalBar => "Horizontal bars",
-        ChartKind.StackedHorizontalBar => "Stacked horizontal bars",
-        ChartKind.Combo => "Bars and lines",
-        ChartKind.Scatter => "Scatter",
-        ChartKind.Pie => "Pie",
-        ChartKind.Donut => "Donut",
-        ChartKind.Heatmap => "Heatmap",
-        ChartKind.Gauge => "Gauge",
+        ChartKind.Line => L.T("Line"),
+        ChartKind.Area => L.T("Area"),
+        ChartKind.StackedArea => L.T("Stacked area"),
+        ChartKind.Bar => L.T("Bars"),
+        ChartKind.StackedBar => L.T("Stacked bars"),
+        ChartKind.HorizontalBar => L.T("Horizontal bars"),
+        ChartKind.StackedHorizontalBar => L.T("Stacked horizontal bars"),
+        ChartKind.Combo => L.T("Bars and lines"),
+        ChartKind.Scatter => L.T("Scatter"),
+        ChartKind.Pie => L.T("Pie"),
+        ChartKind.Donut => L.T("Donut"),
+        ChartKind.Heatmap => L.T("Heatmap"),
+        ChartKind.Gauge => L.T("Gauge"),
         _ => kind.ToString(),
     };
 

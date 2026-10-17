@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Dialogs.Settings"
              xmlns:c="using:DevHub.Controls"
              xmlns:conv="using:DevHub.Converters"
@@ -38,7 +39,18 @@
     </UserControl.Styles>
 
     <StackPanel>
-        <c:SettingsRow Label="Theme" Description="Sync with Windows follows the Windows light/dark setting.">
+        <c:SettingsRow Label="{l:T 'Language'}" Description="{l:T 'Applies after a restart (File → Restart DevHub).'}">
+            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="200"
+                      AutomationProperties.Name="{l:T 'Language'}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LanguageOption">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </c:SettingsRow>
+
+        <c:SettingsRow Label="{l:T 'Theme'}" Description="{l:T 'Sync with Windows follows the Windows light/dark setting.'}">
             <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" MinWidth="200">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:ThemeOption">
@@ -48,7 +60,7 @@
             </ComboBox>
         </c:SettingsRow>
 
-        <c:SettingsRow Label="Accent color" Description="Buttons, selection, focus and the logo.">
+        <c:SettingsRow Label="{l:T 'Accent color'}" Description="{l:T 'Buttons, selection, focus and the logo.'}">
             <StackPanel Spacing="{DynamicResource Spacing}">
                 <ListBox Classes="swatches" ItemsSource="{Binding AccentPresets}"
                          SelectedItem="{Binding SelectedPreset}">
@@ -60,18 +72,18 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
-                    <TextBox Classes="code" Width="120" Text="{Binding Accent}" PlaceholderText="#RRGGBB" />
+                    <TextBox Classes="code" Width="120" Text="{Binding Accent}" PlaceholderText="{l:T '#RRGGBB'}" />
                     <Border Width="24" Height="24" CornerRadius="{DynamicResource Radius.Control}"
                             BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
                             Background="{Binding Accent, Converter={StaticResource HexToBrush}}" />
                     <TextBlock Classes="small" Foreground="{DynamicResource Brush.Status.Error}"
-                               Text="Use the form #RRGGBB" VerticalAlignment="Center"
+                               Text="{l:T 'Use the form #RRGGBB'}" VerticalAlignment="Center"
                                IsVisible="{Binding !IsAccentValid}" />
                 </StackPanel>
             </StackPanel>
         </c:SettingsRow>
 
-        <c:SettingsRow Label="Compact mode" Description="Smaller rows, toolbars and paddings.">
+        <c:SettingsRow Label="{l:T 'Compact mode'}" Description="{l:T 'Smaller rows, toolbars and paddings.'}">
             <ToggleSwitch IsChecked="{Binding IsCompact}" OnContent="" OffContent="" />
         </c:SettingsRow>
     </StackPanel>

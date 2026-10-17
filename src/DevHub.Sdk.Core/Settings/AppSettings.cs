@@ -18,6 +18,12 @@ public sealed class AppSettings
     /// </summary>
     public ToolWindowLayout? ToolWindows { get; set; }
 
+    /// <summary>
+    /// The app's language: "en", "fr", or null = the Windows display language when DevHub has it (L.Resolve).
+    /// Read once at startup, so a change applies after a restart.
+    /// </summary>
+    public string? Language { get; set; }
+
     /// <summary>Theme, accent and density; null until first changed (the app keeps its built-in look).</summary>
     public AppearanceSettings? Appearance { get; set; }
 

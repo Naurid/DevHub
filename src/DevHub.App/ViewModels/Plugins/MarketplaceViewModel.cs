@@ -6,6 +6,7 @@ using DevHub.Sdk.Core.Plugins.Marketplace;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels.Dialogs;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Plugins;
 
@@ -68,8 +69,8 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
             var listing = await Marketplace.LoadAsync(Http, SourceList);
             _offered = listing.Entries;
             ShowInstalled(listing.Entries);
-            Message = listing.Problems.Count > 0 ? "Couldn't read: " + string.Join("; ", listing.Problems)
-                : listing.Entries.Count == 0 ? "The marketplace has no plugins yet." : null;
+            Message = listing.Problems.Count > 0 ? L.T("Couldn't read: ") + string.Join("; ", listing.Problems)
+                : listing.Entries.Count == 0 ? L.T("The marketplace has no plugins yet.") : null;
         }
         finally
         {
@@ -90,7 +91,7 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         foreach (var plugin in installed.Where(p => offered.All(e => !e.Id.Equals(p.Info.Id, StringComparison.OrdinalIgnoreCase))))
             Rows.Add(new MarketplaceRowViewModel(plugin.Info.Id, plugin.Info.Name, plugin.Info.Description, null, plugin, BundledCopy(plugin.Info.Id), InstallAsync, RemoveAsync));
         if (Rows.Count == 0 && offered.Count == 0)
-            Message ??= "Nothing installed from the marketplace yet. Refresh to see what it offers.";
+            Message ??= L.T("Nothing installed from the marketplace yet. Refresh to see what it offers.");
     }
 
     private async Task InstallAsync(MarketplaceRowViewModel row)
@@ -109,11 +110,16 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         // One plugin: where exactly (a local file names its path). Several: the places only; the list below has each URL.
         var origins = also.Count == 0 ? Origin(entry.Url) : Names(plan.Install.Select(e => Place(e.Url)).Distinct().ToList());
         var message = also.Count == 0
-            ? $"{entry.Name} {entry.Version} comes from {origins}."
-            : $"{entry.Name} {entry.Version} needs {Names(also)}, which {(also.Count == 1 ? "is" : "are")} installed with it. They come from {origins}.";
-        var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel(also.Count == 0 ? $"{(row.HasUpdate ? "Update" : "Install")} {entry.Name}" : $"Install {entry.Name} and {also.Count} more",
-            message + $" A plugin is a program: it runs inside DevHub with your permissions. Install only if you trust where {(also.Count == 0 ? "it comes" : "they come")} from. {(also.Count == 0 ? "It's" : "They're")} ready after a restart.",
-            also.Count > 0 ? "Install All" : row.HasUpdate ? "Update" : "Install",
+            ? L.T($"{entry.Name} {entry.Version} comes from {origins}.")
+            : also.Count == 1
+                ? L.T($"{entry.Name} {entry.Version} needs {Names(also)}, which is installed with it. They come from {origins}.")
+                : L.T($"{entry.Name} {entry.Version} needs {Names(also)}, which are installed with it. They come from {origins}.");
+        var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel(
+            also.Count > 0 ? L.T($"Install {entry.Name} and {also.Count} more") : row.HasUpdate ? L.T($"Update {entry.Name}") : L.T($"Install {entry.Name}"),
+            message + " " + (also.Count == 0
+                ? L.T("A plugin is a program: it runs inside DevHub with your permissions. Install only if you trust where it comes from. It's ready after a restart.")
+                : L.T("A plugin is a program: it runs inside DevHub with your permissions. Install only if you trust where they come from. They're ready after a restart.")),
+            also.Count > 0 ? L.T("Install All") : row.HasUpdate ? L.T("Update") : L.T("Install"),
             plan.Install.Select(e => $"{e.Name} {e.Version}: {e.Url}").ToList(), destructive: false));
         if (!ok)
             return;
@@ -134,7 +140,9 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
             // All or nothing: the requirements already unpacked for this install are dropped again.
             foreach (var item in done)
                 _installer.Remove(item.Id);
-            Message = done.Count > 0 ? $"{error} {Names(done)} {(done.Count == 1 ? "wasn't" : "weren't")} installed either." : error;
+            Message = done.Count == 0 ? error
+                : done.Count == 1 ? L.T($"{error} {Names(done)} wasn't installed either.")
+                : L.T($"{error} {Names(done)} weren't installed either.");
             if (done.Count > 0)
                 ShowInstalled(_offered);
             return;
@@ -149,8 +157,8 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
             }
         });
         Message = also.Count == 0
-            ? $"{entry.Name} {entry.Version} is ready: restart DevHub to use it."
-            : $"{Names(plan.Install)} are ready: restart DevHub to use them.";
+            ? L.T($"{entry.Name} {entry.Version} is ready: restart DevHub to use it.")
+            : L.T($"{Names(plan.Install)} are ready: restart DevHub to use them.");
         Pending();
     }
 
@@ -171,10 +179,10 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
 
     /// <summary>"github.com", or "this computer (C:\plugins\x.zip)" for a local index file.</summary>
     private static string Origin(string url) =>
-        new Uri(url) is { IsFile: true } file ? $"this computer ({file.LocalPath})" : new Uri(url).Host;
+        new Uri(url) is { IsFile: true } file ? L.T($"this computer ({file.LocalPath})") : new Uri(url).Host;
 
     /// <summary>"github.com", or "this computer".</summary>
-    private static string Place(string url) => new Uri(url) is { IsFile: true } ? "this computer" : new Uri(url).Host;
+    private static string Place(string url) => new Uri(url) is { IsFile: true } ? L.T("this computer") : new Uri(url).Host;
 
     private async Task RemoveAsync(MarketplaceRowViewModel row)
     {
@@ -183,8 +191,8 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         {
             _installer.Remove(row.Id);
             Message = row.IsOldCopy
-                ? $"The older copy of {row.Name} is removed when DevHub restarts (the bundled {bundled.Version} stays)."
-                : $"{row.Name} goes back to the bundled {bundled.Version} when DevHub restarts.";
+                ? L.T($"The older copy of {row.Name} is removed when DevHub restarts (the bundled {bundled.Version} stays).")
+                : L.T($"{row.Name} goes back to the bundled {bundled.Version} when DevHub restarts.");
             Pending();
             return;
         }
@@ -195,9 +203,11 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         if (dependents.Count > 0)
         {
             var names = dependents.Select(p => p.Name).ToList();
-            var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel($"Remove {row.Name}",
-                $"{Names(names)} {(names.Count == 1 ? "needs" : "need")} {row.Name} and {(names.Count == 1 ? "is" : "are")} removed with it, when DevHub restarts.",
-                "Remove All", names));
+            var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel(L.T($"Remove {row.Name}"),
+                names.Count == 1
+                    ? L.T($"{Names(names)} needs {row.Name} and is removed with it, when DevHub restarts.")
+                    : L.T($"{Names(names)} need {row.Name} and are removed with it, when DevHub restarts."),
+                L.T("Remove All"), names));
             if (!ok)
                 return;
             foreach (var plugin in dependents)
@@ -205,8 +215,8 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
         }
         _installer.Remove(row.Id);
         Message = dependents.Count == 0
-            ? $"{row.Name} is removed when DevHub restarts."
-            : $"{Names(dependents.Select(p => p.Name).Prepend(row.Name).ToList())} are removed when DevHub restarts.";
+            ? L.T($"{row.Name} is removed when DevHub restarts.")
+            : L.T($"{Names(dependents.Select(p => p.Name).Prepend(row.Name).ToList())} are removed when DevHub restarts.");
         Pending();
     }
 
@@ -230,8 +240,8 @@ public sealed partial class MarketplaceRowViewModel : ViewModelBase
         PluginPackageInfo? bundled, Func<MarketplaceRowViewModel, Task> install, Func<MarketplaceRowViewModel, Task> remove)
     {
         Id = id;
-        Name = name;
-        Description = description ?? "";
+        Name = L.T(name);
+        Description = L.T(description ?? "");
         Offered = offered;
         Installed = installed;
         Bundled = bundled;
@@ -265,18 +275,18 @@ public sealed partial class MarketplaceRowViewModel : ViewModelBase
     public bool HasUpdate => CurrentVersion is { } current && Offered is { IsCompatible: true } offered && Marketplace.IsNewer(offered.Version, current);
     public bool CanInstallNow => Offered is { IsCompatible: true } && !IsWaiting && (CurrentVersion is null || HasUpdate);
     public bool CanRemoveNow => Installed is { PendingRemoval: false };
-    public string InstallText => HasUpdate ? $"Update to {Offered!.Version}" : "Install";
+    public string InstallText => HasUpdate ? L.T($"Update to {Offered!.Version}") : L.T("Install");
 
     /// <summary>Removing the installed copy of a bundled plugin only removes the update.</summary>
-    public string RemoveText => Bundled is null ? "Remove" : IsOldCopy ? "Remove Old Copy" : $"Back to {Bundled.Version}";
+    public string RemoveText => Bundled is null ? L.T("Remove") : IsOldCopy ? L.T("Remove Old Copy") : L.T($"Back to {Bundled.Version}");
 
     /// <summary>"Installed 1.2.0 · 1.3.0 after restart", "Bundled 1.2.0", "Needs a newer DevHub"…</summary>
     public string StatusText =>
-        Installed is { PendingRemoval: true } ? (Bundled is null ? "Removed after the restart" : $"Back to the bundled {Bundled.Version} after the restart")
-        : Installed is { PendingVersion: { } pending } ? (CurrentVersion is { } now ? $"{(InstalledIsUsed ? "Installed" : "Bundled")} {now} · {pending} after the restart" : $"{pending} after the restart")
-        : InstalledIsUsed ? $"Installed {Installed!.Info.Version}" + (Bundled is null ? "" : $" · updates the bundled {Bundled.Version}") + (Offered is null ? " · no longer offered" : "")
-        : Bundled is not null ? $"Bundled {Bundled.Version}" + (IsInstalled ? $" · the installed {Installed!.Info.Version} is older, not used" : "")
-        : Offered is { IsCompatible: false } ? $"{Offered.Version}: made for another DevHub version"
+        Installed is { PendingRemoval: true } ? (Bundled is null ? L.T("Removed after the restart") : L.T($"Back to the bundled {Bundled.Version} after the restart"))
+        : Installed is { PendingVersion: { } pending } ? (CurrentVersion is { } now ? L.T($"{(InstalledIsUsed ? L.T("Installed") : L.T("Bundled"))} {now} · {pending} after the restart") : L.T($"{pending} after the restart"))
+        : InstalledIsUsed ? L.T($"Installed {Installed!.Info.Version}") + (Bundled is null ? "" : L.T($" · updates the bundled {Bundled.Version}")) + (Offered is null ? L.T(" · no longer offered") : "")
+        : Bundled is not null ? L.T($"Bundled {Bundled.Version}") + (IsInstalled ? L.T($" · the installed {Installed!.Info.Version} is older, not used") : "")
+        : Offered is { IsCompatible: false } ? L.T($"{Offered.Version}: made for another DevHub version")
         : Offered is { } offered ? offered.Version
         : "";
 

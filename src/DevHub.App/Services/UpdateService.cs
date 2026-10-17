@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Velopack;
 using Velopack.Sources;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Services;
 
@@ -50,19 +51,19 @@ public sealed partial class UpdateService(IStatusService status) : ObservableObj
     public async Task<string> CheckAsync()
     {
         if (!CanUpdate)
-            return "Updates work in an installed DevHub (from the installer); this one is a development build.";
+            return L.T("Updates work in an installed DevHub (from the installer); this one is a development build.");
         if (IsBusy)
-            return "Already checking.";
+            return L.T("Already checking.");
         IsBusy = true;
         try
         {
             _update = await _manager.CheckForUpdatesAsync();
             AvailableVersion = _update?.TargetFullRelease.Version.ToString();
-            return AvailableVersion is { } version ? $"DevHub {version} is available." : $"DevHub {CurrentVersion} is the latest version.";
+            return AvailableVersion is { } version ? L.T($"DevHub {version} is available.") : L.T($"DevHub {CurrentVersion} is the latest version.");
         }
         catch (Exception ex)
         {
-            return "Couldn't check for updates: " + ex.Message;
+            return L.T("Couldn't check for updates: ") + ex.Message;
         }
         finally
         {
@@ -76,14 +77,14 @@ public sealed partial class UpdateService(IStatusService status) : ObservableObj
         if (_update is not { } update || IsBusy)
             return;
         IsBusy = true;
-        using var task = status.StartTask($"Downloading DevHub {AvailableVersion}…");
+        using var task = status.StartTask(L.T($"Downloading DevHub {AvailableVersion}…"));
         try
         {
-            await _manager.DownloadUpdatesAsync(update, percent => task.Report("Downloading", percent));
+            await _manager.DownloadUpdatesAsync(update, percent => task.Report(L.T("Downloading"), percent));
         }
         catch (Exception ex)
         {
-            status.Show("Couldn't download the update: " + ex.Message);
+            status.Show(L.T("Couldn't download the update: ") + ex.Message);
             IsBusy = false;
             return;
         }

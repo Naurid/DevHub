@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.ViewModels.ToolWindows;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -31,12 +32,12 @@ public sealed class ToolWindowActionProvider(ToolWindowManager toolWindows) : IA
                 Menu = "View",
                 MenuOrder = number - 1,
                 WelcomeOrder = toolWindow.WelcomeOrder,
-                Description = $"Show or hide the {toolWindow.Title} tool window.",
+                Description = L.T($"Show or hide the {toolWindow.Title} tool window."),
             };
             number++;
         }
 
-        yield return new AppAction(ActionIds.HideAllToolWindows, "Hide All Tool Windows",
+        yield return new AppAction(ActionIds.HideAllToolWindows, L.T("Hide All Tool Windows"),
             new RelayCommand(toolWindows.HideAll))
         {
             Category = "Tool Windows",

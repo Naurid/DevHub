@@ -1,4 +1,5 @@
 using System.Globalization;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Sdk.Core.Formatting;
 
@@ -9,19 +10,20 @@ public static class RelativeTime
     {
         var age = now - when;
         if (age < TimeSpan.FromMinutes(1))
-            return "just now"; // also clock skew (a date in the future)
+            return L.T("just now"); // also clock skew (a date in the future)
         if (age < TimeSpan.FromHours(1))
-            return Plural((int)age.TotalMinutes, "minute");
+            return (int)age.TotalMinutes is var minutes && minutes == 1 ? L.T("1 minute ago") : L.T($"{minutes} minutes ago");
         if (age < TimeSpan.FromDays(1))
-            return Plural((int)age.TotalHours, "hour");
+            return (int)age.TotalHours is var hours && hours == 1 ? L.T("1 hour ago") : L.T($"{hours} hours ago");
 
         var days = (now.Date - when.ToOffset(now.Offset).Date).Days;
         if (days <= 1)
-            return "yesterday";
+            return L.T("yesterday");
         if (days < 30)
-            return Plural(days, "day");
-        return when.ToOffset(now.Offset).ToString(when.Year == now.Year ? "MMM d" : "MMM d, yyyy", CultureInfo.InvariantCulture);
+            return L.T($"{days} days ago");
+        // "Oct 7" / "Oct 7, 2025" in English (whatever the region), "7 oct." / "7 oct. 2025" in French.
+        var culture = L.IsFrench ? CultureInfo.CurrentCulture : CultureInfo.InvariantCulture;
+        var format = L.IsFrench ? (when.Year == now.Year ? "d MMM" : "d MMM yyyy") : (when.Year == now.Year ? "MMM d" : "MMM d, yyyy");
+        return when.ToOffset(now.Offset).ToString(format, culture);
     }
-
-    private static string Plural(int n, string unit) => n == 1 ? $"1 {unit} ago" : $"{n} {unit}s ago";
 }

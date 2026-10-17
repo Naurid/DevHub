@@ -46,6 +46,9 @@ token and component live; check changes there in Dark, Light and Compact.
    progress bar (indeterminate when `percent` is null) and a Cancel button. Failures that need
    explaining go in a dialog: `new ConfirmDialogViewModel(title, explanation, "OK", details,
    destructive: false, showCancel: false)` is an OK-only message.
+11. **All text the user reads is translated** (§5 "Translate text"): `{l:T 'Apply'}` in XAML,
+   `L.T("Apply")` / `L.T($"{count} issues")` in C#, with the French in the project's `i18n/fr.json`.
+   Ids, file names, settings values and anything the code compares stay plain strings.
 
 ---
 
@@ -327,6 +330,19 @@ For text actions inside a pane header ("Stage All"), use `<Button Classes="flat"
 2. Register in the plugin: `services.AddSingleton<TitleBarWidgetViewModelBase, FooWidgetViewModel>();`.
    Title-bar widgets need `WindowDecorationProperties.ElementRole="User"` on clickable parts.
 
+### Translate text
+DevHub speaks English and French (Settings → Appearance → Language, applied at the next start). The English
+text is the key, so untranslated text simply stays English (`L` in `DevHub.Sdk.Core.Localization`).
+1. XAML: `Text="{l:T 'Edit Selected…'}"` with `xmlns:l="using:DevHub.Localization"`; an apostrophe is `\'`.
+2. C#: `L.T("Apply")`; with values, `L.T($"{count} issues moved to {name}")` (looked up as
+   "{0} issues moved to {1}", formats like `{x:0.#}` kept). Write whole sentences, one per case
+   (`count == 1 ? L.T("1 issue") : L.T($"{count} issues")`), never sentences glued from pieces: French word order differs.
+3. Names used as keys stay English and are translated where they're shown: an action's `Menu` and
+   `Category` (`AppAction.CategoryText`), a plugin's name and description; add their French by hand.
+4. `dotnet run --project tools/I18n -- keys <project>` adds the new keys to `<project>/i18n/fr.json` (embedded by
+   `Directory.Build.props`); fill in the French, then `-- check src` (CI runs it) fails on anything missing.
+   `list` / `wrap` / `xaml` wrap existing text in bulk (tools/I18n/README.md).
+
 ### Persist something new
 **A plugin's setting** (almost everything): add a property to the plugin's settings section
 (a class implementing `ISettingsSection` in its `.Core` project, e.g. `GitSettings`,
@@ -411,3 +427,4 @@ tested in `JsonSettingsStoreTests`. For experiments, run the app with
 - [ ] Icon-only buttons and list items have accessible names.
 - [ ] Ran the app and used the feature; no errors in the output.
 - [ ] Settings changes saved with `store.Update`, with a round-trip test.
+- [ ] New text is wrapped (`{l:T …}` / `L.T`) and has its French (`tools/I18n keys`, then `check`).

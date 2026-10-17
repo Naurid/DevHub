@@ -4,22 +4,23 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Plugins"
              xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Plugins.MarketplaceView"
              x:DataType="vm:MarketplaceViewModel">
     <StackPanel Spacing="{DynamicResource Spacing}">
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
-            <TextBlock Classes="header" Text="Marketplace" VerticalAlignment="Center" />
-            <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
+            <TextBlock Classes="header" Text="{l:T 'Marketplace'}" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Content="{l:T 'Refresh'}" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
         </Grid>
         <TextBlock Classes="secondary" TextWrapping="Wrap"
-                   Text="More plugins, made for DevHub. Installing, updating and removing take effect after a restart." />
+                   Text="{l:T 'More plugins, made for DevHub. Installing, updating and removing take effect after a restart.'}" />
         <ProgressBar IsIndeterminate="True" Height="2" MinHeight="2" IsVisible="{Binding IsLoading}" />
         <TextBlock Text="{Binding Message}" TextWrapping="Wrap"
                    IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-        <ItemsControl ItemsSource="{Binding Rows}" AutomationProperties.Name="Marketplace plugins">
+        <ItemsControl ItemsSource="{Binding Rows}" AutomationProperties.Name="{l:T 'Marketplace plugins'}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:MarketplaceRowViewModel">
                     <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}" Margin="{DynamicResource Padding.SettingsRow}">
@@ -37,8 +38,8 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <c:SettingsRow Label="Sources" Description="Marketplace indexes, one per line: https URLs, or a local index.json to try your own plugin. The first one wins for a plugin.">
-            <TextBox Classes="code" Text="{Binding Sources}" AcceptsReturn="True" TextWrapping="NoWrap" AutomationProperties.Name="Sources" />
+        <c:SettingsRow Label="{l:T 'Sources'}" Description="{l:T 'Marketplace indexes, one per line: https URLs, or a local index.json to try your own plugin. The first one wins for a plugin.'}">
+            <TextBox Classes="code" Text="{Binding Sources}" AcceptsReturn="True" TextWrapping="NoWrap" AutomationProperties.Name="{l:T 'Sources'}" />
         </c:SettingsRow>
     </StackPanel>
 </UserControl>

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Controls;
 
@@ -20,7 +21,7 @@ public class SearchField : TextBox
     public SearchField()
     {
         Classes.Add("search");
-        PlaceholderText = "Search";
+        PlaceholderText = L.T("Search");
     }
 
     protected override void OnKeyDown(KeyEventArgs e)

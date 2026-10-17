@@ -4,6 +4,7 @@ using DevHub.Plugins;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.ViewModels.Plugins;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
 
@@ -36,9 +37,9 @@ public sealed partial class PluginsSettingsPageViewModel : SettingsPageViewModel
         };
     }
 
-    public override string Title => "Plugins";
+    public override string Title => L.T("Plugins");
     public override int Order => 900;
-    public override string Keywords => "plugins features extensions enable disable switch on off projects git github templates restart marketplace install update remove";
+    public override string Keywords => L.T("plugins features extensions enable disable switch on off projects git github templates restart marketplace install update remove");
 
     public PluginChoiceViewModel Choice { get; }
 
@@ -54,7 +55,7 @@ public sealed partial class PluginsSettingsPageViewModel : SettingsPageViewModel
         Marketplace.SaveSources();
         IsModified = false;
         if (RestartNeeded)
-            _status.Show("Plugin changes apply when DevHub restarts (File → Restart DevHub).");
+            _status.Show(L.T("Plugin changes apply when DevHub restarts (File → Restart DevHub)."));
     }
 
     /// <summary>Saves the choice (if not yet) and restarts DevHub with it.</summary>

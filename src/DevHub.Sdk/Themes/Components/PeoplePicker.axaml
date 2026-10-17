@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:l="using:DevHub.Localization"
                     xmlns:c="using:DevHub.Controls"
                     xmlns:p="using:DevHub.Sdk.Core.People">
 
@@ -32,7 +33,7 @@
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                                                 <c:ActionButton IconKind="close" Width="18" Height="18"
                                                                 Command="{Binding $parent[c:PeoplePicker].RemoveCommand}" CommandParameter="{Binding}"
-                                                                ToolTip.Tip="Remove" AutomationProperties.Name="{Binding Name, StringFormat='Remove {0}'}" />
+                                                                ToolTip.Tip="{l:T 'Remove'}" AutomationProperties.Name="{Binding Name, StringFormat='Remove {0}'}" />
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -60,7 +61,7 @@
                         <Border Background="{DynamicResource Brush.Bg.Popup}" BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1"
                                 CornerRadius="{DynamicResource Radius.Popup}" Padding="{DynamicResource Padding.Popup}" MinWidth="240">
                             <ListBox Name="PART_Matches" ItemsSource="{Binding $parent[c:PeoplePicker].Matches}" Background="Transparent"
-                                     AutomationProperties.Name="Matching people">
+                                     AutomationProperties.Name="{l:T 'Matching people'}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate x:DataType="p:Person">
                                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing}" Background="Transparent">

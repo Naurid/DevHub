@@ -4,6 +4,7 @@ using DevHub.Sdk.Core.Plugins;
 using DevHub.Sdk.Core.Plugins.Marketplace;
 using DevHub.Sdk.Core.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Plugins;
 
@@ -110,8 +111,8 @@ public sealed class PluginHost
         return names.Count switch
         {
             0 => null,
-            1 => $"The plugin {names[0]} couldn't be loaded: {Skipped.FirstOrDefault()?.Reason ?? "see Settings → Plugins."}",
-            _ => $"{names.Count} plugins couldn't be loaded ({string.Join(", ", names)}).",
+            1 => L.T($"The plugin {names[0]} couldn't be loaded: {Skipped.FirstOrDefault()?.Reason ?? L.T("see Settings → Plugins.")}"),
+            _ => L.T($"{names.Count} plugins couldn't be loaded ({string.Join(", ", names)})."),
         };
     }
 

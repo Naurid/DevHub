@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -9,13 +10,13 @@ public sealed class RestartActionProvider(IAppRestarter restarter) : IActionProv
 {
     public IEnumerable<AppAction> GetActions()
     {
-        yield return new AppAction(ActionIds.Restart, "Restart DevHub", new RelayCommand(restarter.Restart))
+        yield return new AppAction(ActionIds.Restart, L.T("Restart DevHub"), new RelayCommand(restarter.Restart))
         {
             Category = "File",
             IconKind = IconKind.Refresh,
             Menu = "File",
             MenuOrder = 950,
-            Description = "Start DevHub again, e.g. to apply changes in Settings → Plugins. Open tabs come back.",
+            Description = L.T("Start DevHub again, e.g. to apply changes in Settings → Plugins. Open tabs come back."),
         };
     }
 }

@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Shell;
 
@@ -67,8 +68,8 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
 
     private void UpdateAppearance()
     {
-        ThemeLabel = _theme.IsDark ? "Dark" : "Light";
-        DensityLabel = _theme.IsCompact ? "Compact" : "Normal";
+        ThemeLabel = _theme.IsDark ? L.T("Dark") : L.T("Light");
+        DensityLabel = _theme.IsCompact ? L.T("Compact") : L.T("Normal");
     }
 
     public void Dispose() => _theme.Changed -= OnThemeChanged;
@@ -86,7 +87,7 @@ public sealed partial class StatusTaskViewModel : ObservableObject, IStatusTask
         _remove = remove;
         CancelCommand = new RelayCommand(() =>
         {
-            Step = "Cancelling…";
+            Step = L.T("Cancelling…");
             cancel?.Invoke();
         }, () => cancel is not null);
     }

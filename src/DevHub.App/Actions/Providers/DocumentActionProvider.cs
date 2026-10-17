@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using DevHub.ViewModels.Documents;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -29,21 +30,21 @@ public sealed class DocumentActionProvider(DocumentManager documents) : IActionP
             };
         }
 
-        yield return new AppAction(ActionIds.NextTab, "Next Tab", new RelayCommand(() => documents.Cycle(+1)))
+        yield return new AppAction(ActionIds.NextTab, L.T("Next Tab"), new RelayCommand(() => documents.Cycle(+1)))
         {
             Category = "Editor",
             Gesture = "Alt+Right",
             Menu = "View",
             MenuOrder = 200,
         };
-        yield return new AppAction(ActionIds.PreviousTab, "Previous Tab", new RelayCommand(() => documents.Cycle(-1)))
+        yield return new AppAction(ActionIds.PreviousTab, L.T("Previous Tab"), new RelayCommand(() => documents.Cycle(-1)))
         {
             Category = "Editor",
             Gesture = "Alt+Left",
             Menu = "View",
             MenuOrder = 201,
         };
-        yield return new AppAction(ActionIds.CloseTab, "Close Tab", documents.CloseActiveCommand)
+        yield return new AppAction(ActionIds.CloseTab, L.T("Close Tab"), documents.CloseActiveCommand)
         {
             Category = "Editor",
             IconKind = Controls.IconKind.Close,

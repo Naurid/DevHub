@@ -5,6 +5,7 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Shell"
              xmlns:a="using:DevHub.Actions"
              xmlns:c="using:DevHub.Controls"
@@ -33,7 +34,7 @@
                 <ProgressBar Width="{DynamicResource Size.StatusProgress}" VerticalAlignment="Center"
                              Minimum="0" Maximum="100" Value="{Binding CurrentTask.Percent, FallbackValue=0}"
                              IsIndeterminate="{Binding CurrentTask.IsIndeterminate, FallbackValue=False}" />
-                <c:ActionButton IconKind="close" ToolTip.Tip="Cancel" AutomationProperties.Name="Cancel"
+                <c:ActionButton IconKind="close" ToolTip.Tip="{l:T 'Cancel'}" AutomationProperties.Name="{l:T 'Cancel'}"
                                 Command="{Binding CurrentTask.CancelCommand, FallbackValue={x:Null}}"
                                 IsVisible="{Binding CurrentTask.CanCancel, FallbackValue=False}" />
             </StackPanel>
@@ -49,11 +50,11 @@
                 </ItemsControl>
                 <Button Classes="statusWidget"
                         Content="{Binding DensityLabel}"
-                        ToolTip.Tip="Toggle Compact Mode"
+                        ToolTip.Tip="{l:T 'Toggle Compact Mode'}"
                         Command="{a:ActionCommand View.ToggleCompact}" />
                 <Button Classes="statusWidget"
                         Content="{Binding ThemeLabel}"
-                        ToolTip.Tip="Toggle Dark Theme (Ctrl+Alt+D)"
+                        ToolTip.Tip="{l:T 'Toggle Dark Theme (Ctrl+Alt+D)'}"
                         Command="{a:ActionCommand View.ToggleTheme}" />
             </StackPanel>
         </Grid>

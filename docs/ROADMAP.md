@@ -307,6 +307,16 @@ Sdk library any plugin uses, with a chart maker for your own data.
 - [x] BS5. Board.Risks: a risk register with a probability × impact matrix, owners, mitigation and contingency
 - [x] BS6. Charts plugin: the chart maker (paste a table, any chart type and style, save and export); reports open in it
 
+## L — Languages: French [DevHub + Plugins]
+Decided 2026-10-17: English and French, chosen in Settings → Appearance (default: the Windows language), applied at
+the next start. The English text is the key (`L.T`, `{l:T …}`), so anything untranslated stays English; each
+assembly embeds its `i18n/fr.json`. New boards get French names (statuses, types, priorities) when the app is in
+French; existing boards keep theirs.
+- [x] L1. Sdk: `L` (Sdk.Core), `{l:T}` (Sdk), the Language setting, French dates and numbers; tools/I18n (wrap, keys,
+      check; CI checks every text has its French); the shell in French
+- [ ] L2. Plugins in French: Board (and Scrum, Reports, Timeline, Risks, Git), Charts, Git, GitHub, Projects, Templates;
+      new boards with French names
+
 ## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
 Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
 generation. You provide PDFs with examples and the precise rules before D1. Plugins: `DevHub.Diagrams`

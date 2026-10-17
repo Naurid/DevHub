@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions;
 
@@ -28,7 +29,7 @@ public static class MainMenu
         return groups
             .Select(group => (Control)new MenuItem
             {
-                Header = group,
+                Header = L.T(group),   // Menu is the English name (actions group by it); shown translated
                 ItemsSource = MenuBuilder.Build(ActionLayout.Arrange(
                     registry.All.Where(a => a.Menu == group), a => a.MenuOrder)),
             })

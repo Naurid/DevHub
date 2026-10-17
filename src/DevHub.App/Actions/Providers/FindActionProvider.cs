@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.ViewModels;
 using DevHub.ViewModels.Shell;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -15,7 +16,7 @@ public sealed class FindActionProvider(MainWindowViewModel shell, Func<FindActio
 {
     public IEnumerable<AppAction> GetActions()
     {
-        yield return new AppAction(ActionIds.FindAction, "Find Action…",
+        yield return new AppAction(ActionIds.FindAction, L.T("Find Action…"),
             new RelayCommand(() => shell.FindAction ??= createPopup()))
         {
             Category = "Help",
@@ -24,7 +25,7 @@ public sealed class FindActionProvider(MainWindowViewModel shell, Func<FindActio
             Menu = "Help",
             ToolbarOrder = 0,
             WelcomeOrder = 0,
-            Description = "Search every action by name and run it.",
+            Description = L.T("Search every action by name and run it."),
         };
     }
 }

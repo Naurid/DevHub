@@ -18,6 +18,7 @@ using DevHub.ViewModels.Shell;
 using DevHub.ViewModels.ToolWindows;
 using DevHub.Views;
 using Microsoft.Extensions.DependencyInjection;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub;
 
@@ -38,6 +39,9 @@ public partial class App : Application
             // DEVHUB_DATA_DIR (optional) points settings at another folder, e.g. to try things or
             // run a test copy without touching your real %APPDATA%\DevHub\settings.json.
             var store = new JsonSettingsStore(Environment.GetEnvironmentVariable("DEVHUB_DATA_DIR") is { Length: > 0 } dir ? dir : null);
+
+            // The language first: everything after (plugins included, as they load) shows its text in it.
+            L.Use(store.Load().Language);
 
             // Which plugins load is decided before the container exists: a switched-off plugin
             // registers nothing, so no menu item, tab, tool window or shortcut of it appears.
@@ -107,8 +111,8 @@ public partial class App : Application
                     return;
                 e.Cancel = true;
                 var discard = await Services.GetRequiredService<IDialogService>().ShowDialogAsync(new ConfirmDialogViewModel(
-                    "Unsaved Changes", "These tabs have changes that aren't saved. Close DevHub and lose them?",
-                    "Discard and Close", unsaved));
+                    L.T("Unsaved Changes"), L.T("These tabs have changes that aren't saved. Close DevHub and lose them?"),
+                    L.T("Discard and Close"), unsaved));
                 if (!discard)
                     return;
                 discardAgreed = true;
@@ -141,7 +145,7 @@ public partial class App : Application
                     catch (Exception ex)
                     {
                         // An event handler can't pass this on: say it, and keep the app running.
-                        Services.GetRequiredService<IStatusService>().Show("Couldn't save the plugin choice: " + ex.Message);
+                        Services.GetRequiredService<IStatusService>().Show(L.T("Couldn't save the plugin choice: ") + ex.Message);
                     }
                 }
                 mainWindow.Opened += AskOnce;

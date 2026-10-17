@@ -13,4 +13,9 @@
         <!-- Only the Sdk is a NuGet package (build/SdkPackage.props turns it on for DevHub.Sdk and DevHub.Sdk.Core). -->
         <IsPackable>false</IsPackable>
     </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Translations (L in Sdk.Core): i18n/fr.json, English → French, embedded where the app looks for them. -->
+        <EmbeddedResource Include="i18n\*.json" />
+    </ItemGroup>
 </Project>

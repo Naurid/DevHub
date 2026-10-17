@@ -10,6 +10,7 @@
 -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="using:DevHub.Localization"
         xmlns:c="using:DevHub.Controls">
 
     <!-- ===== DevHub controls ===== -->
@@ -36,7 +37,7 @@
                 <c:ActionButton IconKind="close"
                                 Width="{DynamicResource Size.Icon}" Height="{DynamicResource Size.Icon}"
                                 Margin="{DynamicResource Margin.InnerRight}"
-                                ToolTip.Tip="Clear (Esc)"
+                                ToolTip.Tip="{l:T 'Clear (Esc)'}"
                                 Command="{Binding $parent[TextBox].Clear}" />
             </Template>
         </Setter>

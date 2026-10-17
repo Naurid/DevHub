@@ -10,6 +10,7 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels"
              xmlns:c="using:DevHub.Controls"
              xmlns:a="using:DevHub.Actions"
@@ -30,7 +31,7 @@
                 <c:DevHubLogo Width="{DynamicResource Size.StripeIcon}"
                               Height="{DynamicResource Size.StripeIcon}"
                               LineThickness="4" />
-                <c:ActionButton IconKind="menu" ToolTip.Tip="Main Menu"
+                <c:ActionButton IconKind="menu" ToolTip.Tip="{l:T 'Main Menu'}"
                                 WindowDecorationProperties.ElementRole="User">
                     <c:ActionButton.Flyout>
                         <MenuFlyout Placement="BottomEdgeAlignedLeft" ItemsSource="{a:MainMenu}" />
@@ -41,7 +42,7 @@
             <!-- "Where am I": app name › active tab (or Welcome). Not interactive, so it stays draggable. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{DynamicResource Spacing.Small}"
                         VerticalAlignment="Center">
-                <TextBlock Text="DevHub" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Text="{l:T 'DevHub'}" FontWeight="SemiBold" VerticalAlignment="Center" />
                 <c:Icon Kind="chevronRight" VerticalAlignment="Center" />
                 <TextBlock Classes="secondary" Text="{Binding Documents.ActiveTitle}" VerticalAlignment="Center" />
                 <!-- Widgets from plugins (e.g. Git's branch widget), shown through the ViewLocator. -->

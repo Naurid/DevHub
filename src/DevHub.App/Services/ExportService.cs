@@ -3,6 +3,7 @@ using Avalonia.Input.Platform;
 using DevHub.Controls;
 using DevHub.Sdk.Core.Charts;
 using DevHub.Sdk.Core.Tables;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Services;
 
@@ -19,18 +20,18 @@ public sealed class ExportService(IDialogService dialogs, IStatusService status)
 
     public async Task<bool> SaveChartAsync(ChartKind kind, ChartData data, string suggestedName)
     {
-        var path = await dialogs.PickSaveFileAsync("Save Chart as Image", FileName(suggestedName, "png"), "PNG image", "png");
+        var path = await dialogs.PickSaveFileAsync(L.T("Save Chart as Image"), FileName(suggestedName, "png"), L.T("PNG image"), "png");
         if (path is null)
             return false;
         try
         {
             await File.WriteAllBytesAsync(path, ChartImage.Png(kind, data));
-            status.Show($"Saved {Path.GetFileName(path)}");
+            status.Show(L.T($"Saved {Path.GetFileName(path)}"));
             return true;
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
-            status.Show($"The image couldn't be saved: {e.Message}");
+            status.Show(L.T($"The image couldn't be saved: {e.Message}"));
             return false;
         }
     }
@@ -44,24 +45,24 @@ public sealed class ExportService(IDialogService dialogs, IStatusService status)
         var bitmap = new Avalonia.Media.Imaging.Bitmap(new MemoryStream(ChartImage.Png(kind, data)));
         await clipboard.SetBitmapAsync(bitmap);
         await clipboard.FlushAsync();
-        status.Show("Chart copied: paste it into your document");
+        status.Show(L.T("Chart copied: paste it into your document"));
     }
 
     public async Task<bool> SaveTableAsync(TableData table, string suggestedName)
     {
-        var path = await dialogs.PickSaveFileAsync("Export Table as CSV", FileName(suggestedName, "csv"), "CSV (comma-separated)", "csv");
+        var path = await dialogs.PickSaveFileAsync(L.T("Export Table as CSV"), FileName(suggestedName, "csv"), L.T("CSV (comma-separated)"), "csv");
         if (path is null)
             return false;
         try
         {
             // With a byte order mark, so Excel reads accents (é, ü) right.
             await File.WriteAllTextAsync(path, table.ToCsv(), new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
-            status.Show($"Saved {Path.GetFileName(path)}");
+            status.Show(L.T($"Saved {Path.GetFileName(path)}"));
             return true;
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
-            status.Show($"The table couldn't be saved: {e.Message}");
+            status.Show(L.T($"The table couldn't be saved: {e.Message}"));
             return false;
         }
     }
@@ -71,7 +72,7 @@ public sealed class ExportService(IDialogService dialogs, IStatusService status)
         if (_window?.Clipboard is not { } clipboard)
             return;
         await clipboard.SetTextAsync(table.ToTsv());
-        status.Show($"Table copied ({table.Rows.Count} rows): paste it into a document or spreadsheet");
+        status.Show(L.T($"Table copied ({table.Rows.Count} rows): paste it into a document or spreadsheet"));
     }
 
     public async Task CopyTextAsync(string text)

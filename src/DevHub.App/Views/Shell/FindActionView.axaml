@@ -6,6 +6,7 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Shell"
              xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Shell.FindActionView"
@@ -70,11 +71,11 @@
                 Padding="{DynamicResource Padding.Popup}">
             <DockPanel>
                 <c:SearchField DockPanel.Dock="Top" Text="{Binding Query}"
-                               PlaceholderText="Type an action name…"
+                               PlaceholderText="{l:T 'Type an action name…'}"
                                c:FocusOnLoad.IsEnabled="True" />
 
                 <TextBlock DockPanel.Dock="Bottom" Classes="small secondary" Margin="8,6"
-                           Text="↑↓ select · Enter run · Esc close" />
+                           Text="{l:T '↑↓ select · Enter run · Esc close'}" />
 
                 <Panel>
                     <ListBox Classes="results" Margin="0,4,0,0"
@@ -105,7 +106,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                         <TextBlock Grid.Column="2" Classes="small secondary"
-                                                   Text="{Binding Action.Category}" VerticalAlignment="Center" />
+                                                   Text="{Binding Action.CategoryText}" VerticalAlignment="Center" />
                                         <TextBlock Grid.Column="3" Classes="code secondary"
                                                    Text="{Binding Action.Gesture}" VerticalAlignment="Center" />
                                     </Grid>
@@ -114,7 +115,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <TextBlock Classes="secondary" Margin="8,12" Text="Nothing found"
+                    <TextBlock Classes="secondary" Margin="8,12" Text="{l:T 'Nothing found'}"
                                IsVisible="{Binding !HasResults}" />
                 </Panel>
             </DockPanel>

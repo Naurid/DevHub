@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DevHub.Sdk.Core.Search;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
 
@@ -15,7 +16,7 @@ namespace DevHub.ViewModels.Dialogs.Settings;
 /// </remarks>
 public partial class SettingsDialogViewModel : DialogViewModelBase
 {
-    public override string Title => "Settings";
+    public override string Title => L.T("Settings");
     public override double Width => 880;
     public override double Height => 600;
     public override bool ShowApply => true;

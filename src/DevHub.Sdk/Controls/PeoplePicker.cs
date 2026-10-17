@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Sdk.Core.People;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Controls;
 
@@ -33,7 +34,7 @@ public class PeoplePicker : TemplatedControl
         AvaloniaProperty.Register<PeoplePicker, bool>(nameof(AllowMultiple), true);
 
     public static readonly StyledProperty<string> PlaceholderProperty =
-        AvaloniaProperty.Register<PeoplePicker, string>(nameof(Placeholder), "Add someone…");
+        AvaloniaProperty.Register<PeoplePicker, string>(nameof(Placeholder), L.T("Add someone…"));
 
     public static readonly DirectProperty<PeoplePicker, string?> QueryProperty =
         AvaloniaProperty.RegisterDirect<PeoplePicker, string?>(nameof(Query), p => p.Query, (p, v) => p.Query = v);

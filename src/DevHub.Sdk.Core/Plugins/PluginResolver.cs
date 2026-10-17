@@ -1,3 +1,5 @@
+using DevHub.Sdk.Core.Localization;
+
 namespace DevHub.Sdk.Core.Plugins;
 
 /// <summary>A plugin that won't be loaded, and why (shown on the Plugins page and in the status bar).</summary>
@@ -36,7 +38,7 @@ public static class PluginResolver
             if (byId.TryAdd(plugin.Id, plugin))
                 order.Add(plugin);
             else
-                skipped.Add(new SkippedPlugin(plugin, $"Another plugin already uses the id \"{plugin.Id}\"."));
+                skipped.Add(new SkippedPlugin(plugin, L.T($"Another plugin already uses the id \"{plugin.Id}\".")));
         }
 
         // What the user asked for, plus everything it requires (as far as it's installed).
@@ -61,9 +63,9 @@ public static class PluginResolver
             foreach (var plugin in candidates.Where(p => !dropped.Contains(p.Id)))
             {
                 var reason = plugin.Requires.FirstOrDefault(r => !byId.ContainsKey(r)) is { } missing
-                    ? $"Requires \"{missing}\", which isn't installed."
+                    ? L.T($"Requires \"{missing}\", which isn't installed.")
                     : plugin.Requires.FirstOrDefault(dropped.Contains) is { } failed
-                        ? $"Requires {byId[failed].Name}, which couldn't be loaded."
+                        ? L.T($"Requires {byId[failed].Name}, which couldn't be loaded.")
                         : null;
                 if (reason is null)
                     continue;
@@ -85,7 +87,7 @@ public static class PluginResolver
             remaining.Remove(next);
         }
         foreach (var plugin in remaining)
-            skipped.Add(new SkippedPlugin(plugin, "Its requirements form a circle (" + string.Join(", ", remaining.Select(p => p.Id)) + ")."));
+            skipped.Add(new SkippedPlugin(plugin, L.T("Its requirements form a circle (") + string.Join(", ", remaining.Select(p => p.Id)) + ")."));
 
         return new PluginResolution(loaded, skipped);
     }

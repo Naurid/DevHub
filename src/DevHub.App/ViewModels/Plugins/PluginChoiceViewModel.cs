@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DevHub.Plugins;
 using DevHub.Sdk.Core.Plugins;
 using DevHub.Sdk.Core.Settings;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Plugins;
 
@@ -33,7 +34,7 @@ public sealed partial class PluginChoiceViewModel : ViewModelBase
             var header = info.Category != lastCategory ? info.Category : null;
             lastCategory = info.Category;
             var needs = info.Requires.Select(id => available.FirstOrDefault(p => p.Id == id)?.Name ?? id).ToList();
-            return new PluginRowViewModel(info, header, needs.Count > 0 ? "Needs " + string.Join(", ", needs) : null,
+            return new PluginRowViewModel(info, header, needs.Count > 0 ? L.T("Needs ") + string.Join(", ", needs) : null,
                 _loaded.Contains(info.Id), skipped.GetValueOrDefault(info.Id), _selection.IsEnabled(info.Id), OnRowToggled);
         }).ToList();
         Presets = _selection.Presets;
@@ -75,13 +76,15 @@ public sealed partial class PluginChoiceViewModel : ViewModelBase
         {
             var also = _selection.Enable(row.Info.Id);
             Note = also.Count == 0 ? null
-                : $"{Names(also)} switched on too: {row.Info.Name} needs {(also.Count == 1 ? "it" : "them")}.";
+                : also.Count == 1 ? L.T($"{Names(also)} switched on too: {row.Info.Name} needs it.")
+                : L.T($"{Names(also)} switched on too: {row.Info.Name} needs them.");
         }
         else
         {
             var also = _selection.Disable(row.Info.Id);
             Note = also.Count == 0 ? null
-                : $"{Names(also)} switched off too: {(also.Count == 1 ? "it needs" : "they need")} {row.Info.Name}.";
+                : also.Count == 1 ? L.T($"{Names(also)} switched off too: it needs {row.Info.Name}.")
+                : L.T($"{Names(also)} switched off too: they need {row.Info.Name}.");
         }
         Sync();
     }
@@ -122,7 +125,7 @@ public sealed partial class PluginRowViewModel : ObservableObject
         string? skipReason, bool isEnabled, Action<PluginRowViewModel, bool> toggled)
     {
         Info = info;
-        CategoryHeader = categoryHeader;
+        CategoryHeader = categoryHeader is null ? null : L.T(categoryHeader);
         RequiresText = requiresText;
         IsLoaded = isLoaded;
         SkipReason = skipReason;
@@ -131,8 +134,8 @@ public sealed partial class PluginRowViewModel : ObservableObject
     }
 
     public PluginInfo Info { get; }
-    public string Name => Info.Name;
-    public string Description => Info.Description;
+    public string Name => L.T(Info.Name);   // a plugin may ship the French name in its i18n file
+    public string Description => L.T(Info.Description);
 
     /// <summary>The category, on the first row of each category (a small header above it); else null.</summary>
     public string? CategoryHeader { get; }
@@ -154,10 +157,10 @@ public sealed partial class PluginRowViewModel : ObservableObject
     /// <summary>"On", "Off", "On after a restart", "Off after a restart", or why it couldn't load.</summary>
     public string StatusText => (IsEnabled, IsLoaded) switch
     {
-        (true, true) => "On",
-        (false, false) => "Off",
-        (true, false) => SkipReason is { } reason ? "Couldn't load: " + reason : "On after a restart",
-        (false, true) => "Off after a restart",
+        (true, true) => L.T("On"),
+        (false, false) => L.T("Off"),
+        (true, false) => SkipReason is { } reason ? L.T("Couldn't load: ") + reason : L.T("On after a restart"),
+        (false, true) => L.T("Off after a restart"),
     };
 
     public bool HasProblem => IsEnabled && !IsLoaded && SkipReason is not null;

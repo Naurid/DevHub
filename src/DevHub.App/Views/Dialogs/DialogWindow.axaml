@@ -5,6 +5,7 @@
 -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="using:DevHub.Localization"
         xmlns:vm="using:DevHub.ViewModels.Dialogs"
         x:Class="DevHub.Views.Dialogs.DialogWindow"
         x:DataType="vm:DialogViewModelBase"
@@ -26,10 +27,10 @@
                         Content="{Binding OkText}" MinWidth="80" IsDefault="True"
                         IsCancel="{Binding !ShowCancel}"
                         Command="{Binding OkCommand}" />
-                <Button Content="Cancel" MinWidth="80" IsCancel="True"
+                <Button Content="{l:T 'Cancel'}" MinWidth="80" IsCancel="True"
                         Command="{Binding CancelCommand}"
                         IsVisible="{Binding ShowCancel}" />
-                <Button Content="Apply" MinWidth="80"
+                <Button Content="{l:T 'Apply'}" MinWidth="80"
                         Command="{Binding ApplyCommand}"
                         IsVisible="{Binding ShowApply}" />
             </StackPanel>

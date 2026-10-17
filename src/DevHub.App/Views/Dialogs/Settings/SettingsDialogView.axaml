@@ -4,6 +4,7 @@
 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Dialogs.Settings"
              xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Dialogs.Settings.SettingsDialogView"
@@ -25,7 +26,7 @@
                                 <Ellipse Grid.Column="1" Width="6" Height="6"
                                          Fill="{DynamicResource Brush.Accent}"
                                          IsVisible="{Binding IsModified}"
-                                         ToolTip.Tip="Modified" />
+                                         ToolTip.Tip="{l:T 'Modified'}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -42,7 +43,7 @@
                 <ScrollViewer Padding="20,0,20,16">
                     <ContentControl Content="{Binding SelectedPage}" />
                 </ScrollViewer>
-                <c:EmptyState Title="Nothing found" Description="No settings page matches the search."
+                <c:EmptyState Title="{l:T 'Nothing found'}" Description="{l:T 'No settings page matches the search.'}"
                               IsVisible="{Binding SelectedPage, Converter={x:Static ObjectConverters.IsNull}}" />
             </Panel>
         </DockPanel>

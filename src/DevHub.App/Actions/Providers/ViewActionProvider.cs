@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -9,7 +10,7 @@ public sealed class ViewActionProvider(IThemeService theme) : IActionProvider
 {
     public IEnumerable<AppAction> GetActions()
     {
-        yield return new AppAction(ActionIds.ToggleTheme, "Toggle Dark Theme",
+        yield return new AppAction(ActionIds.ToggleTheme, L.T("Toggle Dark Theme"),
             new RelayCommand(() => theme.IsDark = !theme.IsDark))
         {
             Category = "View",
@@ -20,7 +21,7 @@ public sealed class ViewActionProvider(IThemeService theme) : IActionProvider
             ToolbarOrder = 200,
         };
 
-        yield return new AppAction(ActionIds.ToggleCompact, "Toggle Compact Mode",
+        yield return new AppAction(ActionIds.ToggleCompact, L.T("Toggle Compact Mode"),
             new RelayCommand(() => theme.IsCompact = !theme.IsCompact))
         {
             Category = "View",

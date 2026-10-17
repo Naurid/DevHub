@@ -2,6 +2,7 @@ using DevHub.Plugins;
 using DevHub.Sdk.Core.Plugins;
 using DevHub.Sdk.Core.Settings;
 using DevHub.ViewModels.Dialogs;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Plugins;
 
@@ -23,8 +24,8 @@ public sealed class FirstRunViewModel : DialogViewModelBase
         Choice.ApplyPresetCommand.Execute(PluginSelection.Everything);
     }
 
-    public override string Title => "Welcome to DevHub";
-    public override string OkText => "Start DevHub";
+    public override string Title => L.T("Welcome to DevHub");
+    public override string OkText => L.T("Start DevHub");
     public override bool ShowCancel => false;
     public override double Width => 640;
     public override double Height => 600;

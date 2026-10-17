@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Services;
 
@@ -21,7 +22,7 @@ public sealed class AppRestarter(IStatusService status) : IAppRestarter
     {
         if (Environment.ProcessPath is not { } exe)
         {
-            status.Show("Couldn't find DevHub's executable to restart it; please start it again yourself.");
+            status.Show(L.T("Couldn't find DevHub's executable to restart it; please start it again yourself."));
             return;
         }
         try
@@ -30,7 +31,7 @@ public sealed class AppRestarter(IStatusService status) : IAppRestarter
         }
         catch (Exception ex)
         {
-            status.Show("Couldn't restart DevHub: " + ex.Message);
+            status.Show(L.T("Couldn't restart DevHub: ") + ex.Message);
             return;
         }
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();

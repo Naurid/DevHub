@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="using:DevHub.Localization"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:DevHub.ViewModels"
@@ -11,7 +12,7 @@
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="640"
         x:Class="DevHub.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="DevHub"
+        Title="{l:T 'DevHub'}"
         Width="1000" Height="640"
         MinWidth="720" MinHeight="480"
         Background="{DynamicResource Brush.Bg.Editor}"
@@ -116,9 +117,9 @@
                                 <!-- Uncommitted / unsaved changes. -->
                                 <Ellipse Width="{DynamicResource Size.DirtyDot}" Height="{DynamicResource Size.DirtyDot}"
                                          Fill="{DynamicResource Brush.Accent}" VerticalAlignment="Center"
-                                         IsVisible="{Binding IsDirty}" ToolTip.Tip="Has local changes" />
+                                         IsVisible="{Binding IsDirty}" ToolTip.Tip="{l:T 'Has local changes'}" />
                                 <c:ActionButton Classes="tabClose" IconKind="close"
-                                                ToolTip.Tip="Close (Ctrl+F4)"
+                                                ToolTip.Tip="{l:T 'Close (Ctrl+F4)'}"
                                                 Command="{Binding CloseCommand}"
                                                 VerticalAlignment="Center" />
                             </StackPanel>

@@ -1,29 +1,30 @@
 <!-- Settings → Updates: the version, Check now / Update and restart, check on startup, release notes. -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:DevHub.Localization"
              xmlns:vm="using:DevHub.ViewModels.Dialogs.Settings"
              xmlns:c="using:DevHub.Controls"
              x:Class="DevHub.Views.Dialogs.Settings.UpdatesSettingsPageView"
              x:DataType="vm:UpdatesSettingsPageViewModel">
     <StackPanel Spacing="{DynamicResource Spacing}">
-        <c:SettingsRow Label="Version">
+        <c:SettingsRow Label="{l:T 'Version'}">
             <SelectableTextBlock Text="{Binding Version}" VerticalAlignment="Center" />
         </c:SettingsRow>
         <TextBlock Classes="secondary" Text="{Binding NotInstalledNote}" TextWrapping="Wrap" IsVisible="{Binding ShowNotInstalledNote}" />
-        <c:SettingsRow Label="New versions" Description="From DevHub's GitHub Releases. Nothing is installed until you click Update and restart.">
+        <c:SettingsRow Label="{l:T 'New versions'}" Description="{l:T 'From DevHub\'s GitHub Releases. Nothing is installed until you click Update and restart.'}">
             <StackPanel Spacing="{DynamicResource Spacing.Small}">
                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource Spacing}">
-                    <Button Content="Check Now" Command="{Binding CheckNowCommand}" IsEnabled="{Binding !Updates.IsBusy}" />
-                    <Button Classes="accent" Content="Update and Restart" Command="{Binding UpdateCommand}"
+                    <Button Content="{l:T 'Check Now'}" Command="{Binding CheckNowCommand}" IsEnabled="{Binding !Updates.IsBusy}" />
+                    <Button Classes="accent" Content="{l:T 'Update and Restart'}" Command="{Binding UpdateCommand}"
                             IsVisible="{Binding Updates.HasUpdate}" IsEnabled="{Binding !Updates.IsBusy}" />
-                    <Button Classes="flat" Content="Release Notes" Command="{Binding ReleaseNotesCommand}" />
+                    <Button Classes="flat" Content="{l:T 'Release Notes'}" Command="{Binding ReleaseNotesCommand}" />
                 </StackPanel>
                 <TextBlock Text="{Binding Result}" TextWrapping="Wrap"
                            IsVisible="{Binding Result, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>
         </c:SettingsRow>
-        <c:SettingsRow Label="On startup">
-            <CheckBox IsChecked="{Binding CheckOnStartup}" Content="Check for a new version when DevHub starts" />
+        <c:SettingsRow Label="{l:T 'On startup'}">
+            <CheckBox IsChecked="{Binding CheckOnStartup}" Content="{l:T 'Check for a new version when DevHub starts'}" />
         </c:SettingsRow>
     </StackPanel>
 </UserControl>

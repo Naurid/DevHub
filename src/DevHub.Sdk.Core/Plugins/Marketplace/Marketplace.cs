@@ -2,6 +2,7 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Sdk.Core.Plugins.Marketplace;
 
@@ -137,7 +138,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
     public async Task<string?> InstallAsync(IndexEntry entry, CancellationToken ct = default)
     {
         if (!entry.IsCompatible)
-            return $"{entry.Name} is made for plugin API {entry.ApiVersion}; this DevHub has {PluginApi.Version}. Update DevHub (or wait for a new version of the plugin).";
+            return L.T($"{entry.Name} is made for plugin API {entry.ApiVersion}; this DevHub has {PluginApi.Version}. Update DevHub (or wait for a new version of the plugin).");
 
         var download = Path.Combine(Path.GetTempPath(), $"devhub-plugin-{Guid.NewGuid():N}.zip");
         try
@@ -151,7 +152,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or TaskCanceledException)
         {
-            return $"Couldn't download {entry.Name}: {ex.Message}";
+            return L.T($"Couldn't download {entry.Name}: {ex.Message}");
         }
         finally
         {
@@ -167,7 +168,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
             await using var check = File.OpenRead(zipPath);
             var actual = Convert.ToHexString(await SHA256.HashDataAsync(check, ct));
             if (!actual.Equals(sha256, StringComparison.OrdinalIgnoreCase))
-                return "The download doesn't match the index's SHA-256 (damaged, or not the published file); nothing was installed.";
+                return L.T("The download doesn't match the index's SHA-256 (damaged, or not the published file); nothing was installed.");
         }
 
         var target = Path.Combine(Pending, expectedId);
@@ -182,7 +183,7 @@ public sealed class PluginInstaller(string root, HttpClient http)
             {
                 var path = Path.GetFullPath(Path.Combine(target, item.FullName));
                 if (!path.StartsWith(targetRoot, StringComparison.OrdinalIgnoreCase))
-                    throw new InvalidDataException($"\"{item.FullName}\" would be written outside the plugin's folder.");
+                    throw new InvalidDataException(L.T($"\"{item.FullName}\" would be written outside the plugin's folder."));
                 if (item.FullName.EndsWith('/'))
                 {
                     Directory.CreateDirectory(path);
@@ -194,18 +195,18 @@ public sealed class PluginInstaller(string root, HttpClient http)
 
             var info = ReadInfo(target);
             if (info is null)
-                throw new InvalidDataException("The package has no readable plugin.json at its top.");
+                throw new InvalidDataException(L.T("The package has no readable plugin.json at its top."));
             if (!info.Id.Equals(expectedId, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException($"The package is the plugin \"{info.Id}\", not \"{expectedId}\".");
+                throw new InvalidDataException(L.T($"The package is the plugin \"{info.Id}\", not \"{expectedId}\"."));
             if (info.ApiVersion != PluginApi.Version)
-                throw new InvalidDataException($"The package is made for plugin API {info.ApiVersion}; this DevHub has {PluginApi.Version}.");
+                throw new InvalidDataException(L.T($"The package is made for plugin API {info.ApiVersion}; this DevHub has {PluginApi.Version}."));
             File.Delete(RemovalMarker(expectedId)); // installing again cancels a pending removal
             return null;
         }
         catch (InvalidDataException ex)
         {
             Directory.Delete(target, recursive: true);
-            return ex.Message + " Nothing was installed.";
+            return ex.Message + L.T(" Nothing was installed.");
         }
     }
 

@@ -1,3 +1,5 @@
+using DevHub.Sdk.Core.Localization;
+
 namespace DevHub.Sdk.Core.Plugins.Marketplace;
 
 /// <summary>What installing a plugin takes: the packages to install, requirements first, or why it can't be done.</summary>
@@ -43,7 +45,7 @@ public static class InstallPlanner
             if (path.Any(p => p.Id.Equals(entry.Id, StringComparison.OrdinalIgnoreCase)))
             {
                 var circle = path.SkipWhile(p => !p.Id.Equals(entry.Id, StringComparison.OrdinalIgnoreCase)).Select(p => p.Name).Append(entry.Name);
-                return $"{plugin.Name} can't be installed: its requirements need each other in a circle ({string.Join(" → ", circle)}).";
+                return L.T($"{plugin.Name} can't be installed: its requirements need each other in a circle ({string.Join(" → ", circle)}).");
             }
             path.Add(entry);
             foreach (var id in entry.Requires ?? [])
@@ -52,9 +54,9 @@ public static class InstallPlanner
                     continue;
                 var requirement = offered.FirstOrDefault(e => e.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
                 if (requirement is null)
-                    return $"{entry.Name} requires \"{id}\", which no marketplace source offers. Nothing was installed.";
+                    return L.T($"{entry.Name} requires \"{id}\", which no marketplace source offers. Nothing was installed.");
                 if (!requirement.IsCompatible)
-                    return $"{entry.Name} requires {requirement.Name}, which is made for plugin API {requirement.ApiVersion}; this DevHub has {PluginApi.Version}. Nothing was installed.";
+                    return L.T($"{entry.Name} requires {requirement.Name}, which is made for plugin API {requirement.ApiVersion}; this DevHub has {PluginApi.Version}. Nothing was installed.");
                 if (Visit(requirement) is { } problem)
                     return problem;
             }

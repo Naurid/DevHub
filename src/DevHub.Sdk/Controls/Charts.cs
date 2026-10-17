@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using DevHub.Sdk.Core.Charts;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Controls;
 
@@ -22,7 +23,7 @@ public abstract class ChartBase : Control
         AvaloniaProperty.Register<ChartBase, ChartData?>(nameof(Data));
 
     public static readonly StyledProperty<string> EmptyTextProperty =
-        AvaloniaProperty.Register<ChartBase, string>(nameof(EmptyText), "No data yet");
+        AvaloniaProperty.Register<ChartBase, string>(nameof(EmptyText), L.T("No data yet"));
 
     /// <summary>Draw <see cref="ChartData.Title"/> above the chart (images do; pages usually have their own heading).</summary>
     public static readonly StyledProperty<bool> ShowTitleProperty =
@@ -1027,7 +1028,7 @@ public class Chart : Decorator
         AvaloniaProperty.Register<Chart, ChartData?>(nameof(Data));
 
     public static readonly StyledProperty<string> EmptyTextProperty =
-        AvaloniaProperty.Register<Chart, string>(nameof(EmptyText), "No data yet");
+        AvaloniaProperty.Register<Chart, string>(nameof(EmptyText), L.T("No data yet"));
 
     public static readonly StyledProperty<HeatmapColors> HeatmapColorsProperty =
         AvaloniaProperty.Register<Chart, HeatmapColors>(nameof(HeatmapColors));

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Documents;
 
@@ -51,7 +52,7 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
     public bool HasDocuments => Open.Count > 0;
 
     /// <summary>For the title bar breadcrumb: the active tab's title, or "Welcome".</summary>
-    public string ActiveTitle => Active?.Title ?? "Welcome";
+    public string ActiveTitle => Active?.Title ?? L.T("Welcome");
 
     public DocumentManager(IEnumerable<DocumentViewModelBase> documents, IEnumerable<IDocumentFactory> factories,
         ISettingsStore store, IStatusService status)
@@ -186,8 +187,8 @@ public partial class DocumentManager : ViewModelBase, IDocumentService
         if (skipped > 0)
         {
             _status.Show(skipped == 1
-                ? "1 tab from last time couldn't be reopened (moved or deleted?)."
-                : $"{skipped} tabs from last time couldn't be reopened (moved or deleted?).");
+                ? L.T("1 tab from last time couldn't be reopened (moved or deleted?).")
+                : L.T($"{skipped} tabs from last time couldn't be reopened (moved or deleted?)."));
         }
 
         Active = Open.FirstOrDefault(d => d.Id == layout.ActiveDocument) ?? Open.FirstOrDefault();

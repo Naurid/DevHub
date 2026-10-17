@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
 
@@ -17,13 +18,13 @@ public sealed partial class UpdatesSettingsPageViewModel : SettingsPageViewModel
         _checkOnStartup = store.Load().Updates?.CheckOnStartup ?? true;
     }
 
-    public override string Title => "Updates";
+    public override string Title => L.T("Updates");
     public override int Order => 950;
-    public override string Keywords => "update version upgrade release new check download install about";
+    public override string Keywords => L.T("update version upgrade release new check download install about");
 
     public UpdateService Updates { get; }
     public string Version => UpdateService.CurrentVersion;
-    public string NotInstalledNote => Updates.CanUpdate ? "" : "This is a development build: updates work in a DevHub installed with the installer.";
+    public string NotInstalledNote => Updates.CanUpdate ? "" : L.T("This is a development build: updates work in a DevHub installed with the installer.");
     public bool ShowNotInstalledNote => !Updates.CanUpdate;
 
     [ObservableProperty] private bool _checkOnStartup;

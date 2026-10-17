@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DevHub.Controls;
 using DevHub.Services;
+using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.Actions.Providers;
 
@@ -9,13 +10,13 @@ public sealed class UpdateActionProvider(UpdateService updates, IStatusService s
 {
     public IEnumerable<AppAction> GetActions()
     {
-        yield return new AppAction(ActionIds.CheckForUpdates, "Check for Updates", new AsyncRelayCommand(async () => status.Show(await updates.CheckAsync())))
+        yield return new AppAction(ActionIds.CheckForUpdates, L.T("Check for Updates"), new AsyncRelayCommand(async () => status.Show(await updates.CheckAsync())))
         {
             Category = "Help",
             IconKind = IconKind.Update,
             Menu = "Help",
             MenuOrder = 100,
-            Description = "Look for a newer DevHub on GitHub Releases (Settings → Updates has more).",
+            Description = L.T("Look for a newer DevHub on GitHub Releases (Settings → Updates has more)."),
         };
     }
 }
