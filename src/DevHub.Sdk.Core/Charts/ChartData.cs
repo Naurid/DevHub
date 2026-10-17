@@ -1,16 +1,86 @@
 namespace DevHub.Sdk.Core.Charts;
 
 /// <summary>One named series of values, one per label of its <see cref="ChartData"/> (null: no value there, a gap).</summary>
-public sealed record ChartSeries(string Name, IReadOnlyList<double?> Values);
+public sealed record ChartSeries(string Name, IReadOnlyList<double?> Values)
+{
+    /// <summary>How it's drawn: line dashes, markers, value labels, a fixed color, bars or a line in a combo chart.</summary>
+    public SeriesStyle Style { get; init; } = SeriesStyle.Default;
+}
+
+/// <summary>Solid, dashed or dotted lines (a forecast is often dashed).</summary>
+public enum LineDash
+{
+    Solid,
+    Dashed,
+    Dotted,
+}
+
+/// <summary>What a series is in a <see cref="ChartKind.Combo"/> chart (other kinds draw every series their way).</summary>
+public enum SeriesKind
+{
+    Line,
+    Bar,
+    Area,
+}
+
+/// <summary>How one series looks. <see cref="Color"/> is a palette index (0–5: Brush.Chart.1…6); null = by position.</summary>
+public sealed record SeriesStyle
+{
+    public static SeriesStyle Default { get; } = new();
+
+    public LineDash Dash { get; init; } = LineDash.Solid;
+    public bool Markers { get; init; }
+    public bool ValueLabels { get; init; }
+    public int? Color { get; init; }
+    public SeriesKind Kind { get; init; } = SeriesKind.Line;
+}
+
+/// <summary>A shaded range between two values per label (a forecast between pessimistic and optimistic).</summary>
+public sealed record ChartBand(string Name, IReadOnlyList<double?> Low, IReadOnlyList<double?> High);
+
+/// <summary>A horizontal line across an axis chart at <see cref="Value"/> (a target, an average, a capacity).</summary>
+public sealed record ChartReference(string Name, double Value);
 
 /// <summary>
-/// What a chart shows (the Sdk's LineChart, BarChart and PieChart): labels along the X axis (or the slices of a pie)
-/// and one or more series with a value per label. Built by a plugin's .Core (e.g. a burndown from issue history),
-/// so it has no UI types. A pie uses the first series.
+/// What a chart shows (the Sdk's charts: <c>Chart</c> with a <see cref="ChartKind"/>, or LineChart, BarChart, PieChart…):
+/// labels along the X axis (or the slices of a pie, the columns of a heatmap) and one or more series with a value per
+/// label (a heatmap's rows). Built by a plugin's .Core (e.g. a burndown from issue history), so it has no UI types.
+/// A pie and a gauge use the first series. Everything after <see cref="Series"/> is optional.
 /// </summary>
 public sealed record ChartData(IReadOnlyList<string> Labels, IReadOnlyList<ChartSeries> Series)
 {
     public static ChartData Empty { get; } = new([], []);
+
+    /// <summary>A title above the chart (exported images show it; on screen the page usually has its own heading).</summary>
+    public string? Title { get; init; }
+
+    /// <summary>The name of the label axis ("Sprint") and of the value axis ("Story points").</summary>
+    public string? XTitle { get; init; }
+    public string? YTitle { get; init; }
+
+    /// <summary>After every value in labels and tooltips ("%", " pts", " d").</summary>
+    public string ValueSuffix { get; init; } = "";
+
+    /// <summary>Shaded ranges (axis charts).</summary>
+    public IReadOnlyList<ChartBand> Bands { get; init; } = [];
+
+    /// <summary>Horizontal lines (axis charts).</summary>
+    public IReadOnlyList<ChartReference> References { get; init; } = [];
+
+    /// <summary>A number per label for a scatter chart's X axis (null: 1, 2, 3… or the labels when they're numbers).</summary>
+    public IReadOnlyList<double>? X { get; init; }
+
+    /// <summary>A heatmap's text per cell, by series (row) then label (column), e.g. the risks in a risk matrix cell.</summary>
+    public IReadOnlyList<IReadOnlyList<string?>>? CellText { get; init; }
+
+    /// <summary>A gauge's full scale (the first value out of this); null = 100.</summary>
+    public double? Max { get; init; }
+
+    /// <summary>A heatmap colored green → amber → red by value (a risk matrix) instead of shades of one color.</summary>
+    public bool TrafficColors { get; init; }
+
+    /// <summary>A value with <see cref="ValueSuffix"/>, short ("1.2k pts").</summary>
+    public string Format(double value) => ChartMath.Short(value) + ValueSuffix;
 
     /// <summary>One series: label → value.</summary>
     public static ChartData Of(string name, IEnumerable<(string Label, double Value)> points)
@@ -19,11 +89,112 @@ public sealed record ChartData(IReadOnlyList<string> Labels, IReadOnlyList<Chart
         return new ChartData(list.Select(p => p.Label).ToList(), [new ChartSeries(name, list.Select(p => (double?)p.Value).ToList())]);
     }
 
-    /// <summary>The smallest and largest value of every series (null when there are none).</summary>
+    /// <summary>The smallest and largest value of every series, band and reference line (null when there are none).</summary>
     public (double Min, double Max)? Range()
     {
-        var values = Series.SelectMany(s => s.Values).OfType<double>().Where(double.IsFinite).ToList();
+        var values = Series.SelectMany(s => s.Values)
+            .Concat(Bands.SelectMany(b => b.Low.Concat(b.High)))
+            .OfType<double>()
+            .Concat(References.Select(r => r.Value))
+            .Where(double.IsFinite).ToList();
         return values.Count == 0 ? null : (values.Min(), values.Max());
+    }
+
+    /// <summary>The range when series are stacked: the lowest and highest running total per label (stacked bars and areas).</summary>
+    public (double Min, double Max)? StackedRange()
+    {
+        if (Labels.Count == 0 || Series.Count == 0)
+            return null;
+        double min = 0, max = 0;
+        var any = false;
+        for (var i = 0; i < Labels.Count; i++)
+        {
+            double up = 0, down = 0;
+            foreach (var s in Series)
+            {
+                if (i >= s.Values.Count || s.Values[i] is not { } v || !double.IsFinite(v))
+                    continue;
+                any = true;
+                if (v >= 0) up += v; else down += v;
+            }
+            max = Math.Max(max, up);
+            min = Math.Min(min, down);
+        }
+        foreach (var r in References)
+        {
+            max = Math.Max(max, r.Value);
+            min = Math.Min(min, r.Value);
+        }
+        return any ? (min, max) : null;
+    }
+
+    /// <summary>The chart as a table: a column of labels, then a column per series (for CSV and copying).</summary>
+    public Tables.TableData ToTable(string labelHeader = "")
+    {
+        var headers = new List<string> { string.IsNullOrEmpty(labelHeader) ? XTitle ?? "" : labelHeader };
+        headers.AddRange(Series.Select(s => s.Name));
+        var rows = Labels.Select((label, i) => (IReadOnlyList<string>)
+            [label, .. Series.Select(s => i < s.Values.Count && s.Values[i] is { } v ? v.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")]).ToList();
+        return new Tables.TableData(headers, rows) { Title = Title };
+    }
+}
+
+/// <summary>The kinds of chart the Sdk draws (the <c>Chart</c> control switches between them).</summary>
+public enum ChartKind
+{
+    Line,
+    Area,
+    StackedArea,
+    Bar,
+    StackedBar,
+    HorizontalBar,
+    StackedHorizontalBar,
+    Combo,
+    Scatter,
+    Pie,
+    Donut,
+    Heatmap,
+    Gauge,
+}
+
+/// <summary>Names and fitting kinds, for a "chart type" picker.</summary>
+public static class ChartKinds
+{
+    public static string Name(ChartKind kind) => kind switch
+    {
+        ChartKind.Line => "Line",
+        ChartKind.Area => "Area",
+        ChartKind.StackedArea => "Stacked area",
+        ChartKind.Bar => "Bars",
+        ChartKind.StackedBar => "Stacked bars",
+        ChartKind.HorizontalBar => "Horizontal bars",
+        ChartKind.StackedHorizontalBar => "Stacked horizontal bars",
+        ChartKind.Combo => "Bars and lines",
+        ChartKind.Scatter => "Scatter",
+        ChartKind.Pie => "Pie",
+        ChartKind.Donut => "Donut",
+        ChartKind.Heatmap => "Heatmap",
+        ChartKind.Gauge => "Gauge",
+        _ => kind.ToString(),
+    };
+
+    /// <summary>
+    /// The kinds that can show <paramref name="data"/>: axis kinds always; stacked ones with more than one series;
+    /// pie and donut with one series of positive values; gauge with a single value; heatmap with several rows or columns.
+    /// </summary>
+    public static IReadOnlyList<ChartKind> Fitting(ChartData data)
+    {
+        var kinds = new List<ChartKind> { ChartKind.Line, ChartKind.Area, ChartKind.Bar, ChartKind.HorizontalBar };
+        if (data.Series.Count > 1)
+            kinds.AddRange([ChartKind.StackedArea, ChartKind.StackedBar, ChartKind.StackedHorizontalBar, ChartKind.Combo]);
+        kinds.Add(ChartKind.Scatter);
+        if (data.Series.Count >= 1 && data.Series[0].Values.Any(v => v > 0))
+            kinds.AddRange([ChartKind.Pie, ChartKind.Donut]);
+        if (data.Series.Count > 1 || data.Labels.Count > 1)
+            kinds.Add(ChartKind.Heatmap);
+        if (data.Series.Count >= 1 && data.Series[0].Values.Count >= 1)
+            kinds.Add(ChartKind.Gauge);
+        return kinds;
     }
 }
 
@@ -105,6 +276,27 @@ public static class ChartMath
             angle += fraction * 360;
         }
         return slices;
+    }
+
+    /// <summary>
+    /// A histogram of <paramref name="values"/>: <paramref name="bins"/> equal ranges from the smallest to the largest
+    /// value, labelled "2–4" (the last range includes its upper end), with a count per range.
+    /// </summary>
+    public static ChartData Histogram(string name, IEnumerable<double> values, int bins = 10)
+    {
+        var list = values.Where(double.IsFinite).ToList();
+        if (list.Count == 0 || bins < 1)
+            return ChartData.Empty;
+        var min = list.Min();
+        var max = list.Max();
+        if (max - min < 1e-12)
+            return ChartData.Of(name, [(Short(min), list.Count)]);
+        var width = (max - min) / bins;
+        var counts = new double[bins];
+        foreach (var v in list)
+            counts[Math.Min(bins - 1, (int)((v - min) / width))]++;
+        var labels = Enumerable.Range(0, bins).Select(i => $"{Short(min + i * width)}–{Short(min + (i + 1) * width)}").ToList();
+        return new ChartData(labels, [new ChartSeries(name, counts.Select(c => (double?)c).ToList())]);
     }
 
     /// <summary>"1,250", "12.5", "3.2k", "1.5M": short labels for ticks and values, in the user's culture by default.</summary>
