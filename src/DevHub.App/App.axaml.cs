@@ -34,6 +34,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // Clicking empty space in any list or tree unselects (DevHub.Controls.ClickAwayDeselect).
+        DevHub.Controls.ClickAwayDeselect.Install();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // DEVHUB_DATA_DIR (optional) points settings at another folder, e.g. to try things or

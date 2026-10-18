@@ -78,7 +78,7 @@
                            Text="{l:T '↑↓ select · Enter run · Esc close'}" />
 
                 <Panel>
-                    <ListBox Classes="results" Margin="0,4,0,0"
+                    <ListBox Classes="results" SelectionMode="Single,AlwaysSelected" Margin="0,4,0,0"
                              ItemsSource="{Binding Results}"
                              SelectedItem="{Binding Selected, Mode=TwoWay}"
                              Background="Transparent">

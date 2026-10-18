@@ -24,7 +24,10 @@ public interface IRepositoryEvents
     /// <summary>HEAD moved to another branch (checkout, a new branch, a rebase that ended…).</summary>
     event EventHandler<RepositoryEventArgs>? BranchChanged;
 
-    /// <summary>A commit was made from DevHub (commit, amend, merge commit).</summary>
+    /// <summary>
+    /// A new commit: made from DevHub (commit, amend, merge commit), or by the user outside it (an IDE, a terminal) and
+    /// noticed while the repository is open in a tab. Once per commit.
+    /// </summary>
     event EventHandler<RepositoryEventArgs>? Committed;
 
     /// <summary>A push from DevHub succeeded.</summary>

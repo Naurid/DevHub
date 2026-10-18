@@ -15,7 +15,7 @@
         <Border Grid.Column="0" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0">
             <DockPanel>
                 <c:SearchField DockPanel.Dock="Top" Margin="8" Text="{Binding Filter}" />
-                <ListBox ItemsSource="{Binding VisiblePages}"
+                <ListBox SelectionMode="Single,AlwaysSelected" ItemsSource="{Binding VisiblePages}"
                          SelectedItem="{Binding SelectedPage, Mode=TwoWay}"
                          Background="Transparent">
                     <ListBox.ItemTemplate>
