@@ -67,11 +67,18 @@ public class SidePane : Control
     public static readonly DirectProperty<SidePane, bool> IsCompactProperty =
         AvaloniaProperty.RegisterDirect<SidePane, bool>(nameof(IsCompact), o => o.IsCompact);
 
+    public static readonly StyledProperty<bool> HideContentWhenNarrowProperty =
+        AvaloniaProperty.Register<SidePane, bool>(nameof(HideContentWhenNarrow));
+
+    public static readonly DirectProperty<SidePane, bool> IsContentHiddenProperty =
+        AvaloniaProperty.RegisterDirect<SidePane, bool>(nameof(IsContentHidden), o => o.IsContentHidden);
+
     private readonly Border _paneHost = new() { ClipToBounds = true };
     private readonly SplitterThumb _splitter = new();
     private readonly Border _rail = new();
     private readonly ActionButton _railButton = new() { VerticalAlignment = VerticalAlignment.Top };
     private bool _isCompact;
+    private bool _isContentHidden;
     private double _railWidth;
     private IDisposable? _shadow;
     private IDisposable? _overlayBackground;
@@ -189,6 +196,34 @@ public class SidePane : Control
         set => SetValue(CloseOnContentClickProperty, value);
     }
 
+    /// <summary>
+    /// When there's no room for both: hide the content and give the pane the whole width, instead of folding the pane
+    /// into a rail. For panes that must stay usable (a repository's sidebar and changes list, with the diff as the
+    /// content): two folded panes side by side would cover each other's rail. Pair it with a minimum window width
+    /// (<c>DocumentViewModelBase.MinWidth</c>) so the panes themselves always fit.
+    /// </summary>
+    public bool HideContentWhenNarrow
+    {
+        get => GetValue(HideContentWhenNarrowProperty);
+        set => SetValue(HideContentWhenNarrowProperty, value);
+    }
+
+    /// <summary>True while the content is hidden for lack of room (<see cref="HideContentWhenNarrow"/>; also <c>:contentHidden</c>).</summary>
+    public bool IsContentHidden
+    {
+        get => _isContentHidden;
+        private set
+        {
+            if (SetAndRaise(IsContentHiddenProperty, ref _isContentHidden, value))
+            {
+                PseudoClasses.Set(":contentHidden", value);
+                if (Content is { } content)
+                    content.IsHitTestVisible = !value;
+                UpdateParts();
+            }
+        }
+    }
+
     /// <summary>True while the pane is folded into the rail (also the <c>:compact</c> pseudo-class).</summary>
     public bool IsCompact
     {
@@ -244,7 +279,8 @@ public class SidePane : Control
             UpdateRail();
         }
         else if (change.Property == PaneWidthProperty || change.Property == MinPaneWidthProperty
-                 || change.Property == MinContentWidthProperty || change.Property == MaxPaneFractionProperty)
+                 || change.Property == MinContentWidthProperty || change.Property == MaxPaneFractionProperty
+                 || change.Property == HideContentWhenNarrowProperty)
         {
             _splitter.Value = PaneWidth;
             InvalidateMeasure();
@@ -254,12 +290,23 @@ public class SidePane : Control
     protected override Size MeasureOverride(Size availableSize)
     {
         var width = availableSize.Width;
-        IsCompact = !double.IsInfinity(width) && width < MinPaneWidth + MinContentWidth;
+        var narrow = !double.IsInfinity(width) && width < MinPaneWidth + MinContentWidth;
+        IsCompact = narrow && !HideContentWhenNarrow;
+        IsContentHidden = narrow && HideContentWhenNarrow && HasPane;
 
         if (!HasPane)
         {
             Content?.Measure(availableSize);
             return Content?.DesiredSize ?? default;
+        }
+
+        if (IsContentHidden)
+        {
+            // The pane takes the whole width (never less than its minimum); the content waits for room.
+            var all = Math.Max(MinPaneWidth, width);
+            _paneHost.Measure(availableSize.WithWidth(all));
+            Content?.Measure(default);
+            return new Size(all, _paneHost.DesiredSize.Height);
         }
 
         if (IsCompact)
@@ -289,6 +336,15 @@ public class SidePane : Control
             _rail.Arrange(default);
             _splitter.Arrange(default);
             _paneHost.Arrange(default);
+            return finalSize;
+        }
+
+        if (IsContentHidden)
+        {
+            _paneHost.Arrange(new Rect(0, 0, w, h));
+            Content?.Arrange(default);
+            _rail.Arrange(default);
+            _splitter.Arrange(default);
             return finalSize;
         }
 
@@ -351,7 +407,7 @@ public class SidePane : Control
     {
         var overlay = IsCompact && IsPaneOpen;
         _rail.IsVisible = IsCompact && HasPane;
-        _splitter.IsVisible = !IsCompact && HasPane;
+        _splitter.IsVisible = !IsCompact && !IsContentHidden && HasPane;
         _splitter.Invert = IsRight;
         _paneHost.IsVisible = HasPane && (!IsCompact || IsPaneOpen);
         _paneHost.BorderThickness = overlay

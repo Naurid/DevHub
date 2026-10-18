@@ -31,6 +31,13 @@ public abstract partial class DocumentViewModelBase : ViewModelBase
     public virtual bool FillsEditorArea => false;
 
     /// <summary>
+    /// The narrowest the editor area may get while this tab is in front (0: no limit beyond the window's own). The
+    /// shell keeps the window at least that wide, next to the open tool windows: a repository tab needs its sidebar
+    /// and changes list side by side (their panes hide the diff rather than fold, <c>SidePane.HideContentWhenNarrow</c>).
+    /// </summary>
+    public virtual double MinWidth => 0;
+
+    /// <summary>
     /// The folder this tab is about (a repository, or the repository of a diff / blame tab), or
     /// null. Lets a plugin relate tabs to each other: Git acts on the repository of the tab in
     /// front, also while one of its diff tabs is in front.
