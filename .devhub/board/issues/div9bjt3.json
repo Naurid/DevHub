@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "div9bjt3",
+  "key": "DEV-175",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "L1: L and {l:T}, the Language setting, the shell in French",
+  "description": "Landed in:\n- DevHub `1f2a5ad`: French: the shell in French, a Language setting, and translation support for plugins",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ds9iukmw",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:02+00:00",
+  "updated": "2026-10-17T18:16:00+00:00",
+  "resolved": "2026-10-17T18:16:00+00:00"
+}

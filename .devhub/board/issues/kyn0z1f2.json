@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "kyn0z1f2",
+  "key": "DEV-149",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Backlog: issues finished in past sprints leave their sprint",
+  "description": "Landed in:\n- DevHub-Plugins `0c84233`: Backlog: issues finished in past sprints stay with their sprint",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-18T19:52:00+00:00",
+  "resolved": "2026-10-18T19:52:00+00:00"
+}

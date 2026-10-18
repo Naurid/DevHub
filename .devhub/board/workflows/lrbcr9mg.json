@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "lrbcr9mg",
+  "name": "Default",
+  "statuses": [
+    "backlog",
+    "selected",
+    "inprogress",
+    "inreview",
+    "done"
+  ],
+  "anyToAny": true,
+  "transitions": []
+}

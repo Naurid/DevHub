@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ds9iukmw",
+  "key": "DEV-174",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "L — French",
+  "description": "English and French; the English text is the key (L.T, {l:T}).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-17",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:00+00:00",
+  "updated": "2026-10-17T22:54:00+00:00",
+  "resolved": "2026-10-17T22:54:00+00:00"
+}

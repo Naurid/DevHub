@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "j7vncfht",
+  "key": "DEV-209",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Package names bleed out of their tab; empty packages look like empty boxes",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "lgr6ll6w",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:48.9505275+00:00",
+      "body": "Empty packages show their name in the body; tabs grow to the package's width, then \"…\" with the full name on hover and while selected. Feature/diagram-labels."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:48.6381102+00:00",
+  "updated": "2026-10-18T22:24:49.0366766+00:00"
+}

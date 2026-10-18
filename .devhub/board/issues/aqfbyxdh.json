@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "aqfbyxdh",
+  "key": "DEV-124",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "B0: Board plan and decisions",
+  "description": "Landed in:\n- DevHub-Plugins `a020385`: B0: Board needs no git — storage behind IBoardStore (folder store in Board: lock + temp-file rename, compare-and-swap on a counter; branch store on devhub/board moves to Board.Git with the branch / commit links), history as a per-issue change log in every store, people in board.json; time tracking (original, remaining, work log) next to story points; New Board picks where a board lives; build order B1–B5, B7, B8 (Board.Git)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T15:46:00+00:00",
+  "resolved": "2026-10-13T15:46:00+00:00"
+}

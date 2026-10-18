@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "r2o6cou3",
+  "key": "DEV-26",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Stage 2: compare with Stage 1 and write up the results",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "l7gm3q3h",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:34:02+00:00",
+  "updated": "2026-10-09T00:34:02+00:00"
+}

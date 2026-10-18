@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "gkzjthg7",
+  "key": "DEV-138",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Board demo generator (tools/BoardDemo)",
+  "description": "Landed in:\n- DevHub-Plugins `ba84efa`: Board demo: a generator for a board that uses every feature",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T22:15:00+00:00",
+  "resolved": "2026-10-13T22:15:00+00:00"
+}

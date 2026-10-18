@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "vtv8wfum",
+  "key": "DEV-85",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "R3: in-app updates (status bar, Settings → Updates, Help → Check for Updates)",
+  "description": "Landed in:\n- DevHub `5bd32e4`: R3: updates inside DevHub — UpdateService (Velopack, GitHub Releases; DEVHUB_UPDATE_SOURCE for local rehearsals), quiet check after start, status-bar \"Update and restart\" (closes normally, Velopack applies and restarts), Settings → Updates (version, Check Now, startup toggle, release notes), Help → Check for Updates; local builds are 0.0.0-dev (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:32:00+00:00",
+  "resolved": "2026-10-12T01:32:00+00:00"
+}

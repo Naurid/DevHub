@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "g9x5rk8k",
+  "key": "DEV-129",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B4: issue view (tab + side panel), Create Issue",
+  "description": "Landed in:\n- DevHub `fe0e1c8`: Roadmap: B1–B6 done (Board Core, workflows, board with configurable columns, issue view, backlog, search) in DevHub-Plugins\n- DevHub-Plugins `2117613`: B2 (workflow editor), B3, B4, B5, B6: the Board plugin's UI — board tabs (board selector, pages, search, Create, board menu), the Board page (columns you add, rename, reorder by drag, merge, delete, statuses per column, WIP limits; cards dragged between columns where the workflow allows and to rank; swimlanes; quick filters and assignee filter), the issue view (side panel and tab: every field editable in place, description in Markdown, sub-tasks / epic issues, links, attachments, time tracking with Log Work, comments, work log, history, sections and actions from other plugins), the Backlog (epics panel, version filter, ranked list with drag, multi-select bulk edit, quick create), Search (query with help and examples, saved filters, results as a list or a board, edit all), project settings tab (general, workflow editor with transition grid, statuses, issue types, priorities, resolutions, custom fields, components, versions, people, link types), New Board / Create Issue / Board Settings / Log Work / Bulk Edit dialogs, the Boards tool window, Settings → Board, actions (Board menu, Find Action, Welcome, Ctrl+Alt+I); extension points for Board.Scrum / Git / Reports / Timeline (pages, issue sections, issue actions, stores); saved filters in Core; a blank creator id gets a real one. Checked in a running DevHub (board, panel, backlog, search, settings, Create) and with Test-Plugins.ps1",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T17:27:00+00:00",
+  "resolved": "2026-10-13T17:27:00+00:00"
+}

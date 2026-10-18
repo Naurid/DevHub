@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "sgcx279p",
+  "key": "DEV-54",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Push without a remote offers Publish / Add remote; GitHub avatars",
+  "description": "Landed in:\n- DevHub `32018ce`: Push with no remote offers Publish to GitHub / Add remote by URL, then pushes; GitHub avatar in Settings and on your commits in All Commits (Avatar control, fetched without the token); Repositories tool window renamed Projects (tool-window action ids now come from the stable Id)\n- DevHub-Plugins `f678130`: Push with no remote offers Publish to GitHub / Add remote by URL, then pushes; GitHub avatar in Settings and on your commits in All Commits (Avatar control, fetched without the token); Repositories tool window renamed Projects (tool-window action ids now come from the stable Id)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "od7h3lvl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T19:28:00+00:00",
+  "resolved": "2026-10-10T19:28:00+00:00"
+}

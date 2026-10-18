@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ip2hbiab",
+  "key": "DEV-72",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M4: template browser, variable form, preview, generate",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub `e732013`: Templates M5: Templates tab (New Template, Edit, Use in New Project, Duplicate, Delete) and one editor tab per template (General, Variables, Base Command, Steps, Post-create, Files in content/, raw template.json; Save Ctrl+S, Revert, read-only built-ins with Duplicate); tabs can confirm closing; readable template.json output (tested)\n- DevHub-Plugins `fd86bd0`: Templates M5: Templates tab (New Template, Edit, Use in New Project, Duplicate, Delete) and one editor tab per template (General, Variables, Base Command, Steps, Post-create, Files in content/, raw template.json; Save Ctrl+S, Revert, read-only built-ins with Duplicate); tabs can confirm closing; readable template.json output (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T21:19:00+00:00",
+  "resolved": "2026-10-11T21:19:00+00:00"
+}

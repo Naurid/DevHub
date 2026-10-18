@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "uh1jqwrv",
+  "key": "DEV-103",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM1: DevHub.Sdk + DevHub.Sdk.Core as NuGet packages; local feed",
+  "description": "Landed in:\n- DevHub `3c2a44f`: PM1: the Sdk as NuGet packages — DevHub.Sdk + DevHub.Sdk.Core with DevHub's version (build/SdkPackage.props, XML docs, symbols, plugin API version as a tag and a buildTransitive plugin.json check), build/Pack-Sdk.ps1 (local feed with -local.<timestamp> versions), release.yml pushes to nuget.org with Trusted Publishing (NUGET_USER variable); plugin starter builds against the packages (Get-Sdk.ps1 removed)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T20:05:00+00:00",
+  "resolved": "2026-10-12T20:05:00+00:00"
+}

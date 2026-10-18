@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "d86k392u",
+  "key": "DEV-84",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "R2: release workflow: Velopack Setup.exe, .msi, portable zip, delta updates",
+  "description": "Landed in:\n- DevHub `03890c9`: R2: release workflow — on each push to main / major tag vN: full CI, then a self-contained publish, Velopack pack (Setup.exe, .msi, portable zip, full + delta update packages) and a GitHub Release \"release/<version>\" with notes; signing switches on with the SIGNING_* secrets; Velopack hooks in Program.Main",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:29:00+00:00",
+  "resolved": "2026-10-12T01:29:00+00:00"
+}

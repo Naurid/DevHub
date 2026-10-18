@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "kbn8n1qh",
+  "key": "DEV-208",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Diagrams with light fills are unreadable in the dark theme",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "qymz1ol3",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:48.4256584+00:00",
+      "body": "A shape's own fill kept the theme's text colour (near white in Dark). Now text contrasts with the fill. Feature/diagram-labels."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:48.1086111+00:00",
+  "updated": "2026-10-18T22:24:48.5294837+00:00"
+}

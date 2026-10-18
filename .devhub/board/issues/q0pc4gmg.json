@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "q0pc4gmg",
+  "key": "DEV-112",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM6b: the plugins use the new hooks; the test plugin probes them",
+  "description": "Landed in:\n- DevHub `fe604d0`: PM6: the test plugin exercises the Git hooks (IntegrationProbe: suggests DEV-7: from the branch, marks commits and branches, reports repository events in the status bar); roadmap: PM6 done (PM6b in DevHub-Plugins), PM7 next\n- DevHub-Plugins `fe725b0`: PM6b: plugins use the Sdk's new hooks — Git raises repository events (GitRepositoryClient.OperationCompleted after a successful commit, fetch, pull or push, tested with real git; branch changes from each tab's status refresh) and offers them as IRepositoryEvents; Git's commit box shows other plugins' message suggestions (Suggested… / Use, never put in unasked) and its commit list and branch tree show their marks (IGitDecorator, tone badges, links http(s) only); GitHub offers IGitHubApi (GitHubApi.SendRawAsync: any REST call, answers passed through with ETag, next page and rate limit; only ever to api.github.com, tested); Templates uses the Sdk's TreeDragDrop. Builds against the Sdk with PM6a (DevHub release first)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:54:00+00:00",
+  "resolved": "2026-10-12T21:54:00+00:00"
+}

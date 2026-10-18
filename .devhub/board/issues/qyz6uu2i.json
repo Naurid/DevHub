@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "qyz6uu2i",
+  "key": "DEV-99",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Packages per OS with Velopack",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "s7usd0l5",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:45:02+00:00",
+  "updated": "2026-10-12T01:45:02+00:00"
+}

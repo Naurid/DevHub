@@ -1,0 +1,5 @@
+{"at":"2026-10-12T01:01:02+00:00","who":"a4zn6iz9","field":"created","to":"DEV-90"}
+{"at":"2026-10-12T02:15:00+00:00","who":"a4zn6iz9","field":"assignee","to":"x74qtb63"}
+{"at":"2026-10-12T02:15:30+00:00","who":"x74qtb63","field":"status","from":"backlog","to":"inprogress"}
+{"at":"2026-10-12T02:19:00+00:00","who":"x74qtb63","field":"status","from":"inprogress","to":"done"}
+{"at":"2026-10-12T02:19:00+00:00","who":"x74qtb63","field":"resolution","to":"done"}

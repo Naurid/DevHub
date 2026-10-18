@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "zbhu1t90",
+  "key": "DEV-76",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Templates tool window (Alt+2)",
+  "description": "Landed in:\n- DevHub `362c80f`: Templates tool window on the left stripe (next to Projects): every template at hand; double-click / Use opens New Project or Add Files with it, Edit opens its editor; New Project, Add Files, New Template and Reload in the header\n- DevHub `617891d`: Templates M6: item templates — Add Files tab (Details → Preview → Done) from Projects, repository tabs, the Templates tab and File menu (IAddFilesFromTemplate hook); conflicts with Overwrite choices, moves/deletes of your files listed; Namespace pre-filled from .csproj / .asmdef / Unity project; starter items (C# class, interface, MonoBehaviour, ScriptableObject, Python module) (tested)\n- DevHub-Plugins `1b14f43`: Templates tool window on the left stripe (next to Projects): every template at hand; double-click / Use opens New Project or Add Files with it, Edit opens its editor; New Project, Add Files, New Template and Reload in the header\n- DevHub-Plugins `81598aa`: Templates M6: item templates — Add Files tab (Details → Preview → Done) from Projects, repository tabs, the Templates tab and File menu (IAddFilesFromTemplate hook); conflicts with Overwrite choices, moves/deletes of your files listed; Namespace pre-filled from .csproj / .asmdef / Unity project; starter items (C# class, interface, MonoBehaviour, ScriptableObject, Python module) (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T21:34:00+00:00",
+  "resolved": "2026-10-11T21:34:00+00:00"
+}

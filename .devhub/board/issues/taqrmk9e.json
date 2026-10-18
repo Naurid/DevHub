@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "taqrmk9e",
+  "key": "DEV-114",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Get-BundledPlugins read the whole index as one entry",
+  "description": "Landed in:\n- DevHub `4092ca1`: Fix Get-BundledPlugins: unroll the index (Invoke-RestMethod hands a JSON array over as one object, so a plugin's entry was the whole list and the release failed on its apiVersion); checked against the real index (the four 1.0.0 plugins) and in a Release build that loads them",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T22:19:00+00:00",
+  "resolved": "2026-10-12T22:19:00+00:00"
+}

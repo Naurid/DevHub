@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ey8iblms",
+  "key": "DEV-48",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G5: All Commits: graph, commit list, details, search, Load more",
+  "description": "Landed in:\n- DevHub `e812c22`: G5: All Commits: log parser + graph lane layout (tested), commit list with branch/tag badges, details with files + diffs, search, load more, reload when HEAD or branches move\n- DevHub-Plugins `c749f53`: G5: All Commits: log parser + graph lane layout (tested), commit list with branch/tag badges, details with files + diffs, search, load more, reload when HEAD or branches move",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T13:07:00+00:00",
+  "resolved": "2026-10-10T13:07:00+00:00"
+}

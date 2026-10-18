@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "thp4nllw",
+  "key": "DEV-179",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "L3: each assembly's translations first for its own text",
+  "description": "Landed in:\n- DevHub `d103104`: Responsive layout: SidePane and OverflowPanel, a title bar that shrinks, per-assembly translations",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ds9iukmw",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:02+00:00",
+  "updated": "2026-10-17T22:53:00+00:00",
+  "resolved": "2026-10-17T22:53:00+00:00"
+}

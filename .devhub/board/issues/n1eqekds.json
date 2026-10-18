@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "n1eqekds",
+  "key": "DEV-52",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G8: stashes, tags, cherry-pick / revert, blame, submodules",
+  "description": "Landed in:\n- DevHub `7b2a054`: G8 fixes: explain why stashing fails while a file is conflicted (tested); Git actions work from diff/blame tabs (act on their repository, bring its tab forward); blame Open in Editor from any blame (double-click / F4 / right-click)\n- DevHub-Plugins `2637686`: G8 fixes: explain why stashing fails while a file is conflicted (tested); Git actions work from diff/blame tabs (act on their repository, bring its tab forward); blame Open in Editor from any blame (double-click / F4 / right-click)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T18:38:00+00:00",
+  "resolved": "2026-10-10T18:38:00+00:00"
+}

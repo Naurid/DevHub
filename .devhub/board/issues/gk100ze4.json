@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "gk100ze4",
+  "key": "DEV-122",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "CI6: workflow files with GitHub's validation errors",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T03:00:02+00:00",
+  "updated": "2026-10-12T03:00:02+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "m7wtnqvt",
+  "key": "DEV-15",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Stage 0: CommandValidator",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "l7gm3q3h",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:34:02+00:00",
+  "updated": "2026-10-09T00:34:02+00:00"
+}

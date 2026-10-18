@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "f7xxqlsk",
+  "key": "DEV-8",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "A dark app-shell window with placeholder pages",
+  "description": "Landed in:\n- DevHub `7a713d2`: docs: record repository-workbench track and next milestone\n- DevHub `aa0ad7c`: Add language detection and configurable 'open with the right tool'\n- DevHub `2b9e5e3`: Add repository discovery (scan folders, list git repos)\n- DevHub `98d2eed`: Scaffold DevHub: Avalonia 12 / .NET 10 MVVM shell (M0)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "za86bdwz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:14:02+00:00",
+  "updated": "2026-10-09T00:39:00+00:00",
+  "resolved": "2026-10-09T00:39:00+00:00"
+}

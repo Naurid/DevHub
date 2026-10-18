@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "jlu4x3ki",
+  "key": "DEV-17",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Stage 0: command bar → confirmation → the same execution path",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "l7gm3q3h",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:34:02+00:00",
+  "updated": "2026-10-09T00:34:02+00:00"
+}

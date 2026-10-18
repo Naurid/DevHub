@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "lda47dzk",
+  "key": "DEV-137",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "CI: two Board.Git tests blocked instead of awaiting (xUnit1031)",
+  "description": "Landed in:\n- DevHub-Plugins `2ba4d7b`: Fix CI: two Board.Git tests awaited instead of blocking (xUnit1031 fails the Release build with -warnaserror)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T21:42:00+00:00",
+  "resolved": "2026-10-13T21:42:00+00:00"
+}

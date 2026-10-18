@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "vz1umivt",
+  "key": "DEV-198",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Class member forms, text colour everywhere, sliders, real icons",
+  "description": "Landed in:\n- DevHub-Plugins `ac4f445`: Diagrams: class member forms, lines inside packages selectable, text colour everywhere, sliders, real icons",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "fl8e83uq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T06:59:02+00:00",
+  "updated": "2026-10-18T14:08:00+00:00",
+  "resolved": "2026-10-18T14:08:00+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "pthbwjw0",
+  "key": "DEV-100",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Marketplace packages per OS",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "s7usd0l5",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:45:02+00:00",
+  "updated": "2026-10-12T01:45:02+00:00"
+}

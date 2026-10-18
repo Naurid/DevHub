@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "nfur8qxc",
+  "key": "DEV-31",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Fluent key mapping, ControlThemes, debug UI Gallery",
+  "description": "Landed in:\n- DevHub `3543002`: UI-0 step 2: Fluent key mapping, control styles, ThemeService, debug UI Gallery",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T18:35:00+00:00",
+  "resolved": "2026-10-09T18:35:00+00:00"
+}

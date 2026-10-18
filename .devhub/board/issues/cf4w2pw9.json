@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "cf4w2pw9",
+  "key": "DEV-91",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "RELEASING: the Dependency graph setting",
+  "description": "Landed in:\n- DevHub `947bfe0`: RELEASING: the Dependency graph setting (dependency review needs it)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T02:25:00+00:00",
+  "resolved": "2026-10-12T02:25:00+00:00"
+}

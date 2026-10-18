@@ -1,0 +1,659 @@
+{
+  "schemaVersion": 1,
+  "kind": "class",
+  "title": "Plugin contract: IPlugin, contributions, base classes",
+  "project": "../..",
+  "props": {},
+  "nodes": [
+    {
+      "id": "d49pu9",
+      "type": "package",
+      "x": 30,
+      "y": 40,
+      "width": 451,
+      "height": 463,
+      "rotation": 0,
+      "text": "DevHub.Plugins",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "2cmydw",
+      "type": "interface",
+      "x": 60,
+      "y": 90,
+      "width": 391,
+      "height": 108,
+      "rotation": 0,
+      "text": "IPlugin",
+      "parentId": "d49pu9",
+      "props": {
+        "attributes": "+ Info : PluginInfo\n+ Resources : IEnumerable<Uri>",
+        "operations": "+ ConfigureServices(services, context : PluginContext)",
+        "showAttributes": "true",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "ub9ntb",
+      "type": "class",
+      "x": 60,
+      "y": 270,
+      "width": 281,
+      "height": 85,
+      "rotation": 0,
+      "text": "PluginContext",
+      "parentId": "d49pu9",
+      "props": {
+        "attributes": "+ Settings : ISettingsStore\n+ LoadedPlugins : IReadOnlySet<string>",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "stereotype": "record"
+      }
+    },
+    {
+      "id": "kmy4je",
+      "type": "class",
+      "x": 60,
+      "y": 420,
+      "width": 190,
+      "height": 53,
+      "rotation": 0,
+      "text": "DevHubPluginAttribute",
+      "parentId": "d49pu9",
+      "props": {
+        "attributes": "+ PluginType : Type",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false"
+      }
+    },
+    {
+      "id": "sef4sx",
+      "type": "package",
+      "x": 570,
+      "y": 40,
+      "width": 313,
+      "height": 558,
+      "rotation": 0,
+      "text": "DevHub.Sdk.Core",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "hqfz42",
+      "type": "class",
+      "x": 600,
+      "y": 90,
+      "width": 253,
+      "height": 187,
+      "rotation": 0,
+      "text": "PluginInfo",
+      "parentId": "sef4sx",
+      "props": {
+        "attributes": "+ Id : string\n+ Name : string\n+ Description : string\n+ Requires : IReadOnlyList<string>\n+ Category : string = \"General\"\n+ Version : string = \"1.0\"\n+ Order : int = 1000\n+ Presets : IReadOnlyList<string>",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "stereotype": "record"
+      }
+    },
+    {
+      "id": "985gxd",
+      "type": "interface",
+      "x": 600,
+      "y": 360,
+      "width": 225,
+      "height": 85,
+      "rotation": 0,
+      "text": "ISettingsStore",
+      "parentId": "sef4sx",
+      "props": {
+        "attributes": "",
+        "operations": "+ Load() : AppSettings\n+ Save(settings : AppSettings)",
+        "showAttributes": "false",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "5n4sd9",
+      "type": "interface",
+      "x": 600,
+      "y": 500,
+      "width": 205,
+      "height": 68,
+      "rotation": 0,
+      "text": "ISettingsSection",
+      "parentId": "sef4sx",
+      "props": {
+        "attributes": "+ static SectionId : string",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false"
+      }
+    },
+    {
+      "id": "98umqd",
+      "type": "package",
+      "x": 1010,
+      "y": 40,
+      "width": 737,
+      "height": 343,
+      "rotation": 0,
+      "text": "DevHub.Actions",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "df9i2v",
+      "type": "class",
+      "x": 1040,
+      "y": 90,
+      "width": 177,
+      "height": 223,
+      "rotation": 0,
+      "text": "AppAction",
+      "parentId": "98umqd",
+      "props": {
+        "attributes": "+ Id : string\n+ Text : string\n+ Command : ICommand\n+ Category : string?\n+ IconKind : string?\n+ Description : string?\n+ Gesture : string?\n+ Menu : string?\n+ MenuOrder : int\n+ ToolbarOrder : int?\n+ WelcomeOrder : int?",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false"
+      }
+    },
+    {
+      "id": "imqmhw",
+      "type": "interface",
+      "x": 1360,
+      "y": 90,
+      "width": 288,
+      "height": 68,
+      "rotation": 0,
+      "text": "IActionProvider",
+      "parentId": "98umqd",
+      "props": {
+        "attributes": "",
+        "operations": "+ GetActions() : IEnumerable<AppAction>",
+        "showAttributes": "false",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "9p8k8j",
+      "type": "class",
+      "x": 1360,
+      "y": 260,
+      "width": 357,
+      "height": 93,
+      "rotation": 0,
+      "text": "ActionRegistry",
+      "parentId": "98umqd",
+      "props": {
+        "attributes": "+ All : IReadOnlyList<AppAction>",
+        "operations": "+ Get(id : string) : AppAction\n+ TryGet(id : string, action : AppAction?) : bool",
+        "showAttributes": "true",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "2br2ui",
+      "type": "package",
+      "x": 30,
+      "y": 670,
+      "width": 1786,
+      "height": 868,
+      "rotation": 0,
+      "text": "DevHub.ViewModels",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "fkjmmg",
+      "type": "class",
+      "x": 860,
+      "y": 720,
+      "width": 127,
+      "height": 41,
+      "rotation": 0,
+      "text": "ViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "jt6fxe",
+      "type": "class",
+      "x": 60,
+      "y": 900,
+      "width": 281,
+      "height": 212,
+      "rotation": 0,
+      "text": "DocumentViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Id : string\n+ abstract Title : string\n+ abstract Icon : string\n+ FillsEditorArea : bool\n+ ContextPath : string?\n+ Navigation : DocumentNavigation\n+ IsDirty : bool\n+ IsActive : bool",
+        "operations": "+ ConfirmCloseAsync() : Task<bool>\n# OnActivationChanged(isActive : bool)",
+        "showAttributes": "true",
+        "showOperations": "true",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "jhs7xb",
+      "type": "class",
+      "x": 440,
+      "y": 900,
+      "width": 239,
+      "height": 155,
+      "rotation": 0,
+      "text": "ToolWindowViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ abstract Id : string\n+ abstract Title : string\n+ abstract IconKind : string\n+ abstract Slot : ToolWindowSlot\n+ Order : int = 100\n+ WelcomeOrder : int?\n+ IsOpen : bool",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "v6g3uu",
+      "type": "class",
+      "x": 820,
+      "y": 900,
+      "width": 253,
+      "height": 144,
+      "rotation": 0,
+      "text": "DialogViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ abstract Title : string\n+ OkText : string\n+ IsDestructive : bool\n+ ShowCancel : bool\n+ ShowApply : bool",
+        "operations": "# ApplyChangesAsync() : Task<bool>",
+        "showAttributes": "true",
+        "showOperations": "true",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "8tj24k",
+      "type": "class",
+      "x": 1180,
+      "y": 900,
+      "width": 222,
+      "height": 144,
+      "rotation": 0,
+      "text": "SettingsPageViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ abstract Title : string\n+ Keywords : string\n+ Order : int = 500\n+ IsModified : bool",
+        "operations": "+ abstract Apply()\n# MarkModified()",
+        "showAttributes": "true",
+        "showOperations": "true",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "hefrsn",
+      "type": "class",
+      "x": 1540,
+      "y": 900,
+      "width": 238,
+      "height": 53,
+      "rotation": 0,
+      "text": "TitleBarWidgetViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Order : int",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "xbr2k2",
+      "type": "class",
+      "x": 1540,
+      "y": 1010,
+      "width": 246,
+      "height": 53,
+      "rotation": 0,
+      "text": "StatusBarWidgetViewModelBase",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Order : int",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "abstract": "true"
+      }
+    },
+    {
+      "id": "2aih6u",
+      "type": "class",
+      "x": 60,
+      "y": 1200,
+      "width": 167,
+      "height": 136,
+      "rotation": 0,
+      "text": "DocumentNavigation",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Text : string?\n+ Gesture : string?\n+ Menu : string?\n+ MenuOrder : int\n+ WelcomeOrder : int?",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false",
+        "stereotype": "record"
+      }
+    },
+    {
+      "id": "a4xkqd",
+      "type": "interface",
+      "x": 60,
+      "y": 1400,
+      "width": 336,
+      "height": 91,
+      "rotation": 0,
+      "text": "IDocumentFactory",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ IdPrefix : string",
+        "operations": "+ Create(id : string) : DocumentViewModelBase?",
+        "showAttributes": "true",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "kete64",
+      "type": "interface",
+      "x": 460,
+      "y": 1400,
+      "width": 391,
+      "height": 108,
+      "rotation": 0,
+      "text": "IDocumentService",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Active : DocumentViewModelBase?\n+ OpenDocuments : IReadOnlyList<DocumentViewModelBase>",
+        "operations": "+ OpenById(id : string) : bool",
+        "showAttributes": "true",
+        "showOperations": "true"
+      }
+    },
+    {
+      "id": "4u95gv",
+      "type": "enumeration",
+      "x": 480,
+      "y": 1200,
+      "width": 135,
+      "height": 102,
+      "rotation": 0,
+      "text": "ToolWindowSlot",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "Left\nRight\nBottom",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false"
+      }
+    },
+    {
+      "id": "y6ir27",
+      "type": "class",
+      "x": 820,
+      "y": 1200,
+      "width": 232,
+      "height": 87,
+      "rotation": 0,
+      "text": "ConfirmDialogViewModel",
+      "parentId": "2br2ui",
+      "props": {
+        "attributes": "+ Message : string\n+ Items : IReadOnlyList<string>\n+ IsDestructive : bool",
+        "operations": "",
+        "showAttributes": "true",
+        "showOperations": "false"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "qu9qj9",
+      "type": "association",
+      "from": "2cmydw",
+      "to": "hqfz42",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "1",
+        "toRole": "Info"
+      }
+    },
+    {
+      "id": "9nv2y7",
+      "type": "dependency",
+      "from": "2cmydw",
+      "to": "ub9ntb",
+      "text": "ConfigureServices",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "d3c6v8",
+      "type": "dependency",
+      "from": "kmy4je",
+      "to": "2cmydw",
+      "text": "names the plugin type",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "3mqhsj",
+      "type": "association",
+      "from": "ub9ntb",
+      "to": "985gxd",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "1"
+      }
+    },
+    {
+      "id": "wd83vu",
+      "type": "dependency",
+      "from": "985gxd",
+      "to": "5n4sd9",
+      "text": "LoadSection<T> / UpdateSection<T>",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "67g26d",
+      "type": "dependency",
+      "from": "imqmhw",
+      "to": "df9i2v",
+      "text": "creates",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "98d98d",
+      "type": "association",
+      "from": "9p8k8j",
+      "to": "df9i2v",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "*"
+      }
+    },
+    {
+      "id": "kcs94y",
+      "type": "dependency",
+      "from": "9p8k8j",
+      "to": "imqmhw",
+      "text": "collects every one",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "6ecevb",
+      "type": "generalization",
+      "from": "jt6fxe",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "2765tx",
+      "type": "generalization",
+      "from": "jhs7xb",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "bbwepv",
+      "type": "generalization",
+      "from": "v6g3uu",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "xqte3j",
+      "type": "generalization",
+      "from": "8tj24k",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "h77yis",
+      "type": "generalization",
+      "from": "hefrsn",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "yauwhe",
+      "type": "generalization",
+      "from": "xbr2k2",
+      "to": "fkjmmg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "x47ras",
+      "type": "generalization",
+      "from": "y6ir27",
+      "to": "v6g3uu",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "kn65as",
+      "type": "association",
+      "from": "jt6fxe",
+      "to": "2aih6u",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "1"
+      }
+    },
+    {
+      "id": "9nitzc",
+      "type": "association",
+      "from": "jhs7xb",
+      "to": "4u95gv",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "1"
+      }
+    },
+    {
+      "id": "vp4xia",
+      "type": "dependency",
+      "from": "a4xkqd",
+      "to": "jt6fxe",
+      "text": "creates",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "wse87y",
+      "type": "association",
+      "from": "kete64",
+      "to": "jt6fxe",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {
+        "navigable": "true",
+        "toMultiplicity": "*",
+        "toRole": "OpenDocuments"
+      }
+    }
+  ],
+  "bounds": {
+    "x": 30,
+    "y": 40,
+    "width": 1786,
+    "height": 1498,
+    "left": 30,
+    "top": 40,
+    "right": 1816,
+    "bottom": 1538,
+    "center": {
+      "x": 923,
+      "y": 789,
+      "length": 1214.2693276205243
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "t7dom3rc",
+  "key": "DEV-202",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Architecture diagrams of DevHub (docs/diagrams, 5)",
+  "description": "Package, component, class, activity and deployment diagrams, built with the Diagrams plugins' models and checked by their rules.",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kn4slr8a",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T20:13:40.2981645+00:00",
+  "updated": "2026-10-18T20:54:05.2333998+00:00"
+}

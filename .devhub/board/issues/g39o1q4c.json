@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "g39o1q4c",
+  "key": "DEV-166",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Dark theme: edges between areas don't show (Color.Border)",
+  "description": "Landed in:\n- DevHub `8b809d9`: Dark theme: Color.Border lighter than the backgrounds, so the edges between areas show",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-17T17:48:00+00:00",
+  "resolved": "2026-10-17T17:48:00+00:00"
+}

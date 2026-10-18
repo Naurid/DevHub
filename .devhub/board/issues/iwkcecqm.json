@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "id": "iwkcecqm",
+  "key": "DEV-101",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "PM — Plugins in DevHub-Plugins, the Sdk on NuGet",
+  "description": "DevHub keeps the shell and the Sdk; every plugin moves with its history.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-12",
+  "due": "2026-10-13",
+  "rank": "zzzzzzzzzzzzzzzzzzzzi",
+  "links": [
+    {
+      "type": "blocks",
+      "target": "y9vd49st"
+    },
+    {
+      "type": "blocks",
+      "target": "e2uk7sg0"
+    },
+    {
+      "type": "blocks",
+      "target": "fl8e83uq"
+    }
+  ],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:00+00:00",
+  "updated": "2026-10-18T06:59:05+00:00",
+  "resolved": "2026-10-12T22:20:00+00:00"
+}

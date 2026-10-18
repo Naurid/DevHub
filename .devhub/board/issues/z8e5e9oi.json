@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "z8e5e9oi",
+  "key": "DEV-111",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM6a: shared Sdk pieces: Git hooks, IGitHubApi, Markdown, charts, people picker, drag and drop",
+  "description": "Landed in:\n- DevHub `77e5277`: PM6a: shared pieces for plugins in the Sdk — contracts IRepositoryEvents, ICommitMessageSuggester, IGitDecorator (Integration/GitIntegration.cs) and IGitHubApi (no token handed out); Sdk.Core Markdown parser, ChartData/ChartMath, Person/PeopleSearch, ListMoves (68 new tests); controls MarkdownView (safe links only), LineChart/BarChart/PieChart (Brush.Chart.1-6 tokens, legend, tooltips), ItemsDragDrop (boards: nested lists, insertion line), TreeDragDrop moved from Templates, PeoplePicker; all in the UI Gallery (checked in Light and Dark, drag and picker driven by input); docs (PLUGINS §6, UI_GUIDE components and gotchas)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:44:00+00:00",
+  "resolved": "2026-10-12T21:44:00+00:00"
+}

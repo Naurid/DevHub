@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "c2ia9vga",
+  "key": "DEV-106",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM2b: one copy of each plugin DLL; Sdk assembly version = plugin API",
+  "description": "Landed in:\n- DevHub `3292a1c`: PM2b: one copy of each plugin DLL — Pack-Plugin.ps1 leaves out the DLLs of required plugins from this repo; marketplace folders load requirements first (PluginResolver.RequirementsFirst, tested), so the required plugin's own DLLs win; Sdk assembly version = plugin API version (N.0.0.0), so plugins built against a newer Sdk load in an older DevHub and in dev builds",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T20:42:00+00:00",
+  "resolved": "2026-10-12T20:42:00+00:00"
+}

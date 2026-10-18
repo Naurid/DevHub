@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ciejm8dc",
+  "key": "DEV-153",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Drag and drop shows the dragged item",
+  "description": "Landed in:\n- DevHub `03fa9a3`: Drag and drop: the dragged item follows the pointer (a tilted copy drawn live with a VisualBrush) and stays faded in its place until the drop, in every ItemsDragDrop list (board cards, backlog, sprints, columns)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T12:43:00+00:00",
+  "resolved": "2026-10-17T12:43:00+00:00"
+}

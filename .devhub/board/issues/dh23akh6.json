@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "dh23akh6",
+  "key": "DEV-163",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Roadmap and BOARD_PLAN: status of the Scrum project work",
+  "description": "Landed in:\n- DevHub `2e62ccb`: Roadmap: BS (Board for Scrum projects) done: criteria and Definition of Done, capacity and retrospectives, Sdk charts and export, forecasts and KPIs, risks, the chart maker\n- DevHub-Plugins `185fc43`: BOARD_PLAN: status of the Scrum project work (criteria, Definition of Done, capacity, retrospectives, forecasts, KPIs, risks)\n- DevHub-Plugins `8707c72`: Charts: the chart maker plugin, and Open in Chart Maker from reports",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:30:00+00:00",
+  "resolved": "2026-10-17T16:30:00+00:00"
+}

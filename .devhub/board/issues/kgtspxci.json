@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "kgtspxci",
+  "key": "DEV-161",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "IChartMaker hook",
+  "description": "Landed in:\n- DevHub `9172957`: Sdk: IChartMaker (Integration): open a chart's data in the Charts plugin's chart maker, when it's on",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:23:00+00:00",
+  "resolved": "2026-10-17T16:23:00+00:00"
+}

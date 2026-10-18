@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "i3ugvok7",
+  "key": "DEV-81",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "CI: built-in templates checked out with CRLF broke a test",
+  "description": "Landed in:\n- DevHub `8c9147a`: CI fix: built-in templates checked out byte for byte (.gitattributes -text; CI's CRLF checkout broke a test), the test compares with normalised line endings; major tags may be written vN, vN.0 or vN.0.0\n- DevHub-Plugins `6df9933`: CI fix: built-in templates checked out byte for byte (.gitattributes -text; CI's CRLF checkout broke a test), the test compares with normalised line endings; major tags may be written vN, vN.0 or vN.0.0",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-12T02:00:00+00:00",
+  "resolved": "2026-10-12T02:00:00+00:00"
+}

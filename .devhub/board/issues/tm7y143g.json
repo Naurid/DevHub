@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "tm7y143g",
+  "key": "DEV-56",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Branch folder icons; Open Terminal (Alt+F12)",
+  "description": "Landed in:\n- DevHub `03c2cb0`: Sidebar branch folders get a folder icon; Open Terminal (header button, Git menu, Alt+F12): Git Bash in the repository, else Windows Terminal / PowerShell (choice tested)\n- DevHub-Plugins `39c9bd2`: Sidebar branch folders get a folder icon; Open Terminal (header button, Git menu, Alt+F12): Git Bash in the repository, else Windows Terminal / PowerShell (choice tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T21:03:00+00:00",
+  "resolved": "2026-10-10T21:03:00+00:00"
+}

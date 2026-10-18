@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "fgpup04e",
+  "key": "DEV-167",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Update All in the plugin marketplace",
+  "description": "Landed in:\n- DevHub `eed7532`: Update All in the plugin marketplace; curved chart lines",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-18T02:06:00+00:00",
+  "resolved": "2026-10-18T02:06:00+00:00"
+}

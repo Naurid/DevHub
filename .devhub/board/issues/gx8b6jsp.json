@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "gx8b6jsp",
+  "key": "DEV-159",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Heatmaps in traffic colors (risk matrices)",
+  "description": "Landed in:\n- DevHub `1a5b900`: Charts: ChartData.TrafficColors (a heatmap in green, amber, red: risk matrices, also in images)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:18:00+00:00",
+  "resolved": "2026-10-17T16:18:00+00:00"
+}

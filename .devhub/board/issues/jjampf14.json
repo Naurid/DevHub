@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "jjampf14",
+  "key": "DEV-151",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Date pickers highlight today",
+  "description": "Landed in:\n- DevHub `961c753`: Date pickers highlight today: CalendarDatePicker.IsTodayHighlighted on in the theme",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T11:57:00+00:00",
+  "resolved": "2026-10-17T11:57:00+00:00"
+}

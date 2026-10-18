@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "id": "oig99eqe",
+  "key": "DEV-74",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "In-app text editor for content files",
+  "description": "M5 chose external editors for now.",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "u5rqwsbm",
+      "author": "a4zn6iz9",
+      "created": "2026-10-11T19:23:03+00:00",
+      "body": "Deferred on purpose (the roadmap keeps it open for later)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T19:23:03+00:00"
+}

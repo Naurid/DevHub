@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "ork6huwt",
+  "key": "DEV-214",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Architecture diagrams: tints that read in both themes",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "r1fefrsr",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:51.3680884+00:00",
+      "body": "Regenerated on the Docs branches: see-through fills, no fixed text colour."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:51.0811299+00:00",
+  "updated": "2026-10-18T22:24:51.4598598+00:00"
+}

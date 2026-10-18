@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "qh5znryq",
+  "key": "DEV-41",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "G — Integrated Git client",
+  "description": "A Fork-style Git client with JetBrains integration, one tab per repository (docs/GIT_CLIENT_PLAN.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-09",
+  "due": "2026-10-11",
+  "rank": "zzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:00+00:00",
+  "updated": "2026-10-11T15:18:00+00:00",
+  "resolved": "2026-10-11T15:18:00+00:00"
+}

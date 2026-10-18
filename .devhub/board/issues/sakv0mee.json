@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "sakv0mee",
+  "key": "DEV-162",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "BS6: Charts plugin: the chart maker; Open in Chart Maker from reports",
+  "description": "Landed in:\n- DevHub-Plugins `8707c72`: Charts: the chart maker plugin, and Open in Chart Maker from reports",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "x8jn9sks"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:29:00+00:00",
+  "resolved": "2026-10-17T16:29:00+00:00"
+}

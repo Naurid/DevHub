@@ -1,0 +1,7 @@
+{"at":"2026-10-11T19:23:00+00:00","who":"a4zn6iz9","field":"created","to":"DEV-67"}
+{"at":"2026-10-11T19:23:01+00:00","who":"a4zn6iz9","field":"start","to":"2026-10-11"}
+{"at":"2026-10-11T19:23:01+00:00","who":"a4zn6iz9","field":"due","to":"2026-10-12"}
+{"at":"2026-10-11T19:23:05+00:00","who":"a4zn6iz9","field":"link","to":"blocks<:voy24ocz"}
+{"at":"2026-10-11T19:28:00+00:00","who":"a4zn6iz9","field":"status","from":"backlog","to":"inprogress"}
+{"at":"2026-10-12T02:01:00+00:00","who":"a4zn6iz9","field":"status","from":"inprogress","to":"done"}
+{"at":"2026-10-12T02:01:00+00:00","who":"a4zn6iz9","field":"resolution","to":"done"}

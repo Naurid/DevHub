@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "sx3i3ogf",
+  "key": "DEV-169",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Trees fit their panel; long names end in \"…\"",
+  "description": "Landed in:\n- DevHub `48ebdac`: Trees fit their panel by default\n- DevHub-Plugins `be11aac`: Templates browser: drop the duplicated scroll setting (it already had it)\n- DevHub-Plugins `4c2896e`: Side trees fit their panel: fold arrows stay in view, long names end in \"…\"",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-18T13:13:00+00:00",
+  "resolved": "2026-10-18T13:13:00+00:00"
+}

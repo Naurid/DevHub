@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "l5kmdjeu",
+  "key": "DEV-131",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B7: Board.Scrum: sprints, capacity, points",
+  "description": "Landed in:\n- DevHub-Plugins `9ee7d3f`: B7: Board.Scrum — sprint rules in Board.Core (create, edit with dates and capacity, start with a record of what was committed, complete with what was finished and unfinished issues moved to the backlog / a planned sprint / a new one, delete future sprints, reorder, PlanIssue = sprint + rank; one sprint runs at a time; 8 tests) and the Board.Scrum plugin (requires Board): sprint planning replaces the Backlog on Scrum boards (a list per open sprint with dates, goal, points against capacity, Start / Complete / Edit / Delete / Up / Down; drag issues between sprints and the backlog), Start / Edit / Complete Sprint dialogs, Create Sprint and Sprint Planning actions. Board: pages replaced per board kind (and rebuilt when a board switches between Scrum and Kanban), header buttons for lists and planning pages, rows open the issue panel on a tap (a drag never taps, so the lists don't move under it), flat section headers. Checked in a running DevHub: create a sprint, drag an issue into it, start it, the Scrum board shows it",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T17:38:00+00:00",
+  "resolved": "2026-10-13T17:38:00+00:00"
+}

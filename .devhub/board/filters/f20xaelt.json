@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "id": "f20xaelt",
+  "name": "Bugs fixed",
+  "query": "type = bug AND statusCategory = Done ORDER BY resolved DESC",
+  "owner": "a4zn6iz9"
+}

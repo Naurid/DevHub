@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "vihh84ut",
+  "key": "DEV-32",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Icon control and the first vendored icons (Apache-2.0 NOTICE)",
+  "description": "Landed in:\n- DevHub `9938e19`: UI-0 step 3: Icon control, 28 vendored JetBrains expui icons (Apache-2.0 NOTICE)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T18:42:00+00:00",
+  "resolved": "2026-10-09T18:42:00+00:00"
+}

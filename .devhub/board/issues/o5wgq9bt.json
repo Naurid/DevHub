@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "o5wgq9bt",
+  "key": "DEV-142",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "CI: the epic undo test blocked instead of awaiting (xUnit1031)",
+  "description": "Landed in:\n- DevHub-Plugins `7bb4dd2`: Fix CI: the epic undo test awaits instead of blocking (xUnit1031 fails the Release build with -warnaserror)\n- DevHub-Plugins `74e4a90`: Fix CI: the epic undo test awaits instead of blocking (xUnit1031 fails the Release build with -warnaserror)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-17T12:14:00+00:00",
+  "resolved": "2026-10-17T12:14:00+00:00"
+}

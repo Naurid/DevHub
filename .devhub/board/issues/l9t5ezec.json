@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "l9t5ezec",
+  "key": "DEV-87",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "R5: plugins repo starter (HelloWorld, per-plugin versions, publish workflow)",
+  "description": "Landed in:\n- DevHub `08b6c50`: R5: plugins repo starter (tools/plugin-repo: HelloWorld sample, per-plugin versions from git with <id>/vN major tags, pack/publish scripts, CI + publish workflows, index on an 'index' release); DevHub releases attach DevHub-Sdk-<version>.zip; marketplace verified end to end; stripe buttons get accessible names",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:49:00+00:00",
+  "resolved": "2026-10-12T01:49:00+00:00"
+}

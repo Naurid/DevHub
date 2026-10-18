@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "id": "qio8g0j4",
+  "name": "By milestone",
+  "kind": "Kanban",
+  "columns": [
+    {
+      "id": "s7uwv1cr",
+      "name": "Backlog",
+      "statuses": [
+        "backlog"
+      ]
+    },
+    {
+      "id": "qcj6cm6j",
+      "name": "Selected for Development",
+      "statuses": [
+        "selected"
+      ]
+    },
+    {
+      "id": "mtsnqo9p",
+      "name": "In Progress",
+      "statuses": [
+        "inprogress"
+      ]
+    },
+    {
+      "id": "oi9ke01f",
+      "name": "In Review",
+      "statuses": [
+        "inreview"
+      ]
+    },
+    {
+      "id": "pzgme9eq",
+      "name": "Done",
+      "statuses": [
+        "done"
+      ]
+    }
+  ],
+  "filter": "",
+  "hideSubtasks": false,
+  "hideEpics": true,
+  "swimlanes": "Epic",
+  "quickFilters": [
+    {
+      "id": "jr88mcid",
+      "name": "Only my issues",
+      "query": "assignee = currentUser()"
+    },
+    {
+      "id": "vx607zcg",
+      "name": "Recently updated",
+      "query": "updated >= -1d"
+    }
+  ],
+  "cardFields": [
+    "assignee",
+    "labels"
+  ]
+}

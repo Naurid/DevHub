@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "zbvfa1dr",
+  "key": "DEV-139",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Boards tool window on the left stripe with Projects and Templates",
+  "description": "Landed in:\n- DevHub-Plugins `507cf4a`: Board: the Boards tool window docks on the left stripe with Projects and Templates (was alone on the right)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-17T11:14:00+00:00",
+  "resolved": "2026-10-17T11:14:00+00:00"
+}

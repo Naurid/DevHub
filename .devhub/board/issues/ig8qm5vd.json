@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ig8qm5vd",
+  "key": "DEV-172",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Fix merges bump the patch number (DevHub and plugin versions)",
+  "description": "Landed in:\n- DevHub `7886b8d`: Fix merges bump the patch number; Committed covers outside commits\n- DevHub-Plugins `ec4476a`: Plugin versions: fix merges bump the patch number\n- DevHub-Plugins `9ed0d02`: Smart commits work for commits made outside DevHub\n- DevHub-Plugins `cf874ec`: Board: releasing a board never blocks the UI thread",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-18T19:45:00+00:00",
+  "resolved": "2026-10-18T19:45:00+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "rqziowmu",
+  "key": "DEV-28",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "UI-0 — JetBrains-style front end",
+  "description": "Rider New UI look: tokens, components, actions, IDE shell (docs/UI_GUIDE.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-09",
+  "due": "2026-10-09",
+  "rank": "zzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:00+00:00",
+  "updated": "2026-10-09T20:30:00+00:00",
+  "resolved": "2026-10-09T20:30:00+00:00"
+}

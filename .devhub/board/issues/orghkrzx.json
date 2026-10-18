@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "orghkrzx",
+  "key": "DEV-173",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Icons on accent buttons aren't white like the text",
+  "description": "Landed in:\n- DevHub `51ca799`: Icons on accent buttons are white, like the button's text",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-18T19:55:00+00:00",
+  "resolved": "2026-10-18T19:55:00+00:00"
+}

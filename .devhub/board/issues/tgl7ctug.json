@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "tgl7ctug",
+  "key": "DEV-38",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Dialog framework and the Settings dialog (Ctrl+Alt+S)",
+  "description": "Landed in:\n- DevHub `05669d7`: Add modular settings dialog with Appearance and Open With pages",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T20:14:00+00:00",
+  "resolved": "2026-10-09T20:14:00+00:00"
+}

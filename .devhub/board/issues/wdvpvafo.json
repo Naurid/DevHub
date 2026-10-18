@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "wdvpvafo",
+  "key": "DEV-116",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "CI0: plan: API calls and scopes, polling with ETags, confirmed actions",
+  "description": "",
+  "status": "selected",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T03:00:02+00:00",
+  "updated": "2026-10-12T03:00:02+00:00"
+}

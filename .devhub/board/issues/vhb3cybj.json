@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "vhb3cybj",
+  "key": "DEV-90",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "CI: skip dependency review and CodeQL while the repository is private",
+  "description": "Landed in:\n- DevHub `65f13fa`: CI: dependency review and CodeQL are skipped while the repository is private (both need a public repo or GitHub Advanced Security)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T02:19:00+00:00",
+  "resolved": "2026-10-12T02:19:00+00:00"
+}

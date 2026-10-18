@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "p1ii4qc2",
+  "key": "DEV-125",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B1: core model and the folder store",
+  "description": "Landed in:\n- DevHub-Plugins `9f3d507`: B1: Board Core — model (issues with types, statuses, priorities, people, labels, components, fix versions, story points, time tracking, links, comments, attachments, custom fields; workflows; board definitions; versions), JSON files with stable bytes and kept unknown fields, LexoRank-style ranks, Jira-style durations, IBoardStore + the folder store (lock, temp-file rename, compare-and-swap on .version, outside changes), BoardSnapshot, operations as plain argument objects with a change log per issue (IssueFields: one place for every field's rules), BoardSession (write queue, retry after a conflict, reload, undo), BoardSettings; 113 tests",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T16:24:00+00:00",
+  "resolved": "2026-10-13T16:24:00+00:00"
+}

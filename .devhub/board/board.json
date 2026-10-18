@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "key": "DEV",
+  "name": "DevHub",
+  "nextNumber": 215,
+  "issueTypes": [
+    {
+      "id": "epic",
+      "name": "Epic",
+      "level": "Epic",
+      "icon": "epic"
+    },
+    {
+      "id": "story",
+      "name": "Story",
+      "level": "Standard",
+      "icon": "story"
+    },
+    {
+      "id": "task",
+      "name": "Task",
+      "level": "Standard",
+      "icon": "task"
+    },
+    {
+      "id": "bug",
+      "name": "Bug",
+      "level": "Standard",
+      "icon": "bug"
+    },
+    {
+      "id": "subtask",
+      "name": "Sub-task",
+      "level": "Subtask",
+      "icon": "subtask"
+    }
+  ],
+  "statuses": [
+    {
+      "id": "backlog",
+      "name": "Backlog",
+      "category": "ToDo"
+    },
+    {
+      "id": "selected",
+      "name": "Selected for Development",
+      "category": "ToDo"
+    },
+    {
+      "id": "inprogress",
+      "name": "In Progress",
+      "category": "InProgress"
+    },
+    {
+      "id": "done",
+      "name": "Done",
+      "category": "Done"
+    },
+    {
+      "id": "inreview",
+      "name": "In Review",
+      "category": "InProgress"
+    }
+  ],
+  "priorities": [
+    {
+      "id": "highest",
+      "name": "Highest",
+      "icon": "highest"
+    },
+    {
+      "id": "high",
+      "name": "High",
+      "icon": "high"
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "icon": "medium"
+    },
+    {
+      "id": "low",
+      "name": "Low",
+      "icon": "low"
+    },
+    {
+      "id": "lowest",
+      "name": "Lowest",
+      "icon": "lowest"
+    }
+  ],
+  "resolutions": [
+    {
+      "id": "done",
+      "name": "Done"
+    },
+    {
+      "id": "wontdo",
+      "name": "Won't Do"
+    },
+    {
+      "id": "duplicate",
+      "name": "Duplicate"
+    },
+    {
+      "id": "cannotreproduce",
+      "name": "Cannot Reproduce"
+    }
+  ],
+  "linkTypes": [
+    {
+      "id": "blocks",
+      "outward": "blocks",
+      "inward": "is blocked by"
+    },
+    {
+      "id": "relates",
+      "outward": "relates to",
+      "inward": "relates to"
+    },
+    {
+      "id": "duplicates",
+      "outward": "duplicates",
+      "inward": "is duplicated by"
+    },
+    {
+      "id": "clones",
+      "outward": "clones",
+      "inward": "is cloned by"
+    }
+  ],
+  "customFields": [],
+  "components": [
+    {
+      "id": "n3jqugxr",
+      "name": "Shell",
+      "description": "DevHub.App: window, tabs, tool windows, menus, Settings, Find Action, PluginHost"
+    },
+    {
+      "id": "w92hgkri",
+      "name": "Sdk",
+      "description": "DevHub.Sdk and DevHub.Sdk.Core: what plugins build on"
+    },
+    {
+      "id": "bnioxhnk",
+      "name": "Projects",
+      "description": "The Projects plugin"
+    },
+    {
+      "id": "qz4j52fl",
+      "name": "Git",
+      "description": "The Git plugin"
+    },
+    {
+      "id": "od7h3lvl",
+      "name": "GitHub",
+      "description": "The GitHub plugin"
+    },
+    {
+      "id": "de5k4fpd",
+      "name": "Templates",
+      "description": "The Templates plugin"
+    },
+    {
+      "id": "qs7oheu1",
+      "name": "Board",
+      "description": "Board and its plugins (Scrum, Git, Reports, Timeline, Risks)"
+    },
+    {
+      "id": "e84dsqz9",
+      "name": "Diagrams",
+      "description": "Diagrams and its kinds (UML, Database, Business, Mood Boards)"
+    },
+    {
+      "id": "x8jn9sks",
+      "name": "Charts",
+      "description": "The Charts plugin"
+    },
+    {
+      "id": "vra1t0xw",
+      "name": "Build and release",
+      "description": "CI, releases, versions, the marketplace pipeline"
+    },
+    {
+      "id": "gz01rcbc",
+      "name": "Docs",
+      "description": "README, CLAUDE.md, docs/"
+    },
+    {
+      "id": "bpd6ghqf",
+      "name": "Localization",
+      "description": "English and French"
+    }
+  ],
+  "people": [
+    {
+      "id": "a4zn6iz9",
+      "name": "Gabor Vilics",
+      "email": "vilics@hotmail.com",
+      "role": "Owner: requirements, design decisions, review and merge"
+    },
+    {
+      "id": "x74qtb63",
+      "name": "Claude",
+      "email": "noreply@anthropic.com",
+      "role": "Developer: writes the code, tests and docs (CLAUDE.md)"
+    }
+  ],
+  "definitionOfDone": [],
+  "defaultPriority": "medium",
+  "defaultWorkflow": "lrbcr9mg",
+  "settings": {
+    "hoursPerDay": 8,
+    "daysPerWeek": 5,
+    "doneCheck": "Warn"
+  },
+  "defaultPriorityId": "medium"
+}

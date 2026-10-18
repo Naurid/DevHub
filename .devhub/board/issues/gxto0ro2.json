@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "gxto0ro2",
+  "key": "DEV-154",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "BS3: Sdk charts (kinds, styles, bands, reference lines) and IExportService",
+  "description": "Landed in:\n- DevHub `5eec9f7`: Sdk: chart library (kinds, styles, bands, export) and IExportService",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T12:51:00+00:00",
+  "resolved": "2026-10-17T12:51:00+00:00"
+}

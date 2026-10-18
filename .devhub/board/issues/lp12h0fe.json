@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "lp12h0fe",
+  "key": "DEV-97",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Tests that run on each OS",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "s7usd0l5",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:45:02+00:00",
+  "updated": "2026-10-12T01:45:02+00:00"
+}

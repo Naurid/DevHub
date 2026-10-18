@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "tdl6sisk",
+  "key": "DEV-33",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Components: ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge",
+  "description": "Landed in:\n- DevHub `d91bbdd`: - UI-0 step 4: components (ToolWindowFrame, Toolbar, ActionButton, SearchField, EmptyState, SettingsRow, Badge) - Add accent-colored DevHub logo and window icon",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T19:02:00+00:00",
+  "resolved": "2026-10-09T19:02:00+00:00"
+}

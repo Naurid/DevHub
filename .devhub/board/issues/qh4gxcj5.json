@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "qh4gxcj5",
+  "key": "DEV-180",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "RW — Responsive layout",
+  "description": "Every screen works from 800 px wide.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-18",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T22:28:00+00:00",
+  "updated": "2026-10-17T22:54:00+00:00",
+  "resolved": "2026-10-17T22:54:00+00:00"
+}

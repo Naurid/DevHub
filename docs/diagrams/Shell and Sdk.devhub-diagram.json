@@ -1,0 +1,663 @@
+{
+  "schemaVersion": 1,
+  "kind": "component",
+  "title": "Shell and Sdk: who offers and who uses each seam",
+  "project": "../..",
+  "props": {},
+  "nodes": [
+    {
+      "id": "nkah7a",
+      "type": "package",
+      "x": 30,
+      "y": 30,
+      "width": 560,
+      "height": 700,
+      "rotation": 0,
+      "text": "DevHub.App (shell)",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "yudpqs",
+      "type": "component",
+      "x": 60,
+      "y": 90,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "PluginHost",
+      "parentId": "nkah7a",
+      "props": {
+        "fill": "#383574F0",
+        "line": "#3574F0"
+      }
+    },
+    {
+      "id": "b7u2zu",
+      "type": "component",
+      "x": 60,
+      "y": 190,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "DocumentManager",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "4be44h",
+      "type": "component",
+      "x": 60,
+      "y": 290,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "ToolWindowManager",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "xayrct",
+      "type": "component",
+      "x": 60,
+      "y": 390,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "MainMenu · Toolbar · Keymap",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "du9mqb",
+      "type": "component",
+      "x": 60,
+      "y": 490,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "Find Action (Ctrl+Shift+A)",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "ntb7bf",
+      "type": "component",
+      "x": 60,
+      "y": 590,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "Settings dialog + Plugins page",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "w3jswm",
+      "type": "component",
+      "x": 340,
+      "y": 90,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "DialogService",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "s36iat",
+      "type": "component",
+      "x": 340,
+      "y": 190,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "StatusBarViewModel",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "azzgxr",
+      "type": "component",
+      "x": 340,
+      "y": 290,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "ThemeService",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "kcc2ha",
+      "type": "component",
+      "x": 340,
+      "y": 390,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "ExportService",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "xkea99",
+      "type": "component",
+      "x": 340,
+      "y": 490,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "UpdateService (Velopack)",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "q7823w",
+      "type": "component",
+      "x": 340,
+      "y": 590,
+      "width": 220,
+      "height": 64,
+      "rotation": 0,
+      "text": "Marketplace page",
+      "parentId": "nkah7a",
+      "props": {}
+    },
+    {
+      "id": "hcyk7i",
+      "type": "package",
+      "x": 700,
+      "y": 30,
+      "width": 360,
+      "height": 700,
+      "rotation": 0,
+      "text": "DevHub.Sdk",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "sveb33",
+      "type": "provided",
+      "x": 729,
+      "y": 99,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IPlugin",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "h8p2cw",
+      "type": "provided",
+      "x": 729,
+      "y": 189,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IActionProvider",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "xr4ja7",
+      "type": "component",
+      "x": 860,
+      "y": 170,
+      "width": 170,
+      "height": 60,
+      "rotation": 0,
+      "text": "ActionRegistry",
+      "parentId": "hcyk7i",
+      "props": {
+        "fill": "#383574F0",
+        "line": "#3574F0"
+      }
+    },
+    {
+      "id": "3njjxv",
+      "type": "provided",
+      "x": 729,
+      "y": 279,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IDocumentFactory",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "4par8k",
+      "type": "provided",
+      "x": 729,
+      "y": 359,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IDocumentService",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "d9hmmw",
+      "type": "provided",
+      "x": 729,
+      "y": 429,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "ToolWindowViewModelBase",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "cj9ykw",
+      "type": "provided",
+      "x": 729,
+      "y": 499,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IDialogService",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "pkrh7w",
+      "type": "provided",
+      "x": 729,
+      "y": 559,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IStatusService",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "z2cfpa",
+      "type": "provided",
+      "x": 729,
+      "y": 619,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IThemeService",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "wtkrv7",
+      "type": "provided",
+      "x": 729,
+      "y": 679,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "IExportService",
+      "parentId": "hcyk7i",
+      "props": {}
+    },
+    {
+      "id": "tg2e72",
+      "type": "package",
+      "x": 700,
+      "y": 800,
+      "width": 360,
+      "height": 170,
+      "rotation": 0,
+      "text": "DevHub.Sdk.Core",
+      "props": {
+        "fill": "#1A8C8F96",
+        "line": "#8C8F96",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "7w4zap",
+      "type": "provided",
+      "x": 729,
+      "y": 859,
+      "width": 22,
+      "height": 22,
+      "rotation": 0,
+      "text": "ISettingsStore",
+      "parentId": "tg2e72",
+      "props": {}
+    },
+    {
+      "id": "vajcvt",
+      "type": "component",
+      "x": 860,
+      "y": 840,
+      "width": 170,
+      "height": 50,
+      "rotation": 0,
+      "text": "JsonSettingsStore",
+      "parentId": "tg2e72",
+      "props": {}
+    },
+    {
+      "id": "fzaxvk",
+      "type": "component",
+      "x": 860,
+      "y": 905,
+      "width": 170,
+      "height": 50,
+      "rotation": 0,
+      "text": "PluginResolver",
+      "parentId": "tg2e72",
+      "props": {}
+    },
+    {
+      "id": "2x37ry",
+      "type": "component",
+      "x": 1180,
+      "y": 300,
+      "width": 240,
+      "height": 220,
+      "rotation": 0,
+      "text": "A plugin (DevHub-Plugins)",
+      "props": {
+        "fill": "#38D98C1F",
+        "line": "#D98C1F",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "7g8kbz",
+      "type": "note",
+      "x": 1180,
+      "y": 580,
+      "width": 260,
+      "height": 100,
+      "rotation": 0,
+      "text": "Realization: offers the interface. Dashed arrow: uses it. A plugin contributes only through DI; the shell never names a plugin.",
+      "props": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "v3iwkw",
+      "type": "realization",
+      "from": "b7u2zu",
+      "to": "4par8k",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "7wgf4d",
+      "type": "realization",
+      "from": "w3jswm",
+      "to": "cj9ykw",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "7rewie",
+      "type": "realization",
+      "from": "s36iat",
+      "to": "pkrh7w",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "63qdmi",
+      "type": "realization",
+      "from": "azzgxr",
+      "to": "z2cfpa",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "2fzqsz",
+      "type": "realization",
+      "from": "kcc2ha",
+      "to": "wtkrv7",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "m82hmu",
+      "type": "realization",
+      "from": "vajcvt",
+      "to": "7w4zap",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "mgs7xi",
+      "type": "dependency",
+      "from": "yudpqs",
+      "to": "sveb33",
+      "text": "ConfigureServices",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "nqwnd7",
+      "type": "dependency",
+      "from": "yudpqs",
+      "to": "fzaxvk",
+      "text": "what loads",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "rrh6tg",
+      "type": "dependency",
+      "from": "b7u2zu",
+      "to": "3njjxv",
+      "text": "one tab per id",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "k9t6fw",
+      "type": "dependency",
+      "from": "4be44h",
+      "to": "d9hmmw",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "32ztux",
+      "type": "dependency",
+      "from": "xr4ja7",
+      "to": "h8p2cw",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "48nm2i",
+      "type": "dependency",
+      "from": "xayrct",
+      "to": "xr4ja7",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "gw4xvh",
+      "type": "dependency",
+      "from": "du9mqb",
+      "to": "xr4ja7",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "434tcq",
+      "type": "dependency",
+      "from": "ntb7bf",
+      "to": "7w4zap",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "jpgxzm",
+      "type": "dependency",
+      "from": "q7823w",
+      "to": "fzaxvk",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "hg6srg",
+      "type": "dependency",
+      "from": "xkea99",
+      "to": "s36iat",
+      "text": "Update and restart",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "jhfn4j",
+      "type": "realization",
+      "from": "2x37ry",
+      "to": "sveb33",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "ex8wci",
+      "type": "realization",
+      "from": "2x37ry",
+      "to": "h8p2cw",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "42wahz",
+      "type": "realization",
+      "from": "2x37ry",
+      "to": "3njjxv",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "s4iwfk",
+      "type": "realization",
+      "from": "2x37ry",
+      "to": "d9hmmw",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "9rn72n",
+      "type": "dependency",
+      "from": "2x37ry",
+      "to": "4par8k",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "wrv3gz",
+      "type": "dependency",
+      "from": "2x37ry",
+      "to": "cj9ykw",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "bgs8bx",
+      "type": "dependency",
+      "from": "2x37ry",
+      "to": "pkrh7w",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "iha8wm",
+      "type": "dependency",
+      "from": "2x37ry",
+      "to": "wtkrv7",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "5w3eyh",
+      "type": "dependency",
+      "from": "2x37ry",
+      "to": "7w4zap",
+      "text": "its own section",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "iuappg",
+      "type": "noteLink",
+      "from": "7g8kbz",
+      "to": "2x37ry",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    }
+  ],
+  "bounds": {
+    "x": 30,
+    "y": 30,
+    "width": 1410,
+    "height": 940,
+    "left": 30,
+    "top": 30,
+    "right": 1440,
+    "bottom": 970,
+    "center": {
+      "x": 735,
+      "y": 500,
+      "length": 888.9460051094217
+    }
+  }
+}

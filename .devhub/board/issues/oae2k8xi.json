@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "oae2k8xi",
+  "key": "DEV-89",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Faster CI: no duplicate runs, NuGet cache, CodeQL without a build",
+  "description": "Landed in:\n- DevHub `508082d`: Faster CI: no duplicate runs (CI on pull requests, inside releases and on demand), NuGet cache, CodeQL without a build on Linux with security-extended; CodeQL gets actions: read (fixes \"Resource not accessible by integration\")",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T02:15:00+00:00",
+  "resolved": "2026-10-12T02:15:00+00:00"
+}

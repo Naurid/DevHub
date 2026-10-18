@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "rj5m0kz0",
+  "key": "DEV-120",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "CI4: status everywhere: status bar, marks in Git, notifications",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T03:00:02+00:00",
+  "updated": "2026-10-12T03:00:02+00:00"
+}

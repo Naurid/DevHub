@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ebg678av",
+  "key": "DEV-67",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "M1–M9 — Templates plugin",
+  "description": "Project and item templates to the spec in docs/TEMPLATE_FORMAT.md.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-11",
+  "due": "2026-10-12",
+  "rank": "zzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:00+00:00",
+  "updated": "2026-10-12T02:01:00+00:00",
+  "resolved": "2026-10-12T02:01:00+00:00"
+}

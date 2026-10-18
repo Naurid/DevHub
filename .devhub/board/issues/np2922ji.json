@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "np2922ji",
+  "key": "DEV-158",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "BS4: release forecast, baselines, scope change, KPIs, chart types, export",
+  "description": "Landed in:\n- DevHub-Plugins `2d12f5d`: Board.Reports: release forecast with three scenarios and baselines, scope change, KPIs, chart types and export (stage 3)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:15:00+00:00",
+  "resolved": "2026-10-17T16:15:00+00:00"
+}

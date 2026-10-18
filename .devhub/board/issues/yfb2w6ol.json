@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "yfb2w6ol",
+  "key": "DEV-118",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "CI2: CI tool window and a tab per repository",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T03:00:02+00:00",
+  "updated": "2026-10-12T03:00:02+00:00"
+}

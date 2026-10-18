@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "xapxnevu",
+  "key": "DEV-40",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "docs/UI_GUIDE.md and the App rules in CLAUDE.md",
+  "description": "Landed in:\n- DevHub `883d2b8`: UI-0 step 11: docs/UI_GUIDE.md, CLAUDE.md App rules; placeholders use EmptyState, legacy palette removed",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T20:29:00+00:00",
+  "resolved": "2026-10-09T20:29:00+00:00"
+}

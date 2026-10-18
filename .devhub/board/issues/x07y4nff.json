@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "x07y4nff",
+  "key": "DEV-160",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "BS5: Board.Risks: risk register and probability × impact matrix",
+  "description": "Landed in:\n- DevHub-Plugins `0b14853`: Board.Risks: risk register with a probability × impact matrix (stage 4)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:22:00+00:00",
+  "resolved": "2026-10-17T16:22:00+00:00"
+}

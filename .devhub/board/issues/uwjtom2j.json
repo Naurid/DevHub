@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "uwjtom2j",
+  "key": "DEV-156",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Copy Image: the bitmap was disposed before anything could paste it",
+  "description": "Landed in:\n- DevHub `6cec5e7`: Export: Copy Image keeps the bitmap alive and flushes the clipboard (it was disposed before anything could paste it)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:11:00+00:00",
+  "resolved": "2026-10-17T16:11:00+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "nre0nnop",
+  "key": "DEV-55",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G9.1: Fork-style sidebar tree; Local Changes in folders",
+  "description": "Landed in:\n- DevHub `4628504`: Sidebar: Changes / Local renames, no icons, fold arrows on the right (custom tree row template); commit/stash details list files in folders (shared ChangeRows, same switch as Changes); Changes header fits: folder icon toggle, header clips, wider minimum column\n- DevHub-Plugins `7a19338`: Sidebar: Changes / Local renames, no icons, fold arrows on the right (custom tree row template); commit/stash details list files in folders (shared ChangeRows, same switch as Changes); Changes header fits: folder icon toggle, header clips, wider minimum column",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T20:51:00+00:00",
+  "resolved": "2026-10-10T20:51:00+00:00"
+}

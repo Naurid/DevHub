@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "yzhae2b7",
+  "key": "DEV-75",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M6: item templates: Add Files tab, namespace inference, starter items",
+  "description": "Landed in:\n- DevHub `617891d`: Templates M6: item templates — Add Files tab (Details → Preview → Done) from Projects, repository tabs, the Templates tab and File menu (IAddFilesFromTemplate hook); conflicts with Overwrite choices, moves/deletes of your files listed; Namespace pre-filled from .csproj / .asmdef / Unity project; starter items (C# class, interface, MonoBehaviour, ScriptableObject, Python module) (tested)\n- DevHub-Plugins `81598aa`: Templates M6: item templates — Add Files tab (Details → Preview → Done) from Projects, repository tabs, the Templates tab and File menu (IAddFilesFromTemplate hook); conflicts with Overwrite choices, moves/deletes of your files listed; Namespace pre-filled from .csproj / .asmdef / Unity project; starter items (C# class, interface, MonoBehaviour, ScriptableObject, Python module) (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T21:33:00+00:00",
+  "resolved": "2026-10-11T21:33:00+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "aob8hmve",
+  "key": "DEV-182",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "RW2: the plugins' screens fold their side panels and overflow their rows",
+  "description": "Landed in:\n- DevHub-Plugins `468bb46`: Responsive layout: side panels fold into a rail, rows of tabs and buttons overflow into a menu",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh4gxcj5",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T22:28:02+00:00",
+  "updated": "2026-10-17T22:53:00+00:00",
+  "resolved": "2026-10-17T22:53:00+00:00"
+}

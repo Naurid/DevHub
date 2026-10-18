@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ypi0uvj0",
+  "key": "DEV-34",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Action system (registry, providers, keymap, MenuBuilder) + FuzzyMatcher",
+  "description": "Landed in:\n- DevHub `0003995`:  UI-0 step 5: action system (registry, providers, keymap, menus) + tested FuzzyMatcher",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T19:15:00+00:00",
+  "resolved": "2026-10-09T19:15:00+00:00"
+}

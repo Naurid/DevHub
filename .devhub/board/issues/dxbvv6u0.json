@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "dxbvv6u0",
+  "key": "DEV-53",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G9: Manage Remotes, GitHub via Git Credential Manager, Publish, Clone",
+  "description": "Landed in:\n- DevHub `7b8cfd0`: G9: remotes & GitHub: Manage Remotes (add / edit / remove), GitHub account via Git Credential Manager (Settings → GitHub, sign in / out), Publish to GitHub, Clone Repository (your GitHub repositories or a URL); tokens borrowed per call, never stored or logged (tested)\n- DevHub-Plugins `79debd9`: G9: remotes & GitHub: Manage Remotes (add / edit / remove), GitHub account via Git Credential Manager (Settings → GitHub, sign in / out), Publish to GitHub, Clone Repository (your GitHub repositories or a URL); tokens borrowed per call, never stored or logged (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "od7h3lvl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T19:10:00+00:00",
+  "resolved": "2026-10-10T19:10:00+00:00"
+}

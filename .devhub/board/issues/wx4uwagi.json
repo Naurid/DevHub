@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "wx4uwagi",
+  "key": "DEV-211",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Label background colour, and Transparent in every colour picker",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "i1p9uun2",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:49.9294399+00:00",
+      "body": "labelFill on every line; Transparent = #00000000. Feature/diagram-labels."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:49.6458563+00:00",
+  "updated": "2026-10-18T22:24:50.0185025+00:00"
+}

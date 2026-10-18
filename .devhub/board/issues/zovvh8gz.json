@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "zovvh8gz",
+  "key": "DEV-49",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G6: fetch, update, push with progress and cancel; force push",
+  "description": "Landed in:\n- DevHub `3b38616`: G6: fetch / update (ff-only, rebase offer) / push (outgoing commits, publish new branch, rebase-and-push on rejection), force push with lease, Commit and Push; status-bar progress + cancel; remote errors explained (tested against a bare repo)\n- DevHub-Plugins `5552a83`: G6: fetch / update (ff-only, rebase offer) / push (outgoing commits, publish new branch, rebase-and-push on rejection), force push with lease, Commit and Push; status-bar progress + cancel; remote errors explained (tested against a bare repo)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T13:29:00+00:00",
+  "resolved": "2026-10-10T13:29:00+00:00"
+}

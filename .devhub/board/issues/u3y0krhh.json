@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "u3y0krhh",
+  "key": "DEV-108",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM3: develop plugins against an installed DevHub (DEVHUB_PLUGIN_PATHS, F5)",
+  "description": "Landed in:\n- DevHub `9c5114f`: PM3: plugin development against an installed DevHub — DEVHUB_PLUGIN_PATHS loads plugins from build folders (they win over bundled/installed copies and are on for the run; PluginFolders.ScanPaths/WithDevelopment, tested); plugin repo: build output becomes a plugin folder and a generated launchSettings.json starts DevHub with it (F5, own data folder); build/Test-Plugins.ps1 runs the plugin matrix against those folders",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:00:00+00:00",
+  "resolved": "2026-10-12T21:00:00+00:00"
+}

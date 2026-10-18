@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "yi6b04bk",
+  "key": "DEV-107",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM2c: bundled plugins and their marketplace updates",
+  "description": "Landed in:\n- DevHub `852af1e`: PM2c: bundled plugins and their updates — plugin folders in plugins\\ next to the app are bundled; of a plugin bundled and installed, the newer copy loads and only its folder (PluginFolders, Sdk.Core, tested; an update for another plugin API never hides the bundled copy); Marketplace page: Bundled / Update to / Back to / Remove Old Copy",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T20:51:00+00:00",
+  "resolved": "2026-10-12T20:51:00+00:00"
+}

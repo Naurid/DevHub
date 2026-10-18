@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "wnso967b",
+  "key": "DEV-66",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "P6: PLUGINS.md, plugin-matrix.ps1, tabs of switched-off plugins kept",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub `1bd1df8`:  P5: Settings → Plugins page and first-run picker (presets declared by plugins); PluginSelection rules (tested); Restart DevHub",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T16:41:00+00:00",
+  "resolved": "2026-10-11T16:41:00+00:00"
+}

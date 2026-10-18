@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "a68qu9sz",
+  "key": "DEV-27",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Later: the tool catalog as an MCP server",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "l7gm3q3h",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:34:02+00:00",
+  "updated": "2026-10-09T00:34:02+00:00"
+}
