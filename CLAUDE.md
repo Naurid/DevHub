@@ -178,6 +178,8 @@ background) but may be new to Avalonia/XAML/MVVM and desktop app architecture.
 - **Claude writes all the code** (the user's choice): implement, build, test, then
   explain the key parts. Ask about requirements and design, not about who writes it.
 - Claude **commits its own work on a feature branch** (in either repository); the user merges and pushes.
+  A branch that only fixes things is named `Fix/…`: its merge bumps the patch number (1.26.0 → 1.26.1), anything
+  else the minor (docs/RELEASING.md).
   Say in which order when both repositories change (the Sdk is released before plugins that need it).
 - Keep `docs/ROADMAP.md` checkboxes current when a task is completed.
 - Use `/next-step` to pick up where the last session left off.

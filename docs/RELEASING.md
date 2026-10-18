@@ -5,14 +5,20 @@ release build, and the GitHub settings that keep it safe.
 
 ## Versions
 
-DevHub's version is **N.M.0**, worked out from git by `build/Get-Version.ps1`:
+DevHub's version is **N.M.P**, worked out from git by `build/Get-Version.ps1`:
 
 - **N (major)** is the highest *major tag* reachable from the commit: `v1`, `v2`… (`v2.0` and `v2.0.0` work too). Only you
   create these (a protected tag rule).
-- **M (minor)** is the number of commits on `main`'s own line since that tag: each push to `main`
-  and each merged pull request counts as one. The tagged commit itself is `N.0.0`.
-- Before the first major tag the version is `0.M.0`.
-- CI tags each release `release/N.M.0`. Those tags never look like `vN`, so they don't count.
+- **M.P** come from the commits on `main`'s own line since that tag (each push to `main` and each merged pull request
+  counts as one):
+  - a **fix**, the merge of a `Fix/…`, `Hotfix/…` or `Bugfix/…` branch or pull request (or a commit titled `fix: …`),
+    adds 1 to **P (patch)**: 1.26.0 → 1.26.1;
+  - anything else adds 1 to **M (minor)** and starts P again at 0: 1.26.1 → 1.27.0.
+
+  So name a branch `Fix/…` when it only fixes things. Commits up to 1.26.0 all counted as minors (`$PatchesSince` in the
+  script), so earlier versions stay what they were. The tagged commit itself is `N.0.0`.
+- Before the first major tag the version is `0.M.P`.
+- CI tags each release `release/N.M.P`. Those tags never look like `vN`, so they don't count.
 
 ```
 pwsh build/Get-Version.ps1        # the version HEAD would get
