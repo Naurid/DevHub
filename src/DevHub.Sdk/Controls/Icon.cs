@@ -29,8 +29,28 @@ public class Icon : SvgControl
     private const string DisabledCss =
         "path, circle, rect, ellipse, line, polyline, polygon { opacity: 0.4; }";
 
+    /// <summary>
+    /// CSS for an icon on an accent background: the dark-theme file's light grey (the icon set's one foreground
+    /// colour) becomes white, like the button's text. Coloured icons keep their colours.
+    /// </summary>
+    private const string OnAccentCss =
+        "[fill=\"#CED0D6\"] { fill: #FFFFFF; } [stroke=\"#CED0D6\"] { stroke: #FFFFFF; }";
+
     public static readonly StyledProperty<string?> KindProperty =
         AvaloniaProperty.Register<Icon, string?>(nameof(Kind));
+
+    public static readonly StyledProperty<bool> IsOnAccentProperty =
+        AvaloniaProperty.Register<Icon, bool>(nameof(IsOnAccent));
+
+    /// <summary>
+    /// The icon sits on the accent colour (an accent button, set by a style in Themes/Controls.axaml): it's drawn white
+    /// in both themes, like the text beside it.
+    /// </summary>
+    public bool IsOnAccent
+    {
+        get => GetValue(IsOnAccentProperty);
+        set => SetValue(IsOnAccentProperty, value);
+    }
 
     /// <summary>
     /// File name without extension or theme suffix, e.g. "folder" (see <see cref="IconKind"/>),
@@ -51,9 +71,18 @@ public class Icon : SvgControl
         base.OnPropertyChanged(change);
 
         if (change.Property == KindProperty)
+        {
             UpdatePath();
-        else if (change.Property == IsEffectivelyEnabledProperty)
+        }
+        else if (change.Property == IsOnAccentProperty)
+        {
+            UpdatePath();
             UpdateDisabledLook();
+        }
+        else if (change.Property == IsEffectivelyEnabledProperty)
+        {
+            UpdateDisabledLook();
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -76,8 +105,11 @@ public class Icon : SvgControl
     /// IsEffectivelyEnabled is false when this icon or any parent (e.g. its Button) is
     /// disabled, so icons inside disabled buttons and menu items fade automatically.
     /// </summary>
-    private void UpdateDisabledLook() =>
-        SetValue(CssProperty, IsEffectivelyEnabled ? null : DisabledCss);
+    private void UpdateDisabledLook()
+    {
+        var css = (IsOnAccent ? OnAccentCss : "") + (IsEffectivelyEnabled ? "" : DisabledCss);
+        SetValue(CssProperty, css.Length == 0 ? null : css);
+    }
 
     private void UpdatePath()
     {
@@ -87,7 +119,8 @@ public class Icon : SvgControl
             return;
         }
 
-        var suffix = ActualThemeVariant == ThemeVariant.Dark ? "_dark" : "";
+        // On the accent colour the dark-theme file (light shapes) whatever the theme; OnAccentCss whitens it.
+        var suffix = IsOnAccent || ActualThemeVariant == ThemeVariant.Dark ? "_dark" : "";
         var path = Kind.StartsWith("avares://", StringComparison.Ordinal) ? Kind : IconFolder + Kind;
         Path = $"{path}{suffix}.svg";
     }

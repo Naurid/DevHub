@@ -19,6 +19,10 @@
         <Setter Property="Width" Value="{DynamicResource Size.Icon}" />
         <Setter Property="Height" Value="{DynamicResource Size.Icon}" />
     </Style>
+    <!-- An icon on an accent button ("+ Create") is white like its text, in both themes. -->
+    <Style Selector="Button.accent c|Icon">
+        <Setter Property="IsOnAccent" Value="True" />
+    </Style>
 
     <!-- SearchField (a TextBox with the "search" class). <Template> makes a new child per
          TextBox; a plain control value would be one instance shared by every search box.
