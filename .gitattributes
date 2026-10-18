@@ -1,0 +1,2 @@
+# The project board (Board plugin, folder store) is data written by DevHub: keep it byte for byte (attachments too).
+.devhub/** -text
