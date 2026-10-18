@@ -51,3 +51,16 @@ public interface IAddFilesFromTemplate
 {
     void Open(string folder);
 }
+
+/// <summary>A project as the Projects plugin lists it (plain data).</summary>
+public sealed record ProjectInfo(string Name, string Folder);
+
+/// <summary>
+/// The projects DevHub knows (offered by Projects): Diagrams' "Link to Project…" lists them. Without it, a diagram is
+/// linked by picking the project's folder.
+/// </summary>
+public interface IProjectCatalog
+{
+    /// <summary>Every project found in the project folders, by name.</summary>
+    IReadOnlyList<ProjectInfo> Projects { get; }
+}

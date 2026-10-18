@@ -327,31 +327,37 @@ rows of tabs and buttons put what doesn't fit into a « More » menu; headers sh
       (pages, search, Create) and issue panel, backlog epics, reports, risks, releases, chart maker, Templates screens
       and editor lists, project settings
 
-## D — Diagrams: UML use case, class and activity ("actions") editor [Plugins]
-Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**; no code
-generation. You provide PDFs with examples and the precise rules before D1. Plugins: `DevHub.Diagrams`
-(+ `.Core`: model, canvas, file format, export) and one per diagram kind through an `IDiagramKind` extension
-point (`Diagrams.UseCase`, `Diagrams.Class`, `Diagrams.Activity`). Diagrams are JSON files in the project
-(`*.devhub-diagram.json`) opened as tabs. Code in DevHub-Plugins; plan in its `docs/DIAGRAMS_PLAN.md`.
-- [ ] D0. Read your PDFs → the elements and notation rules per kind (and confirm "actions" = activity
-      diagrams); canvas built on Avalonia ourselves or a library
-- [ ] D1. Core model (tested): nodes, edges, ports, containers, notes, properties per element kind; file
-      format with a schema version; validation rules from the PDFs
-- [ ] D2. Canvas editor: pan / zoom, grid + snapping, select / multi-select, move, resize, connect
-      (orthogonal or straight routing, edge labels), align / distribute, copy / paste, Undo / Redo, palette,
-      properties panel, minimap
-- [ ] D3. Use case diagrams: actors, use cases, system boundary, association, include / extend /
-      generalization
-- [ ] D4. Class diagrams: classes, interfaces, enums, abstract classes; attributes and operations with
-      visibility and types; association, aggregation, composition, inheritance, realization, dependency,
-      multiplicities
-- [ ] D5. Activity ("actions") diagrams: initial / final nodes, actions, decision / merge, fork / join,
-      swimlanes, object flows, guards
-- [ ] D6. Export: PNG and SVG (diagram or selection), PlantUML and Mermaid text
-- [ ] D7. Board link (when Board is on, through a hook): a use case or action linked to an issue, its status
-      on the shape; "Create story from use case"; the issue lists the diagrams that mention it
-- [ ] D8. Auto layout of a selection (layered, for class and activity diagrams); diagram templates through
-      the Templates plugin
+## D — Diagrams: UML, databases, business processes, mood boards (Visual Paradigm's range) [DevHub + Plugins]
+Decided 2026-10-12: diagrams **export images** (and diagram text) and **link to the board**. 2026-10-18: the course
+PDFs are read (notation rules in DevHub-Plugins' `docs/DIAGRAMS_PLAN.md`); added **Merise MCD → MLD with SQL export**,
+**mood boards** and the **link to a project**; then widened to what Visual Paradigm draws (the course is a guideline):
+all the usual UML diagrams, crow's-foot ERD, flowcharts, BPMN, mind maps, and formatting on every shape and line.
+The canvas is our own Avalonia control (no maintained Avalonia 12 diagram library fits). Every text in English and
+French. Plugins: `Diagrams` (+ `.Core`: model, operations, geometry, file format; UI: canvas, tab, export) and kinds
+through the `IDiagramKind` extension point: `DiagramsUml`, `DiagramsDatabase`, `DiagramsBusiness`, `MoodBoard`.
+Files are `*.devhub-diagram.json`, opened as tabs.
+- [x] D0. PDFs read → elements and notation rules per kind; "actions" = activity diagrams; canvas built ourselves
+- [x] D1. Core: model, file format (schema version, unknown fields kept), operations + Undo / Redo, geometry
+      (orthogonal routing around shapes, snapping, guides, hit tests), rules framework, layered auto layout
+- [x] D2. Editor: canvas (pan / zoom, grid, select, move, resize, connect, bends, labels, align, copy / paste,
+      minimap), tab per file, palette, properties (fill, line, text colour, size, bold on every shape and line),
+      problems, export PNG / SVG / copy image; Sdk: image / text export, pasted images and files
+- [x] D3. UML: use case (stereotype actors, extension points, include / extend / generalization), activity
+      (guards, fork / join, object nodes, signals, swimlanes), class and object (compartments typed as text lines),
+      sequence (lifelines, activations, sync / async / reply / create, fragments), state machine, component,
+      deployment, package; the course's rules
+- [x] D4. Databases: Merise MCD (entities, associations, cardinalities, identifiers) → generated MLD, crow's-foot
+      ERD, data dictionary, SQL export (MySQL, PostgreSQL, SQL Server, SQLite) and CREATE TABLE import (MLD + MCD)
+- [x] D5. Business: flowcharts, BPMN (pools, lanes, events with triggers, typed tasks, gateways, message flows,
+      data), mind maps (coloured branches, Add Idea, two-sided tree layout)
+- [x] D6. Mood boards: pictures (stored beside the file; drop, paste, pick), colour swatches and palette from a
+      picture, shapes and frames, link cards, text, freehand pen and eraser
+- [x] D7. Text exports: PlantUML, Mermaid, SQL, MLD text, Markdown outlines, CSS colours
+- [x] D8. Board link: a shape linked to an issue (status on the shape), "Create Story from This Shape"; an issue
+      lists the diagrams linked to it; a board has a Diagrams page for its project
+- [x] D9. Project link: diagrams belong to a project (Projects lists them under each project; new ones go to its
+      `docs/diagrams/`), through hooks in `Integration/` so Projects, Board and Diagrams stay independent
+- [x] D10. Samples from the course in French and English ("Start from" in New Diagram) for every main kind
 
 ## CI — CI tracker for GitHub Actions [Plugins]
 Decided 2026-10-12: **GitHub Actions** first; providers behind `ICiProvider` (GitLab, Azure DevOps later, as

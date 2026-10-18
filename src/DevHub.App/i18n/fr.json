@@ -185,5 +185,9 @@
   "They come from {0}.": "Ils proviennent de {0}.",
   "Update All": "Tout mettre à jour",
   "{0}: updated, ready after a restart.": "{0}\u00A0: mis à jour, prêts après un redémarrage.",
-  "Update every plugin that has a newer version": "Mettre à jour tous les plugins qui ont une version plus récente"
+  "Update every plugin that has a newer version": "Mettre à jour tous les plugins qui ont une version plus récente",
+  "Save as Image": "Enregistrer en image",
+  "Image copied: paste it into your document": "Image copiée\u00A0: collez-la dans votre document",
+  "Save As": "Enregistrer sous",
+  "The file couldn't be saved: {0}": "Impossible d'enregistrer le fichier\u00A0: {0}"
 }
