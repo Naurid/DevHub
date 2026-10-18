@@ -86,5 +86,12 @@
         <c:SettingsRow Label="{l:T 'Compact mode'}" Description="{l:T 'Smaller rows, toolbars and paddings.'}">
             <ToggleSwitch IsChecked="{Binding IsCompact}" OnContent="" OffContent="" />
         </c:SettingsRow>
+
+        <c:SettingsRow Label="{l:T 'Status messages kept'}"
+                       Description="{l:T 'How many recent messages a click on the status bar shows.'}">
+            <NumericUpDown Value="{Binding HistorySize}" Minimum="{Binding MinHistorySize}" Maximum="{Binding MaxHistorySize}"
+                           Increment="5" FormatString="0" HorizontalAlignment="Left"
+                           AutomationProperties.Name="{l:T 'Status messages kept'}" />
+        </c:SettingsRow>
     </StackPanel>
 </UserControl>

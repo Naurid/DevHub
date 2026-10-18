@@ -189,5 +189,11 @@
   "Save as Image": "Enregistrer en image",
   "Image copied: paste it into your document": "Image copiée\u00A0: collez-la dans votre document",
   "Save As": "Enregistrer sous",
-  "The file couldn't be saved: {0}": "Impossible d'enregistrer le fichier\u00A0: {0}"
+  "The file couldn't be saved: {0}": "Impossible d'enregistrer le fichier\u00A0: {0}",
+  "language english french theme dark light system windows accent color colour compact density size status messages history": "langue anglais français thème sombre clair système windows accent couleur compact densité taille messages état historique language english french theme dark light color status messages history",
+  "Status messages kept": "Messages d'état conservés",
+  "How many recent messages a click on the status bar shows.": "Le nombre de messages récents qu'un clic sur la barre d'état affiche.",
+  "Recent messages": "Messages récents",
+  "Clear": "Effacer",
+  "No messages yet.": "Aucun message pour l'instant."
 }

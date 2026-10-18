@@ -36,6 +36,9 @@
     <!-- A running operation in the status bar: its progress bar and the step text. -->
     <x:Double x:Key="Size.StatusProgress">120</x:Double>
     <x:Double x:Key="Size.StatusTaskStep">240</x:Double>
+    <!-- The status message's history (a click on the message): its width and how tall it may get. -->
+    <x:Double x:Key="Size.StatusHistoryWidth">460</x:Double>
+    <x:Double x:Key="Size.StatusHistoryMaxHeight">380</x:Double>
     <!-- Title bar breadcrumb: the active tab's name ends in "…" past this width; space around its ›. -->
     <x:Double x:Key="Size.BreadcrumbTitleMax">220</x:Double>
     <Thickness x:Key="Margin.Breadcrumb">4,0</Thickness>

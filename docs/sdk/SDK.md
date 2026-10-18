@@ -211,7 +211,7 @@ The seams between ViewModels and Avalonia. Inject them; never reach for `Window`
 | `PickFileAsync(title, filterName, patterns)` | File picker (`["*.exe"]`). |
 | `PickSaveFileAsync(title, suggestedName, filterName, extension)` | "Save as" picker. |
 
-**`IStatusService`**: the status bar. `Show(message)` replaces the message on the left (null clears it).
+**`IStatusService`**: the status bar. `Show(message)` replaces the message on the left (null clears it) and keeps it in the history a click on the message opens (Settings → Appearance → Status messages kept, 30 by default; the same message twice in a row is kept once). It may be called from any thread.
 `StartTask(title, cancel?)` shows a running operation until the returned `IStatusTask` is disposed; `Report(step,
 percent)` updates it from any thread (null percent = indeterminate). Call `StartTask` from the UI thread.
 
