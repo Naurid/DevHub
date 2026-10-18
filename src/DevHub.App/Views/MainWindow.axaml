@@ -14,7 +14,7 @@
         x:DataType="vm:MainWindowViewModel"
         Title="{l:T 'DevHub'}"
         Width="1000" Height="640"
-        MinWidth="720" MinHeight="480"
+        MinWidth="{Binding WindowMinWidth}" MinHeight="480"
         Background="{DynamicResource Brush.Bg.Editor}"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="{DynamicResource Size.ToolbarHeight}">
