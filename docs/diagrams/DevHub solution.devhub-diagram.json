@@ -6,7 +6,7 @@
   "props": {},
   "nodes": [
     {
-      "id": "7djgaz",
+      "id": "xy2w8g",
       "type": "package",
       "x": 30,
       "y": 30,
@@ -15,13 +15,13 @@
       "rotation": 0,
       "text": "DevHub (Naurid/DevHub)",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96",
         "bold": "true"
       }
     },
     {
-      "id": "8tae46",
+      "id": "w7awbw",
       "type": "package",
       "x": 70,
       "y": 100,
@@ -29,16 +29,15 @@
       "height": 110,
       "rotation": 0,
       "text": "DevHub.App (the shell exe)",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {
-        "fill": "#DCEBFF",
+        "fill": "#383574F0",
         "line": "#3574F0",
-        "textColor": "#1F3F7A",
         "bold": "true"
       }
     },
     {
-      "id": "vtddhb",
+      "id": "z277ek",
       "type": "package",
       "x": 380,
       "y": 100,
@@ -46,15 +45,14 @@
       "height": 110,
       "rotation": 0,
       "text": "DevHub.Sdk (Avalonia)",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {
-        "fill": "#DCEBFF",
-        "line": "#3574F0",
-        "textColor": "#1F3F7A"
+        "fill": "#383574F0",
+        "line": "#3574F0"
       }
     },
     {
-      "id": "eagb7q",
+      "id": "puu7pg",
       "type": "package",
       "x": 670,
       "y": 100,
@@ -62,15 +60,14 @@
       "height": 110,
       "rotation": 0,
       "text": "DevHub.Sdk.Core (no UI)",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {
-        "fill": "#DCEBFF",
-        "line": "#3574F0",
-        "textColor": "#1F3F7A"
+        "fill": "#383574F0",
+        "line": "#3574F0"
       }
     },
     {
-      "id": "vw6ipx",
+      "id": "6992y8",
       "type": "package",
       "x": 380,
       "y": 300,
@@ -78,11 +75,11 @@
       "height": 100,
       "rotation": 0,
       "text": "tests/DevHub.TestPlugin",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {}
     },
     {
-      "id": "7maryg",
+      "id": "etn8f4",
       "type": "package",
       "x": 670,
       "y": 300,
@@ -90,11 +87,11 @@
       "height": 100,
       "rotation": 0,
       "text": "tests/DevHub.Sdk.Core.Tests",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {}
     },
     {
-      "id": "9k4fjh",
+      "id": "rdam8j",
       "type": "package",
       "x": 70,
       "y": 300,
@@ -102,14 +99,14 @@
       "height": 100,
       "rotation": 0,
       "text": "tools/I18n",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "bim9y3",
+      "id": "vm92zv",
       "type": "package",
       "x": 1040,
       "y": 30,
@@ -118,13 +115,13 @@
       "rotation": 0,
       "text": "DevHub-Plugins (Naurid/DevHub-Plugins)",
       "props": {
-        "fill": "#FFF0D9",
+        "fill": "#38D98C1F",
         "line": "#D98C1F",
         "bold": "true"
       }
     },
     {
-      "id": "hec2ie",
+      "id": "hgb74a",
       "type": "package",
       "x": 1070,
       "y": 100,
@@ -132,14 +129,14 @@
       "height": 90,
       "rotation": 0,
       "text": "plugins/<Name>/DevHub.<Name>(.Core)",
-      "parentId": "bim9y3",
+      "parentId": "vm92zv",
       "props": {
-        "fill": "#FFF0D9",
+        "fill": "#38D98C1F",
         "line": "#D98C1F"
       }
     },
     {
-      "id": "imkc4p",
+      "id": "gt2bgd",
       "type": "package",
       "x": 1070,
       "y": 210,
@@ -147,11 +144,11 @@
       "height": 90,
       "rotation": 0,
       "text": "tests/DevHub.<Name>.Core.Tests",
-      "parentId": "bim9y3",
+      "parentId": "vm92zv",
       "props": {}
     },
     {
-      "id": "47sde2",
+      "id": "cbxyae",
       "type": "package",
       "x": 1040,
       "y": 400,
@@ -160,13 +157,13 @@
       "rotation": 0,
       "text": "nuget.org",
       "props": {
-        "fill": "#E3F5EA",
+        "fill": "#382E9E5B",
         "line": "#2E9E5B",
         "bold": "true"
       }
     },
     {
-      "id": "5updri",
+      "id": "nyef9e",
       "type": "package",
       "x": 1070,
       "y": 470,
@@ -174,14 +171,14 @@
       "height": 90,
       "rotation": 0,
       "text": "DevHub.Sdk + DevHub.Sdk.Core packages",
-      "parentId": "47sde2",
+      "parentId": "cbxyae",
       "props": {
-        "fill": "#E3F5EA",
+        "fill": "#382E9E5B",
         "line": "#2E9E5B"
       }
     },
     {
-      "id": "3rgm5q",
+      "id": "b3a8rg",
       "type": "package",
       "x": 70,
       "y": 660,
@@ -190,12 +187,12 @@
       "rotation": 0,
       "text": "Avalonia 12 · CommunityToolkit.Mvvm · Microsoft.Extensions.DependencyInjection · Svg.Controls.Skia · Velopack",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "9fwzgu",
+      "id": "swgrj4",
       "type": "note",
       "x": 70,
       "y": 460,
@@ -203,11 +200,11 @@
       "height": 80,
       "rotation": 0,
       "text": "Nothing references DevHub.App. Neither Sdk project references the shell or a plugin; Sdk.Core has no Avalonia.",
-      "parentId": "7djgaz",
+      "parentId": "xy2w8g",
       "props": {}
     },
     {
-      "id": "92zbve",
+      "id": "ritzfj",
       "type": "note",
       "x": 1040,
       "y": 640,
@@ -220,80 +217,80 @@
   ],
   "edges": [
     {
-      "id": "hhhsgs",
+      "id": "36rjmv",
       "type": "dependency",
-      "from": "8tae46",
-      "to": "vtddhb",
+      "from": "w7awbw",
+      "to": "z277ek",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "cx2gky",
+      "id": "jpaxyf",
       "type": "dependency",
-      "from": "8tae46",
-      "to": "eagb7q",
+      "from": "w7awbw",
+      "to": "puu7pg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "9vbr83",
+      "id": "m6be55",
       "type": "dependency",
-      "from": "vtddhb",
-      "to": "eagb7q",
+      "from": "z277ek",
+      "to": "puu7pg",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "nb4swr",
+      "id": "tqmvtc",
       "type": "dependency",
-      "from": "vw6ipx",
-      "to": "vtddhb",
+      "from": "6992y8",
+      "to": "z277ek",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "cv9rc6",
+      "id": "p4kyfn",
       "type": "dependency",
-      "from": "7maryg",
-      "to": "eagb7q",
+      "from": "etn8f4",
+      "to": "puu7pg",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "uk74q2",
+      "id": "hq4fyn",
       "type": "dependency",
-      "from": "8tae46",
-      "to": "3rgm5q",
+      "from": "w7awbw",
+      "to": "b3a8rg",
       "text": "Velopack, DI",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "ncwivt",
+      "id": "5diz2n",
       "type": "dependency",
-      "from": "vtddhb",
-      "to": "3rgm5q",
+      "from": "z277ek",
+      "to": "b3a8rg",
       "text": "Avalonia, MVVM",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "styfpm",
+      "id": "2i2vn5",
       "type": "dependency",
-      "from": "5updri",
-      "to": "vtddhb",
+      "from": "nyef9e",
+      "to": "z277ek",
       "text": "«trace» packed from (build/Pack-Sdk.ps1)",
       "routing": "orthogonal",
       "waypoints": [],
@@ -302,40 +299,40 @@
       }
     },
     {
-      "id": "ipvrb9",
+      "id": "xzc35j",
       "type": "dependency",
-      "from": "hec2ie",
-      "to": "5updri",
+      "from": "hgb74a",
+      "to": "nyef9e",
       "text": "PackageReference (ExcludeAssets=runtime)",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "vgiu64",
+      "id": "sicp8b",
       "type": "dependency",
-      "from": "imkc4p",
-      "to": "hec2ie",
+      "from": "gt2bgd",
+      "to": "hgb74a",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "mvwdbx",
+      "id": "yefp2x",
       "type": "noteLink",
-      "from": "9fwzgu",
-      "to": "8tae46",
+      "from": "swgrj4",
+      "to": "w7awbw",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "en83dz",
+      "id": "t773ap",
       "type": "noteLink",
-      "from": "92zbve",
-      "to": "bim9y3",
+      "from": "ritzfj",
+      "to": "vm92zv",
       "text": "",
       "routing": "straight",
       "waypoints": [],

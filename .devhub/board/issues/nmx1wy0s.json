@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "nmx1wy0s",
+  "key": "DEV-207",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "Feedback 2026-10-18: diagrams and narrow windows",
+  "description": "What the owner found trying the diagrams and the board: unreadable diagrams in the dark theme, package names, labels, and the repository tab in a narrow window.",
+  "status": "inprogress",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9",
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:47.8723033+00:00",
+  "updated": "2026-10-18T22:24:48.0087233+00:00"
+}

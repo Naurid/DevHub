@@ -6,9 +6,10 @@
   "type": "task",
   "summary": "Sdk.Core's AppInfo is still the M0 placeholder (TemplateSchemaVersion belongs to Templates)",
   "description": "Found while documenting; removing it is a breaking Sdk change (PluginApi.Version) if any plugin uses it.",
-  "status": "backlog",
+  "status": "inreview",
   "priority": "medium",
   "parent": "kn4slr8a",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "devhub"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "vhafkuqv",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:47.6664313+00:00",
+      "body": "DevHub `Fix/appinfo-and-id-check`: AppInfo is [Obsolete] (not breaking) and goes with the next plugin API version; its test is gone."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-18T20:13:40.2981645+00:00",
-  "updated": "2026-10-18T20:13:40.2981645+00:00"
+  "updated": "2026-10-18T22:24:47.76028+00:00"
 }

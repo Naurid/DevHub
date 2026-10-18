@@ -78,6 +78,7 @@ reference views, windows or Avalonia controls; they talk to the shell through th
 | `Title`, `Icon` (abstract) | Tab label and an `IconKind` name. |
 | `Navigation` | `DocumentNavigation`: how its `Navigate.<Id>` action looks (`Text`, `Gesture`, `Menu`, `MenuOrder`, `WelcomeOrder`). Single documents only. |
 | `FillsEditorArea` | True: the view lays out its own edges (a repository tab); false: the editor area pads it. |
+| `MinWidth` | The narrowest the editor area may get while the tab is in front (0 = no limit); the window stops at that plus the open side tool windows. A repository tab uses it so its sidebar and changes list always fit. |
 | `ContextPath` | The folder the tab is about (a repository), so other plugins can act on "the tab in front". |
 | `IsDirty` | Shows a dot on the tab. |
 | `HasUnsavedChanges` | Edits lost when the tab closes; closing the window asks first. |
@@ -306,7 +307,7 @@ Examples and rules: [../UI_GUIDE.md §4](../UI_GUIDE.md).
 
 | Control | What it is |
 |---|---|
-| `SidePane` | A side panel that folds into a rail (and opens over the content) when the content would get narrower than `MinContentWidth`. `Pane`, `Content`, `PaneWidth` (two-way, save it), `MinPaneWidth`, `MaxPaneFraction`, `IsRight`, `PaneTitle`, `PaneIcon`, `CloseOnSelection`, `CloseOnContentClick`, `IsCompact`. |
+| `SidePane` | A side panel that folds into a rail (and opens over the content) when the content would get narrower than `MinContentWidth`. `Pane`, `Content`, `PaneWidth` (two-way, save it), `MinPaneWidth`, `MaxPaneFraction`, `IsRight`, `PaneTitle`, `PaneIcon`, `CloseOnSelection`, `CloseOnContentClick`, `IsCompact`. With `HideContentWhenNarrow` it never folds: the content is hidden instead and the pane takes the width (`IsContentHidden`, `:contentHidden`); use it for panes next to other panes, whose rails would cover each other, together with the tab's `MinWidth`. |
 | `OverflowPanel` | One row that never wraps or clips: what doesn't fit goes into a « More » menu. As a tab strip's items panel or around buttons. `Spacing`, `MoreContent`, `HasOverflow`. |
 | `SplitterThumb` | Drag handle that changes a bound size (`Value`, `Orientation`, `Invert`, `Minimum`, `Maximum`, `MaximumFraction`). |
 

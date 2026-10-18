@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "q6ax66lj",
+  "key": "DEV-210",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Drag line labels anywhere",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "a82x6ssg",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:49.4595592+00:00",
+      "body": "MoveLabel (Core, tested): a label keeps its share of the line and its offset. Every kind through LabelAnchor. Feature/diagram-labels."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:49.1585079+00:00",
+  "updated": "2026-10-18T22:24:49.5453784+00:00"
+}

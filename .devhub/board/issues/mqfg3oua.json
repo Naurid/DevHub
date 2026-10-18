@@ -6,9 +6,10 @@
   "type": "bug",
   "summary": "The Boards tool window's Id is translated (L.T), so its saved layout depends on the language",
   "description": "BoardsToolWindowViewModel.Id => L.T(\"Boards\"): ids are saved in settings and must not be translated (PLUGINS.md, ToolWindowViewModelBase: \"Don't rename casually\"). In French the open/closed state and size are saved under another id. Found while documenting.",
-  "status": "selected",
+  "status": "inreview",
   "priority": "medium",
   "parent": "kn4slr8a",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "mwv7rnuu",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:47.2462992+00:00",
+      "body": "Fixed on DevHub-Plugins `Fix/boards-tool-window-id`: the Id is \"boards\". tools/I18n check now fails on any translated id (Id, IdPrefix, SectionId, an action's id), in both repositories."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-18T20:13:40.2981645+00:00",
-  "updated": "2026-10-18T20:13:40.2981645+00:00"
+  "updated": "2026-10-18T22:24:47.3485873+00:00"
 }

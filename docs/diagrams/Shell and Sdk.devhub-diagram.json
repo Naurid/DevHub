@@ -6,7 +6,7 @@
   "props": {},
   "nodes": [
     {
-      "id": "xh5czw",
+      "id": "nkah7a",
       "type": "package",
       "x": 30,
       "y": 30,
@@ -15,13 +15,13 @@
       "rotation": 0,
       "text": "DevHub.App (shell)",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96",
         "bold": "true"
       }
     },
     {
-      "id": "nrbw66",
+      "id": "yudpqs",
       "type": "component",
       "x": 60,
       "y": 90,
@@ -29,15 +29,14 @@
       "height": 64,
       "rotation": 0,
       "text": "PluginHost",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {
-        "fill": "#DCEBFF",
-        "line": "#3574F0",
-        "textColor": "#1F3F7A"
+        "fill": "#383574F0",
+        "line": "#3574F0"
       }
     },
     {
-      "id": "akg6yg",
+      "id": "b7u2zu",
       "type": "component",
       "x": 60,
       "y": 190,
@@ -45,11 +44,11 @@
       "height": 64,
       "rotation": 0,
       "text": "DocumentManager",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "9hsztr",
+      "id": "4be44h",
       "type": "component",
       "x": 60,
       "y": 290,
@@ -57,11 +56,11 @@
       "height": 64,
       "rotation": 0,
       "text": "ToolWindowManager",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "eq7kat",
+      "id": "xayrct",
       "type": "component",
       "x": 60,
       "y": 390,
@@ -69,11 +68,11 @@
       "height": 64,
       "rotation": 0,
       "text": "MainMenu · Toolbar · Keymap",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "k9dvde",
+      "id": "du9mqb",
       "type": "component",
       "x": 60,
       "y": 490,
@@ -81,11 +80,11 @@
       "height": 64,
       "rotation": 0,
       "text": "Find Action (Ctrl+Shift+A)",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "kc88p8",
+      "id": "ntb7bf",
       "type": "component",
       "x": 60,
       "y": 590,
@@ -93,11 +92,11 @@
       "height": 64,
       "rotation": 0,
       "text": "Settings dialog + Plugins page",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "mbsd88",
+      "id": "w3jswm",
       "type": "component",
       "x": 340,
       "y": 90,
@@ -105,11 +104,11 @@
       "height": 64,
       "rotation": 0,
       "text": "DialogService",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "6h9aqv",
+      "id": "s36iat",
       "type": "component",
       "x": 340,
       "y": 190,
@@ -117,11 +116,11 @@
       "height": 64,
       "rotation": 0,
       "text": "StatusBarViewModel",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "7ytcud",
+      "id": "azzgxr",
       "type": "component",
       "x": 340,
       "y": 290,
@@ -129,11 +128,11 @@
       "height": 64,
       "rotation": 0,
       "text": "ThemeService",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "wc6tfs",
+      "id": "kcc2ha",
       "type": "component",
       "x": 340,
       "y": 390,
@@ -141,11 +140,11 @@
       "height": 64,
       "rotation": 0,
       "text": "ExportService",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "f68tsi",
+      "id": "xkea99",
       "type": "component",
       "x": 340,
       "y": 490,
@@ -153,11 +152,11 @@
       "height": 64,
       "rotation": 0,
       "text": "UpdateService (Velopack)",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "rjnptv",
+      "id": "q7823w",
       "type": "component",
       "x": 340,
       "y": 590,
@@ -165,11 +164,11 @@
       "height": 64,
       "rotation": 0,
       "text": "Marketplace page",
-      "parentId": "xh5czw",
+      "parentId": "nkah7a",
       "props": {}
     },
     {
-      "id": "ptqd6q",
+      "id": "hcyk7i",
       "type": "package",
       "x": 700,
       "y": 30,
@@ -178,13 +177,13 @@
       "rotation": 0,
       "text": "DevHub.Sdk",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96",
         "bold": "true"
       }
     },
     {
-      "id": "unnhpw",
+      "id": "sveb33",
       "type": "provided",
       "x": 729,
       "y": 99,
@@ -192,11 +191,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IPlugin",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "6nzm59",
+      "id": "h8p2cw",
       "type": "provided",
       "x": 729,
       "y": 189,
@@ -204,11 +203,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IActionProvider",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "2c4awd",
+      "id": "xr4ja7",
       "type": "component",
       "x": 860,
       "y": 170,
@@ -216,15 +215,14 @@
       "height": 60,
       "rotation": 0,
       "text": "ActionRegistry",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {
-        "fill": "#DCEBFF",
-        "line": "#3574F0",
-        "textColor": "#1F3F7A"
+        "fill": "#383574F0",
+        "line": "#3574F0"
       }
     },
     {
-      "id": "wwrgxy",
+      "id": "3njjxv",
       "type": "provided",
       "x": 729,
       "y": 279,
@@ -232,11 +230,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IDocumentFactory",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "ggirxv",
+      "id": "4par8k",
       "type": "provided",
       "x": 729,
       "y": 359,
@@ -244,11 +242,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IDocumentService",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "bhiwnn",
+      "id": "d9hmmw",
       "type": "provided",
       "x": 729,
       "y": 429,
@@ -256,11 +254,11 @@
       "height": 22,
       "rotation": 0,
       "text": "ToolWindowViewModelBase",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "dsaax2",
+      "id": "cj9ykw",
       "type": "provided",
       "x": 729,
       "y": 499,
@@ -268,11 +266,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IDialogService",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "mu7x4y",
+      "id": "pkrh7w",
       "type": "provided",
       "x": 729,
       "y": 559,
@@ -280,11 +278,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IStatusService",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "bbqy2f",
+      "id": "z2cfpa",
       "type": "provided",
       "x": 729,
       "y": 619,
@@ -292,11 +290,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IThemeService",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "pf9z5f",
+      "id": "wtkrv7",
       "type": "provided",
       "x": 729,
       "y": 679,
@@ -304,11 +302,11 @@
       "height": 22,
       "rotation": 0,
       "text": "IExportService",
-      "parentId": "ptqd6q",
+      "parentId": "hcyk7i",
       "props": {}
     },
     {
-      "id": "ghig2n",
+      "id": "tg2e72",
       "type": "package",
       "x": 700,
       "y": 800,
@@ -317,13 +315,13 @@
       "rotation": 0,
       "text": "DevHub.Sdk.Core",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96",
         "bold": "true"
       }
     },
     {
-      "id": "28kzr9",
+      "id": "7w4zap",
       "type": "provided",
       "x": 729,
       "y": 859,
@@ -331,11 +329,11 @@
       "height": 22,
       "rotation": 0,
       "text": "ISettingsStore",
-      "parentId": "ghig2n",
+      "parentId": "tg2e72",
       "props": {}
     },
     {
-      "id": "ak6piz",
+      "id": "vajcvt",
       "type": "component",
       "x": 860,
       "y": 840,
@@ -343,11 +341,11 @@
       "height": 50,
       "rotation": 0,
       "text": "JsonSettingsStore",
-      "parentId": "ghig2n",
+      "parentId": "tg2e72",
       "props": {}
     },
     {
-      "id": "7bikvx",
+      "id": "fzaxvk",
       "type": "component",
       "x": 860,
       "y": 905,
@@ -355,11 +353,11 @@
       "height": 50,
       "rotation": 0,
       "text": "PluginResolver",
-      "parentId": "ghig2n",
+      "parentId": "tg2e72",
       "props": {}
     },
     {
-      "id": "iq5fka",
+      "id": "2x37ry",
       "type": "component",
       "x": 1180,
       "y": 300,
@@ -368,13 +366,13 @@
       "rotation": 0,
       "text": "A plugin (DevHub-Plugins)",
       "props": {
-        "fill": "#FFF0D9",
+        "fill": "#38D98C1F",
         "line": "#D98C1F",
         "bold": "true"
       }
     },
     {
-      "id": "59nwah",
+      "id": "7g8kbz",
       "type": "note",
       "x": 1180,
       "y": 580,
@@ -387,260 +385,260 @@
   ],
   "edges": [
     {
-      "id": "wvx7cg",
+      "id": "v3iwkw",
       "type": "realization",
-      "from": "akg6yg",
-      "to": "ggirxv",
+      "from": "b7u2zu",
+      "to": "4par8k",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "y38nap",
+      "id": "7wgf4d",
       "type": "realization",
-      "from": "mbsd88",
-      "to": "dsaax2",
+      "from": "w3jswm",
+      "to": "cj9ykw",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "arq3yx",
+      "id": "7rewie",
       "type": "realization",
-      "from": "6h9aqv",
-      "to": "mu7x4y",
+      "from": "s36iat",
+      "to": "pkrh7w",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "bi3hsg",
+      "id": "63qdmi",
       "type": "realization",
-      "from": "7ytcud",
-      "to": "bbqy2f",
+      "from": "azzgxr",
+      "to": "z2cfpa",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "jty2dn",
+      "id": "2fzqsz",
       "type": "realization",
-      "from": "wc6tfs",
-      "to": "pf9z5f",
+      "from": "kcc2ha",
+      "to": "wtkrv7",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "bjz2b7",
+      "id": "m82hmu",
       "type": "realization",
-      "from": "ak6piz",
-      "to": "28kzr9",
+      "from": "vajcvt",
+      "to": "7w4zap",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "4r26wc",
+      "id": "mgs7xi",
       "type": "dependency",
-      "from": "nrbw66",
-      "to": "unnhpw",
+      "from": "yudpqs",
+      "to": "sveb33",
       "text": "ConfigureServices",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "y4g4aq",
+      "id": "nqwnd7",
       "type": "dependency",
-      "from": "nrbw66",
-      "to": "7bikvx",
+      "from": "yudpqs",
+      "to": "fzaxvk",
       "text": "what loads",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "taa5xg",
+      "id": "rrh6tg",
       "type": "dependency",
-      "from": "akg6yg",
-      "to": "wwrgxy",
+      "from": "b7u2zu",
+      "to": "3njjxv",
       "text": "one tab per id",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "xvx5pw",
+      "id": "k9t6fw",
       "type": "dependency",
-      "from": "9hsztr",
-      "to": "bhiwnn",
+      "from": "4be44h",
+      "to": "d9hmmw",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "k3mwsx",
+      "id": "32ztux",
       "type": "dependency",
-      "from": "2c4awd",
-      "to": "6nzm59",
+      "from": "xr4ja7",
+      "to": "h8p2cw",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "iy863v",
+      "id": "48nm2i",
       "type": "dependency",
-      "from": "eq7kat",
-      "to": "2c4awd",
+      "from": "xayrct",
+      "to": "xr4ja7",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "tqbbpt",
+      "id": "gw4xvh",
       "type": "dependency",
-      "from": "k9dvde",
-      "to": "2c4awd",
+      "from": "du9mqb",
+      "to": "xr4ja7",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "6u7qiu",
+      "id": "434tcq",
       "type": "dependency",
-      "from": "kc88p8",
-      "to": "28kzr9",
+      "from": "ntb7bf",
+      "to": "7w4zap",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "s5hyfx",
+      "id": "jpgxzm",
       "type": "dependency",
-      "from": "rjnptv",
-      "to": "7bikvx",
+      "from": "q7823w",
+      "to": "fzaxvk",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "tdiqq4",
+      "id": "hg6srg",
       "type": "dependency",
-      "from": "f68tsi",
-      "to": "6h9aqv",
+      "from": "xkea99",
+      "to": "s36iat",
       "text": "Update and restart",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "psxwbd",
+      "id": "jhfn4j",
       "type": "realization",
-      "from": "iq5fka",
-      "to": "unnhpw",
+      "from": "2x37ry",
+      "to": "sveb33",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "ncyhfq",
+      "id": "ex8wci",
       "type": "realization",
-      "from": "iq5fka",
-      "to": "6nzm59",
+      "from": "2x37ry",
+      "to": "h8p2cw",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "z7656q",
+      "id": "42wahz",
       "type": "realization",
-      "from": "iq5fka",
-      "to": "wwrgxy",
+      "from": "2x37ry",
+      "to": "3njjxv",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "4kgjix",
+      "id": "s4iwfk",
       "type": "realization",
-      "from": "iq5fka",
-      "to": "bhiwnn",
+      "from": "2x37ry",
+      "to": "d9hmmw",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "bbnxc4",
+      "id": "9rn72n",
       "type": "dependency",
-      "from": "iq5fka",
-      "to": "ggirxv",
+      "from": "2x37ry",
+      "to": "4par8k",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "yei75g",
+      "id": "wrv3gz",
       "type": "dependency",
-      "from": "iq5fka",
-      "to": "dsaax2",
+      "from": "2x37ry",
+      "to": "cj9ykw",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "7vwjrw",
+      "id": "bgs8bx",
       "type": "dependency",
-      "from": "iq5fka",
-      "to": "mu7x4y",
+      "from": "2x37ry",
+      "to": "pkrh7w",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "6be4xf",
+      "id": "iha8wm",
       "type": "dependency",
-      "from": "iq5fka",
-      "to": "pf9z5f",
+      "from": "2x37ry",
+      "to": "wtkrv7",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "t4gxv3",
+      "id": "5w3eyh",
       "type": "dependency",
-      "from": "iq5fka",
-      "to": "28kzr9",
+      "from": "2x37ry",
+      "to": "7w4zap",
       "text": "its own section",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "ipcd4x",
+      "id": "iuappg",
       "type": "noteLink",
-      "from": "59nwah",
-      "to": "iq5fka",
+      "from": "7g8kbz",
+      "to": "2x37ry",
       "text": "",
       "routing": "straight",
       "waypoints": [],

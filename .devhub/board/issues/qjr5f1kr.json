@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "qjr5f1kr",
+  "key": "DEV-213",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Repository tab: in a narrow window the sidebar's overlay covers the changes list's rail",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "hhjcdz9p",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:50.8919671+00:00",
+      "body": "SidePane.HideContentWhenNarrow and DocumentViewModelBase.MinWidth (DevHub Fix/narrow-repository-tab), used by Git (Fix/repository-tab-panes): the lists never fold, the diff is hidden, the window stops at their width."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:50.5967349+00:00",
+  "updated": "2026-10-18T22:24:50.9792976+00:00"
+}

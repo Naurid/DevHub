@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "qsaaicvn",
+  "key": "DEV-212",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Drop the \"interfaces usually have operations only\" hint",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "nmx1wy0s",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "bichbxcr",
+      "author": "x74qtb63",
+      "created": "2026-10-18T22:24:50.4070021+00:00",
+      "body": "Interfaces have properties (UML 2, C#). Feature/diagram-labels."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T22:24:50.114402+00:00",
+  "updated": "2026-10-18T22:24:50.5036007+00:00"
+}

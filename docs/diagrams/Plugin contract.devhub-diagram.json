@@ -6,7 +6,7 @@
   "props": {},
   "nodes": [
     {
-      "id": "3p3ffz",
+      "id": "d49pu9",
       "type": "package",
       "x": 30,
       "y": 40,
@@ -15,12 +15,12 @@
       "rotation": 0,
       "text": "DevHub.Plugins",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "qsbekd",
+      "id": "2cmydw",
       "type": "interface",
       "x": 60,
       "y": 90,
@@ -28,7 +28,7 @@
       "height": 108,
       "rotation": 0,
       "text": "IPlugin",
-      "parentId": "3p3ffz",
+      "parentId": "d49pu9",
       "props": {
         "attributes": "+ Info : PluginInfo\n+ Resources : IEnumerable<Uri>",
         "operations": "+ ConfigureServices(services, context : PluginContext)",
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "pbp4cm",
+      "id": "ub9ntb",
       "type": "class",
       "x": 60,
       "y": 270,
@@ -45,7 +45,7 @@
       "height": 85,
       "rotation": 0,
       "text": "PluginContext",
-      "parentId": "3p3ffz",
+      "parentId": "d49pu9",
       "props": {
         "attributes": "+ Settings : ISettingsStore\n+ LoadedPlugins : IReadOnlySet<string>",
         "operations": "",
@@ -55,7 +55,7 @@
       }
     },
     {
-      "id": "7c92ct",
+      "id": "kmy4je",
       "type": "class",
       "x": 60,
       "y": 420,
@@ -63,7 +63,7 @@
       "height": 53,
       "rotation": 0,
       "text": "DevHubPluginAttribute",
-      "parentId": "3p3ffz",
+      "parentId": "d49pu9",
       "props": {
         "attributes": "+ PluginType : Type",
         "operations": "",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "id": "6eawac",
+      "id": "sef4sx",
       "type": "package",
       "x": 570,
       "y": 40,
@@ -81,12 +81,12 @@
       "rotation": 0,
       "text": "DevHub.Sdk.Core",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "qbzui4",
+      "id": "hqfz42",
       "type": "class",
       "x": 600,
       "y": 90,
@@ -94,7 +94,7 @@
       "height": 187,
       "rotation": 0,
       "text": "PluginInfo",
-      "parentId": "6eawac",
+      "parentId": "sef4sx",
       "props": {
         "attributes": "+ Id : string\n+ Name : string\n+ Description : string\n+ Requires : IReadOnlyList<string>\n+ Category : string = \"General\"\n+ Version : string = \"1.0\"\n+ Order : int = 1000\n+ Presets : IReadOnlyList<string>",
         "operations": "",
@@ -104,7 +104,7 @@
       }
     },
     {
-      "id": "7j4r5z",
+      "id": "985gxd",
       "type": "interface",
       "x": 600,
       "y": 360,
@@ -112,7 +112,7 @@
       "height": 85,
       "rotation": 0,
       "text": "ISettingsStore",
-      "parentId": "6eawac",
+      "parentId": "sef4sx",
       "props": {
         "attributes": "",
         "operations": "+ Load() : AppSettings\n+ Save(settings : AppSettings)",
@@ -121,7 +121,7 @@
       }
     },
     {
-      "id": "h5nmey",
+      "id": "5n4sd9",
       "type": "interface",
       "x": 600,
       "y": 500,
@@ -129,7 +129,7 @@
       "height": 68,
       "rotation": 0,
       "text": "ISettingsSection",
-      "parentId": "6eawac",
+      "parentId": "sef4sx",
       "props": {
         "attributes": "+ static SectionId : string",
         "operations": "",
@@ -138,7 +138,7 @@
       }
     },
     {
-      "id": "jedysx",
+      "id": "98umqd",
       "type": "package",
       "x": 1010,
       "y": 40,
@@ -147,12 +147,12 @@
       "rotation": 0,
       "text": "DevHub.Actions",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "rf3xbe",
+      "id": "df9i2v",
       "type": "class",
       "x": 1040,
       "y": 90,
@@ -160,7 +160,7 @@
       "height": 223,
       "rotation": 0,
       "text": "AppAction",
-      "parentId": "jedysx",
+      "parentId": "98umqd",
       "props": {
         "attributes": "+ Id : string\n+ Text : string\n+ Command : ICommand\n+ Category : string?\n+ IconKind : string?\n+ Description : string?\n+ Gesture : string?\n+ Menu : string?\n+ MenuOrder : int\n+ ToolbarOrder : int?\n+ WelcomeOrder : int?",
         "operations": "",
@@ -169,7 +169,7 @@
       }
     },
     {
-      "id": "qmm8ia",
+      "id": "imqmhw",
       "type": "interface",
       "x": 1360,
       "y": 90,
@@ -177,7 +177,7 @@
       "height": 68,
       "rotation": 0,
       "text": "IActionProvider",
-      "parentId": "jedysx",
+      "parentId": "98umqd",
       "props": {
         "attributes": "",
         "operations": "+ GetActions() : IEnumerable<AppAction>",
@@ -186,7 +186,7 @@
       }
     },
     {
-      "id": "b88ivu",
+      "id": "9p8k8j",
       "type": "class",
       "x": 1360,
       "y": 260,
@@ -194,7 +194,7 @@
       "height": 93,
       "rotation": 0,
       "text": "ActionRegistry",
-      "parentId": "jedysx",
+      "parentId": "98umqd",
       "props": {
         "attributes": "+ All : IReadOnlyList<AppAction>",
         "operations": "+ Get(id : string) : AppAction\n+ TryGet(id : string, action : AppAction?) : bool",
@@ -203,7 +203,7 @@
       }
     },
     {
-      "id": "dxrs2m",
+      "id": "2br2ui",
       "type": "package",
       "x": 30,
       "y": 670,
@@ -212,12 +212,12 @@
       "rotation": 0,
       "text": "DevHub.ViewModels",
       "props": {
-        "fill": "#F4F5F7",
+        "fill": "#1A8C8F96",
         "line": "#8C8F96"
       }
     },
     {
-      "id": "mvgkru",
+      "id": "fkjmmg",
       "type": "class",
       "x": 860,
       "y": 720,
@@ -225,7 +225,7 @@
       "height": 41,
       "rotation": 0,
       "text": "ViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "",
         "operations": "",
@@ -235,7 +235,7 @@
       }
     },
     {
-      "id": "yp4hbe",
+      "id": "jt6fxe",
       "type": "class",
       "x": 60,
       "y": 900,
@@ -243,7 +243,7 @@
       "height": 212,
       "rotation": 0,
       "text": "DocumentViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Id : string\n+ abstract Title : string\n+ abstract Icon : string\n+ FillsEditorArea : bool\n+ ContextPath : string?\n+ Navigation : DocumentNavigation\n+ IsDirty : bool\n+ IsActive : bool",
         "operations": "+ ConfirmCloseAsync() : Task<bool>\n# OnActivationChanged(isActive : bool)",
@@ -253,7 +253,7 @@
       }
     },
     {
-      "id": "bawibg",
+      "id": "jhs7xb",
       "type": "class",
       "x": 440,
       "y": 900,
@@ -261,7 +261,7 @@
       "height": 155,
       "rotation": 0,
       "text": "ToolWindowViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ abstract Id : string\n+ abstract Title : string\n+ abstract IconKind : string\n+ abstract Slot : ToolWindowSlot\n+ Order : int = 100\n+ WelcomeOrder : int?\n+ IsOpen : bool",
         "operations": "",
@@ -271,7 +271,7 @@
       }
     },
     {
-      "id": "px28a3",
+      "id": "v6g3uu",
       "type": "class",
       "x": 820,
       "y": 900,
@@ -279,7 +279,7 @@
       "height": 144,
       "rotation": 0,
       "text": "DialogViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ abstract Title : string\n+ OkText : string\n+ IsDestructive : bool\n+ ShowCancel : bool\n+ ShowApply : bool",
         "operations": "# ApplyChangesAsync() : Task<bool>",
@@ -289,7 +289,7 @@
       }
     },
     {
-      "id": "y5x4x8",
+      "id": "8tj24k",
       "type": "class",
       "x": 1180,
       "y": 900,
@@ -297,7 +297,7 @@
       "height": 144,
       "rotation": 0,
       "text": "SettingsPageViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ abstract Title : string\n+ Keywords : string\n+ Order : int = 500\n+ IsModified : bool",
         "operations": "+ abstract Apply()\n# MarkModified()",
@@ -307,7 +307,7 @@
       }
     },
     {
-      "id": "ze6ief",
+      "id": "hefrsn",
       "type": "class",
       "x": 1540,
       "y": 900,
@@ -315,7 +315,7 @@
       "height": 53,
       "rotation": 0,
       "text": "TitleBarWidgetViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Order : int",
         "operations": "",
@@ -325,7 +325,7 @@
       }
     },
     {
-      "id": "3te3e9",
+      "id": "xbr2k2",
       "type": "class",
       "x": 1540,
       "y": 1010,
@@ -333,7 +333,7 @@
       "height": 53,
       "rotation": 0,
       "text": "StatusBarWidgetViewModelBase",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Order : int",
         "operations": "",
@@ -343,7 +343,7 @@
       }
     },
     {
-      "id": "nzmja7",
+      "id": "2aih6u",
       "type": "class",
       "x": 60,
       "y": 1200,
@@ -351,7 +351,7 @@
       "height": 136,
       "rotation": 0,
       "text": "DocumentNavigation",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Text : string?\n+ Gesture : string?\n+ Menu : string?\n+ MenuOrder : int\n+ WelcomeOrder : int?",
         "operations": "",
@@ -361,7 +361,7 @@
       }
     },
     {
-      "id": "eim8h4",
+      "id": "a4xkqd",
       "type": "interface",
       "x": 60,
       "y": 1400,
@@ -369,7 +369,7 @@
       "height": 91,
       "rotation": 0,
       "text": "IDocumentFactory",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ IdPrefix : string",
         "operations": "+ Create(id : string) : DocumentViewModelBase?",
@@ -378,7 +378,7 @@
       }
     },
     {
-      "id": "qmemt4",
+      "id": "kete64",
       "type": "interface",
       "x": 460,
       "y": 1400,
@@ -386,7 +386,7 @@
       "height": 108,
       "rotation": 0,
       "text": "IDocumentService",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Active : DocumentViewModelBase?\n+ OpenDocuments : IReadOnlyList<DocumentViewModelBase>",
         "operations": "+ OpenById(id : string) : bool",
@@ -395,7 +395,7 @@
       }
     },
     {
-      "id": "v6a3rk",
+      "id": "4u95gv",
       "type": "enumeration",
       "x": 480,
       "y": 1200,
@@ -403,7 +403,7 @@
       "height": 102,
       "rotation": 0,
       "text": "ToolWindowSlot",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "Left\nRight\nBottom",
         "operations": "",
@@ -412,7 +412,7 @@
       }
     },
     {
-      "id": "eqvjkk",
+      "id": "y6ir27",
       "type": "class",
       "x": 820,
       "y": 1200,
@@ -420,7 +420,7 @@
       "height": 87,
       "rotation": 0,
       "text": "ConfirmDialogViewModel",
-      "parentId": "dxrs2m",
+      "parentId": "2br2ui",
       "props": {
         "attributes": "+ Message : string\n+ Items : IReadOnlyList<string>\n+ IsDestructive : bool",
         "operations": "",
@@ -431,10 +431,10 @@
   ],
   "edges": [
     {
-      "id": "wr4kkh",
+      "id": "qu9qj9",
       "type": "association",
-      "from": "qsbekd",
-      "to": "qbzui4",
+      "from": "2cmydw",
+      "to": "hqfz42",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
@@ -445,30 +445,30 @@
       }
     },
     {
-      "id": "6gpf3u",
+      "id": "9nv2y7",
       "type": "dependency",
-      "from": "qsbekd",
-      "to": "pbp4cm",
+      "from": "2cmydw",
+      "to": "ub9ntb",
       "text": "ConfigureServices",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "bjgtvm",
+      "id": "d3c6v8",
       "type": "dependency",
-      "from": "7c92ct",
-      "to": "qsbekd",
+      "from": "kmy4je",
+      "to": "2cmydw",
       "text": "names the plugin type",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "zauhwc",
+      "id": "3mqhsj",
       "type": "association",
-      "from": "pbp4cm",
-      "to": "7j4r5z",
+      "from": "ub9ntb",
+      "to": "985gxd",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
@@ -478,30 +478,30 @@
       }
     },
     {
-      "id": "d2xxp2",
+      "id": "wd83vu",
       "type": "dependency",
-      "from": "7j4r5z",
-      "to": "h5nmey",
+      "from": "985gxd",
+      "to": "5n4sd9",
       "text": "LoadSection<T> / UpdateSection<T>",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "a9fuxj",
+      "id": "67g26d",
       "type": "dependency",
-      "from": "qmm8ia",
-      "to": "rf3xbe",
+      "from": "imqmhw",
+      "to": "df9i2v",
       "text": "creates",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "zbn89k",
+      "id": "98d98d",
       "type": "association",
-      "from": "b88ivu",
-      "to": "rf3xbe",
+      "from": "9p8k8j",
+      "to": "df9i2v",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
@@ -511,90 +511,90 @@
       }
     },
     {
-      "id": "t6q8v5",
+      "id": "kcs94y",
       "type": "dependency",
-      "from": "b88ivu",
-      "to": "qmm8ia",
+      "from": "9p8k8j",
+      "to": "imqmhw",
       "text": "collects every one",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "myccs9",
+      "id": "6ecevb",
       "type": "generalization",
-      "from": "yp4hbe",
-      "to": "mvgkru",
+      "from": "jt6fxe",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "g5zxf6",
+      "id": "2765tx",
       "type": "generalization",
-      "from": "bawibg",
-      "to": "mvgkru",
+      "from": "jhs7xb",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "tgx23d",
+      "id": "bbwepv",
       "type": "generalization",
-      "from": "px28a3",
-      "to": "mvgkru",
+      "from": "v6g3uu",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "zuii5s",
+      "id": "xqte3j",
       "type": "generalization",
-      "from": "y5x4x8",
-      "to": "mvgkru",
+      "from": "8tj24k",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "3b72vd",
+      "id": "h77yis",
       "type": "generalization",
-      "from": "ze6ief",
-      "to": "mvgkru",
+      "from": "hefrsn",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "uyr9kq",
+      "id": "yauwhe",
       "type": "generalization",
-      "from": "3te3e9",
-      "to": "mvgkru",
+      "from": "xbr2k2",
+      "to": "fkjmmg",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "fdwapa",
+      "id": "x47ras",
       "type": "generalization",
-      "from": "eqvjkk",
-      "to": "px28a3",
+      "from": "y6ir27",
+      "to": "v6g3uu",
       "text": "",
       "routing": "straight",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "f3n9z5",
+      "id": "kn65as",
       "type": "association",
-      "from": "yp4hbe",
-      "to": "nzmja7",
+      "from": "jt6fxe",
+      "to": "2aih6u",
       "text": "",
       "routing": "straight",
       "waypoints": [],
@@ -604,10 +604,10 @@
       }
     },
     {
-      "id": "hpmbd3",
+      "id": "9nitzc",
       "type": "association",
-      "from": "bawibg",
-      "to": "v6a3rk",
+      "from": "jhs7xb",
+      "to": "4u95gv",
       "text": "",
       "routing": "straight",
       "waypoints": [],
@@ -617,20 +617,20 @@
       }
     },
     {
-      "id": "j82m3m",
+      "id": "vp4xia",
       "type": "dependency",
-      "from": "eim8h4",
-      "to": "yp4hbe",
+      "from": "a4xkqd",
+      "to": "jt6fxe",
       "text": "creates",
       "routing": "orthogonal",
       "waypoints": [],
       "props": {}
     },
     {
-      "id": "rp723s",
+      "id": "wse87y",
       "type": "association",
-      "from": "qmemt4",
-      "to": "yp4hbe",
+      "from": "kete64",
+      "to": "jt6fxe",
       "text": "",
       "routing": "orthogonal",
       "waypoints": [],
