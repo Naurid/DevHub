@@ -44,6 +44,12 @@
     </Style>
 
     <!-- ===== Sizing of stock controls ===== -->
+    <!-- Trees fit their panel: rows are laid out at its width, so long names end in "…" and the fold arrows and
+         badges at a row's end stay in view (a tree that scrolled sideways pushed them out of the panel). -->
+    <Style Selector="TreeView">
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+
     <Style Selector="Button, ToggleButton, RepeatButton">
         <Setter Property="MinHeight" Value="{DynamicResource Size.ButtonHeight}" />
         <Setter Property="Padding" Value="{DynamicResource Padding.Button}" />
