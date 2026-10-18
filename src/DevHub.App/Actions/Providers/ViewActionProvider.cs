@@ -18,7 +18,6 @@ public sealed class ViewActionProvider(IThemeService theme) : IActionProvider
             Gesture = "Ctrl+Alt+D",
             Menu = "View",
             MenuOrder = 300,
-            ToolbarOrder = 200,
         };
 
         yield return new AppAction(ActionIds.ToggleCompact, L.T("Toggle Compact Mode"),
