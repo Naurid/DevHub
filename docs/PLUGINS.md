@@ -30,7 +30,7 @@ DevHub (Naurid/DevHub)
 DevHub-Plugins (Naurid/DevHub-Plugins)
   plugins/<Name>/DevHub.<Name>/       a plugin's UI: plugin.json, <Name>Plugin.cs, Actions/, ViewModels/, Views/, Themes/
   plugins/<Name>/DevHub.<Name>.Core/  its logic: no Avalonia, unit-tested (optional for a UI-only plugin)
-  plugins/<Name>/                     or one project for a small plugin (HelloWorld)
+  plugins/<Name>/                     or one project for a small plugin
   tests/DevHub.<Name>.Core.Tests/
 ```
 
@@ -207,7 +207,7 @@ For the UI and logic plugins share (all in the UI Gallery, View → UI Gallery i
 
 Plugins are made in **DevHub-Plugins** (its README has the details). Example: a `Docker` plugin with a tool
 window listing containers, an action and a setting. Swap in your feature's name; `plugins/Projects` is a small
-real one, `plugins/HelloWorld` the smallest.
+real one (the plugin starter in `tools/plugin-repo/` has a HelloWorld sample).
 
 1. **Projects.** `plugins/Docker/DevHub.Docker/DevHub.Docker.csproj` (UI) and
    `plugins/Docker/DevHub.Docker.Core/DevHub.Docker.Core.csproj` (logic), and `tests/DevHub.Docker.Core.Tests`.
