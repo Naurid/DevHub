@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
 using DevHub.Controls;
 using DevHub.Sdk.Core.Charts;
 using DevHub.Sdk.Core.Tables;
@@ -80,6 +81,83 @@ public sealed class ExportService(IDialogService dialogs, IStatusService status)
         if (_window?.Clipboard is { } clipboard)
             await clipboard.SetTextAsync(text);
     }
+
+    public async Task<bool> SaveImageAsync(byte[] png, string suggestedName)
+    {
+        var path = await dialogs.PickSaveFileAsync(L.T("Save as Image"), FileName(suggestedName, "png"), L.T("PNG image"), "png");
+        if (path is null)
+            return false;
+        try
+        {
+            await File.WriteAllBytesAsync(path, png);
+            status.Show(L.T($"Saved {Path.GetFileName(path)}"));
+            return true;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            status.Show(L.T($"The image couldn't be saved: {e.Message}"));
+            return false;
+        }
+    }
+
+    public async Task CopyImageAsync(byte[] png)
+    {
+        if (_window?.Clipboard is not { } clipboard)
+            return;
+        var bitmap = new Avalonia.Media.Imaging.Bitmap(new MemoryStream(png));
+        await clipboard.SetBitmapAsync(bitmap);
+        await clipboard.FlushAsync();
+        status.Show(L.T("Image copied: paste it into your document"));
+    }
+
+    public async Task<bool> SaveTextAsync(string text, string suggestedName, string extension, string typeName)
+    {
+        var path = await dialogs.PickSaveFileAsync(L.T("Save As"), FileName(suggestedName, extension), typeName, extension);
+        if (path is null)
+            return false;
+        try
+        {
+            await File.WriteAllTextAsync(path, text, new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            status.Show(L.T($"Saved {Path.GetFileName(path)}"));
+            return true;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            status.Show(L.T($"The file couldn't be saved: {e.Message}"));
+            return false;
+        }
+    }
+
+    public async Task<byte[]?> GetClipboardImageAsync()
+    {
+        if (_window?.Clipboard is not { } clipboard)
+            return null;
+        try
+        {
+            using var bitmap = await clipboard.TryGetBitmapAsync();
+            if (bitmap is null)
+                return null;
+            using var stream = new MemoryStream();
+            bitmap.Save(stream, Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+            return stream.ToArray();
+        }
+        catch (Exception e) when (e is not OutOfMemoryException)
+        {
+            // Some apps put formats on the clipboard we can't decode: no picture, rather than an error.
+            return null;
+        }
+    }
+
+    public async Task<IReadOnlyList<string>> GetClipboardFilesAsync()
+    {
+        if (_window?.Clipboard is not { } clipboard)
+            return [];
+        var files = await clipboard.TryGetFilesAsync();
+        return files?.Select(f => f.TryGetLocalPath()).OfType<string>().ToList() ?? [];
+    }
+
+    public async Task<string?> GetClipboardTextAsync() =>
+        _window?.Clipboard is { } clipboard ? await clipboard.TryGetTextAsync() : null;
 
     // "Velocity: SHOP" → "Velocity SHOP.png"
     private static string FileName(string name, string extension)
