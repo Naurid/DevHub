@@ -69,6 +69,30 @@ public class ChartDataTests
     }
 
     [Fact]
+    public void A_curved_line_never_goes_past_its_points()
+    {
+        // A burndown: down, flat, down to zero, then a jump up (scope added).
+        (double X, double Y)[] points = [(0, 40), (1, 30), (2, 30), (3, 0), (4, 20)];
+        var segments = ChartMath.SmoothSegments(points);
+
+        Assert.Equal(4, segments.Count);
+        for (var i = 0; i < segments.Count; i++)
+        {
+            var (p0, p3) = (points[i], points[i + 1]);
+            var (low, high) = (Math.Min(p0.Y, p3.Y), Math.Max(p0.Y, p3.Y));
+            for (var t = 0.0; t <= 1; t += 0.05)
+            {
+                var u = 1 - t;
+                var y = u * u * u * p0.Y + 3 * u * u * t * segments[i].Y1 + 3 * u * t * t * segments[i].Y2 + t * t * t * p3.Y;
+                Assert.InRange(y, low - 1e-9, high + 1e-9);
+            }
+        }
+        // The flat stretch stays flat.
+        Assert.Equal((30.0, 30.0), (segments[1].Y1, segments[1].Y2));
+        Assert.Empty(ChartMath.SmoothSegments([(0, 1)]));
+    }
+
+    [Fact]
     public void Tables_write_csv_and_tab_separated_text()
     {
         var table = new TableData(["Key", "Summary"], [["DEV-1", "Login, form"], ["DEV-2", "Say \"hi\"\nthen go"]]);

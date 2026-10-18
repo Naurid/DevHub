@@ -54,6 +54,13 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
     /// <summary>Installs or removals wait for a restart.</summary>
     [ObservableProperty] private bool _changesPending;
 
+    /// <summary>The plugins with a newer compatible version on offer (bundled ones included), for Update All.</summary>
+    public IReadOnlyList<MarketplaceRowViewModel> Updatable => Rows.Where(r => r.HasUpdate && r.CanInstallNow).ToList();
+
+    public bool HasUpdates => Updatable.Count > 0;
+
+    public string UpdateAllText => L.T($"Update All ({Updatable.Count})");
+
     public IReadOnlyList<string> SourceList =>
         Sources.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
@@ -92,6 +99,67 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
             Rows.Add(new MarketplaceRowViewModel(plugin.Info.Id, plugin.Info.Name, plugin.Info.Description, null, plugin, BundledCopy(plugin.Info.Id), InstallAsync, RemoveAsync));
         if (Rows.Count == 0 && offered.Count == 0)
             Message ??= L.T("Nothing installed from the marketplace yet. Refresh to see what it offers.");
+        OnPropertyChanged(nameof(Updatable));
+        OnPropertyChanged(nameof(HasUpdates));
+        OnPropertyChanged(nameof(UpdateAllText));
+        UpdateAllCommand.NotifyCanExecuteChanged();
+    }
+
+    /// <summary>
+    /// Every update at once: one confirmation listing them all (with where each comes from), then each plugin in turn,
+    /// with what its new version requires. A plugin that fails is left as it was; the others still update.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(HasUpdates))]
+    private async Task UpdateAllAsync()
+    {
+        var rows = Updatable;
+        var plans = new List<(MarketplaceRowViewModel Row, InstallPlan Plan)>();
+        var problems = new List<string>();
+        foreach (var row in rows)
+        {
+            var plan = InstallPlanner.PlanInstall(row.Offered!, _offered, PresentIds());
+            if (plan.Problem is not null)
+                problems.Add($"{row.Name}: {plan.Problem}");
+            else
+                plans.Add((row, plan));
+        }
+        if (plans.Count == 0)
+        {
+            Message = string.Join(" ", problems);
+            return;
+        }
+
+        var entries = plans.SelectMany(p => p.Plan.Install).DistinctBy(e => e.Id).ToList();
+        var origins = Names(entries.Select(e => Place(e.Url)).Distinct().ToList());
+        var ok = await _dialogs.ShowDialogAsync(new ConfirmDialogViewModel(
+            plans.Count == 1 ? L.T($"Update {plans[0].Row.Name}") : L.T($"Update {plans.Count} plugins"),
+            L.T($"They come from {origins}.") + " "
+            + L.T("A plugin is a program: it runs inside DevHub with your permissions. Install only if you trust where they come from. They're ready after a restart."),
+            L.T("Update All"),
+            entries.Select(e => $"{e.Name} {e.Version}: {e.Url}").ToList(), destructive: false));
+        if (!ok)
+            return;
+
+        var updated = new List<IndexEntry>();
+        foreach (var (row, plan) in plans)
+        {
+            // A requirement another update already brought along isn't installed twice.
+            var install = plan.Install.Where(e => updated.All(u => u.Id != e.Id)).ToList();
+            row.IsBusy = true;
+            var error = await InstallAllOrNothingAsync(install);
+            row.IsBusy = false;
+            if (error is null)
+                updated.AddRange(install);
+            else
+                problems.Add($"{row.Name}: {error}");
+        }
+        EnableAll(updated);
+        Message = (updated.Count == 0 ? "" : L.T($"{Names(updated)}: updated, ready after a restart.") + " ")
+                  + string.Join(" ", problems);
+        if (updated.Count > 0)
+            Pending();
+        else
+            ShowInstalled(_offered);
     }
 
     private async Task InstallAsync(MarketplaceRowViewModel row)
@@ -125,42 +193,54 @@ public sealed partial class MarketplaceViewModel : ViewModelBase
             return;
 
         row.IsBusy = true;
-        var done = new List<IndexEntry>();
-        string? error = null;
-        foreach (var item in plan.Install)
-        {
-            error = await _installer.InstallAsync(item);
-            if (error is not null)
-                break;
-            done.Add(item);
-        }
+        var error = await InstallAllOrNothingAsync(plan.Install);
         row.IsBusy = false;
         if (error is not null)
         {
-            // All or nothing: the requirements already unpacked for this install are dropped again.
-            foreach (var item in done)
-                _installer.Remove(item.Id);
-            Message = done.Count == 0 ? error
-                : done.Count == 1 ? L.T($"{error} {Names(done)} wasn't installed either.")
-                : L.T($"{error} {Names(done)} weren't installed either.");
-            if (done.Count > 0)
-                ShowInstalled(_offered);
+            Message = error;
+            ShowInstalled(_offered);
             return;
         }
-        // Switched on, so they load after the restart (null = everything is on anyway).
-        _store.Update(s =>
-        {
-            foreach (var item in plan.Install)
-            {
-                if (s.EnabledPlugins is { } enabled && !enabled.Contains(item.Id))
-                    enabled.Add(item.Id);
-            }
-        });
+        EnableAll(plan.Install);
         Message = also.Count == 0
             ? L.T($"{entry.Name} {entry.Version} is ready: restart DevHub to use it.")
             : L.T($"{Names(plan.Install)} are ready: restart DevHub to use them.");
         Pending();
     }
+
+    /// <summary>
+    /// Installs the plugins of a plan in order; all or nothing: when one fails, those already unpacked for it are
+    /// dropped again. Null when it worked, else what went wrong.
+    /// </summary>
+    private async Task<string?> InstallAllOrNothingAsync(IReadOnlyList<IndexEntry> install)
+    {
+        var done = new List<IndexEntry>();
+        foreach (var item in install)
+        {
+            var error = await _installer.InstallAsync(item);
+            if (error is not null)
+            {
+                foreach (var installed in done)
+                    _installer.Remove(installed.Id);
+                return done.Count == 0 ? error
+                    : done.Count == 1 ? L.T($"{error} {Names(done)} wasn't installed either.")
+                    : L.T($"{error} {Names(done)} weren't installed either.");
+            }
+            done.Add(item);
+        }
+        return null;
+    }
+
+    /// <summary>Switched on, so they load after the restart (null = everything is on anyway).</summary>
+    private void EnableAll(IReadOnlyList<IndexEntry> installed) =>
+        _store.Update(s =>
+        {
+            foreach (var item in installed)
+            {
+                if (s.EnabledPlugins is { } enabled && !enabled.Contains(item.Id))
+                    enabled.Add(item.Id);
+            }
+        });
 
     /// <summary>Plugins there at the next start: built in, bundled, or installed from the marketplace (and not being removed).</summary>
     private IEnumerable<string> PresentIds() =>

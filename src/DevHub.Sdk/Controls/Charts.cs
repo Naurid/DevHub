@@ -102,6 +102,48 @@ public abstract class ChartBase : Control
     }
 
     /// <summary>A pen for a series' lines, dashed or dotted when its style says so.</summary>
+    /// <summary>
+    /// Continues a figure (already begun at the first point, or the last one when <paramref name="reverse"/>) through
+    /// <paramref name="points"/>: straight segments, or a curve that never overshoots them (ChartMath.SmoothSegments).
+    /// </summary>
+    protected static void AddPath(StreamGeometryContext g, IReadOnlyList<Point> points, bool curved, bool reverse = false)
+    {
+        var segments = curved && points.Count > 2 ? ChartMath.SmoothSegments(points.Select(p => (p.X, p.Y)).ToList()) : null;
+        if (!reverse)
+        {
+            for (var i = 1; i < points.Count; i++)
+            {
+                if (segments is null)
+                    g.LineTo(points[i]);
+                else
+                    g.CubicBezierTo(new Point(segments[i - 1].X1, segments[i - 1].Y1), new Point(segments[i - 1].X2, segments[i - 1].Y2), points[i]);
+            }
+            return;
+        }
+        for (var i = points.Count - 2; i >= 0; i--)
+        {
+            if (segments is null)
+                g.LineTo(points[i]);
+            else
+                g.CubicBezierTo(new Point(segments[i].X2, segments[i].Y2), new Point(segments[i].X1, segments[i].Y1), points[i]);
+        }
+    }
+
+    /// <summary>One run of a series (between gaps) as a line, straight or curved.</summary>
+    protected static void DrawRun(DrawingContext context, Pen pen, IReadOnlyList<Point> run, bool curved)
+    {
+        if (run.Count < 2)
+            return;
+        var geometry = new StreamGeometry();
+        using (var g = geometry.Open())
+        {
+            g.BeginFigure(run[0], false);
+            AddPath(g, run, curved);
+            g.EndFigure(false);
+        }
+        context.DrawGeometry(null, pen, geometry);
+    }
+
     protected static Pen LinePen(IBrush brush, SeriesStyle style, double thickness = 2) => new(brush, thickness,
         style.Dash switch
         {
@@ -422,7 +464,9 @@ public class LineChart : AxisChart
                 var fill = brush is ISolidColorBrush solid ? new SolidColorBrush(solid.Color, IsStacked ? 0.55 : 0.25) : brush;
                 double? Top(int i) => stack is null ? (i < data.Series[s].Values.Count ? data.Series[s].Values[i] : null) : stack[s].Top[i];
                 double? Bottom(int i) => stack?[s].Bottom[i];
-                DrawArea(context, fill, n, Top, Bottom, zero);
+                // A stacked area's lower edge is the curve of the series below it.
+                var curvedBelow = s > 0 && data.Series[s - 1].Style.Curved;
+                DrawArea(context, fill, n, Top, Bottom, zero, data.Series[s].Style.Curved, stack is not null && curvedBelow);
             }
         }
         for (var s = 0; s < data.Series.Count; s++)
@@ -430,29 +474,30 @@ public class LineChart : AxisChart
             var style = data.Series[s].Style;
             var brush = SeriesBrush(data, s);
             var pen = LinePen(brush, style);
-            Point? previous = null;
+            var run = new List<Point>();
             var values = data.Series[s].Values;
-            for (var i = 0; i < n; i++)
+            for (var i = 0; i <= n; i++)
             {
-                var value = stack is not null ? (values.Count > i && values[i] is not null ? stack[s].Top[i] : null) : i < values.Count ? values[i] : null;
+                var value = i == n ? null
+                    : stack is not null ? (values.Count > i && values[i] is not null ? stack[s].Top[i] : null) : i < values.Count ? values[i] : null;
                 if (value is not { } v || !double.IsFinite(v))
                 {
-                    previous = null; // a gap
+                    DrawRun(context, pen, run, style.Curved); // a gap (or the end)
+                    run.Clear();
                     continue;
                 }
                 var point = new Point(X(i, n), Y(v));
-                if (previous is { } from)
-                    context.DrawLine(pen, from, point);
+                run.Add(point);
                 if (style.Markers || (dots && !IsArea) || n == 1)
                     context.DrawEllipse(brush, null, point, style.Markers ? 3.5 : 3, style.Markers ? 3.5 : 3);
                 if (style.ValueLabels && values[i] is { } own)
                     DrawValueLabel(context, data, own, point);
-                previous = point;
             }
         }
     }
 
-    private void DrawArea(DrawingContext context, IBrush fill, int n, Func<int, double?> top, Func<int, double?> bottom, double zero)
+    private void DrawArea(DrawingContext context, IBrush fill, int n, Func<int, double?> top, Func<int, double?> bottom, double zero,
+        bool curvedTop, bool curvedBottom)
     {
         var run = new List<int>();
         for (var i = 0; i <= n; i++)
@@ -467,11 +512,12 @@ public class LineChart : AxisChart
                 var geometry = new StreamGeometry();
                 using (var g = geometry.Open())
                 {
-                    g.BeginFigure(new Point(X(run[0], n), Y(top(run[0])!.Value)), true);
-                    foreach (var j in run.Skip(1))
-                        g.LineTo(new Point(X(j, n), Y(top(j)!.Value)));
-                    foreach (var j in Enumerable.Reverse(run))
-                        g.LineTo(new Point(X(j, n), bottom(j) is { } b ? Y(b) : zero));
+                    var upper = run.Select(j => new Point(X(j, n), Y(top(j)!.Value))).ToList();
+                    var lower = run.Select(j => new Point(X(j, n), bottom(j) is { } b ? Y(b) : zero)).ToList();
+                    g.BeginFigure(upper[0], true);
+                    AddPath(g, upper, curvedTop);
+                    g.LineTo(lower[^1]);
+                    AddPath(g, lower, curvedBottom, reverse: true);
                     g.EndFigure(true);
                 }
                 context.DrawGeometry(fill, null, geometry);
@@ -568,8 +614,8 @@ public class ComboChart : BarChart
                     using (var g = geometry.Open())
                     {
                         g.BeginFigure(new Point(points[0].X, zero), true);
-                        foreach (var p in points)
-                            g.LineTo(p);
+                        g.LineTo(points[0]);
+                        AddPath(g, points, style.Curved);
                         g.LineTo(new Point(points[^1].X, zero));
                         g.EndFigure(true);
                     }
@@ -577,21 +623,20 @@ public class ComboChart : BarChart
                 }
             }
             var pen = LinePen(brush, style);
-            Point? previous = null;
-            for (var i = 0; i < n; i++)
+            var run = new List<Point>();
+            for (var i = 0; i <= n; i++)
             {
-                if (i >= values.Count || values[i] is not { } v || !double.IsFinite(v))
+                if (i >= n || i >= values.Count || values[i] is not { } v || !double.IsFinite(v))
                 {
-                    previous = null;
+                    DrawRun(context, pen, run, style.Curved);
+                    run.Clear();
                     continue;
                 }
                 var point = new Point(X(i, n), Y(v));
-                if (previous is { } from)
-                    context.DrawLine(pen, from, point);
+                run.Add(point);
                 context.DrawEllipse(brush, null, point, 3, 3);
                 if (style.ValueLabels)
                     DrawValueLabel(context, data, v, point);
-                previous = point;
             }
         }
     }

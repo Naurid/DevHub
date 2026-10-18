@@ -35,6 +35,9 @@ public sealed record SeriesStyle
     public bool ValueLabels { get; init; }
     public int? Color { get; init; }
     public SeriesKind Kind { get; init; } = SeriesKind.Line;
+
+    /// <summary>A line (or an area's edge) curves through its points instead of going straight from one to the next.</summary>
+    public bool Curved { get; init; }
 }
 
 /// <summary>A shaded range between two values per label (a forecast between pessimistic and optimistic).</summary>
@@ -223,6 +226,54 @@ public sealed record PieSlice(int Index, double Value, double Fraction, double S
 /// <summary>Chart math, shared by the chart controls and tested without them.</summary>
 public static class ChartMath
 {
+    /// <summary>
+    /// The two Bézier control points of each segment of a smooth line through <paramref name="points"/> (x increasing):
+    /// a monotone cubic (Fritsch–Carlson), so the curve never goes above or below its points between them: a burndown
+    /// doesn't dip under zero, a flat stretch stays flat. One entry per segment (points.Count − 1).
+    /// </summary>
+    public static IReadOnlyList<(double X1, double Y1, double X2, double Y2)> SmoothSegments(IReadOnlyList<(double X, double Y)> points)
+    {
+        var n = points.Count;
+        if (n < 2)
+            return [];
+        var slopes = new double[n - 1];
+        for (var i = 0; i < n - 1; i++)
+        {
+            var dx = points[i + 1].X - points[i].X;
+            slopes[i] = dx == 0 ? 0 : (points[i + 1].Y - points[i].Y) / dx;
+        }
+        var tangents = new double[n];
+        tangents[0] = slopes[0];
+        tangents[n - 1] = slopes[n - 2];
+        for (var i = 1; i < n - 1; i++)
+            tangents[i] = slopes[i - 1] * slopes[i] <= 0 ? 0 : (slopes[i - 1] + slopes[i]) / 2;
+        for (var i = 0; i < n - 1; i++)
+        {
+            if (slopes[i] == 0)
+            {
+                tangents[i] = tangents[i + 1] = 0;
+                continue;
+            }
+            var a = tangents[i] / slopes[i];
+            var b = tangents[i + 1] / slopes[i];
+            var sum = a * a + b * b;
+            if (sum > 9)
+            {
+                var tau = 3 / Math.Sqrt(sum);
+                tangents[i] = tau * a * slopes[i];
+                tangents[i + 1] = tau * b * slopes[i];
+            }
+        }
+        var segments = new (double, double, double, double)[n - 1];
+        for (var i = 0; i < n - 1; i++)
+        {
+            var third = (points[i + 1].X - points[i].X) / 3;
+            segments[i] = (points[i].X + third, points[i].Y + tangents[i] * third,
+                           points[i + 1].X - third, points[i + 1].Y - tangents[i + 1] * third);
+        }
+        return segments;
+    }
+
     /// <summary>
     /// A readable axis covering <paramref name="min"/>..<paramref name="max"/>: steps of 1, 2, 2.5 or 5 times a power of
     /// ten, at most about <paramref name="maxTicks"/> ticks, from a multiple of the step. Counting charts (all values ≥ 0)

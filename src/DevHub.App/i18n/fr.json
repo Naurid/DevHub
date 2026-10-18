@@ -179,5 +179,11 @@
   "{0} (the built-in plugin {1} is used instead)": "{0} (la version intégrée de {1} est utilisée à la place)",
   "{0} (made for plugin API {1}; this DevHub has {2})": "{0} (conçu pour l'API de plugins {1}\u202F; ce DevHub utilise la {2})",
   "a plugin": "un plugin",
-  " and ": " et "
+  " and ": " et ",
+  "Update All ({0})": "Tout mettre à jour ({0})",
+  "Update {0} plugins": "Mettre à jour {0} plugins",
+  "They come from {0}.": "Ils proviennent de {0}.",
+  "Update All": "Tout mettre à jour",
+  "{0}: updated, ready after a restart.": "{0}\u00A0: mis à jour, prêts après un redémarrage.",
+  "Update every plugin that has a newer version": "Mettre à jour tous les plugins qui ont une version plus récente"
 }

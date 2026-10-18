@@ -10,9 +10,12 @@
              x:Class="DevHub.Views.Plugins.MarketplaceView"
              x:DataType="vm:MarketplaceViewModel">
     <StackPanel Spacing="{DynamicResource Spacing}">
-        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource Spacing}">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="{DynamicResource Spacing}">
             <TextBlock Classes="header" Text="{l:T 'Marketplace'}" VerticalAlignment="Center" />
-            <Button Grid.Column="1" Content="{l:T 'Refresh'}" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
+            <!-- Every plugin with a newer version, in one go (after Refresh has fetched what's on offer). -->
+            <Button Grid.Column="1" Classes="accent" Content="{Binding UpdateAllText}" Command="{Binding UpdateAllCommand}"
+                    IsVisible="{Binding HasUpdates}" ToolTip.Tip="{l:T 'Update every plugin that has a newer version'}" />
+            <Button Grid.Column="2" Content="{l:T 'Refresh'}" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
         </Grid>
         <TextBlock Classes="secondary" TextWrapping="Wrap"
                    Text="{l:T 'More plugins, made for DevHub. Installing, updating and removing take effect after a restart.'}" />
