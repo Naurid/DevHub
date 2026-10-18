@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "qleah9bv",
+  "key": "DEV-140",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "An epic's tasks from Create Issue; epic defaults and menus",
+  "description": "Landed in:\n- DevHub-Plugins `65ec9b1`: Board: an epic's tasks from Create Issue, epic defaults, epic menus",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-17T11:57:00+00:00",
+  "resolved": "2026-10-17T11:57:00+00:00"
+}

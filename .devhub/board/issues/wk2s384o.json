@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "wk2s384o",
+  "key": "DEV-59",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "P1: split Core into Sdk.Core + plugin .Core projects; settings sections + migration",
+  "description": "Landed in:\n- DevHub `cc6c642`: P1: split Core into Sdk.Core + plugin .Core projects (Projects, Git, GitHub), tests per project + TestKit; plugin settings sections with migration (tested); README",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T15:37:00+00:00",
+  "resolved": "2026-10-11T15:37:00+00:00"
+}

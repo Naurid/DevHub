@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ck3gyoz8",
+  "key": "DEV-133",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B9: Board.Reports: burndown, velocity, cumulative flow, dashboards",
+  "description": "Landed in:\n- DevHub-Plugins `28b782d`: B9: Board.Reports (requires Board) — report calculations in Reports.Core from the board and its change log (IssueTimeline: any field at any moment; sprint burndown with the ideal line and burnup with scope changes, sprint report: completed / not completed / added / removed, velocity and its average, cumulative flow, cycle times and the control chart, epic progress, issues counted by a field; 7 tests) and a Reports page on every board (report list, sprint picker, Sdk line / bar / pie charts, a dashboard of gadgets you add and remove: assigned to me, open issues by a field, a saved filter's results). Checked in a running DevHub",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T20:43:00+00:00",
+  "resolved": "2026-10-13T20:43:00+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "poqe7bcr",
+  "key": "DEV-83",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "R1: CI (warnings as errors, tests, vulnerable packages, SBOM), CodeQL, Dependabot; version from git",
+  "description": "Landed in:\n- DevHub `5d6e202`: R1: CI (build with warnings as errors, tests, vulnerable-package check, SBOM, dependency review), CodeQL, Dependabot; version from git (build/Get-Version.ps1: vN major tags, +1 minor per push/merge on main); global.json; docs/RELEASING.md",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:26:00+00:00",
+  "resolved": "2026-10-12T01:26:00+00:00"
+}

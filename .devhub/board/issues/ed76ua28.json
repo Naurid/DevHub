@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ed76ua28",
+  "key": "DEV-60",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "P2: DevHub.Sdk with base classes, controls, themes, contracts",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub `bd9b0ab`: P3: plugin contract (IPlugin, PluginHost, PluginResolver tested); menus/toolbar/Welcome from action metadata, settings pages, title/status-bar widgets; Git owns ActiveRepositoryService; features registered as plugins; IProjectOpener; DI validated on build",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T15:54:00+00:00",
+  "resolved": "2026-10-11T15:54:00+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "za86bdwz",
+  "key": "DEV-1",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "M0 — Skeleton",
+  "description": "Solution, Avalonia 12 app shell, Core library and tests; `dotnet build` and `dotnet test` green.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-09",
+  "due": "2026-10-09",
+  "rank": "i",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:14:00+00:00",
+  "updated": "2026-10-09T00:40:00+00:00",
+  "resolved": "2026-10-09T00:40:00+00:00"
+}

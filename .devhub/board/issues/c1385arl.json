@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "c1385arl",
+  "key": "DEV-136",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B12: Find Action entries (Go to Issue, My Open Issues…)",
+  "description": "Landed in:\n- DevHub `017d1be`: Roadmap: B11 and B12 done (M10's Board command tools left for M10); milestone B complete\n- DevHub-Plugins `2a91c4f`: B12 and wrap-up: Go to Issue and My Open Issues actions; docs/examples/jira-sample.csv (13 issues: epics, stories, sub-tasks, bugs, comments, versions, components) with a test that imports it; resolutions matched by shared word on import (Won't Fix → Won't Do); CLAUDE.md lists the Board plugins and their rules; BOARD_PLAN status section (what changed on the way; M10 command tools left for M10)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T21:05:00+00:00",
+  "resolved": "2026-10-13T21:05:00+00:00"
+}

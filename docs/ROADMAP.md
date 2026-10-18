@@ -359,6 +359,14 @@ Files are `*.devhub-diagram.json`, opened as tabs.
       `docs/diagrams/`), through hooks in `Integration/` so Projects, Board and Diagrams stay independent
 - [x] D10. Samples from the course in French and English ("Start from" in New Diagram) for every main kind
 
+## DOC — Reference docs, architecture diagrams, the project board [DevHub + Plugins]
+Asked 2026-10-18: documentation for the Sdk and every plugin, correct diagrams of both repositories (drawn with
+DevHub's own Diagrams plugins and checked by their rules), and the project's history on DevHub's own Board.
+- [x] DOC1. Sdk reference: `docs/sdk/` (README, SDK_CORE.md, SDK.md)
+- [x] DOC2. Plugin reference: DevHub-Plugins' `docs/plugins/` (one file per plugin family)
+- [x] DOC3. Diagrams: `docs/diagrams/` in both repositories (5 in DevHub, 7 in DevHub-Plugins)
+- [x] DOC4. The project board (`.devhub/board/`, Kanban): every roadmap item and fix, dated by its commit
+
 ## CI — CI tracker for GitHub Actions [Plugins]
 Decided 2026-10-12: **GitHub Actions** first; providers behind `ICiProvider` (GitLab, Azure DevOps later, as
 their own plugins). `DevHub.Ci` (+ `.Core`) needs GitHub on and calls the API through PM6's `IGitHubApi` (the

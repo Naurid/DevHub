@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ql8wi9iu",
+  "key": "DEV-132",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B8: Board.Git: devhub/board branch store, branches from issues, smart commits",
+  "description": "Landed in:\n- DevHub `03c38f9`: Roadmap: B7 (Board.Scrum) and B8 (Board.Git) done\n- DevHub-Plugins `57785e7`: B8: Board.Git (requires Board + Git) — boards on a repository's devhub/board branch (BranchBoardStore: git plumbing through GitRunner with a temporary index, compare-and-swap update-ref, one commit per change, never the working tree / index / HEAD, watcher started in the background; tested with real git incl. binary attachments), issue keys in branch names and commits, branch names for issues, smart commits (parsed, shown, applied only after confirming), Development section (branches, commits, GitHub pull requests through IGitHubApi, Link Repository), Create Branch (optionally moves the issue to In Progress), the commit box's DEV-12 suggestion, issue marks in Git's commit list and branches, a status-bar widget for the current branch's issue, Push / Pull Board (fast-forward only); Board: Copy Board To… (between stores). Git.Core: GitRunner.RunBinaryAsync (bytes in and out, logged as a size) — Board.Git needs this Git version. 29 tests; checked in a running DevHub",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T20:38:00+00:00",
+  "resolved": "2026-10-13T20:38:00+00:00"
+}

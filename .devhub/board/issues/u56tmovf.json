@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "u56tmovf",
+  "key": "DEV-42",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Git client plan (docs/GIT_CLIENT_PLAN.md)",
+  "description": "Landed in:\n- DevHub `8b1126c`: docs: Git client plan (milestones G0–G8)\n- DevHub-Plugins `f9fb7d0`: docs: Git client plan (milestones G0–G8)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T20:31:00+00:00",
+  "resolved": "2026-10-09T20:31:00+00:00"
+}

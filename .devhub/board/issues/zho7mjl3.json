@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "zho7mjl3",
+  "key": "DEV-109",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM4: plugins moved to DevHub-Plugins with their history",
+  "description": "Landed in:\n- DevHub `8e39eac`: git commit -m \"PM4: plugins moved to DevHub-Plugins with their history (DevHub keeps its copies until PM5); local Sdk feed in %LocalAppData%\\DevHub-local-feed; plugin starter scripts in step (grouped plugins, packages carry subfolders, matrix includes requirements)\"",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:19:00+00:00",
+  "resolved": "2026-10-12T21:19:00+00:00"
+}

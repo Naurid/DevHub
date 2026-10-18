@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "pujo06ub",
+  "key": "DEV-176",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "L2: every plugin's text through L.T, then the plugins in French",
+  "description": "Landed in:\n- DevHub `2415040`: French: the rest of the shell's text, translation tool improvements\n- DevHub-Plugins `745c1ee`: French (2/2): the plugins in French",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ds9iukmw",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:02+00:00",
+  "updated": "2026-10-17T21:30:00+00:00",
+  "resolved": "2026-10-17T21:30:00+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "vk9matk3",
+  "key": "DEV-65",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "P5: Settings → Plugins page and the first-run picker",
+  "description": "Landed in:\n- DevHub `1bd1df8`:  P5: Settings → Plugins page and first-run picker (presets declared by plugins); PluginSelection rules (tested); Restart DevHub\n- DevHub-Plugins `80b2545`:  P5: Settings → Plugins page and first-run picker (presets declared by plugins); PluginSelection rules (tested); Restart DevHub",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T16:41:00+00:00",
+  "resolved": "2026-10-11T16:41:00+00:00"
+}

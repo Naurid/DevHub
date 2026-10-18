@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "wh30r4fq",
+  "key": "DEV-105",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM2a: installing a plugin installs what it requires (InstallPlanner)",
+  "description": "Landed in:\n- DevHub `c3bafef`: PM2a: marketplace installs bring their requirements — InstallPlanner (Sdk.Core, tested): missing requirements installed first, all or nothing; a requirement nobody offers, for another plugin API or in a circle refuses before downloading; removing a plugin others need asks and removes them too; Marketplace page shows what comes along",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T20:34:00+00:00",
+  "resolved": "2026-10-12T20:34:00+00:00"
+}

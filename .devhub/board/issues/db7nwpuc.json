@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "db7nwpuc",
+  "key": "DEV-77",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M7: Import Folder as Template",
+  "description": "Landed in:\n- DevHub `ad6c8c6`: Templates M7: Import Folder as Template — gitignore-style ignore rules, literal → variable replacement (other spellings of a multi-word literal as transforms, existing {{Var}} escaped), preview tree with left-out items and placeholders per file, creates the template and opens it in the editor (tested)\n- DevHub-Plugins `7ae81fe`: Templates M7: Import Folder as Template — gitignore-style ignore rules, literal → variable replacement (other spellings of a multi-word literal as transforms, existing {{Var}} escaped), preview tree with left-out items and placeholders per file, creates the template and opens it in the editor (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T21:40:00+00:00",
+  "resolved": "2026-10-11T21:40:00+00:00"
+}

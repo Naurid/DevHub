@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "kind": "package",
+  "title": "DevHub solution: projects and references",
+  "project": "../..",
+  "props": {},
+  "nodes": [
+    {
+      "id": "7djgaz",
+      "type": "package",
+      "x": 30,
+      "y": 30,
+      "width": 900,
+      "height": 560,
+      "rotation": 0,
+      "text": "DevHub (Naurid/DevHub)",
+      "props": {
+        "fill": "#F4F5F7",
+        "line": "#8C8F96",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "8tae46",
+      "type": "package",
+      "x": 70,
+      "y": 100,
+      "width": 230,
+      "height": 110,
+      "rotation": 0,
+      "text": "DevHub.App (the shell exe)",
+      "parentId": "7djgaz",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "vtddhb",
+      "type": "package",
+      "x": 380,
+      "y": 100,
+      "width": 230,
+      "height": 110,
+      "rotation": 0,
+      "text": "DevHub.Sdk (Avalonia)",
+      "parentId": "7djgaz",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A"
+      }
+    },
+    {
+      "id": "eagb7q",
+      "type": "package",
+      "x": 670,
+      "y": 100,
+      "width": 230,
+      "height": 110,
+      "rotation": 0,
+      "text": "DevHub.Sdk.Core (no UI)",
+      "parentId": "7djgaz",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A"
+      }
+    },
+    {
+      "id": "vw6ipx",
+      "type": "package",
+      "x": 380,
+      "y": 300,
+      "width": 230,
+      "height": 100,
+      "rotation": 0,
+      "text": "tests/DevHub.TestPlugin",
+      "parentId": "7djgaz",
+      "props": {}
+    },
+    {
+      "id": "7maryg",
+      "type": "package",
+      "x": 670,
+      "y": 300,
+      "width": 230,
+      "height": 100,
+      "rotation": 0,
+      "text": "tests/DevHub.Sdk.Core.Tests",
+      "parentId": "7djgaz",
+      "props": {}
+    },
+    {
+      "id": "9k4fjh",
+      "type": "package",
+      "x": 70,
+      "y": 300,
+      "width": 230,
+      "height": 100,
+      "rotation": 0,
+      "text": "tools/I18n",
+      "parentId": "7djgaz",
+      "props": {
+        "fill": "#F4F5F7",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "bim9y3",
+      "type": "package",
+      "x": 1040,
+      "y": 30,
+      "width": 340,
+      "height": 300,
+      "rotation": 0,
+      "text": "DevHub-Plugins (Naurid/DevHub-Plugins)",
+      "props": {
+        "fill": "#FFF0D9",
+        "line": "#D98C1F",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "hec2ie",
+      "type": "package",
+      "x": 1070,
+      "y": 100,
+      "width": 280,
+      "height": 90,
+      "rotation": 0,
+      "text": "plugins/<Name>/DevHub.<Name>(.Core)",
+      "parentId": "bim9y3",
+      "props": {
+        "fill": "#FFF0D9",
+        "line": "#D98C1F"
+      }
+    },
+    {
+      "id": "imkc4p",
+      "type": "package",
+      "x": 1070,
+      "y": 210,
+      "width": 280,
+      "height": 90,
+      "rotation": 0,
+      "text": "tests/DevHub.<Name>.Core.Tests",
+      "parentId": "bim9y3",
+      "props": {}
+    },
+    {
+      "id": "47sde2",
+      "type": "package",
+      "x": 1040,
+      "y": 400,
+      "width": 340,
+      "height": 190,
+      "rotation": 0,
+      "text": "nuget.org",
+      "props": {
+        "fill": "#E3F5EA",
+        "line": "#2E9E5B",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "5updri",
+      "type": "package",
+      "x": 1070,
+      "y": 470,
+      "width": 280,
+      "height": 90,
+      "rotation": 0,
+      "text": "DevHub.Sdk + DevHub.Sdk.Core packages",
+      "parentId": "47sde2",
+      "props": {
+        "fill": "#E3F5EA",
+        "line": "#2E9E5B"
+      }
+    },
+    {
+      "id": "3rgm5q",
+      "type": "package",
+      "x": 70,
+      "y": 660,
+      "width": 860,
+      "height": 90,
+      "rotation": 0,
+      "text": "Avalonia 12 · CommunityToolkit.Mvvm · Microsoft.Extensions.DependencyInjection · Svg.Controls.Skia · Velopack",
+      "props": {
+        "fill": "#F4F5F7",
+        "line": "#8C8F96"
+      }
+    },
+    {
+      "id": "9fwzgu",
+      "type": "note",
+      "x": 70,
+      "y": 460,
+      "width": 420,
+      "height": 80,
+      "rotation": 0,
+      "text": "Nothing references DevHub.App. Neither Sdk project references the shell or a plugin; Sdk.Core has no Avalonia.",
+      "parentId": "7djgaz",
+      "props": {}
+    },
+    {
+      "id": "92zbve",
+      "type": "note",
+      "x": 1040,
+      "y": 640,
+      "width": 340,
+      "height": 80,
+      "rotation": 0,
+      "text": "The shell loads plugin folders at run time (plugin.json + DLLs): no project reference to any plugin.",
+      "props": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "hhhsgs",
+      "type": "dependency",
+      "from": "8tae46",
+      "to": "vtddhb",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "cx2gky",
+      "type": "dependency",
+      "from": "8tae46",
+      "to": "eagb7q",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "9vbr83",
+      "type": "dependency",
+      "from": "vtddhb",
+      "to": "eagb7q",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "nb4swr",
+      "type": "dependency",
+      "from": "vw6ipx",
+      "to": "vtddhb",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "cv9rc6",
+      "type": "dependency",
+      "from": "7maryg",
+      "to": "eagb7q",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "uk74q2",
+      "type": "dependency",
+      "from": "8tae46",
+      "to": "3rgm5q",
+      "text": "Velopack, DI",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "ncwivt",
+      "type": "dependency",
+      "from": "vtddhb",
+      "to": "3rgm5q",
+      "text": "Avalonia, MVVM",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "styfpm",
+      "type": "dependency",
+      "from": "5updri",
+      "to": "vtddhb",
+      "text": "«trace» packed from (build/Pack-Sdk.ps1)",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {
+        "dash": "dashed"
+      }
+    },
+    {
+      "id": "ipvrb9",
+      "type": "dependency",
+      "from": "hec2ie",
+      "to": "5updri",
+      "text": "PackageReference (ExcludeAssets=runtime)",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "vgiu64",
+      "type": "dependency",
+      "from": "imkc4p",
+      "to": "hec2ie",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "mvwdbx",
+      "type": "noteLink",
+      "from": "9fwzgu",
+      "to": "8tae46",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "en83dz",
+      "type": "noteLink",
+      "from": "92zbve",
+      "to": "bim9y3",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    }
+  ],
+  "bounds": {
+    "x": 30,
+    "y": 30,
+    "width": 1350,
+    "height": 720,
+    "left": 30,
+    "top": 30,
+    "right": 1380,
+    "bottom": 750,
+    "center": {
+      "x": 705,
+      "y": 390,
+      "length": 805.6829401197471
+    }
+  }
+}

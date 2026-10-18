@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "a4mvganl",
+  "key": "DEV-113",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "PM7: docs for two repositories",
+  "description": "Landed in:\n- DevHub `630e346`: PM7: docs for two repositories — CLAUDE.md (DevHub is the shell + Sdk; plugin rules, the Git client and template engine rules moved to DevHub-Plugins; commit convention), README (plugins in DevHub-Plugins, layout, requirements), PLUGINS.md (layout across both repositories, discovery from plugin folders, the recipe and testing in DevHub-Plugins), UI_GUIDE paths; the roadmap names each milestone's repository; PM done, B0 next\n- DevHub-Plugins `26a71c1`: PM7: CLAUDE.md for this repository (what it is, layout, plugin and app rules, the Git client and template engine rules that moved from DevHub, build / run / verify, versions and publishing, working with the user) and the avalonia-mvvm skill pointed at DevHub's UI guide",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:58:00+00:00",
+  "resolved": "2026-10-12T21:58:00+00:00"
+}

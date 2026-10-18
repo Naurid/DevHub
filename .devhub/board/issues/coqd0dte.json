@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "coqd0dte",
+  "key": "DEV-178",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "French: localised wording and typography",
+  "description": "Landed in:\n- DevHub `9dd1bc9`: French: localised wording and French typography\n- DevHub-Plugins `326ee2d`: French: localised wording and French typography in every plugin",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ds9iukmw",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:02+00:00",
+  "updated": "2026-10-17T21:46:00+00:00",
+  "resolved": "2026-10-17T21:46:00+00:00"
+}

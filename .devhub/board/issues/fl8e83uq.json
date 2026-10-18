@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "fl8e83uq",
+  "key": "DEV-183",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "D — Diagrams",
+  "description": "UML, databases, business processes and mood boards; files are *.devhub-diagram.json (docs/DIAGRAMS_PLAN.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-18",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [
+    {
+      "type": "relates",
+      "target": "e2uk7sg0"
+    }
+  ],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T06:59:00+00:00",
+  "updated": "2026-10-18T14:09:00+00:00",
+  "resolved": "2026-10-18T14:09:00+00:00"
+}

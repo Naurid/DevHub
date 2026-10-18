@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "zcj1gxsi",
+  "key": "DEV-21",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Stage 1: evaluation harness for every interpreter",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "l7gm3q3h",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:34:02+00:00",
+  "updated": "2026-10-09T00:34:02+00:00"
+}

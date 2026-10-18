@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "id": "rvhdwqg8",
+  "name": "Done this week",
+  "query": "resolved >= -7d ORDER BY resolved DESC",
+  "owner": "a4zn6iz9"
+}

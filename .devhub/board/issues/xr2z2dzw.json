@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "xr2z2dzw",
+  "key": "DEV-68",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Template format v1 (docs/TEMPLATE_FORMAT.md)",
+  "description": "Landed in:\n- DevHub `806a815`: Templates: spec v1 (project/item, base command + content + steps + post-create, language + categories, libraries, staging + editable preview); roadmap M1–M9; M1: DevHub.Templates.Core model, validation, libraries (tested)\n- DevHub-Plugins `d8b7183`: Templates: spec v1 (project/item, base command + content + steps + post-create, language + categories, libraries, staging + editable preview); roadmap M1–M9; M1: DevHub.Templates.Core model, validation, libraries (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T19:48:00+00:00",
+  "resolved": "2026-10-11T19:48:00+00:00"
+}

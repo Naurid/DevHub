@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "op1fx9de",
+  "key": "DEV-63",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "P4: the four features in their own plugin assemblies; IRemoteHost",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub `e7f9901`: Projects and Git independent: DevHub.Integration hooks (IProjectOpener, IProjectFileEditor, IProjectFolders) with fallbacks; Git → Open Repository…; terminal launcher moved to Git.\n- DevHub-Plugins `2f8a025`: Projects and Git independent: DevHub.Integration hooks (IProjectOpener, IProjectFileEditor, IProjectFolders) with fallbacks; Git → Open Repository…; terminal launcher moved to Git.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T16:28:00+00:00",
+  "resolved": "2026-10-11T16:28:00+00:00"
+}

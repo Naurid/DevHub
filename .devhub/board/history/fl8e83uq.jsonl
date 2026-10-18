@@ -1,0 +1,8 @@
+{"at":"2026-10-18T06:59:00+00:00","who":"a4zn6iz9","field":"created","to":"DEV-183"}
+{"at":"2026-10-18T06:59:01+00:00","who":"a4zn6iz9","field":"start","to":"2026-10-18"}
+{"at":"2026-10-18T06:59:01+00:00","who":"a4zn6iz9","field":"due","to":"2026-10-18"}
+{"at":"2026-10-18T06:59:05+00:00","who":"a4zn6iz9","field":"link","to":"blocks<:iwkcecqm"}
+{"at":"2026-10-18T06:59:05+00:00","who":"a4zn6iz9","field":"link","to":"relates:e2uk7sg0"}
+{"at":"2026-10-18T07:04:00+00:00","who":"a4zn6iz9","field":"status","from":"backlog","to":"inprogress"}
+{"at":"2026-10-18T14:09:00+00:00","who":"a4zn6iz9","field":"status","from":"inprogress","to":"done"}
+{"at":"2026-10-18T14:09:00+00:00","who":"a4zn6iz9","field":"resolution","to":"done"}

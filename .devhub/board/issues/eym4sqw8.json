@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "eym4sqw8",
+  "key": "DEV-181",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "RW1: SidePane, OverflowPanel; the title bar shrinks",
+  "description": "Landed in:\n- DevHub `d103104`: Responsive layout: SidePane and OverflowPanel, a title bar that shrinks, per-assembly translations",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh4gxcj5",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T22:28:02+00:00",
+  "updated": "2026-10-17T22:53:00+00:00",
+  "resolved": "2026-10-17T22:53:00+00:00"
+}

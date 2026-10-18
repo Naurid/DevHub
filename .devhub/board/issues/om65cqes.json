@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "om65cqes",
+  "key": "DEV-164",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Curved chart lines (Reports switch, per series in the chart maker)",
+  "description": "Landed in:\n- DevHub `eed7532`: Update All in the plugin marketplace; curved chart lines\n- DevHub-Plugins `d321522`: Curved chart lines: a Curved lines switch in Reports, Curved per series in the chart maker",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "x8jn9sks"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-18T02:06:00+00:00",
+  "resolved": "2026-10-18T02:06:00+00:00"
+}

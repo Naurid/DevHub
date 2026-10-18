@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "a0fc1zgj",
+  "key": "DEV-110",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "PM5: DevHub without plugins; release bundles the core plugins",
+  "description": "Landed in:\n- DevHub `1188b04`: PM5: DevHub without plugins — plugins/, their tests, TestKit and their docs removed (they live in Naurid/DevHub-Plugins); release.yml bundles Projects, Git, GitHub and Templates from the marketplace index into plugins\\ (build/Get-BundledPlugins.ps1 + build/bundled-plugins.json: newest compatible versions plus requirements, SHA-256 and zip-slip checked, all or nothing); a Debug build fetches them once (offline: a message, DevHub starts without them); the shell is checked with tests/DevHub.TestPlugin (tool window + action, in tools/plugin-matrix.ps1); the Sdk zip on releases dropped\n- DevHub-Plugins `2a3266c`: PM5: Projects, Git, GitHub and Templates are published (no more \"publish\": false): tag each <id>/v1 for 1.0.0; DevHub bundles them from the index",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T21:27:00+00:00",
+  "resolved": "2026-10-12T21:27:00+00:00"
+}

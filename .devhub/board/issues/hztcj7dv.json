@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "hztcj7dv",
+  "key": "DEV-177",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "French: the Welcome subtitle",
+  "description": "Landed in:\n- DevHub `7dae93c`: French: the Welcome subtitle reads « Votre centre de développement… »",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ds9iukmw",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "bpd6ghqf"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T17:51:02+00:00",
+  "updated": "2026-10-17T21:33:00+00:00",
+  "resolved": "2026-10-17T21:33:00+00:00"
+}

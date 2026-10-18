@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "lxtwp1rl",
+  "key": "DEV-82",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "R — Releases, updates, marketplace",
+  "description": "CI, Velopack releases, in-app updates, the plugin marketplace (docs/RELEASING.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-12",
+  "due": "2026-10-12",
+  "rank": "zzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:00+00:00",
+  "updated": "2026-10-12T19:46:00+00:00",
+  "resolved": "2026-10-12T19:46:00+00:00"
+}

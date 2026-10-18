@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "kenoom9f",
+  "key": "DEV-46",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G3: stage, unstage, discard, commit (Ctrl+K), amend",
+  "description": "Landed in:\n- DevHub `ec38c88`: G3: stage/unstage/discard (confirmed) + commit box with amend and Ctrl+K/Ctrl+Enter; tested in Core against real git",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T22:07:00+00:00",
+  "resolved": "2026-10-09T22:07:00+00:00"
+}

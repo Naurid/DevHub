@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "fgey174q",
+  "key": "DEV-93",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "One-time GitHub settings, the first v1 tag",
+  "description": "Landed in:\n- DevHub `cca9c8b`: Roadmap: GitHub setup done (v1 tag, DevHub-Plugins); PM1 is next",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "a4zn6iz9",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T19:45:00+00:00",
+  "resolved": "2026-10-12T19:45:00+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "d17j7rbp",
+  "key": "DEV-45",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G2: diff parser, diff pane, Open in Editor (F4), diff tab",
+  "description": "Landed in:\n- DevHub `389de0c`: G2: unified diff parser (tested) + diff pane in Local Changes, live reload; Open in Editor (F4) opens the file in the language's external editor at the first change; diff in its own tab\n- DevHub-Plugins `a3e8fde`: G2: unified diff parser (tested) + diff pane in Local Changes, live reload; Open in Editor (F4) opens the file in the language's external editor at the first change; diff in its own tab",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T21:53:00+00:00",
+  "resolved": "2026-10-09T21:53:00+00:00"
+}

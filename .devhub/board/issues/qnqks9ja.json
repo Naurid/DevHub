@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "qnqks9ja",
+  "key": "DEV-78",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M8: built-in templates (.NET, Unity, Web, Rust, Python, Go)",
+  "description": "Landed in:\n- DevHub `0e5454b`: Templates M8: built-in library — .NET (class library, solution with tests, add project to solution, Avalonia, xUnit), Unity project via @unity (newest Unity Hub editor), Vite and Tauri apps, Rust crate, Python package, Go module; each tested against its real tool when installed (tested)\n- DevHub-Plugins `b3dc82a`: Templates M8: built-in library — .NET (class library, solution with tests, add project to solution, Avalonia, xUnit), Unity project via @unity (newest Unity Hub editor), Vite and Tauri apps, Rust crate, Python package, Go module; each tested against its real tool when installed (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-12T00:45:00+00:00",
+  "resolved": "2026-10-12T00:45:00+00:00"
+}

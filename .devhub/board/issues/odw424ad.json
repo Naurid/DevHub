@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "odw424ad",
+  "key": "DEV-102",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Roadmap: PM, B, D and CI planned",
+  "description": "Landed in:\n- DevHub `7376175`: Roadmap: PM (every plugin moves to DevHub-Plugins, Sdk on NuGet, bundled core plugins), B (Jira-style board with configurable columns, data in the repo), D (UML diagrams: use case, class, activity), CI (GitHub Actions tracker, redeploy, release next version) — before X",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T03:05:00+00:00",
+  "resolved": "2026-10-12T03:05:00+00:00"
+}

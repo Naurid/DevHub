@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "hhal84xl",
+  "key": "DEV-61",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "P3: IPlugin, PluginHost, PluginResolver; menus from action metadata",
+  "description": "Landed in:\n- DevHub `bd9b0ab`: P3: plugin contract (IPlugin, PluginHost, PluginResolver tested); menus/toolbar/Welcome from action metadata, settings pages, title/status-bar widgets; Git owns ActiveRepositoryService; features registered as plugins; IProjectOpener; DI validated on build",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T15:54:00+00:00",
+  "resolved": "2026-10-11T15:54:00+00:00"
+}

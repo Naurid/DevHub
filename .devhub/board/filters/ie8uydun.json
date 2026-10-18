@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "id": "ie8uydun",
+  "name": "Open work",
+  "query": "statusCategory != Done ORDER BY rank",
+  "owner": "a4zn6iz9"
+}

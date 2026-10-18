@@ -126,6 +126,9 @@ before starting the app.
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Milestones and what's next |
 | [`docs/UI_GUIDE.md`](docs/UI_GUIDE.md) | UI rules, design tokens, components and recipes |
 | [`docs/ACTIONS_AND_FUZZY_MATCHING.md`](docs/ACTIONS_AND_FUZZY_MATCHING.md) | Actions, menus, shortcuts, Find Action |
+| [`docs/sdk/`](docs/sdk/README.md) | The Sdk reference: every public type of DevHub.Sdk and DevHub.Sdk.Core, namespace by namespace |
+| [`docs/diagrams/`](docs/diagrams) | Architecture diagrams (projects, shell and Sdk, the plugin contract, startup, deployment), opened in DevHub with the Diagrams plugins |
+| [`docs/plugins/`](https://github.com/Naurid/DevHub-Plugins/blob/main/docs/plugins/README.md) (DevHub-Plugins) | Every plugin: what it does, its actions, settings, files and what it offers other plugins |
 | [`GIT_CLIENT_PLAN.md`](https://github.com/Naurid/DevHub-Plugins/blob/main/docs/GIT_CLIENT_PLAN.md) (DevHub-Plugins) | The Git client's design and rules |
 | [`TEMPLATE_FORMAT.md`](https://github.com/Naurid/DevHub-Plugins/blob/main/docs/TEMPLATE_FORMAT.md) (DevHub-Plugins) | The template format (spec for the Templates plugin) |
 | [`CLAUDE.md`](CLAUDE.md) | Working rules for the codebase (also read by Claude Code) |

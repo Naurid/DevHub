@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ib8xsose",
+  "key": "DEV-195",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "D10: samples in French and English",
+  "description": "Landed in:\n- DevHub-Plugins `16e3fce`: Diagrams: editor, UML, databases, business processes and mood boards (roadmap D)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "fl8e83uq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T06:59:02+00:00",
+  "updated": "2026-10-18T07:24:00+00:00",
+  "resolved": "2026-10-18T07:24:00+00:00"
+}

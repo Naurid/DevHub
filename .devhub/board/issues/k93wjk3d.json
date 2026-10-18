@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "k93wjk3d",
+  "key": "DEV-86",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "R4: marketplace: sources, install / update / remove, SHA-256 and zip-slip checks",
+  "description": "Landed in:\n- DevHub `ae34f24`: R4: plugin marketplace in DevHub — plugin packages (plugin.json + DLLs), index sources (https or a local index.json), SHA-256 and zip-slip checks, installs/updates/removals applied at the next start, marketplace plugins loaded from %AppData%\\DevHub\\plugins (built-ins win, plugin API version checked), Settings → Plugins → Marketplace (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:39:00+00:00",
+  "resolved": "2026-10-12T01:39:00+00:00"
+}

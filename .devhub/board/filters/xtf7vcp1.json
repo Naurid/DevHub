@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "id": "xtf7vcp1",
+  "name": "Waiting for review",
+  "query": "status = \"In Review\" ORDER BY updated DESC",
+  "owner": "a4zn6iz9"
+}

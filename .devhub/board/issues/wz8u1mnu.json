@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "wz8u1mnu",
+  "key": "DEV-127",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "B6: search language (parser, compiler), saved filters",
+  "description": "Landed in:\n- DevHub-Plugins `b4e6d79`: B3 (Core) + B6 (Core): sprint data in Board.Core; the search language (parser with positions in errors, compiler: names or ids, people, sprints and date functions, relative dates, durations, custom fields, ORDER BY); board operations (boards, columns that create their status, rename, move, merge, delete with or without statuses, statuses per column, WIP limits, quick filters, MoveCard = transition + rank); BoardLayout (filters, quick filters, search, assignees, Scrum shows the active sprint, Kanban hides old Done issues, swimlanes, statuses not on the board); 104 tests",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-13T16:36:00+00:00",
+  "resolved": "2026-10-13T16:36:00+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "a6uia133",
+  "key": "DEV-201",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Plugin reference: docs/plugins (one file per plugin family)",
+  "description": "Branch Docs/plugin-reference.",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kn4slr8a",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T20:13:40.2981645+00:00",
+  "updated": "2026-10-18T20:54:05.2333998+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "k8holahn",
+  "key": "DEV-88",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "R6: roadmap R and X, README, CLAUDE.md",
+  "description": "Landed in:\n- DevHub `4cc728c`: R6: docs — roadmap milestones R (releases, updates, marketplace) and X (multiplatform), README (getting DevHub, layout), CLAUDE.md layout\n- DevHub `08b6c50`: R5: plugins repo starter (tools/plugin-repo: HelloWorld sample, per-plugin versions from git with <id>/vN major tags, pack/publish scripts, CI + publish workflows, index on an 'index' release); DevHub releases attach DevHub-Sdk-<version>.zip; marketplace verified end to end; stripe buttons get accessible names",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:50:00+00:00",
+  "resolved": "2026-10-12T01:50:00+00:00"
+}

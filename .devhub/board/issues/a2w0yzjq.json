@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "a2w0yzjq",
+  "key": "DEV-71",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M3: generation pipeline: command runner, staging, steps, place, post-create",
+  "description": "Landed in:\n- DevHub `b2a9a8e`: Templates M3: generation pipeline (command runner, staging, steps, place, items, post-create)\n- DevHub-Plugins `d086fdd`: Templates M3: generation pipeline (command runner, staging, steps, place, items, post-create)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T20:56:00+00:00",
+  "resolved": "2026-10-11T20:56:00+00:00"
+}

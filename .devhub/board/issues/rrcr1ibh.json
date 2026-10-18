@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "rrcr1ibh",
+  "key": "DEV-206",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Sdk.Core's AppInfo is still the M0 placeholder (TemplateSchemaVersion belongs to Templates)",
+  "description": "Found while documenting; removing it is a breaking Sdk change (PluginApi.Version) if any plugin uses it.",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "kn4slr8a",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T20:13:40.2981645+00:00",
+  "updated": "2026-10-18T20:13:40.2981645+00:00"
+}

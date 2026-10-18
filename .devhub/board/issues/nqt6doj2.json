@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "nqt6doj2",
+  "key": "DEV-80",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Preview: drag and drop files and folders, Undo (Ctrl+Z)",
+  "description": "Landed in:\n- DevHub `21d3bc6`: Templates preview: drag and drop files and folders (TreeDragDrop behavior, Avalonia 12 DataTransfer) and Undo / Ctrl+Z (EditHistory: tree snapshots per edit) (tested)\n- DevHub-Plugins `b1d708e`: Templates preview: drag and drop files and folders (TreeDragDrop behavior, Avalonia 12 DataTransfer) and Undo / Ctrl+Z (EditHistory: tree snapshots per edit) (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-12T01:06:00+00:00",
+  "resolved": "2026-10-12T01:06:00+00:00"
+}

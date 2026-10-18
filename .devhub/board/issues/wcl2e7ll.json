@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "wcl2e7ll",
+  "key": "DEV-64",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Stage fails with \"pathspec did not match\" after git mv + edit",
+  "description": "Landed in:\n- DevHub `796997a`: Git: Stage names a rename's old path only when the rename is unstaged (fixes \"pathspec did not match\" for git mv + edit); UnstagePaths for the reverse (tested)\n- DevHub-Plugins `bb7f923`: Git: Stage names a rename's old path only when the rename is unstaged (fixes \"pathspec did not match\" for git mv + edit); UnstagePaths for the reverse (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T16:32:00+00:00",
+  "resolved": "2026-10-11T16:32:00+00:00"
+}

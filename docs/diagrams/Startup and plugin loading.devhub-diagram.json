@@ -1,0 +1,529 @@
+{
+  "schemaVersion": 1,
+  "kind": "activity",
+  "title": "Startup: how plugins are found, chosen and registered",
+  "project": "../..",
+  "props": {},
+  "nodes": [
+    {
+      "id": "bsx9eb",
+      "type": "lane",
+      "x": 40,
+      "y": 40,
+      "width": 640,
+      "height": 1500,
+      "rotation": 0,
+      "text": "DevHub (App, PluginHost)",
+      "props": {
+        "vertical": "true"
+      }
+    },
+    {
+      "id": "rwqfni",
+      "type": "lane",
+      "x": 680,
+      "y": 40,
+      "width": 400,
+      "height": 1500,
+      "rotation": 0,
+      "text": "Each plugin that loads",
+      "props": {
+        "vertical": "true",
+        "fill": "#FFF8EC"
+      }
+    },
+    {
+      "id": "bvtwew",
+      "type": "start",
+      "x": 327,
+      "y": 97,
+      "width": 26,
+      "height": 26,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "vqifwm",
+      "type": "action",
+      "x": 170,
+      "y": 165,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Velopack hooks (install / update) run first",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "ykkdri",
+      "type": "action",
+      "x": 170,
+      "y": 245,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Load settings; pick the language (L.Use)",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "kjyv7x",
+      "type": "action",
+      "x": 170,
+      "y": 325,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Apply pending marketplace installs and removals",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "vdxqwi",
+      "type": "action",
+      "x": 140,
+      "y": 405,
+      "width": 400,
+      "height": 50,
+      "rotation": 0,
+      "text": "Find plugin folders: bundled, installed, DEVHUB_PLUGIN_PATHS",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "fpy6by",
+      "type": "action",
+      "x": 140,
+      "y": 485,
+      "width": 400,
+      "height": 50,
+      "rotation": 0,
+      "text": "One folder per id: the newer copy; a build folder always wins",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "apj826",
+      "type": "action",
+      "x": 130,
+      "y": 565,
+      "width": 420,
+      "height": 50,
+      "rotation": 0,
+      "text": "Load the DLLs, requirements first; read [assembly: DevHubPlugin]",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "nt7et9",
+      "type": "action",
+      "x": 140,
+      "y": 645,
+      "width": 400,
+      "height": 50,
+      "rotation": 0,
+      "text": "PluginResolver: switched-on plugins + their requirements",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "nuyj45",
+      "type": "decision",
+      "x": 323,
+      "y": 733,
+      "width": 34,
+      "height": 34,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "pzkk5r",
+      "type": "action",
+      "x": 50,
+      "y": 815,
+      "width": 300,
+      "height": 50,
+      "rotation": 0,
+      "text": "Skip it, with the reason (status bar, Settings → Plugins)",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "7ihriu",
+      "type": "action",
+      "x": 700,
+      "y": 815,
+      "width": 360,
+      "height": 72,
+      "rotation": 0,
+      "text": "ConfigureServices(services, context): actions, documents, tool windows, settings pages, widgets, services",
+      "parentId": "rwqfni",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A"
+      }
+    },
+    {
+      "id": "z87v8u",
+      "type": "decision",
+      "x": 323,
+      "y": 923,
+      "width": 34,
+      "height": 34,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "aydxmk",
+      "type": "action",
+      "x": 170,
+      "y": 995,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Build the DI container (ValidateOnBuild in Debug)",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "x2gmf8",
+      "type": "action",
+      "x": 170,
+      "y": 1075,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Merge each plugin's Resources (its design tokens)",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "dxw8dd",
+      "type": "action",
+      "x": 170,
+      "y": 1155,
+      "width": 340,
+      "height": 50,
+      "rotation": 0,
+      "text": "Open the main window; restore tabs and tool windows",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "62342j",
+      "type": "decision",
+      "x": 323,
+      "y": 1243,
+      "width": 34,
+      "height": 34,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "vs7zgy",
+      "type": "action",
+      "x": 50,
+      "y": 1315,
+      "width": 300,
+      "height": 60,
+      "rotation": 0,
+      "text": "First-run picker: choose plugins by preset (restarts when the choice changes them)",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "bqbegg",
+      "type": "decision",
+      "x": 323,
+      "y": 1393,
+      "width": 34,
+      "height": 34,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "54wt67",
+      "type": "action",
+      "x": 190,
+      "y": 1445,
+      "width": 300,
+      "height": 50,
+      "rotation": 0,
+      "text": "Quiet update check a few seconds later",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "a43bq9",
+      "type": "end",
+      "x": 545,
+      "y": 1455,
+      "width": 30,
+      "height": 30,
+      "rotation": 0,
+      "text": "",
+      "parentId": "bsx9eb",
+      "props": {}
+    },
+    {
+      "id": "viwdig",
+      "type": "note",
+      "x": 730,
+      "y": 968,
+      "width": 300,
+      "height": 80,
+      "rotation": 0,
+      "text": "A switched-off plugin is never touched: nothing of it registers, so none of its menus, tabs or shortcuts exist.",
+      "parentId": "rwqfni",
+      "props": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "i4e9wy",
+      "type": "flow",
+      "from": "bvtwew",
+      "to": "vqifwm",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "swc2bh",
+      "type": "flow",
+      "from": "vqifwm",
+      "to": "ykkdri",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "3r2ka6",
+      "type": "flow",
+      "from": "ykkdri",
+      "to": "kjyv7x",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "tgci6e",
+      "type": "flow",
+      "from": "kjyv7x",
+      "to": "vdxqwi",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "4dmfdr",
+      "type": "flow",
+      "from": "vdxqwi",
+      "to": "fpy6by",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "88pr8m",
+      "type": "flow",
+      "from": "fpy6by",
+      "to": "apj826",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "g4vv66",
+      "type": "flow",
+      "from": "apj826",
+      "to": "nt7et9",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "9tqdc8",
+      "type": "flow",
+      "from": "nt7et9",
+      "to": "nuyj45",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "w3fybh",
+      "type": "flow",
+      "from": "nuyj45",
+      "to": "7ihriu",
+      "text": "[it can load]",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "kdzaa5",
+      "type": "flow",
+      "from": "nuyj45",
+      "to": "pzkk5r",
+      "text": "[requirement missing, circle or duplicate id]",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "k2arjn",
+      "type": "flow",
+      "from": "7ihriu",
+      "to": "z87v8u",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "5bz8ux",
+      "type": "flow",
+      "from": "pzkk5r",
+      "to": "z87v8u",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "etcfte",
+      "type": "flow",
+      "from": "z87v8u",
+      "to": "aydxmk",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "tz5pbs",
+      "type": "flow",
+      "from": "aydxmk",
+      "to": "x2gmf8",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "hvwd5z",
+      "type": "flow",
+      "from": "x2gmf8",
+      "to": "dxw8dd",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "cgznz3",
+      "type": "flow",
+      "from": "dxw8dd",
+      "to": "62342j",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "ybxna2",
+      "type": "flow",
+      "from": "62342j",
+      "to": "vs7zgy",
+      "text": "[first start]",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "uuy9g3",
+      "type": "flow",
+      "from": "62342j",
+      "to": "bqbegg",
+      "text": "[otherwise]",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "hqpmjq",
+      "type": "flow",
+      "from": "vs7zgy",
+      "to": "bqbegg",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "rjr479",
+      "type": "flow",
+      "from": "bqbegg",
+      "to": "54wt67",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "28j4dv",
+      "type": "flow",
+      "from": "54wt67",
+      "to": "a43bq9",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "8jyeg4",
+      "type": "noteLink",
+      "from": "viwdig",
+      "to": "7ihriu",
+      "text": "",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    }
+  ],
+  "bounds": {
+    "x": 40,
+    "y": 40,
+    "width": 1040,
+    "height": 1500,
+    "left": 40,
+    "top": 40,
+    "right": 1080,
+    "bottom": 1540,
+    "center": {
+      "x": 560,
+      "y": 790,
+      "length": 968.3491106000976
+    }
+  }
+}

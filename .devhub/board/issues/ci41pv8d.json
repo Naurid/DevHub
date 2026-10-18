@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ci41pv8d",
+  "key": "DEV-29",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Spikes: Svg.Skia for Avalonia 12, JetBrains expui icons, JetBrains Mono",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub `3543002`: UI-0 step 2: Fluent key mapping, control styles, ThemeService, debug UI Gallery",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T18:35:00+00:00",
+  "resolved": "2026-10-09T18:35:00+00:00"
+}

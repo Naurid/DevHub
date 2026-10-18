@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "pg887iyi",
+  "key": "DEV-204",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "This board: DevHub's history as a Kanban board (.devhub/board)",
+  "description": "Every roadmap item and fix, dated by its commit in either repository.",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kn4slr8a",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T20:13:40.2981645+00:00",
+  "updated": "2026-10-18T20:54:05.2333998+00:00"
+}

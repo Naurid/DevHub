@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "ycq29syi",
+  "key": "DEV-143",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Move and edit several issues at once",
+  "description": "Landed in:\n- DevHub-Plugins `1559650`: Board: move and edit several issues at once",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-17T17:48:00+00:00",
+  "resolved": "2026-10-17T17:48:00+00:00"
+}

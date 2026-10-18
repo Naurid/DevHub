@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "id": "qb2gpylq",
+  "key": "DEV-94",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Code signing (Azure Trusted Signing or a certificate)",
+  "description": "Once SmartScreen warnings matter.",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "lxtwp1rl",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "k5qj0gx6",
+      "author": "a4zn6iz9",
+      "created": "2026-10-12T01:01:03+00:00",
+      "body": "Deferred on purpose (the roadmap keeps it open for later)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T01:01:02+00:00",
+  "updated": "2026-10-12T01:01:03+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "p6il9r72",
+  "key": "DEV-70",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M2: placeholder renderer, transforms, built-ins, safe paths",
+  "description": "Landed in:\n- DevHub `8911093`: Templates M2: placeholder renderer (one pass, foreign syntax untouched, transforms, built-ins, stable GUIDs), safe path rendering, value checks, rendered commands/steps (tested)\n- DevHub-Plugins `17b36e9`: Templates M2: placeholder renderer (one pass, foreign syntax untouched, transforms, built-ins, stable GUIDs), safe path rendering, value checks, rendered commands/steps (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-11T19:56:00+00:00",
+  "resolved": "2026-10-11T19:56:00+00:00"
+}

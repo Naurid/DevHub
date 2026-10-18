@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "kn4slr8a",
+  "key": "DEV-199",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "Docs — SDK and plugin reference, architecture, this board",
+  "description": "Asked 2026-10-18: documentation for the Sdk and every plugin, correct diagrams of both repositories, and the project's history on a board.",
+  "status": "inprogress",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T20:13:38.2981645+00:00",
+  "updated": "2026-10-18T20:18:38.2981645+00:00"
+}

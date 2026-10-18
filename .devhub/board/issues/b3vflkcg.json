@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "b3vflkcg",
+  "key": "DEV-150",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "BS — Board for Scrum projects",
+  "description": "Everything a Scrum project dossier needs, as working tools; charts became an Sdk library.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-17",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [
+    {
+      "type": "relates",
+      "target": "e2uk7sg0"
+    }
+  ],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:00+00:00",
+  "updated": "2026-10-18T02:07:00+00:00",
+  "resolved": "2026-10-18T02:07:00+00:00"
+}

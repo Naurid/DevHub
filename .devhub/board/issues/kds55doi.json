@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "kds55doi",
+  "key": "DEV-104",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Release: push the Sdk packages one by one by full path",
+  "description": "Landed in:\n- DevHub `0f3e034`: Release: push the Sdk packages one by one by full path (dotnet nuget push doesn't expand a relative wildcard)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "iwkcecqm",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T02:40:02+00:00",
+  "updated": "2026-10-12T20:15:00+00:00",
+  "resolved": "2026-10-12T20:15:00+00:00"
+}

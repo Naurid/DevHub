@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "pow32dzx",
+  "key": "DEV-165",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "Polish and fixes",
+  "description": "Small things across the shell and the plugins.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-17",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:00+00:00",
+  "updated": "2026-10-18T19:56:00+00:00",
+  "resolved": "2026-10-18T19:56:00+00:00"
+}

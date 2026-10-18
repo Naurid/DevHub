@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "qxhusbp5",
+  "key": "DEV-157",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Chart images: a margin; reference line labels at the left end",
+  "description": "Landed in:\n- DevHub `6f4245b`: Charts: reference line labels at the left end (they ran into the last value label)\n- DevHub `ec4c1be`: Chart images: a margin around the chart",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T16:14:00+00:00",
+  "resolved": "2026-10-17T16:14:00+00:00"
+}

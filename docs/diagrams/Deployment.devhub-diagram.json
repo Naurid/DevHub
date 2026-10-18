@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "kind": "deployment",
+  "title": "Deployment: install, data, releases",
+  "project": "../..",
+  "props": {},
+  "nodes": [
+    {
+      "id": "d8jakr",
+      "type": "node",
+      "x": 40,
+      "y": 40,
+      "width": 700,
+      "height": 820,
+      "rotation": 0,
+      "text": "Windows PC",
+      "props": {
+        "fill": "#F3F8FF",
+        "bold": "true"
+      }
+    },
+    {
+      "id": "s9x2ja",
+      "type": "environment",
+      "x": 70,
+      "y": 100,
+      "width": 640,
+      "height": 230,
+      "rotation": 0,
+      "text": "DevHub install (%LocalAppData%\\DevHub, Velopack)",
+      "parentId": "d8jakr",
+      "props": {}
+    },
+    {
+      "id": "mzww32",
+      "type": "artifact",
+      "x": 100,
+      "y": 160,
+      "width": 170,
+      "height": 56,
+      "rotation": 0,
+      "text": "DevHub.App.exe",
+      "parentId": "s9x2ja",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A"
+      }
+    },
+    {
+      "id": "irsn3y",
+      "type": "artifact",
+      "x": 290,
+      "y": 160,
+      "width": 220,
+      "height": 56,
+      "rotation": 0,
+      "text": "DevHub.Sdk.dll, DevHub.Sdk.Core.dll",
+      "parentId": "s9x2ja",
+      "props": {}
+    },
+    {
+      "id": "ncrstg",
+      "type": "artifact",
+      "x": 530,
+      "y": 160,
+      "width": 150,
+      "height": 56,
+      "rotation": 0,
+      "text": "Update.exe",
+      "parentId": "s9x2ja",
+      "props": {}
+    },
+    {
+      "id": "2yeyjt",
+      "type": "artifact",
+      "x": 100,
+      "y": 240,
+      "width": 420,
+      "height": 60,
+      "rotation": 0,
+      "text": "plugins\\ (bundled: Projects, Git, GitHub, Templates)",
+      "parentId": "s9x2ja",
+      "props": {
+        "fill": "#FFF0D9",
+        "line": "#D98C1F"
+      }
+    },
+    {
+      "id": "3h9ejg",
+      "type": "environment",
+      "x": 70,
+      "y": 360,
+      "width": 640,
+      "height": 280,
+      "rotation": 0,
+      "text": "User data (%AppData%\\DevHub, or DEVHUB_DATA_DIR)",
+      "parentId": "d8jakr",
+      "props": {}
+    },
+    {
+      "id": "pcwtjf",
+      "type": "artifact",
+      "x": 100,
+      "y": 420,
+      "width": 160,
+      "height": 56,
+      "rotation": 0,
+      "text": "settings.json",
+      "parentId": "3h9ejg",
+      "props": {}
+    },
+    {
+      "id": "wpmhrn",
+      "type": "artifact",
+      "x": 280,
+      "y": 420,
+      "width": 400,
+      "height": 56,
+      "rotation": 0,
+      "text": "plugins\\ (marketplace installs, .pending)",
+      "parentId": "3h9ejg",
+      "props": {
+        "fill": "#FFF0D9",
+        "line": "#D98C1F"
+      }
+    },
+    {
+      "id": "brspd6",
+      "type": "artifact",
+      "x": 100,
+      "y": 500,
+      "width": 160,
+      "height": 56,
+      "rotation": 0,
+      "text": "boards\\",
+      "parentId": "3h9ejg",
+      "props": {}
+    },
+    {
+      "id": "w52dgs",
+      "type": "artifact",
+      "x": 280,
+      "y": 500,
+      "width": 160,
+      "height": 56,
+      "rotation": 0,
+      "text": "templates\\",
+      "parentId": "3h9ejg",
+      "props": {}
+    },
+    {
+      "id": "e6z9zu",
+      "type": "environment",
+      "x": 70,
+      "y": 670,
+      "width": 640,
+      "height": 160,
+      "rotation": 0,
+      "text": "Git for Windows",
+      "parentId": "d8jakr",
+      "props": {}
+    },
+    {
+      "id": "hx3w85",
+      "type": "artifact",
+      "x": 100,
+      "y": 730,
+      "width": 160,
+      "height": 56,
+      "rotation": 0,
+      "text": "git.exe",
+      "parentId": "e6z9zu",
+      "props": {}
+    },
+    {
+      "id": "kpm99x",
+      "type": "artifact",
+      "x": 280,
+      "y": 730,
+      "width": 260,
+      "height": 56,
+      "rotation": 0,
+      "text": "Git Credential Manager",
+      "parentId": "e6z9zu",
+      "props": {}
+    },
+    {
+      "id": "ts4a5x",
+      "type": "node",
+      "x": 860,
+      "y": 40,
+      "width": 520,
+      "height": 700,
+      "rotation": 0,
+      "text": "GitHub",
+      "props": {
+        "bold": "true"
+      }
+    },
+    {
+      "id": "mrtudn",
+      "type": "environment",
+      "x": 890,
+      "y": 100,
+      "width": 460,
+      "height": 150,
+      "rotation": 0,
+      "text": "Naurid/DevHub: Releases",
+      "parentId": "ts4a5x",
+      "props": {}
+    },
+    {
+      "id": "uakqqe",
+      "type": "artifact",
+      "x": 910,
+      "y": 160,
+      "width": 220,
+      "height": 60,
+      "rotation": 0,
+      "text": "Setup.exe · .msi · portable zip",
+      "parentId": "mrtudn",
+      "props": {
+        "fill": "#DCEBFF",
+        "line": "#3574F0",
+        "textColor": "#1F3F7A"
+      }
+    },
+    {
+      "id": "qmibdp",
+      "type": "artifact",
+      "x": 1150,
+      "y": 160,
+      "width": 180,
+      "height": 60,
+      "rotation": 0,
+      "text": "full + delta packages",
+      "parentId": "mrtudn",
+      "props": {}
+    },
+    {
+      "id": "uaw8jt",
+      "type": "environment",
+      "x": 890,
+      "y": 280,
+      "width": 460,
+      "height": 150,
+      "rotation": 0,
+      "text": "Naurid/DevHub-Plugins: Releases",
+      "parentId": "ts4a5x",
+      "props": {}
+    },
+    {
+      "id": "4rnkuu",
+      "type": "artifact",
+      "x": 910,
+      "y": 340,
+      "width": 200,
+      "height": 60,
+      "rotation": 0,
+      "text": "<id>-<version>.zip",
+      "parentId": "uaw8jt",
+      "props": {
+        "fill": "#FFF0D9",
+        "line": "#D98C1F"
+      }
+    },
+    {
+      "id": "59fk94",
+      "type": "artifact",
+      "x": 1130,
+      "y": 340,
+      "width": 200,
+      "height": 60,
+      "rotation": 0,
+      "text": "index.json (release \"index\")",
+      "parentId": "uaw8jt",
+      "props": {}
+    },
+    {
+      "id": "qm4n3d",
+      "type": "environment",
+      "x": 890,
+      "y": 460,
+      "width": 460,
+      "height": 140,
+      "rotation": 0,
+      "text": "GitHub Actions",
+      "parentId": "ts4a5x",
+      "props": {}
+    },
+    {
+      "id": "f5vatw",
+      "type": "artifact",
+      "x": 910,
+      "y": 510,
+      "width": 200,
+      "height": 56,
+      "rotation": 0,
+      "text": "release.yml (DevHub)",
+      "parentId": "qm4n3d",
+      "props": {}
+    },
+    {
+      "id": "cevn9p",
+      "type": "artifact",
+      "x": 1130,
+      "y": 510,
+      "width": 200,
+      "height": 56,
+      "rotation": 0,
+      "text": "publish.yml (Plugins)",
+      "parentId": "qm4n3d",
+      "props": {}
+    },
+    {
+      "id": "cv4bmm",
+      "type": "component",
+      "x": 910,
+      "y": 640,
+      "width": 200,
+      "height": 56,
+      "rotation": 0,
+      "text": "REST API (api.github.com)",
+      "parentId": "ts4a5x",
+      "props": {}
+    },
+    {
+      "id": "fjxaqb",
+      "type": "node",
+      "x": 860,
+      "y": 800,
+      "width": 520,
+      "height": 150,
+      "rotation": 0,
+      "text": "nuget.org",
+      "props": {
+        "bold": "true"
+      }
+    },
+    {
+      "id": "eahp3w",
+      "type": "artifact",
+      "x": 890,
+      "y": 860,
+      "width": 320,
+      "height": 56,
+      "rotation": 0,
+      "text": "DevHub.Sdk + DevHub.Sdk.Core (.nupkg)",
+      "parentId": "fjxaqb",
+      "props": {
+        "fill": "#E3F5EA",
+        "line": "#2E9E5B"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "ere72e",
+      "type": "association",
+      "from": "d8jakr",
+      "to": "ts4a5x",
+      "text": "HTTPS",
+      "routing": "straight",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "nusvaz",
+      "type": "deploy",
+      "from": "uakqqe",
+      "to": "s9x2ja",
+      "text": "«deploy»",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "ieib74",
+      "type": "dependency",
+      "from": "ncrstg",
+      "to": "qmibdp",
+      "text": "checks and downloads updates",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "i4cwhm",
+      "type": "dependency",
+      "from": "wpmhrn",
+      "to": "4rnkuu",
+      "text": "download, SHA-256 checked",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "s2eh7k",
+      "type": "dependency",
+      "from": "mzww32",
+      "to": "59fk94",
+      "text": "reads the marketplace",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "g6kk9s",
+      "type": "dependency",
+      "from": "f5vatw",
+      "to": "uakqqe",
+      "text": "builds",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "q9a8bv",
+      "type": "dependency",
+      "from": "f5vatw",
+      "to": "eahp3w",
+      "text": "pushes",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "hmt9xv",
+      "type": "dependency",
+      "from": "f5vatw",
+      "to": "4rnkuu",
+      "text": "bundles the latest core plugins",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "is7qyx",
+      "type": "dependency",
+      "from": "cevn9p",
+      "to": "59fk94",
+      "text": "updates",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "uhravr",
+      "type": "dependency",
+      "from": "cevn9p",
+      "to": "4rnkuu",
+      "text": "creates",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "5n4hg8",
+      "type": "dependency",
+      "from": "kpm99x",
+      "to": "cv4bmm",
+      "text": "token (GitHub plugin)",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "tkhfj5",
+      "type": "dependency",
+      "from": "mzww32",
+      "to": "pcwtjf",
+      "text": "",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    },
+    {
+      "id": "9np8dd",
+      "type": "dependency",
+      "from": "mzww32",
+      "to": "hx3w85",
+      "text": "Git plugin",
+      "routing": "orthogonal",
+      "waypoints": [],
+      "props": {}
+    }
+  ],
+  "bounds": {
+    "x": 40,
+    "y": 40,
+    "width": 1340,
+    "height": 910,
+    "left": 40,
+    "top": 40,
+    "right": 1380,
+    "bottom": 950,
+    "center": {
+      "x": 710,
+      "y": 495,
+      "length": 865.520074868284
+    }
+  }
+}

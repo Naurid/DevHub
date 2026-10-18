@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "e40zk0pc",
+  "key": "DEV-50",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G3.1: multi-select, per-hunk and per-line staging and discard",
+  "description": "Landed in:\n- DevHub `3c2ac2b`: G3.1: multi-select in Local Changes; stage / unstage / discard hunks and single lines (patch via git apply, tested incl. CRLF, no-EOL, new files) G7: merge / rebase from the branch menu; in-progress banner with Continue / Skip / Abort; Accept Yours / Theirs (rebase-aware), merge tool, Mark as Resolved with marker check (tested)\n- DevHub-Plugins `287ad5c`: G3.1: multi-select in Local Changes; stage / unstage / discard hunks and single lines (patch via git apply, tested incl. CRLF, no-EOL, new files) G7: merge / rebase from the branch menu; in-progress banner with Continue / Skip / Abort; Accept Yours / Theirs (rebase-aware), merge tool, Mark as Resolved with marker check (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-10T17:22:00+00:00",
+  "resolved": "2026-10-10T17:22:00+00:00"
+}

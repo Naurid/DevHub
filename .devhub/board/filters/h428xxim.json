@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "id": "h428xxim",
+  "name": "Roadmap backlog",
+  "query": "status = Backlog AND type != epic ORDER BY rank",
+  "owner": "a4zn6iz9"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "qbzm0e7r",
+  "key": "DEV-146",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Closed issue pane takes room; Clear filters crashes",
+  "description": "Landed in:\n- DevHub-Plugins `10b6e00`: Git: cap concurrent git processes, retry ones that fail to start\n- DevHub-Plugins `7bb036b`: Board: closed issue pane takes no room; Clear filters no longer crashes\n- DevHub-Plugins `d385e59`: Lists that drive a view keep their selection on an empty click",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "e2uk7sg0",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:02+00:00",
+  "updated": "2026-10-18T17:21:00+00:00",
+  "resolved": "2026-10-18T17:21:00+00:00"
+}

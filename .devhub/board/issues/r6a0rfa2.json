@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "r6a0rfa2",
+  "key": "DEV-36",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Tool-window framework: slots, stripes, saved layout",
+  "description": "Landed in:\n- DevHub `4eed3e5`: UI-0 step 7: add resizable tool windows (Manager, SplitterThumb, layout persistence, shortcuts)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "rqziowmu",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T18:10:02+00:00",
+  "updated": "2026-10-09T19:51:00+00:00",
+  "resolved": "2026-10-09T19:51:00+00:00"
+}

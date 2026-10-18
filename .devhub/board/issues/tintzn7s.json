@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "tintzn7s",
+  "key": "DEV-62",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Projects and Git independent: DevHub.Integration hooks with fallbacks",
+  "description": "Landed in:\n- DevHub `e7f9901`: Projects and Git independent: DevHub.Integration hooks (IProjectOpener, IProjectFileEditor, IProjectFolders) with fallbacks; Git → Open Repository…; terminal launcher moved to Git.\n- DevHub-Plugins `2f8a025`: Projects and Git independent: DevHub.Integration hooks (IProjectOpener, IProjectFileEditor, IProjectFolders) with fallbacks; Git → Open Repository…; terminal launcher moved to Git.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "voy24ocz",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:02+00:00",
+  "updated": "2026-10-11T16:28:00+00:00",
+  "resolved": "2026-10-11T16:28:00+00:00"
+}

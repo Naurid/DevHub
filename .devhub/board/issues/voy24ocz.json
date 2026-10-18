@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "voy24ocz",
+  "key": "DEV-58",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "P — Plugin architecture",
+  "description": "Every feature becomes a plugin on a bare shell (docs/PLUGINS.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-11",
+  "due": "2026-10-11",
+  "rank": "zzzzzzzzzzzw",
+  "links": [
+    {
+      "type": "blocks",
+      "target": "ebg678av"
+    }
+  ],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T15:12:00+00:00",
+  "updated": "2026-10-11T19:23:05+00:00",
+  "resolved": "2026-10-11T16:42:00+00:00"
+}

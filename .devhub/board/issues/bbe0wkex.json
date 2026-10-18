@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "bbe0wkex",
+  "key": "DEV-184",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "D0: course PDFs read; notation rules per kind",
+  "description": "Landed without a commit of its own: dated by the commit it shipped with.\n\nLanded in:\n- DevHub-Plugins `16e3fce`: Diagrams: editor, UML, databases, business processes and mood boards (roadmap D)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "fl8e83uq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T06:59:02+00:00",
+  "updated": "2026-10-18T07:24:00+00:00",
+  "resolved": "2026-10-18T07:24:00+00:00"
+}

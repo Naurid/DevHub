@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "qjrlpwiv",
+  "key": "DEV-170",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Clicking empty space in a list or tree clears its selection",
+  "description": "Landed in:\n- DevHub `bb790b0`: Clicking empty space in a list or tree clears its selection\n- DevHub-Plugins `10b6e00`: Git: cap concurrent git processes, retry ones that fail to start\n- DevHub-Plugins `7bb036b`: Board: closed issue pane takes no room; Clear filters no longer crashes\n- DevHub-Plugins `d385e59`: Lists that drive a view keep their selection on an empty click",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-18T17:21:00+00:00",
+  "resolved": "2026-10-18T17:21:00+00:00"
+}

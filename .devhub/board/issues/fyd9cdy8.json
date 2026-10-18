@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "fyd9cdy8",
+  "key": "DEV-168",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Templates listed twice on Welcome",
+  "description": "Landed in:\n- DevHub-Plugins `2bcb66c`: Templates: listed once on Welcome (the tool window, Alt+2); the Templates tab is \"Manage Templates\" in the File menu and Find Action\n- DevHub-Plugins `dd47b7b`: Timeline: month names and the header summary no longer overlap",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "pow32dzx",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:36:02+00:00",
+  "updated": "2026-10-17T12:01:00+00:00",
+  "resolved": "2026-10-17T12:01:00+00:00"
+}

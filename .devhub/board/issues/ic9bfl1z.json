@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ic9bfl1z",
+  "key": "DEV-57",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G9.2: side-by-side diff; fetch from an empty remote says so",
+  "description": "Landed in:\n- DevHub `03de36f`: G9.2: side-by-side diff (SideBySideLayout in Core, tested): one saved switch for every diff, hunks staged in both views, single lines in unified; fetch from an empty remote says so; roadmap: Git client done\n- DevHub-Plugins `1cc7af1`: G9.2: side-by-side diff (SideBySideLayout in Core, tested): one saved switch for every diff, hunks staged in both views, single lines in unified; fetch from an empty remote says so; roadmap: Git client done",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-11T15:17:00+00:00",
+  "resolved": "2026-10-11T15:17:00+00:00"
+}

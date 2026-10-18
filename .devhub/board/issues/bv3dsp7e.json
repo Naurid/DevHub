@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "bv3dsp7e",
+  "key": "DEV-117",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "CI1: Core: workflows, runs, jobs, steps, logs, artifacts, annotations",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "vra1t0xw"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-12T03:00:02+00:00",
+  "updated": "2026-10-12T03:00:02+00:00"
+}

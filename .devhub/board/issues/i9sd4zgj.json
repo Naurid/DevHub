@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "i9sd4zgj",
+  "key": "DEV-47",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G4: branches: checkout, create, rename, delete; branch popup",
+  "description": "Landed in:\n- DevHub `638efc4`: G4: branches: list/checkout (Smart Checkout)/create/rename/delete (tested), Branches + Remotes sections, title-bar branch popup; compact confirm dialogs",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T22:49:00+00:00",
+  "resolved": "2026-10-09T22:49:00+00:00"
+}

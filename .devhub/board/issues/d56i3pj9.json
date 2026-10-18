@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "d56i3pj9",
+  "key": "DEV-152",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "BS1: acceptance criteria, Definition of Done, roles, business value",
+  "description": "Landed in:\n- DevHub-Plugins `e96937d`: Board: acceptance criteria, Definition of Done, roles and value ranking in the UI (Scrum dossier stage 1)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "b3vflkcg",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-17T11:32:02+00:00",
+  "updated": "2026-10-17T12:33:00+00:00",
+  "resolved": "2026-10-17T12:33:00+00:00"
+}

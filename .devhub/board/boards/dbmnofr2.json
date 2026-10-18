@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "id": "dbmnofr2",
+  "name": "DevHub",
+  "kind": "Kanban",
+  "columns": [
+    {
+      "id": "xoddg3ry",
+      "name": "Backlog",
+      "statuses": [
+        "backlog"
+      ]
+    },
+    {
+      "id": "pbsm5rmv",
+      "name": "Selected for Development",
+      "statuses": [
+        "selected"
+      ]
+    },
+    {
+      "id": "or6yaihf",
+      "name": "In Progress",
+      "statuses": [
+        "inprogress"
+      ]
+    },
+    {
+      "id": "k4jpnjnf",
+      "name": "In Review",
+      "statuses": [
+        "inreview"
+      ]
+    },
+    {
+      "id": "adoumnwf",
+      "name": "Done",
+      "statuses": [
+        "done"
+      ]
+    }
+  ],
+  "filter": "",
+  "hideSubtasks": false,
+  "hideEpics": true,
+  "hideDoneAfterDays": 14,
+  "swimlanes": "None",
+  "quickFilters": [
+    {
+      "id": "z7wubx68",
+      "name": "Only my issues",
+      "query": "assignee = currentUser()"
+    },
+    {
+      "id": "bq8o5gnu",
+      "name": "Recently updated",
+      "query": "updated >= -1d"
+    },
+    {
+      "id": "p4msijc5",
+      "name": "Bugs",
+      "query": "type = bug"
+    },
+    {
+      "id": "mnlel5or",
+      "name": "DevHub repo",
+      "query": "labels = devhub"
+    },
+    {
+      "id": "hu3rzydf",
+      "name": "Plugins repo",
+      "query": "labels = plugins"
+    },
+    {
+      "id": "wona1g16",
+      "name": "Mine",
+      "query": "assignee = currentUser()"
+    }
+  ],
+  "cardFields": [
+    "epic",
+    "assignee",
+    "labels",
+    "components"
+  ]
+}

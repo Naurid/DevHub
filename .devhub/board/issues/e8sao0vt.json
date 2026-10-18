@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "e8sao0vt",
+  "key": "DEV-2",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "Repository workbench",
+  "description": "Designate folders, find the git repositories in them, open each in the right tool.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "bnioxhnk"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-09",
+  "due": "2026-10-09",
+  "rank": "r",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T00:14:00+00:00",
+  "updated": "2026-10-09T00:40:00+00:00",
+  "resolved": "2026-10-09T00:40:00+00:00"
+}

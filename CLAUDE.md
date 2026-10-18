@@ -64,6 +64,9 @@ docs/
   ROADMAP.md            milestones + checkboxes; the "where are we" file
   UI_GUIDE.md           UI rules, tokens, components and recipes (read before App changes)
   ACTIONS_AND_FUZZY_MATCHING.md   how actions, menus, shortcuts and Find Action work
+  sdk/                  the Sdk reference (README, SDK_CORE.md, SDK.md): update it with any public Sdk change
+  diagrams/             architecture diagrams (*.devhub-diagram.json, open in DevHub): keep them true to the code
+.devhub/board/          the project board (Kanban, Board plugin's folder store): "Board of This Project" opens it
 ```
 
 **Dependency direction:** `App → Sdk (→ Sdk.Core)`; no plugin anywhere in this repository except the

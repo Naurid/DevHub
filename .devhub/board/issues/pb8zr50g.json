@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "pb8zr50g",
+  "key": "DEV-44",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G1: status parser, watcher refresh, Local Changes, dirty tab dot",
+  "description": "Landed in:\n- DevHub `12a8fb9`: G1: git status parser + repository watcher (tested), Local Changes view, change counts, dirty tab dot, ahead/behind, operation banner, auto-scan; resizable repository sidebar, list group separators, long branch names trimmed\n- DevHub-Plugins `8fdb609`: G1: git status parser + repository watcher (tested), Local Changes view, change counts, dirty tab dot, ahead/behind, operation banner, auto-scan; resizable repository sidebar, list group separators, long branch names trimmed",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T21:29:00+00:00",
+  "resolved": "2026-10-09T21:29:00+00:00"
+}

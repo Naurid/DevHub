@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "vh3rg2d0",
+  "key": "DEV-79",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "M9: Settings → Templates, recent projects, zip export / import",
+  "description": "Landed in:\n- DevHub `0f0677f`: Templates M9: Settings → Templates (author, where new projects go: default folder + rules per language and/or category, personal and extra libraries); recent projects on New Project's start page; template zip export/import (zip-slip refused); save-file picker in IDialogService; publish profile win-x64 (self-contained) (tested)\n- DevHub-Plugins `26d84eb`: Templates M9: Settings → Templates (author, where new projects go: default folder + rules per language and/or category, personal and extra libraries); recent projects on New Project's start page; template zip export/import (zip-slip refused); save-file picker in IDialogService; publish profile win-x64 (self-contained) (tested)",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "ebg678av",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "de5k4fpd"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-11T19:23:02+00:00",
+  "updated": "2026-10-12T00:56:00+00:00",
+  "resolved": "2026-10-12T00:56:00+00:00"
+}

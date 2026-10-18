@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "e2uk7sg0",
+  "key": "DEV-123",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "B — Board",
+  "description": "Jira-style planning without a server: plain JSON files (docs/BOARD_PLAN.md).",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "start": "2026-10-13",
+  "due": "2026-10-18",
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-13T15:21:00+00:00",
+  "updated": "2026-10-18T19:53:00+00:00",
+  "resolved": "2026-10-18T19:53:00+00:00"
+}

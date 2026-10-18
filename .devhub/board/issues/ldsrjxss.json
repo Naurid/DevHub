@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "ldsrjxss",
+  "key": "DEV-43",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "G0: GitRunner, command log, repository tabs, branch widget, Git Console",
+  "description": "Landed in:\n- DevHub `7ffff00`: Git integration (G0 milestone): implemented core Git client framework.\n- DevHub-Plugins `00b60ce`: Git integration (G0 milestone): implemented core Git client framework.",
+  "status": "done",
+  "resolution": "done",
+  "priority": "medium",
+  "parent": "qh5znryq",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-09T20:06:02+00:00",
+  "updated": "2026-10-09T21:10:00+00:00",
+  "resolved": "2026-10-09T21:10:00+00:00"
+}
