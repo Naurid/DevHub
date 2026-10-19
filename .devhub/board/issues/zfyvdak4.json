@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "zfyvdak4",
+  "key": "DEV-223",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Use case, activity and class diagrams for every plugin (51)",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "pnbafeud",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:39:00.5873429+00:00",
+      "body": "51 diagrams in DevHub-Plugins docs/diagrams/<Plugin>/ on Docs/plugin-diagrams (7616e83): use cases with «include»/«extend» and extension points, activities with swimlanes and guarded decisions, class diagrams read from the built DLLs (MetadataLoadContext) and laid out with AutoLayout. All pass the kinds' rules and the overlap check; each was rendered and looked at."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:14.2779775+00:00",
+  "updated": "2026-10-19T00:39:00.6883254+00:00"
+}

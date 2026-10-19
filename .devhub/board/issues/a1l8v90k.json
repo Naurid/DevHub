@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "a1l8v90k",
+  "key": "DEV-219",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Repository tabs run git after every build (bin/, obj/), in every tab",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qz4j52fl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "fd3pr8l1",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:40:22.3763578+00:00",
+      "body": "DevHub-Plugins Feature/faster: ignored folders skipped, edits refresh the status only, background tabs catch up when shown (tested with a temp repository)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:00.4701408+00:00",
+  "updated": "2026-10-18T23:40:22.5635218+00:00"
+}

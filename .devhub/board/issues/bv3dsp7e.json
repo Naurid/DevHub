@@ -6,9 +6,10 @@
   "type": "story",
   "summary": "CI1: Core: workflows, runs, jobs, steps, logs, artifacts, annotations",
   "description": "",
-  "status": "backlog",
+  "status": "inreview",
   "priority": "medium",
   "parent": "y9vd49st",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzr",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "mkkj7xxy",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:16:20.0204836+00:00",
+      "body": "DevHub-Plugins Feature/ci: DevHub.Ci.Core (runs and jobs JSON, GitHub remote from .git/config, PollSchedule, RunWatch, LogExcerpt), 21 tests."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:02+00:00",
-  "updated": "2026-10-12T03:00:02+00:00"
+  "updated": "2026-10-19T00:16:20.2139921+00:00"
 }

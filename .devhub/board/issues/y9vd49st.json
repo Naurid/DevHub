@@ -6,7 +6,7 @@
   "type": "epic",
   "summary": "CI — CI tracker for GitHub Actions",
   "description": "GitHub Actions first, through IGitHubApi; providers behind ICiProvider.",
-  "status": "backlog",
+  "status": "inprogress",
   "priority": "medium",
   "reporter": "a4zn6iz9",
   "labels": [
@@ -28,10 +28,17 @@
     }
   ],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "bbz03bs3",
+      "author": "a4zn6iz9",
+      "created": "2026-10-18T23:24:17.4812477+00:00",
+      "body": "Simplified 2026-10-19 (the owner): runs of the open repository tabs, notified in DevHub, failed logs, re-run jobs, history. Releases and workflow files are later."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:00+00:00",
-  "updated": "2026-10-12T03:00:05+00:00"
+  "updated": "2026-10-18T23:24:17.654068+00:00"
 }

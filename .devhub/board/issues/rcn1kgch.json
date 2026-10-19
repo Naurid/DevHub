@@ -6,9 +6,10 @@
   "type": "story",
   "summary": "CI3: re-run, cancel, run a workflow (confirmed, logged)",
   "description": "",
-  "status": "backlog",
+  "status": "inreview",
   "priority": "medium",
   "parent": "y9vd49st",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzy",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "jnhicck0",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:16:26.795464+00:00",
+      "body": "Feature/ci: Re-run a job, Re-run failed jobs (confirmed). Cancel and workflow_dispatch left for later (not asked for)."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:02+00:00",
-  "updated": "2026-10-12T03:00:02+00:00"
+  "updated": "2026-10-19T00:16:26.9774285+00:00"
 }

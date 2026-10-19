@@ -2,7 +2,7 @@
   "schema": 1,
   "key": "DEV",
   "name": "DevHub",
-  "nextNumber": 215,
+  "nextNumber": 226,
   "issueTypes": [
     {
       "id": "epic",

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "je3ki041",
+  "key": "DEV-221",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "The diagram canvas lays out text on every mouse move and every frame",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "e84dsqz9"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "hpz7eof1",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:48:07.6052663+00:00",
+      "body": "DevHub-Plugins Feature/faster: laid-out texts are kept, label boxes once per frame, one hit test and one cursor per mouse move."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:07.5774139+00:00",
+  "updated": "2026-10-18T23:48:07.7900387+00:00"
+}

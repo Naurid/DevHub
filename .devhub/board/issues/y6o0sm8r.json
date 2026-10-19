@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "y6o0sm8r",
+  "key": "DEV-222",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Icons: check whether every Icon parses its SVG again (share them if so)",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "w92hgkri"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "rwx9dor8",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:19:49.9981213+00:00",
+      "body": "Checked 2026-10-19 (Svg.Controls.Skia.Avalonia 12.0.0.17, by reflection): the parsed-picture cache (_cache, EnableCache) is per Svg instance, not shared, so every Icon does parse its own file. But the parse runs in ReloadSourceAsync (off the UI thread), and a shared SvgSource goes through CreateWorkingSource, which looks like a copy per control, so sharing it may not save the parse. Not changed blindly: needs a dotnet-trace of a list scroll first. Left in Backlog."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:11.1120483+00:00",
+  "updated": "2026-10-19T00:19:49.9981213+00:00"
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "id": "zjpyo5o3",
+  "key": "DEV-224",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "CI plugin documentation (docs/plugins/CI.md, the hooks table, the architecture diagrams)",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "y9vd49st",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "gz01rcbc"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzy",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "kc25nwh2",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:16:33.5887006+00:00",
+      "body": "docs/plugins/CI.md, the index, Git and GitHub pages (Feature/ci). The architecture diagrams follow with E."
+    },
+    {
+      "id": "eiqsuada",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:39:07.8364203+00:00",
+      "body": "DevHub side on Docs/ci (bf70a77): SDK.md hooks table, ROADMAP CI0–CI4 done, the rest Later. Plugins side: the three architecture diagrams now show CI (7616e83)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:37.668472+00:00",
+  "updated": "2026-10-19T00:39:07.8364203+00:00"
+}

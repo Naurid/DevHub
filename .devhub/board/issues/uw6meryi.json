@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "uw6meryi",
+  "key": "DEV-220",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "The board view rebuilds every card after every change",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "ty1x0acx",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:43:07.1959525+00:00",
+      "body": "DevHub-Plugins Feature/faster: unchanged cards keep their ViewModel, cells patch in place, the layout is built once."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:24:04.027589+00:00",
+  "updated": "2026-10-18T23:43:07.3787697+00:00"
+}
