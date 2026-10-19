@@ -6,9 +6,11 @@
   "type": "task",
   "summary": "CI0: plan: API calls and scopes, polling with ETags, confirmed actions",
   "description": "",
-  "status": "selected",
+  "status": "done",
+  "resolution": "done",
   "priority": "medium",
   "parent": "y9vd49st",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +25,18 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzi",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "yr659akf",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:24:20.983281+00:00",
+      "body": "The plan: ~/.claude/plans/alright-so-what-i-linked-wadler.md, part C."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:02+00:00",
-  "updated": "2026-10-12T03:00:02+00:00"
+  "updated": "2026-10-18T23:24:21.0855305+00:00",
+  "resolved": "2026-10-18T23:24:21.0855305+00:00"
 }

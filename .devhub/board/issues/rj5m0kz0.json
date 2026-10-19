@@ -6,9 +6,10 @@
   "type": "story",
   "summary": "CI4: status everywhere: status bar, marks in Git, notifications",
   "description": "",
-  "status": "backlog",
+  "status": "inreview",
   "priority": "medium",
   "parent": "y9vd49st",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzz",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "y1fjzjyf",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:16:30.2251551+00:00",
+      "body": "Feature/ci: status-bar ✓/✗/● CI for the branch in front, a status message when a watched run finishes, ✓ ✗ ● in Git (IGitDecorator). No OS notifications (in DevHub only, as asked)."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:02+00:00",
-  "updated": "2026-10-12T03:00:02+00:00"
+  "updated": "2026-10-19T00:16:30.4003626+00:00"
 }

@@ -1,0 +1,5 @@
+{"at":"2026-10-18T23:24:00.4701408+00:00","who":"a4zn6iz9","field":"created","to":"DEV-219"}
+{"at":"2026-10-18T23:24:00.7644351+00:00","who":"a4zn6iz9","field":"assignee","to":"x74qtb63"}
+{"at":"2026-10-18T23:24:00.8917756+00:00","who":"x74qtb63","field":"status","from":"backlog","to":"selected"}
+{"at":"2026-10-18T23:40:22.3763578+00:00","who":"x74qtb63","field":"comment","to":"fd3pr8l1"}
+{"at":"2026-10-18T23:40:22.5635218+00:00","who":"x74qtb63","field":"status","from":"selected","to":"inreview"}

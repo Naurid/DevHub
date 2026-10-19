@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "yqqhzrp1",
+  "key": "DEV-218",
+  "oldKeys": [],
+  "type": "bug",
+  "summary": "Every GitHub API call starts two Git Credential Manager processes",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "od7h3lvl"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzw",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "wgpl12kc",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:32:44.0479635+00:00",
+      "body": "DevHub-Plugins Feature/faster: CredentialCache keeps the accounts and tokens in memory for 10 minutes (tested)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:23:56.9483953+00:00",
+  "updated": "2026-10-18T23:32:44.2336014+00:00"
+}

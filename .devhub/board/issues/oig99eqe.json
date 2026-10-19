@@ -6,7 +6,8 @@
   "type": "story",
   "summary": "In-app text editor for content files",
   "description": "M5 chose external editors for now.",
-  "status": "backlog",
+  "status": "done",
+  "resolution": "wontdo",
   "priority": "medium",
   "parent": "ebg678av",
   "reporter": "a4zn6iz9",
@@ -35,5 +36,6 @@
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-11T19:23:02+00:00",
-  "updated": "2026-10-11T19:23:03+00:00"
+  "updated": "2026-10-18T23:03:12.1223737+00:00",
+  "resolved": "2026-10-18T23:03:08.3650677+00:00"
 }

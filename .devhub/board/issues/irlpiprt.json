@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "irlpiprt",
+  "key": "DEV-225",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Backlog and sprint planning: keep unchanged rows too (FillLists makes them all again)",
+  "description": "",
+  "status": "backlog",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "plugins"
+  ],
+  "components": [
+    "qs7oheu1"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:43:10.4993716+00:00",
+  "updated": "2026-10-18T23:43:10.4993716+00:00"
+}

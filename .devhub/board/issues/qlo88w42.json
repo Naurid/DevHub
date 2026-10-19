@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "qlo88w42",
+  "key": "DEV-217",
+  "oldKeys": [],
+  "type": "story",
+  "summary": "Status bar: the last messages on a click (how many: a setting, 30 by default)",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzr",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "otm6v2ip",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:30:09.0234209+00:00",
+      "body": "DevHub Feature/status-history: a click on the status message shows the recent ones; Settings → Appearance → Status messages kept (30)."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:23:53.3631222+00:00",
+  "updated": "2026-10-18T23:30:09.2095521+00:00"
+}

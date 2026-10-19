@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "bzmxnpfo",
+  "key": "DEV-216",
+  "oldKeys": [],
+  "type": "task",
+  "summary": "Title bar: no theme toggle, Add Folder or Rescan buttons",
+  "description": "",
+  "status": "inreview",
+  "priority": "medium",
+  "parent": "kywqx2bd",
+  "assignee": "x74qtb63",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzi",
+  "links": [],
+  "custom": {},
+  "comments": [
+    {
+      "id": "f35hgidd",
+      "author": "x74qtb63",
+      "created": "2026-10-18T23:23:50.1266726+00:00",
+      "body": "DevHub Fix/title-bar-buttons (theme toggle) and DevHub-Plugins Fix/title-bar-buttons (Add Folder, Rescan): they stay in their menus, shortcuts and the Projects tool window's header."
+    }
+  ],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:23:49.6887116+00:00",
+  "updated": "2026-10-18T23:23:50.2258054+00:00"
+}

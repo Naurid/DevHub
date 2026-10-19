@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "kywqx2bd",
+  "key": "DEV-215",
+  "oldKeys": [],
+  "type": "epic",
+  "summary": "Feedback 2026-10-19: speed, title bar, status history, plugin diagrams",
+  "description": "Asked 2026-10-19 with the simple CI tracker: find what makes DevHub sluggish and fix it, clean the title bar, a status-bar message history, and use case, activity and class diagrams for every plugin. Plan: ~/.claude/plans/alright-so-what-i-linked-wadler.md.",
+  "status": "inprogress",
+  "priority": "medium",
+  "reporter": "a4zn6iz9",
+  "labels": [
+    "devhub",
+    "plugins"
+  ],
+  "components": [
+    "n3jqugxr"
+  ],
+  "fixVersions": [],
+  "time": {
+    "log": []
+  },
+  "rank": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+  "links": [],
+  "custom": {},
+  "comments": [],
+  "attachments": [],
+  "criteria": [],
+  "doneChecks": [],
+  "created": "2026-10-18T23:22:47.051125+00:00",
+  "updated": "2026-10-18T23:22:47.2595066+00:00"
+}

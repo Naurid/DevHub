@@ -6,9 +6,10 @@
   "type": "story",
   "summary": "CI2: CI tool window and a tab per repository",
   "description": "",
-  "status": "backlog",
+  "status": "inreview",
   "priority": "medium",
   "parent": "y9vd49st",
+  "assignee": "x74qtb63",
   "reporter": "a4zn6iz9",
   "labels": [
     "plugins"
@@ -23,10 +24,17 @@
   "rank": "zzzzzzzzzzzzzzzzzzzzzzzw",
   "links": [],
   "custom": {},
-  "comments": [],
+  "comments": [
+    {
+      "id": "fuj1mdsk",
+      "author": "x74qtb63",
+      "created": "2026-10-19T00:16:23.4470921+00:00",
+      "body": "Feature/ci: bottom tool window (history, filters, Load more, jobs) and a log tab per job (failed steps / all)."
+    }
+  ],
   "attachments": [],
   "criteria": [],
   "doneChecks": [],
   "created": "2026-10-12T03:00:02+00:00",
-  "updated": "2026-10-12T03:00:02+00:00"
+  "updated": "2026-10-19T00:16:23.6221474+00:00"
 }
