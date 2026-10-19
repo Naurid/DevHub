@@ -256,10 +256,10 @@ missing. Only plain data crosses (paths, SHAs, keys, records defined here), neve
 | `IProjectDiagrams` (`DiagramsOf`, `Mentioning`, `Open`, `CreateAsync`, `Changed`) | Diagrams | Projects (Diagrams under each project), Board (Diagrams page, issue section) | nothing shown |
 | `IIssueLinks` (`SearchAsync`, `FindAsync`, `Open`, `CreateStoryAsync`, `Changed`) | Board | Diagrams (shapes linked to issues) | the key stays plain text |
 | `IChartMaker.Open(kind, data)` | Charts | Board Reports (Open in Chart Maker) | the button isn't shown |
-| `IGitHubApi` (`GetAccountsAsync`, `SendAsync`) | GitHub | Board (GitHub Issues import), Board Git (an issue's pull requests) | no GitHub features |
-| `IRepositoryEvents` (`BranchChanged`, `Committed`, `Pushed`, `Fetched`) | Git | Board Git (smart commits, issue moves) | nothing reacts |
+| `IGitHubApi` (`GetAccountsAsync`, `SendAsync`) | GitHub | Board (GitHub Issues import), Board Git (an issue's pull requests), CI (runs, jobs, logs, re-runs) | no GitHub features |
+| `IRepositoryEvents` (`BranchChanged`, `Committed`, `Pushed`, `Fetched`) | Git | Board Git (smart commits, issue moves), CI (polls quickly after a push; the status mark after a branch switch) | nothing reacts |
 | `ICommitMessageSuggester.SuggestAsync(context, ct)` | Board Git ("DEV-12: ") | Git's commit box | no suggestion |
-| `IGitDecorator` (`DecorateCommits`, `DecorateBranches`, `Changed`) | Board Git (issue keys, the board branch) | Git's commit list, details, branch tree | no marks |
+| `IGitDecorator` (`DecorateCommits`, `DecorateBranches`, `Changed`) | Board Git (issue keys, the board branch), CI (✓ ✗ ● run marks) | Git's commit list, details, branch tree | no marks |
 
 Rules that come with them:
 

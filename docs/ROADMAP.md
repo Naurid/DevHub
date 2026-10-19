@@ -368,26 +368,30 @@ DevHub's own Diagrams plugins and checked by their rules), and the project's his
 - [x] DOC4. The project board (`.devhub/board/`, Kanban): every roadmap item and fix, dated by its commit
 
 ## CI — CI tracker for GitHub Actions [Plugins]
-Decided 2026-10-12: **GitHub Actions** first; providers behind `ICiProvider` (GitLab, Azure DevOps later, as
-their own plugins). `DevHub.Ci` (+ `.Core`) needs GitHub on and calls the API through PM6's `IGitHubApi` (the
-account stays in Git Credential Manager). Code in DevHub-Plugins; plan in its `docs/CI_PLAN.md`.
-- [ ] CI0. Plan: API calls and the token scopes they need (`workflow`), polling with ETags and rate limits,
-      which actions are confirmed
-- [ ] CI1. Core (tested with recorded API responses): workflows, runs, jobs, steps, logs, artifacts,
-      annotations
-- [ ] CI2. CI tool window + a tab per repository: runs (workflow, branch, event, status, duration, who) with
-      filters, live while something runs; jobs → steps → logs (search, collapsible groups, errors
-      highlighted); annotations, artifact download, open in the browser
-- [ ] CI3. Re-run (all or failed jobs), cancel, run a workflow (`workflow_dispatch` inputs as a form); each
-      confirmed and logged
-- [ ] CI4. Status everywhere: the current branch's latest run in the status bar, marks next to commits and
-      branches in Git (through a hook), a notification when a watched run ends
-- [ ] CI5. Releases: which run built each release; **Redeploy** (re-run a version's release); **Release next
+Decided 2026-10-12: **GitHub Actions** first. Rescoped 2026-10-19 to a **simple, light tracker** (the user's
+choice): only the repositories open as tabs, notifications inside DevHub only, a bottom tool window. `DevHub.Ci`
+(+ `.Core`) requires GitHub and calls the API through PM6's `IGitHubApi` (the account stays in Git Credential
+Manager). Code and reference in DevHub-Plugins (`docs/plugins/CI.md`).
+- [x] CI0. Plan: the calls (runs, jobs, logs, re-runs), ETag polling at a pace that follows what's happening
+      (5 s after a push, 15 s while a run is active, 2 min idle, 5 min when the rate limit is low); re-runs need
+      the `repo` and `workflow` rights and are confirmed
+- [x] CI1. Core (tested with recorded API responses): runs, jobs, steps, the GitHub remote and branch read from
+      `.git/config` and `HEAD` (worktrees too), `PollSchedule`, `RunWatch` (finished-run detection),
+      `LogExcerpt` (the failed steps, errors marked)
+- [x] CI2. CI tool window (bottom): the front repository's runs with branch and workflow filters, Load more,
+      jobs and failed steps on expand; a log tab per job (the failed steps or all of it); open in the browser
+- [x] CI3. Re-run a job, re-run a run's failed jobs; both confirmed, the outcome in the status bar
+- [x] CI4. Status everywhere: the current branch's runs in the status bar (✓ ✗ ●), marks next to commits and
+      branches in Git (`IGitDecorator`), a status-bar message when a watched run ends
+- [ ] Later: cancel a run; run a workflow (`workflow_dispatch` inputs as a form); log search and collapsible
+      groups; annotations, artifact download; other providers behind `ICiProvider` (GitLab, Azure DevOps, as
+      their own plugins)
+- [ ] Later: releases: which run built each release; **Redeploy** (re-run a version's release); **Release next
       version**: shows the next version (computed in Core: DevHub's `vN` + commits scheme, or semver tags),
       minor = dispatch the release workflow, major = create and push the `vN` tag, both confirmed; release
       workflow and version scheme set per repository; DevHub's `release.yml` gets `workflow_dispatch` (minor /
       major) so the button works for DevHub itself
-- [ ] CI6. Workflow files: list and open `.github/workflows/*.yml`, GitHub's validation errors shown
+- [ ] Later: workflow files: list and open `.github/workflows/*.yml`, GitHub's validation errors shown
 
 ## X — Multiplatform (Linux, macOS) [DevHub + Plugins]
 - [ ] Windows-only bits behind small services: `explorer.exe` (Show in Explorer), `cmd /c` shims and PATHEXT
