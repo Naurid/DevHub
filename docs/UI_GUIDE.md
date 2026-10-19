@@ -46,6 +46,8 @@ token and component live; check changes there in Dark, Light and Compact.
    progress bar (indeterminate when `percent` is null) and a Cancel button. Failures that need
    explaining go in a dialog: `new ConfirmDialogViewModel(title, explanation, "OK", details,
    destructive: false, showCancel: false)` is an OK-only message.
+   Short results ("Pushed main to origin.") go through `status.Show(…)`: the user can find them again in the
+   status bar's history (a click on the message), so a message that was replaced quickly isn't lost.
 11. **All text the user reads is translated** (§5 "Translate text"): `{l:T 'Apply'}` in XAML,
    `L.T("Apply")` / `L.T($"{count} issues")` in C#, with the French in the project's `i18n/fr.json`.
    Ids, file names, settings values and anything the code compares stay plain strings.

@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DevHub.Sdk.Core.Collections;
+using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
 using DevHub.Sdk.Core.Localization;
 
@@ -40,15 +42,48 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
     /// <summary>Widgets from the loaded plugins, left of the theme / density widgets. Set once by the main window ViewModel.</summary>
     public IReadOnlyList<StatusBarWidgetViewModelBase> Widgets { get; internal set; } = [];
 
-    public StatusBarViewModel(IThemeService theme)
+    public StatusBarViewModel(IThemeService theme, ISettingsStore settings)
     {
         _theme = theme;
+        History = new RecentItems<StatusMessage>((settings.Load().StatusBar ?? new StatusBarSettings()).Size);
         UpdateAppearance();
         // Unsubscribed in Dispose (the DI container disposes singletons at shutdown).
         _theme.Changed += OnThemeChanged;
     }
 
-    public void Show(string? message) => Message = string.IsNullOrWhiteSpace(message) ? null : message;
+    /// <summary>The latest messages, newest first (Settings → Appearance → Status messages kept), shown when the message is clicked.</summary>
+    public RecentItems<StatusMessage> History { get; }
+
+    public bool HasHistory => History.Count > 0;
+
+    public void Show(string? message)
+    {
+        var text = string.IsNullOrWhiteSpace(message) ? null : message;
+        // Plugins may report from a background thread; the bar and its history change on the UI thread.
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => Show(text));
+            return;
+        }
+        Message = text;
+        if (text is null)
+            return;
+        if (History.Count > 0 && History[0].Text == text)
+            History[0] = History[0] with { At = DateTime.Now };   // the same message again: just its time
+        else
+            History.Push(new StatusMessage(DateTime.Now, text));
+        OnPropertyChanged(nameof(HasHistory));
+    }
+
+    /// <summary>Settings → Appearance changed how many messages are kept (fewer: the oldest go now).</summary>
+    public void SetHistorySize(int size) => History.Capacity = size;
+
+    [RelayCommand]
+    private void ClearHistory()
+    {
+        History.Clear();
+        OnPropertyChanged(nameof(HasHistory));
+    }
 
     public IStatusTask StartTask(string title, Action? cancel = null)
     {
@@ -73,6 +108,15 @@ public partial class StatusBarViewModel : ViewModelBase, IStatusService, IDispos
     }
 
     public void Dispose() => _theme.Changed -= OnThemeChanged;
+}
+
+/// <summary>A message the status bar showed, with when.</summary>
+public sealed record StatusMessage(DateTime At, string Text)
+{
+    /// <summary>"14:02".</summary>
+    public string Time => At.ToString("t", System.Globalization.CultureInfo.CurrentCulture);
+
+    public override string ToString() => $"{Time} {Text}";
 }
 
 /// <summary>A running operation in the status bar: title, current step, progress, Cancel.</summary>

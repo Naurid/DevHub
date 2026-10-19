@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DevHub.Sdk.Core.Settings;
 using DevHub.Services;
+using DevHub.ViewModels.Shell;
 using DevHub.Sdk.Core.Localization;
 
 namespace DevHub.ViewModels.Dialogs.Settings;
@@ -15,7 +16,7 @@ public partial class AppearanceSettingsPageViewModel : SettingsPageViewModelBase
 
     public override string Title => L.T("Appearance");
     public override int Order => 0;
-    public override string Keywords => L.T("language english french theme dark light system windows accent color colour compact density size");
+    public override string Keywords => L.T("language english french theme dark light system windows accent color colour compact density size status messages history");
 
     /// <summary>Choices for the language combo box: Windows' language, then each language in its own name.</summary>
     public IReadOnlyList<LanguageOption> Languages { get; } =
@@ -51,13 +52,23 @@ public partial class AppearanceSettingsPageViewModel : SettingsPageViewModelBase
 
     [ObservableProperty] private bool _isCompact;
 
+    /// <summary>Status messages the history keeps (the status bar's click).</summary>
+    [ObservableProperty] private decimal? _historySize;
+
+    public decimal MinHistorySize => StatusBarSettings.MinHistorySize;
+    public decimal MaxHistorySize => StatusBarSettings.MaxHistorySize;
+
     public bool IsAccentValid => HexColor().IsMatch(Accent);
 
-    public AppearanceSettingsPageViewModel(IThemeService theme, ISettingsStore store, IStatusService status)
+    private readonly StatusBarViewModel _statusBar;
+
+    public AppearanceSettingsPageViewModel(IThemeService theme, ISettingsStore store, IStatusService status, StatusBarViewModel statusBar)
     {
         _theme = theme;
         _store = store;
         _status = status;
+        _statusBar = statusBar;
+        _historySize = (store.Load().StatusBar ?? new StatusBarSettings()).Size;
         var language = store.Load().Language ?? L.System;
         _selectedLanguage = Languages.FirstOrDefault(l => l.Code == language) ?? Languages[0];
         // Initialise the backing fields directly so loading doesn't count as a user edit.
@@ -70,6 +81,7 @@ public partial class AppearanceSettingsPageViewModel : SettingsPageViewModelBase
     partial void OnSelectedLanguageChanged(LanguageOption value) => MarkModified();
     partial void OnSelectedThemeChanged(ThemeOption value) => MarkModified();
     partial void OnIsCompactChanged(bool value) => MarkModified();
+    partial void OnHistorySizeChanged(decimal? value) => MarkModified();
 
     partial void OnSelectedPresetChanged(AccentOption? value)
     {
@@ -96,6 +108,9 @@ public partial class AppearanceSettingsPageViewModel : SettingsPageViewModelBase
         _theme.IsCompact = IsCompact;
         if (IsAccentValid)
             _theme.SetAccent(Accent);
+        var kept = new StatusBarSettings { HistorySize = (int)(HistorySize ?? StatusBarSettings.DefaultHistorySize) }.Size;
+        _store.Update(s => s.StatusBar = new StatusBarSettings { HistorySize = kept });
+        _statusBar.SetHistorySize(kept);
         IsModified = false;
     }
 

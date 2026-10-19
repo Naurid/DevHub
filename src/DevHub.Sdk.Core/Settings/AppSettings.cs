@@ -30,6 +30,9 @@ public sealed class AppSettings
     /// <summary>Settings → Updates; null = never changed (check on startup).</summary>
     public UpdateSettings? Updates { get; set; }
 
+    /// <summary>Settings → Appearance → Status messages kept; null = never changed (the default size).</summary>
+    public StatusBarSettings? StatusBar { get; set; }
+
     /// <summary>Open editor tabs from the last session; null until the first save.</summary>
     public EditorLayout? Editor { get; set; }
 

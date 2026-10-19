@@ -17,10 +17,36 @@
             BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
             Padding="{DynamicResource Padding.StatusBar}">
         <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="{DynamicResource Spacing.Large}">
-            <TextBlock Classes="small secondary"
-                       Text="{Binding Message}"
-                       VerticalAlignment="Center"
-                       TextTrimming="CharacterEllipsis" />
+            <!-- The latest message; a click shows the ones before it (Settings → Appearance: how many are kept). -->
+            <Button Classes="statusWidget" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                    ToolTip.Tip="{l:T 'Recent messages'}" AutomationProperties.Name="{l:T 'Recent messages'}">
+                <TextBlock Text="{Binding Message, FallbackValue=''}" TextTrimming="CharacterEllipsis" />
+                <Button.Flyout>
+                    <Flyout Placement="TopEdgeAlignedLeft">
+                        <StackPanel Width="{DynamicResource Size.StatusHistoryWidth}" Spacing="{DynamicResource Spacing}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Classes="header" Text="{l:T 'Recent messages'}" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Classes="flat" Content="{l:T 'Clear'}" Command="{Binding ClearHistoryCommand}"
+                                        IsEnabled="{Binding HasHistory}" />
+                            </Grid>
+                            <TextBlock Classes="secondary" Text="{l:T 'No messages yet.'}" IsVisible="{Binding !HasHistory}" />
+                            <ScrollViewer MaxHeight="{DynamicResource Size.StatusHistoryMaxHeight}" IsVisible="{Binding HasHistory}">
+                                <ItemsControl ItemsSource="{Binding History}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:StatusMessage">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource Spacing}"
+                                                  Margin="{DynamicResource Padding.ListItem}">
+                                                <TextBlock Classes="small secondary" Text="{Binding Time}" />
+                                                <SelectableTextBlock Grid.Column="1" FontSize="{DynamicResource FontSize.Small}" Text="{Binding Text}" TextWrapping="Wrap" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
 
             <!-- Running operation (JetBrains' background-task indicator): title, step, bar, Cancel.
                  Bound through CurrentTask.* rather than switching DataContext: IDEs check a
